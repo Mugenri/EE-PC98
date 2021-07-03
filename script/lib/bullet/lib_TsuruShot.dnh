@@ -1,0 +1,20 @@
+local
+{
+	let csd = GetCurrentScriptDirectory();
+	let path = csd ~ "./dat_TsuruShot.dnh";
+	LoadEnemyShotData(path);
+}
+
+// White Bullets ------------------------------------
+let BALL_WHITE = 1;
+let NEEDLE2_WHITE = 2;
+let PILL_WHITE = 3;
+let CARD_WHITE = 4;
+let BALL_M_WHITE = 5;
+
+// Black Bullets ------------------------------------ 
+let BALL_BLACK = 6;
+let NEEDLE2_BLACK = 7;
+let PILL_BLACK = 8;
+let CARD_BLACK = 9;
+let BALL_M_BLACK = 10;

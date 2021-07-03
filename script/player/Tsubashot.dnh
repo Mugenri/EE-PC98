@@ -1,0 +1,25 @@
+shot_image = "./../img/character/tsubakura/tsubaStg.png"
+
+ShotData {
+    id = 1
+    render = ALPHA
+    rect = ( 144, 0, 160, 16 )
+    alpha = 255
+    collision = 1
+}
+
+ShotData {
+    id = 2
+    render = ALPHA
+    rect = ( 160, 0, 176, 16 )
+    alpha = 255
+    collision = 1
+}
+
+ShotData {
+    id = 3
+    render = ALPHA
+    rect = ( 144, 16, 160, 32 )
+    alpha = 255
+    collission = 1
+}

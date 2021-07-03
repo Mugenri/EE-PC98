@@ -1,0 +1,287 @@
+//Dialogue library
+//keep in mind this is run from the package because the stage needs to pause
+//therefore, stage-only libraries like lib_Common.dnh cannot be included
+#include "./lib_SystemAll.dnh" //Boss ID constants
+#include "./lib_File.dnh" //file directory constants
+#include "./bosslib/lib_Character.dnh" //boss sprites/portrait retrieval
+#include "./loadlib/file_character.dnh" //boss sprites/portraits file paths
+
+let DIALOGUE_END = false; //flag for end of dialogue sequence
+let SKIP = false; //flag for skipping dialogue
+let READING = false; //text currently scrolling
+let FIRST_LINE = true; //flag to prevent accidental skipping upon loading the first line of dialogue
+let dialoguePriority = 0.9; //Render priority
+//Text objects
+let playerText;
+let bossText;
+
+function StartDialogue() { //call to start dialogue sequence
+    CreateTextBoxes(); //player and enemy text boxes
+    playerText = CreateDialogueText(false);
+    bossText = CreateDialogueText(true);
+    wait(48);
+}
+
+function EndDialogue() { //call to end dialogue sequence
+    Obj_Delete(playerText);
+    Obj_Delete(bossText);
+    DIALOGUE_END = true;
+}
+
+task CreateTextBoxes() {
+    let playerBoxPos = [80, 320];
+    let enemyBoxPos = [48, 192];
+    let path = imgDir ~ "system/textbox.png";
+    let playerBox = CreateTextBox(false);
+    let enemyBox = CreateTextBox(true);
+    
+    //fade in animation
+    wait(12);
+    ChangeFrame(playerBox, 1, false);
+    ChangeFrame(enemyBox, 1, true);
+    wait(12);
+    ChangeFrame(playerBox, 2, false);
+    ChangeFrame(enemyBox, 2, true);
+
+    while (!DIALOGUE_END) {
+        yield;
+    }
+    //maybe fade out animation here?
+    Obj_Delete(playerBox);
+    Obj_Delete(enemyBox);
+
+    function CreateTextBox(isBoss) {
+        let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+        ObjPrim_SetTexture(obj, path);
+        Obj_SetRenderPriority(obj, dialoguePriority);
+        ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
+        if (isBoss) {
+            ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
+        } else {
+            ObjRender_SetPosition(obj, playerBoxPos[0], playerBoxPos[1], 1);
+        }
+        return obj;
+    }
+
+    function ChangeFrame(obj, frame, isBoss) {
+        ObjSprite2D_SetSourceRect(obj, 0, 0 + 48*frame, 320, 48 + 48*frame);
+        ObjSprite2D_SetDestRect(obj, 0, 0, 320, 48); //position controlled by objrender_setposition();
+    }
+}
+
+//----------------------------------------------------
+//Character Portraits
+//----------------------------------------------------
+function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in the player or boss position with the given characterID
+    let xPos;
+    let yPos;
+
+    //assign object reference;
+    if (isBoss) {
+        xPos = 288;
+        yPos = 112;
+    } else {
+        xPos = 32;
+        yPos = 240;
+    }
+
+    let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+    Obj_SetRenderPriority(obj, dialoguePriority);
+    ObjPrim_SetTexture(obj, GetBossPortrait(characterID));
+    ObjRender_SetPosition(obj, xPos, yPos, 1);
+
+    return obj;
+}
+
+function SetPortrait(obj, frame) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
+    let top = 0;
+    let left = 0;
+    alternative(frame) //select portrait frame
+    case(1) {
+        top = 0;
+        left = 0;
+    }
+    case(2) {
+        top = 0;
+        left = 128;
+    }
+    case(3) {
+        top = 0;
+        left = 256;
+    }
+    case(4) {
+        top = 0;
+        left = 384;
+    }
+    case(5) {
+        top = 128;
+        left = 0;
+    }
+    case(6) {
+        top = 128;
+        left = 128;
+    }
+    case(7) {
+        top = 128;
+        left = 256;
+    }
+    case(8) {
+        top = 128;
+        left = 384;
+    }
+    case(9) {
+        top = 256;
+        left = 0;
+    }
+    case(10) {
+        top = 256;
+        left = 128;
+    }
+    case(11) {
+        top = 256;
+        left = 256;
+    }
+    case(12) {
+        top = 256;
+        left = 384;
+    }
+    //change portrait frame
+    ObjSprite2D_SetSourceRect(obj, left, top, left+128, top+128);
+    ObjSprite2D_SetDestRect(obj, 0, 0, 128, 128); //position controlled by objrender_setposition();
+}
+
+//----------------------------------------------------
+//Text Control
+//----------------------------------------------------
+function CreateDialogueText(isBoss) { //creates the dialogue text object
+    let xPos;
+    let yPos;
+
+    if (isBoss) {
+        xPos = 49;
+        yPos = 191;
+    } else {
+        xPos = 161;
+        yPos = 319;
+    }
+
+    let obj = ObjText_Create();
+    ObjText_SetFontType(obj, sysFont);
+    ObjText_SetFontSize(obj, 16);
+    ObjText_SetVertexColor(obj, 0xFFFFFFFF);
+    ObjText_SetFontBorderType(obj, BORDER_NONE);
+    ObjText_SetLinePitch(obj, 0);
+    ObjText_SetMaxWidth(obj, 242); //TEST NUMBER
+    Obj_SetRenderPriority(obj, dialoguePriority);
+    ObjRender_SetPosition(obj, xPos, yPos, 1);
+    return obj;
+}
+
+function SetText(isBoss, text) { //Sets selected text field to desired new text. Colors blue if left unchanged for a line
+    //29 characters per line max, font is unispaced
+    //-----------------------------   <-- this long
+    if (isBoss) {
+        ObjText_SetHorizontalAlignment(bossText, ALIGNMENT_LEFT);
+        ObjText_SetVertexColor(bossText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(playerText, 0xFF0000FF);
+        TextScroll(bossText, text);
+    } else {
+        ObjText_SetVertexColor(playerText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(bossText, 0xFF0000FF);
+        TextScroll(playerText, text);
+    }
+}
+
+function SetBossTitle(text) { //Centers text for use in boss titles/names
+    ObjText_SetHorizontalAlignment(bossText, ALIGNMENT_CENTER);
+    ObjText_SetVertexColor(bossText, 0xFFFFFFFF);
+    ObjText_SetVertexColor(playerText, 0xFF0000FF);
+    TextScroll(bossText, text);
+}
+
+task TextScroll(obj, text) { //Makes text fill gradually in text boxes
+    READING = true;
+    let tempStrings = SplitString(text, "/"); //use / for newlines instead of [r]
+    let tempString = "";
+    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
+        SetVirtualKeyState(VK_OK, KEY_FREE);
+    }
+    ascent(i in 0..length(tempStrings)) { //list of substrings
+        ascent(j in 0..length(tempStrings[i])) { //for each character in a substring
+            tempString = tempString ~ [tempStrings[i][j]];
+            ObjText_SetText(obj, tempString);
+            if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !SKIP) { //skip if player presses button or dialogue is being skipped
+                yield;
+            }
+        }
+        tempString = tempString ~ ['[','r',']']; //append a newline after each substring
+    }
+    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents the keystate from carrying over to the READING check in WaitForInput()
+        SetVirtualKeyState(VK_OK, KEY_FREE);
+    }
+    READING = false;
+}
+
+//----------------------------------------------------
+//Utility
+//----------------------------------------------------
+function WaitForInput() { //function that waits for player input to advance text
+    if (FIRST_LINE) {
+		FIRST_LINE = false;
+		while (GetVirtualKeyState(VK_OK) != KEY_FREE) {yield;}
+	}
+    yield;
+    let skipFlag = 0;
+	loop {
+        SkipCheck(skipFlag);
+		if (((GetVirtualKeyState(VK_OK) == KEY_PUSH) && !READING) || SKIP) {return;}
+		if (GetVirtualKeyState(VK_OK) == KEY_PUSH || GetVirtualKeyState(VK_OK) == KEY_HOLD) {skipFlag++;}
+		else {skipFlag = 0;}
+		yield;
+    }
+}
+
+function SkipCheck(flag) { //hold key to skip dialogue
+    if (flag > 60 && !SKIP) {
+        SKIP = true;
+        flag = 0;
+    }
+    if (GetVirtualKeyState(VK_OK) != KEY_HOLD) {
+        SKIP = false;
+    }
+}
+
+function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whiteout that places the boss sprite 
+    //boss sprite to be placed, autodeletes upon script closure
+    let bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
+    Obj_SetRenderPriority(bossSprite, dialoguePriority);
+    ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID));
+
+    //screen whiteout
+    let whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
+    Obj_SetRenderPriority(whiteout, dialoguePriority);
+    ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
+    ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
+    ObjRender_SetColor(whiteout, 0xFFFFFF);
+
+    //animation
+    descent(i in 0..fadeIn) {
+        let alpha = 255 - (i+1)/fadeIn*255;
+        ObjRender_SetAlpha(whiteout, alpha);
+        yield;
+    }
+    ObjRender_SetAlpha(whiteout, 255);
+    //if i try to use objrender_setvisible on this instead of setting rects at this point it makes the whiteout effect flicker, no idea why.
+    ObjSprite2D_SetSourceRect(bossSprite, 0, 0, 64, 64); //THIS MUST BE STANDARDIZED
+    ObjSprite2D_SetDestCenter(bossSprite);
+    ObjRender_SetPosition(bossSprite, xPos + 32, yPos + 16, 1); //shifted to align with stg window coordinates
+
+    wait(between);
+    ascent(i in 0..fadeOut) {
+        let alpha = 255 - (i+1)/fadeOut*255;
+        ObjRender_SetAlpha(whiteout, alpha);
+        yield;
+    }
+    Obj_Delete(whiteout);
+}

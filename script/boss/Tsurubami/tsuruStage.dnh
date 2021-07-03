@@ -1,0 +1,39 @@
+#TouhouDanmakufu[Stage]
+#ScriptVersion[3]
+#Title["Tsurubami Stage"]
+#System["./../../system/System.dnh"]
+#Background["./background.dnh"]
+
+#include "./../../lib/lib_Common.dnh"
+
+@Initialize {
+    TStage();
+}
+
+@Event {
+}
+
+@MainLoop {
+    yield;
+}
+
+@Finalize {
+}
+
+task TStage{
+    let csd = GetCurrentScriptDirectory();
+    let path = csd ~ "tsuruPlural.dnh";
+    let ID = LoadScriptInThread(path);
+    wait(160);
+    //dialogue here then boss? probably
+    let dialoguePath = csd ~ "dialogueTest.dnh";
+    StartDialogueScript(dialoguePath);
+    yield; //TEMPORARY until i think of something better
+    StartScript(ID);
+    StartBGM(1, 0, 0);
+    while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
+        yield;
+    }
+    wait(60);
+    CloseStgScene();
+}

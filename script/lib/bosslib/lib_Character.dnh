@@ -1,0 +1,13 @@
+//expression constants (probably not) and file_portrait references from passing a boss ID
+
+function GetBossSprite(bossID) {
+    alternative(bossID)
+    case(BOSS_ID_TSURUBAMI) {return imgCharaTsurubami[1];}
+}
+
+function GetBossPortrait(bossID) {
+    alternative(bossID)
+    case(BOSS_ID_YABUSAME) {return imgCharaYabusame[0];}
+    case(BOSS_ID_TSUBAKURA) {return imgCharaTsubakura[0];}
+    case(BOSS_ID_TSURUBAMI) {return imgCharaTsurubami[0];}
+}

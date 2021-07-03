@@ -1,0 +1,39 @@
+let imgChara = GetCurrentScriptDirectory() ~ "./../../img/character/tsurubami/tsurubami.png";
+let charge = false;
+let monochrome = false;
+let frameCount = 0;
+let frameCountCharge = 0;
+
+task DrawBoss(objBoss) {
+    ObjPrim_SetTexture(objBoss, imgChara);
+    ObjSprite2D_SetSourceRect(objBoss, 0, 0, 64, 64);
+    ObjSprite2D_SetDestCenter(objBoss);
+
+    let frame = 0;
+    let frameCharge = 0;
+
+    while (!Obj_IsDeleted(objBoss)) {
+         if (monochrome || ObjMove_GetSpeed(objBoss) > 0) { //monochrome frame
+            ObjSprite2D_SetSourceRect(objBoss, 64 * 5, 0, 64 * 6, 64);
+        } else if (frameCountCharge == 0) { //idle animation
+            frame = floor(frameCount / 30);
+            ObjSprite2D_SetSourceRect(objBoss, (64 * frame), 0, 64 * (frame + 1), 64);
+        } else if ((charge || frameCountCharge > 0)) { //charge anim
+            frameCharge = floor(frameCountCharge / 8);
+            ObjSprite2D_SetSourceRect(objBoss, 64 * frameCharge, 0, 64 * (frameCharge + 1), 64);
+        }
+        frameCount++;
+        if (frameCount >= 60 || frameCountCharge > 0 || monochrome) {frameCount = 0;}
+        if (charge && frameCountCharge < 32) {frameCountCharge++;}
+        if (!charge && frameCountCharge > 0) {frameCountCharge--;}
+        yield;
+    }
+}
+
+function AnimeCharge() {
+    charge = !charge;
+}
+
+function AnimeMonochrome() {
+    monochrome = !monochrome;
+}

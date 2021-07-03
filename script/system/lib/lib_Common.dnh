@@ -1,0 +1,9 @@
+#include "./lib_System.dnh"
+//#include "./../../lib/lib_String.dnh"
+
+task SystemInit{
+    SetAutoDeleteObject(true);
+    objPlayer = GetPlayerObjectID();
+
+    //PoC line draw if i add it maybe not
+}

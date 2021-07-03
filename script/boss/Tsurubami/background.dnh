@@ -1,0 +1,142 @@
+let bSpell = false;
+let csd = GetCurrentScriptDirectory();
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TBackground();
+    TSpellBackground();
+}
+
+@MainLoop {
+    let objScene = GetEnemyBossSceneObjectID();
+	if (objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(objScene, INFO_IS_SPELL))
+	{
+		bSpell = true;
+	}
+	else
+	{
+		bSpell = false;
+	}
+	yield;
+}
+
+task TBackground() {
+    //bg
+    let path = csd ~ "./../../img/stg/tsurubamiBG.png";
+    let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(bg, path);
+    ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
+    ObjRender_SetTextureFilterMin(bg, 0);
+    ObjRender_SetTextureFilterMag(bg, 0);
+    ObjRender_SetTextureFilterMip(bg, 0);
+    Obj_SetRenderPriority(bg, 0.2);
+
+    let count = 30;
+    let color = 0;
+    let increment = true;
+
+    LineEffect();
+
+    loop {
+        if (bSpell) {
+            //do thing
+        } else if (!bSpell) {
+            ObjRender_SetColor(bg, color, color, color);
+        }
+
+        if (increment) {
+            count++;
+        } else {
+            count--;
+        }
+
+        if (count >= 209) {
+            increment = false;
+        } else if (count < 30) {
+            increment = true;
+        }
+
+        color = truncate(count/60) * 8 + 8;
+        yield;
+    }
+
+    task LineEffect() {
+        //Used for movement
+        let count = 0;
+
+        //starting point for line columns/rows
+        let xOrigin = -17;
+        let yOrigin = -26;
+
+        let x = xOrigin;
+        let y = yOrigin;
+
+        //Center of Screen
+        let xMid = GetStgFrameWidth() / 2;
+        let yMid = GetStgFrameHeight() / 2;
+
+        //Vertical Lines
+        loop(5) {
+            CreateLine(x, y, 71, 7, true);
+            x += 139;
+        }
+
+        x = xOrigin - 139; //need one point back to cover full range of motion
+        y = yOrigin + 70; //Height of a rectangle
+
+        //Horizontal Lines
+        loop(5) {
+            CreateLine(x, y, 140, 7, false);
+            y += 70;
+        }
+
+        //Movement
+        loop {
+            if (count >= 140) {
+                count = 0;
+            }
+            count++;
+            yield;
+        }
+
+        task CreateLine(xStart, yStart, step, points, vertical) {
+            let positions = [];
+
+            let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+            ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
+            Obj_SetRenderPriority(line, 0.2);
+            ObjPrim_SetVertexCount(line, points);
+            ascent(i in 0..points) {
+                ObjPrim_SetVertexColor(line, i, 78, 78, 78);
+            }
+            ascent(i in 0..points) {
+                ObjPrim_SetVertexPosition(line, i, xStart, yStart, 1);
+                positions = positions ~ [[xStart, yStart]];
+                if (vertical) {
+                    yStart += step;
+                } else {
+                    xStart += step;
+                }
+            }
+
+            //set positions based on grid position and multiplier based on distance from the middle
+            loop {
+                ascent(i in 0..length(positions)) {
+                    let xCurr = positions[i][0] - count;
+                    let yCurr = positions[i][1];
+                    xCurr -= (xCurr - xMid) * 0.06 * (absolute(yCurr - yMid) * 0.02);
+                    yCurr += (yCurr - yMid) * 0.06 * (absolute(xCurr - xMid) * 0.02);
+
+                    ObjPrim_SetVertexPosition(line, i, xCurr, yCurr, 1);
+                }
+                yield;
+
+            }
+        }
+    }
+}
+
+task TSpellBackground() {
+
+}

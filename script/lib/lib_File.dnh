@@ -1,0 +1,8 @@
+let imgDir	= GetCurrentScriptDirectory() ~ "../img/";
+let plDir	= GetCurrentScriptDirectory() ~ "../player/";
+let stageDir	= GetCurrentScriptDirectory() ~ "../boss/";
+let seDir	= GetCurrentScriptDirectory() ~ "../se/";
+
+//let imgDataFile = imgDir ~ "img.dat";
+
+//file path constants

@@ -1,0 +1,43 @@
+//Common functions and libraries
+#include "./lib_SystemAll.dnh"
+#include "./lib_File.dnh"
+#include "./lib_Util.dnh"
+
+//Common variables
+let objPlayer;
+let idPlayer;
+let objScene;
+
+//Position Constants
+const MIN_X = 0;
+const MIN_Y = 0;
+const MAX_X = GetStgFrameWidth();
+const MAX_Y = GetStgFrameHeight();
+const MID_X = GetStgFrameWidth() / 2;
+const MID_Y = GetStgFrameHeight() / 2;
+
+function Init() {
+    SetAutoDeleteObject(true);
+
+    objPlayer = GetPlayerObjectID();
+	idPlayer = GetPlayerScriptID();
+	objScene = GetEnemyBossSceneObjectID();
+}
+
+function DigitToArray(digit, count) {
+	let res = [];
+	digit = truncate(digit);
+
+	loop {
+		let tnum = truncate(digit % 10);
+		digit /= 10;
+		res = [tnum] ~ res;
+		if (truncate(digit) == 0) {break;}
+	}
+
+	loop(max(0, count - length(res))) {
+		res = [0] ~ res;
+	}
+
+	return res;
+}

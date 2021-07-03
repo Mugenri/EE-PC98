@@ -1,0 +1,114 @@
+// Music Manager
+#include "./lib/BGMData.dnh"
+#include "./lib/lib_Common.dnh"
+
+let objBGM = -1; //used to hold the current playing BGM ID
+let currentBGM = -1; //used to check current playing track in MainTask
+let stop = false; //compared against stop for pausing and restarting BGM track
+let flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
+
+@Initialize {
+    SetAreaCommonData(AREA_TITLE, "SCRIPT_BGM", GetOwnScriptID());
+    SetAutoDeleteObject(true);
+    MainTask();
+}
+
+@Event {
+    alternative(GetEventType())
+    case(EV_PLAY_BGM) { //Set common data for MainTask to use
+        currentBGM = GetEventArgument(0)[0];
+        SetAreaCommonData(AREA_TITLE, "BGM_ID", GetEventArgument(0)[0]); //track ID in BGMData.dnh
+        SetAreaCommonData(AREA_TITLE, "BGM_Fade", GetEventArgument(0)[1]); //fade out time in frames
+        SetAreaCommonData(AREA_TITLE, "BGM_Delay", GetEventArgument(0)[2]); //delay track start time in frames
+    }
+    case(EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
+        flagStop = GetEventArgument(0);
+    }
+    case(EV_GET_BGM_TEXT) {
+        let info = GetBGMText(GetEventArgument(0));
+        SetScriptResult(info[0]);
+    }
+}
+
+@MainLoop {
+    yield;
+}
+
+@Finalize {}
+
+task MainTask{
+    stop = false;
+    let BGMID = -1;
+
+    loop {
+        if (BGMID != currentBGM) {
+            BGMID = currentBGM;
+            let fade = GetAreaCommonData(AREA_TITLE, "BGM_Fade", -1);
+            let delay = GetAreaCommonData(AREA_TITLE, "BGM_Delay", -1);
+
+            Package_ChangeBGM(BGMID, fade, delay);
+        }
+        yield;
+    }
+}
+
+task Package_ChangeBGM(trackID, fade, delay) {
+    //fade out/end current playing track
+    if (!Obj_IsDeleted(objBGM)) {
+        Package_ClearBGM(objBGM); //called before objBGM is assigned a new ID, starts track fadeout
+    }
+    //Play new bgm, set heard flag for music room unlock
+    if (trackID >= 0) {
+        flagStop = false;
+        Package_PlayBGM(trackID, fade, delay);
+        CD_SetBGMHeardFlag(trackID);
+    }
+}
+
+//BGM_End value tied to specific track object in Package_PlayBGM
+task Package_ClearBGM(obj) {
+    Obj_SetValue(obj, "BGM_End", true);
+}
+
+task Package_PlayBGM(trackID, fade, delay) {
+    let ID = ObjSound_Create();
+    let path = GetBGMPath(trackID);
+    let sample = GetBGMSample(trackID);
+
+    ObjSound_Load(ID, path);
+    ObjSound_SetSoundDivision(ID, SOUND_BGM);
+    ObjSound_SetLoopEnable(ID, true);
+    ObjSound_SetRestartEnable(ID, true);
+    ObjSound_SetLoopSampleCount(ID, sample[0], sample[1]);
+
+    objBGM = ID; //both point to same value. different when a new track is played. ID is used to control fade out while objBGM prepares a new track to be played
+
+    loop(delay) {yield;}
+
+    ObjSound_Play(ID);
+
+    while (!Obj_IsDeleted(ID) && !Obj_GetValueD(ID, "BGM_End", false)) {
+
+        ObjSound_SetVolumeRate(ID, GetBGMVolume());
+        if (stop != flagStop) {
+            if (flagStop) {ObjSound_Stop(ID);}
+            else {ObjSound_Play(ID);}
+            stop = flagStop;
+        }
+        yield;
+    }
+    //fade out
+    if (fade > 0 && !stop) { //only fade if track ended while actually playing, else skip
+        let volTimer = 0;
+        while (volTimer < fade) { //fade time is in frames
+            let volume = GetBGMVolume();
+            let volDecay = volTimer/fade; //reduce volume linearly
+
+            ObjSound_SetVolumeRate(ID, volume - volDecay*volume);
+
+            volTimer += 1; //1 frame
+            yield;
+        }
+    }
+    Obj_Delete(ID);
+}

@@ -1,0 +1,40 @@
+#include "./lib_Common.dnh"
+
+#include "./bosslib/lib_Character.dnh"
+//file path constants for character portraits
+#include "./loadlib/file_character.dnh"
+
+/*
+Moves the boss between r1..r2, within the rectangle
+created by xmin..xmax, ymin..ymax, over given amount of frames
+*/
+function MoveBossInRadius(objE, r1, r2, xmin, xmax, ymin, ymax, frames) {
+    if (xmin > xmax) {
+        let temp = xmax;
+        xmax = xmin;
+        xmin = temp;
+    }
+    if (ymin > ymax) {
+        let temp = ymax;
+        ymax = ymin;
+        ymin = temp;
+    }
+
+    let angleT = rand_angle();
+    let distance = rand(r1, r2);
+    let newX = ObjMove_GetX(objE) + distance*cos(angleT);
+    let newY = ObjMove_GetY(objE) + distance*sin(angleT);
+
+    if (newX <= xmin) {
+        newX = xmin;
+    } else if (newX >= xmax) {
+        newX = xmax;
+    }
+    if (newY <= ymin) {
+        newY = ymin;
+    } else if (newY >= ymax) {
+        newY = ymax;
+    }
+
+    ObjMove_SetDestAtFrame(objE, newX, newY, frames);
+}

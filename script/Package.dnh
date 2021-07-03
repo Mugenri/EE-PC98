@@ -1,0 +1,18 @@
+#TouhouDanmakufu[Package]
+#Title["PC98 Game"]
+#Text["woohoo pc98"]
+#Player["./player/Yabusame.dnh", "./player/Tsubakura.dnh"]
+
+//opening screen
+#include "./title/loadScreen.dnh"
+
+@Initialize {
+    //bosm adds an image archive file here
+    InitLoad();
+}
+
+@MainLoop {
+    yield;   
+}
+
+@Finalize {}

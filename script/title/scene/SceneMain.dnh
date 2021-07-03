@@ -1,0 +1,292 @@
+//Title Screen
+
+//Menu Indices
+let INDEX_START = 0;
+let INDEX_EXTRA = 1;
+let INDEX_PRACTICE = 2;
+let INDEX_REPLAY = 3;
+let INDEX_MUSIC = 4;
+let INDEX_SCORE = 5;
+let INDEX_OPTION = 6;
+let INDEX_QUIT = 7;
+
+let indexCurrent;
+
+let exitFlag = false; //deletes certain things upon leaving this menu
+
+task MainMenu(playIntro, selectedDefault) {
+    exitFlag = false;
+    SaveCommonDataAreaA2(AREA_SAVE, saveCommonSAVE); //write data to save file
+
+    let selectMax = INDEX_QUIT;
+    indexCurrent = selectedDefault;
+
+    let forbidIndex = [INDEX_START, INDEX_PRACTICE]; //Can't select these menu options
+
+    //Don't allow menu cursor to start on a forbidden index
+    while (CheckForbidden(indexCurrent, forbidIndex)) {
+        indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+    }
+
+    if (playIntro) {
+        //play intro anim
+    }
+
+    //Init title graphics/replace intro prims with images
+    CreateMenuGraphicsMain();
+
+    //Set up the menu
+    local {
+        let menuX = 400;
+        let menuY = 244;
+        let xOffset = [0, 110, -30, 90, -50, 80, -20, 100];
+        let yOffset = 15;
+        let texts = ["Start", "Extra Start", "Practice", "Replays", "Music Room", "Result", "Options", "Quit"];
+        ascent(i in 0..selectMax + 1) {
+            CreateMenuItemMain(i, menuX, menuY, xOffset[i], yOffset, texts[i]);
+            menuY += yOffset;
+        }
+        CreateMenuInfo(1, GetScreenHeight() - 16); //version text
+    }
+
+    wait(15); //wait for screen fade from previous menu to clear
+    WaitKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+    loop { //Wait for input loop
+        let userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case(VK_UP, VK_LEFT) {
+            CallSFX(sndTtSelect);
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
+        }
+        case(VK_DOWN, VK_RIGHT) {
+            CallSFX(sndTtSelect);
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+        }
+        case(VK_OK) {
+            MenuSelect();
+            let temp = SelectItem(indexCurrent);
+            if (temp > 0) {break;}
+        }
+        case(VK_CANCEL, VK_PAUSE) {
+            CallSFX(sndTtCancel);
+            indexCurrent = INDEX_QUIT;
+        }
+    }
+
+    function SelectItem(index) {
+        alternative(index)
+        case(INDEX_START) {
+            //Game Start
+            TSelectStart();
+            return 1;
+        }
+        case(INDEX_EXTRA) {
+            //Extra Start
+            TSelectExtra();
+            return 1;
+        }
+        case(INDEX_PRACTICE) {
+            //Stage Practice
+            TSelectPractice();
+            return 1;
+        }
+        case(INDEX_REPLAY) {
+            //Replays
+            TSelectReplay();
+            return 1;
+        }
+        case(INDEX_MUSIC) {
+            //Music Room
+            TSelectMusic();
+            return 1;
+        }
+        case(INDEX_SCORE) {
+            //Result
+            TSelectScore();
+            return 1;
+        }
+        case(INDEX_OPTION) {
+            //Options
+            TSelectOption();
+            return 1;
+        }
+        case(INDEX_QUIT) {
+            //Exit Game
+            SaveCommonDataAreaA2(AREA_SAVE, saveCommonSAVE);
+            ScreenBlackout(60, 200, 0, 0x000000);
+            wait(80);
+            ClosePackage();
+            return 1;
+        }
+    }
+
+    task CreateMenuGraphicsMain() {
+        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+        ObjPrim_SetTexture(bg, imgTtBaseBG);
+        Obj_SetRenderPriority(bg, 0.01);
+        ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
+        ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
+
+        let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
+        ObjPrim_SetTexture(yabu, imgTtYabu);
+        Obj_SetRenderPriority(yabu, 0.01);
+        ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
+        ObjSprite2D_SetDestRect(yabu, 0, 0, 288, 360);
+
+        ObjRender_SetPosition(yabu, 40, 20, 1);
+
+        while (!exitFlag) {yield;}
+        Obj_Delete(bg);
+        Obj_Delete(yabu);
+    }
+
+    task CreateMenuItemMain(index, x, y, xOff, yOff, text) {
+        let color = 0xFFFFFFFF;
+        if (CheckForbidden(index, forbidIndex)) {color = 0xFF111166;}
+        let objText = CreateText(x + xOff, y + yOff, text, color);
+        let objTextHighlight = CreateText(x + xOff, y + yOff, text, 0xFFFFFF00);
+        let objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
+        while (!exitFlag) {
+            Obj_SetVisible(objTextHighlight, index == indexCurrent);
+            Obj_SetVisible(objCursor, index == indexCurrent);
+            yield;
+        }
+        Obj_Delete(objText);
+        Obj_Delete(objTextHighlight);
+        Obj_Delete(objCursor);
+    }
+
+    task CreateMenuInfo(x, y) {
+        let objText = CreateText(x, y, "Version " ~GAME_VERSION, 0xFFFFFFFF);
+        while (!exitFlag) {yield;}
+        Obj_Delete(objText);
+    }
+    
+    function MenuSelect() {
+        CallSFX(sndTtDecide);
+    }
+}
+
+task TSelectStart() { //UNUSED
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+    //Declare variables to be set by submenus
+    let selectedRank = D_NORMAL;
+    let selectedPlayer = PLAYER_YABUSAME;
+    //Main Play Mode
+    SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+
+    let tempSelect = 0;
+    loop {
+        //Select Difficulty
+        tempSelect = SceneRankSelect(selectedRank);
+        if (tempSelect < 0) {break;}
+        selectedRank = tempSelect;
+        loop {
+            //Select Player
+            tempSelect = ScenePlayerSelect(selectedPlayer);
+            if (tempSelect < 0) {break;}
+            selectedPlayer = tempSelect;
+
+            //Set CommonData for player selections
+            SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+            SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+            SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
+
+            //Run main stage script
+            let pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+            let idScript = LoadScript(pathScript);
+            StartScript(idScript);
+            return;
+        }
+    }
+    //Only Runs if the submenu is exited
+    MainMenu(false, INDEX_START);
+}
+
+task TSelectExtra() {
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+    //Declare variables to be set by submenus
+    let selectedRank = D_EXTRA;
+    let selectedPlayer = PLAYER_YABUSAME;
+    //Main Play Mode
+    SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+
+    let tempSelect = 0;
+    loop {
+        //Select Difficulty
+        tempSelect = SceneRankSelect(selectedRank);
+        if (tempSelect < 0) {break;}
+        selectedRank = tempSelect;
+        loop {
+            //Select Player
+            tempSelect = ScenePlayerSelect(selectedPlayer);
+            if (tempSelect < 0) {break;}
+            selectedPlayer = tempSelect;
+
+            //Set CommonData for player selections
+            SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+            SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+            SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
+
+            //Run main stage script
+            let pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+            let idScript = LoadScript(pathScript);
+            StartScript(idScript);
+            return;
+        }
+    }
+    //Only Runs if the submenu is exited
+    MainMenu(false, INDEX_EXTRA);
+}
+
+task TSelectPractice() { //UNUSED
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+
+    //Only Runs if the submenu is exited
+    MainMenu(false, INDEX_PRACTICE);
+}
+
+task TSelectReplay() {
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+
+    //Only Runs if the submenu is exited
+    MainMenu(false, INDEX_REPLAY);
+}
+
+task TSelectMusic() {
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+    SceneMusicRoom();
+
+    //probably reset the bgm track here
+
+    //Exited music menu
+    StartBGM(0, 60, 15);
+    MainMenu(false, INDEX_MUSIC);
+}
+
+task TSelectScore() {
+    ScreenBlackout(10, 5, 10, 0x000000);
+    wait(10);
+    exitFlag = true;
+
+    //Exited player score menu
+    MainMenu(false, INDEX_SCORE);
+}
+
+task TSelectOption() {
+    exitFlag = true;
+    SceneOption();
+
+    //Exited option menu
+    MainMenu(false, INDEX_OPTION);
+}

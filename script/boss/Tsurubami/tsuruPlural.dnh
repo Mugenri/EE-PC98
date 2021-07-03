@@ -1,0 +1,34 @@
+#TouhouDanmakufu[Plural]
+#ScriptVersion[3]
+#Title["Tsurubami Plural"]
+#System["../../system/System.dnh"]
+#Background["../../system/TestBG.dnh"]
+
+#include "./../../lib/lib_Common.dnh"
+
+let dir = GetCurrentScriptDirectory();
+
+@Initialize {
+    TPlural;
+}
+
+@Event {}
+
+@MainLoop {yield;}
+
+task TPlural{
+    let obj = ObjEnemyBossScene_Create();
+
+    ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh");
+    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell2.dnh");
+    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell3.dnh");
+    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell4.dnh");
+
+    ObjEnemyBossScene_LoadInThread(obj);
+    ObjEnemyBossScene_Regist(obj);
+
+    while (!Obj_IsDeleted(obj)) {
+        yield;
+    }
+    CloseScript(GetOwnScriptID());
+}

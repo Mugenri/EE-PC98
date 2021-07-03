@@ -1,0 +1,49 @@
+#include "./lib/lib_Common.dnh"
+#include "./lib/lib_Util.dnh"
+
+// include additional scenes
+#include "./scene/SceneMain.dnh"
+#include "./scene/SceneMusicRoom.dnh"
+#include "./scene/SceneOption.dnh"
+#include "./scene/ScenePlayerSelect.dnh"
+#include "./scene/SceneRankSelect.dnh"
+
+let titleEnd = false;
+
+@Initialize {
+    InitTitle();
+    SetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", GetOwnScriptID());
+
+    TTitleScene();
+}
+
+@Event {
+    alternative(GetEventType())
+    case(EV_TITLE_END) {
+        titleEnd = true;
+    }
+}
+
+@MainLoop {
+    yield;
+}
+
+@Finalize {}
+
+//Load Title
+task TTitleScene() {
+    let testBG = ObjPrim_Create(OBJ_SPRITE_2D); //If this is ever visible something is wrong
+    Obj_SetRenderPriority(testBG, 0.01);
+    ObjSprite2D_SetSourceRect(testBG, 0, 0, 640, 400);
+    ObjSprite2D_SetDestRect(testBG, 0, 0, 640, 400);
+    ObjRender_SetColor(testBG, 0xFF0000); //its a bigass red rectangle
+
+    StartBGM(0, 60, 30);
+    MainMenu(true, INDEX_START);
+
+    while (!titleEnd) {
+        yield;
+    }
+
+    CloseScript(GetOwnScriptID());
+}

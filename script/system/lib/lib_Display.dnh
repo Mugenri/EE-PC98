@@ -1,0 +1,516 @@
+//#include high score library at some point
+
+let textImg = GetCurrentScriptDirectory() ~ "./../../img/system/PC98_Text.png";
+
+//----------------------------------------------------
+//STG Frame Display
+//----------------------------------------------------
+function InitFrame() {
+	let path = GetCurrentScriptDirectory() ~ "./../../img/system/PC98_SystemBackground.png";
+	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(obj, path);
+	Obj_SetRenderPriority(obj, 0);
+	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
+	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
+    SetStgFrame(32, 16, 416, 384, 20, 80);
+}
+
+//----------------------------------------------------
+//Stage Fade in
+//----------------------------------------------------
+task TIntro() {
+    //Fade square sprite list
+    let testFade = GetCurrentScriptDirectory() ~ "./../../img/system/testFade.png";
+    let objBG = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+    ObjPrim_SetTexture(objBG, testFade);
+    Obj_SetRenderPriority(objBG, 0.79);
+    let frames = 23; //number of animation frames
+    ChangeFrame(0); //first frame is solid black
+
+    //TODO Game logo when i get it
+    let objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
+    Obj_SetRenderPriority(objLogo, 0.79);
+
+    while (objPlayer < 0) { //wait for player to load (~1 frame)
+        yield;
+    }
+
+    //Stop player movement while screen is black
+    SetForbidPlayerShot(true);
+    SetForbidPlayerSpell(true);
+    let tempSpeed = GetPlayerSpeed();
+    SetPlayerSpeed(0, 0);
+
+    wait(60); //add logo fade in/out before this point when i get to making one
+
+    //resume player movement when the transition begins
+    SetForbidPlayerShot(false);
+    SetForbidPlayerSpell(false);
+    SetPlayerSpeed(tempSpeed[0], tempSpeed[1]);
+
+    ascent(i in 0..frames) {
+        ChangeFrame(i);
+        wait(4);
+    }
+    
+    Obj_Delete(objBG);
+    Obj_Delete(objLogo);
+
+    function ChangeFrame(animationFrame) {
+        //Changes the animation frame of the fade effect
+        ObjRender_SetPosition(objBG, 0, 0, 1);
+        ObjSpriteList2D_ClearVertexCount(objBG);
+        loop(23) { //vertical
+            loop(24) { //horizontal
+                ObjSpriteList2D_SetSourceRect(objBG, 0 + animationFrame*16 , 0, 16 + animationFrame*16, 16);
+                ObjSpriteList2D_SetDestRect(objBG, 0, 0, 16, 16);
+                ObjSpriteList2D_AddVertex(objBG);
+                ObjRender_SetX(objBG, ObjRender_GetX(objBG) + 16);
+            }
+            ObjRender_SetPosition(objBG, 0, ObjRender_GetY(objBG) + 16, 1);
+        }
+    }
+}
+
+//----------------------------------------------------
+//Selected Difficulty Display
+//----------------------------------------------------
+function TDifficulty() {
+    let texts = ["Easy", "Normal", "Hard", "Unreal", "Extra", "Ab-Ex"];
+    let colors = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF0000, 0xFFFFFFFF];
+    let diff = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
+    let objText = ObjText_Create();
+	ObjText_SetText(objText, texts[diff]);
+	ObjText_SetFontSize(objText, 16);
+    ObjText_SetFontType(objText, headerFont);
+	ObjText_SetVertexColor(objText, colors[diff]);
+	ObjText_SetFontBorderType(objText, BORDER_NONE);
+	Obj_SetRenderPriority(objText, 0.1);
+	ObjRender_SetPosition(objText, 420, 20, 1);
+    ObjText_SetMaxWidth(objText, 186);
+    ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
+}
+
+//----------------------------------------------------
+//High Score Display
+//----------------------------------------------------
+task THighScore() {
+	//High Score Text
+	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(objScore, textImg);
+	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
+    ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
+    ObjRender_SetColor(objScore, 0xFFFF00);
+	Obj_SetRenderPriority(objScore, 0.1);
+    ObjRender_SetPosition(objScore, 480, 48, 1);
+
+	// Digits
+	let pathDigit = textImg;
+	let count = 8;
+
+	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, pathDigit);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+	ObjRender_SetY(obj, 64);
+
+	while (true) {
+		let score = GetScore();
+		score = min(score, 99999999);
+		let listNum = DigitToArray(score, count);
+
+		ObjSpriteList2D_ClearVertexCount(obj);
+		ascent(iObj in 0 .. count) {
+			let num = listNum[iObj];
+			ObjRender_SetX(obj, 448 + iObj * 16);
+			ObjSpriteList2D_SetSourceRect(obj, num * 16, 16, (num + 1) * 16, 32);
+			ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+			ObjSpriteList2D_AddVertex(obj);
+		}
+		yield;
+	}
+}
+
+//----------------------------------------------------
+//Score Display
+//----------------------------------------------------
+task TScore() {
+	//Score Text
+	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(objScore, textImg);
+	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
+    ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
+    ObjRender_SetColor(objScore, 0xFFFF00);
+	Obj_SetRenderPriority(objScore, 0.1);
+    ObjRender_SetPosition(objScore, 488, 80, 1);
+
+	//Digits
+	let pathDigit = textImg;
+	let count = 8;
+
+	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, pathDigit);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+	ObjRender_SetY(obj, 96);
+
+	while (true) {
+		let score = GetScore();
+		score = min(score, 99999999);
+		let listNum = DigitToArray(score, count);
+
+		ObjSpriteList2D_ClearVertexCount(obj);
+		ascent(iObj in 0 .. count) {
+			let num = listNum[iObj];
+			ObjRender_SetX(obj, 448 + iObj * 16);
+			ObjSpriteList2D_SetSourceRect(obj, num * 16, 16, (num + 1) * 16, 32);
+			ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+			ObjSpriteList2D_AddVertex(obj);
+		}
+		yield;
+	}
+}
+
+//----------------------------------------------------
+//Bosss Life Display
+//----------------------------------------------------
+task TBossLife
+{
+	let path = GetCurrentScriptDirectory() ~ "./../img/system/PC98_System.png";
+
+    //Enemy!! text
+    let objText = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objText, textImg);
+    ObjRender_SetBlendType(objText, BLEND_ALPHA);
+    ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
+    ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
+    ObjRender_SetColor(objText, 0xFFFF00);
+    Obj_SetRenderPriority(objText, 0.1);
+    ObjRender_SetPosition(objText, 488, 129, 1);
+
+    //Lifebar
+	let obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
+    ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+    ObjPrim_SetVertexCount(obj, 4);
+    ObjRender_SetPosition(obj, 448, 148, 1);
+
+    //Max Text
+    let maxText = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(maxText, textImg);
+    ObjRender_SetBlendType(maxText, BLEND_ALPHA);
+    ObjSprite2D_SetSourceRect(maxText, 16, 337, 64, 348);
+    ObjSprite2D_SetDestRect(maxText, 0, 0, 48, 11);
+    Obj_SetRenderPriority(maxText, 0.1);
+    ObjRender_SetPosition(maxText, 529, 145, 1);
+    Obj_SetVisible(maxText, false);
+
+	let lastRemStep = -1;
+	let lifeRateRender = 0;
+
+	let objScene = ID_INVALID;
+	loop
+	{
+		objScene = GetEnemyBossSceneObjectID();
+		if (objScene != ID_INVALID)
+		{
+			RenderLife();
+		}
+		yield;
+	}
+
+
+	function RenderLife() {
+        let bossID = GetEnemyBossObjectID();
+        if (length(bossID) == 0) {return;}
+
+		//Remaining Steps
+		let countRemStep = ObjEnemyBossScene_GetInfo(objScene, INFO_REMAIN_STEP_COUNT);
+		if (lastRemStep != countRemStep) {
+			//Step Change, refill boss bar
+			lifeRateRender = 0;
+		}
+
+		//Life Display
+		let lifeTotalMax = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step health
+		let lifeTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //current health
+		let lifeRate = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
+		ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
+        ObjPrim_SetVertexPosition(obj, 1, 0, 8, 1);
+        ObjPrim_SetVertexPosition(obj, 2, 129 * lifeRate, 0, 1);
+        ObjPrim_SetVertexPosition(obj, 3, 129 * lifeRate, 8, 1);
+
+        //Max Text
+        if (lifeRate >= 1) { //if max health
+            Obj_SetVisible(maxText, true);
+        } else {
+            Obj_SetVisible(maxText, false);
+        }
+
+        //Life Color
+        let color = 0xFFFFFF;
+        if (lifeRate <= 0.25) {
+            color = 0xFF0000;
+        } else if (lifeRate <= 0.5) {
+            color = 0xFF00FF;
+        } else if (lifeRate <= 0.75) {
+            color = 0x00FFFF;
+        } else if (lifeRate < 1) {
+            color = 0xFFFF00;
+        }
+
+        ascent(i in 0..4) {
+            ObjPrim_SetVertexColor(obj, i, color);
+        }
+
+        //attempt to increase health render bar until it reaches max
+		lifeRateRender += 0.01;
+		lifeRateRender = min(lifeRateRender, 1);
+		lastRemStep = countRemStep;
+
+        //if no boss present, delete Enemy!! text
+        if (lifeTotal <= 0) {
+            Obj_Delete(objText);
+        }
+	}
+}
+
+//----------------------------------------------------
+//Timer Display
+//----------------------------------------------------
+task TBossTimer{
+	let obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+    ObjPrim_SetVertexCount(obj, 2);
+    ObjRender_SetPosition(obj, 448, 159, 1);
+
+	let objScene = ID_INVALID;
+	loop
+	{
+		objScene = GetEnemyBossSceneObjectID();
+		if (objScene != ID_INVALID)
+		{
+			RenderTimer();
+		}
+		yield;
+	}
+
+	function RenderTimer() {
+		let timer = ObjEnemyBossScene_GetInfo(objScene, INFO_TIMERF);
+        let timerTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ORGTIMERF);
+
+        if (ObjEnemyBossScene_GetInfo(objScene, INFO_CURRENT_LIFE) <= 0) {
+            timer = 0;
+        }
+
+        ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
+        ObjPrim_SetVertexPosition(obj, 1, 129 * (timer/timerTotal) , 0, 1);
+
+        ObjPrim_SetVertexColor(obj, 0, 0xFFFFFF);
+        ObjPrim_SetVertexColor(obj, 1, 0xFFFFFF);
+
+	}
+}
+
+//----------------------------------------------------
+//Player Lives Display
+//----------------------------------------------------
+task TPlayerLife{
+	//life Text
+	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(objText, textImg);
+    ObjRender_SetBlendType(objText, BLEND_ALPHA);
+	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
+    ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
+    ObjRender_SetColor(objText, 0xFFFF00);
+	Obj_SetRenderPriority(objText, 0.1);
+    ObjRender_SetPosition(objText, 456, 178, 1);
+
+	//Amount
+	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, textImg);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+	ObjRender_SetY(obj, 177);
+
+	while (true) { //CHANGE THIS TO ACCOUNT FOR > 5 LIVES
+		let lives = GetPlayerLife();
+		lives = min(lives, 5);
+		lives = max(lives, 0);
+
+		ObjSpriteList2D_ClearVertexCount(obj);
+		ascent(iObj in 0..lives) {
+			ObjRender_SetX(obj, 496 + iObj * 16);
+            ObjSpriteList2D_SetSourceRect(obj, 97, 272, 112, 287);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 15, 15);
+			ObjSpriteList2D_AddVertex(obj);
+		}
+		yield;
+	}
+}
+
+//----------------------------------------------------
+//Player Spell Display
+//----------------------------------------------------
+task TPlayerSpell
+{
+	//Spell Text
+	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(objText, textImg);
+    ObjRender_SetBlendType(objText, BLEND_ALPHA);
+	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
+    ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
+    ObjRender_SetColor(objText, 0xFFFF00);
+	Obj_SetRenderPriority(objText, 0.1);
+    ObjRender_SetPosition(objText, 456, 210, 1);
+
+	//Amount
+	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, textImg);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+	ObjRender_SetY(obj, 210);
+
+	while (true) { //CHANGE THIS TO ACCOUNT FOR > 5 BOMBS
+		let spell = GetPlayerSpell();
+        spell = min(spell, 5);
+
+		ObjSpriteList2D_ClearVertexCount(obj);
+		ascent(iObj in 0..spell) {
+			ObjRender_SetX(obj, 496 + iObj * 16);
+            ObjSpriteList2D_SetSourceRect(obj, 81, 272, 96, 287);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 15, 15);
+			ObjSpriteList2D_AddVertex(obj);
+		}
+		yield;
+	}
+}
+
+//----------------------------------------------------
+//Graze Display
+//----------------------------------------------------
+task TGraze()
+{
+	//Graze Text
+	let objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
+	ObjPrim_SetTexture(objGraze, textImg);
+    ObjRender_SetBlendType(objGraze, BLEND_ALPHA);
+	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
+    ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
+    ObjRender_SetColor(objGraze, 0xFFFF00);
+	Obj_SetRenderPriority(objGraze, 0.1);
+    ObjRender_SetPosition(objGraze, 456, 242, 1);
+
+	//Digits
+	let pathDigit = textImg;
+	let count = 4;
+
+	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, pathDigit);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.1);
+	ObjRender_SetY(obj, 242);
+
+	while (true) {
+		let graze = GetGraze();
+		graze = min(graze, 9999);
+		let listNum = DigitToArray(graze, count);
+
+		ObjSpriteList2D_ClearVertexCount(obj);
+		ascent(iObj in 0 .. count) {
+			let num = listNum[iObj];
+			ObjRender_SetX(obj, 496 + iObj * 16);
+			ObjSpriteList2D_SetSourceRect(obj, num * 16, 16, (num + 1) * 16, 32);
+			ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+			ObjSpriteList2D_AddVertex(obj);
+		}
+		yield;
+	}
+}
+
+//----------------------------------------------------
+//Spell Aquisition Display
+//----------------------------------------------------
+task TGainSpell(score) { //CHANGE THIS
+	let objText = ObjText_Create();
+	ObjText_SetText(objText, "Spell Card Bonus!");
+	ObjText_SetFontSize(objText, 16);
+    ObjText_SetFontType(objText, sysFont);
+	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetFontBorderType(objText, BORDER_NONE);
+	Obj_SetRenderPriority(objText, 0.6);
+	ObjRender_SetX(objText, 32);
+	ObjRender_SetY(objText, 98);
+
+	let strScore = "+" ~ IntToString(score);
+	let objScore = ObjText_Create();
+	ObjText_SetText(objScore, strScore);
+	ObjText_SetFontSize(objScore, 32);
+	ObjText_SetFontBold(objScore, true);
+	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetFontBorderType(objScore, BORDER_NONE);
+	Obj_SetRenderPriority(objScore, 0.6);
+	ObjRender_SetX(objScore, 180);
+	ObjRender_SetY(objScore, 140);
+
+	loop(120)
+	{
+		yield;
+	}
+	Obj_Delete(objText);
+	Obj_Delete(objScore);
+}
+
+//----------------------------------------------------
+//FPS Display
+//----------------------------------------------------
+task TFPS()
+{
+	let objText = ObjText_Create();
+	ObjText_SetFontSize(objText, 16);
+	ObjText_SetFontType(objText, sysFont);
+	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+	ObjText_SetMaxWidth(objText, GetScreenWidth() - 8);
+	Obj_SetRenderPriority(objText, 1.0);
+	ObjRender_SetX(objText, 0);
+	ObjRender_SetY(objText, GetScreenHeight() - 20);
+
+	loop
+	{
+		let fps = GetCurrentFps();
+		let text = vtos("1.2f", fps) ~ "fps";
+		ObjText_SetText(objText, text);
+		yield;
+	}
+}
+
+task TReplayFPS()
+{
+	if (!IsReplay()) {return;}
+
+	let objText = ObjText_Create();
+	ObjText_SetFontSize(objText, 12);
+	ObjText_SetFontBold(objText, true);
+	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetFontBorderType(objText, BORDER_FULL);
+	ObjText_SetFontBorderColor(objText,255, 255, 255);
+	ObjText_SetFontBorderWidth(objText, 1);
+	Obj_SetRenderPriority(objText, 1.0);
+
+	let px = GetStgFrameLeft() + GetStgFrameWidth() - 18;
+	let py = GetStgFrameTop() + GetScreenHeight() - 14;
+	ObjRender_SetX(objText, px);
+	ObjRender_SetY(objText, py);
+
+	loop
+	{
+		let fps = GetReplayFps();
+		let text = vtos("02d", fps);
+		ObjText_SetText(objText, text);
+		yield;
+	}
+}

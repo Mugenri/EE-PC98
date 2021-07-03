@@ -1,0 +1,266 @@
+#TouhouDanmakufu[Player]
+#ScriptVersion[3]
+#Title["Yabusame Houren"]
+#ID["Yabusame"]
+#Text["Flawless Thoughtlessness"]
+#ReplayName["Yabusame"]
+
+#include "./lib/lib_player.dnh"
+
+objPlayer = GetPlayerObjectID();
+let count = 0;
+let countShot = 0;
+
+//player specific sfx
+let seSpell;
+
+@Initialize {
+    let imageFile = plDir ~ "./../img/character/yabusame/yabuStg.png";
+    let shotData = plDir ~ "YabuShot.dnh";
+    InitPlayer(imageFile, shotData);
+    SetPlayerSpeed(3, 1.53);
+
+    TSound();
+    TShot();
+    TOption(1);
+    TOption(-1);
+}
+
+@MainLoop {
+    count++;
+    if (Shooting() && !IsPlayerSpellActive() && Alive()) {
+        countShot++;
+    } else {
+        countShot = -1;
+    }
+    yield;
+}
+
+@Event {
+    PlayerEvent();
+}
+
+@Finalize {}
+
+task TSound{
+    //General player sounds
+    InitSound();
+   //seSpell created in TSpell because it cuts off and behaves strangely for some reason otherwise
+}
+
+task TShot() {
+    loop {
+        if (Shooting() && !IsPlayerSpellActive() && Alive() && countShot % 10 == 0) {
+            if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) {
+                loop(3) { //unfocus shot
+                    let offset = 80;
+                    ascent(i in 1..7) {
+                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13*i*(sin(count + i*offset)), 1, 1, 1);
+                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13*i*(sin(count + i*offset)), 1, 1, 1);
+                    }
+
+                    ObjSound_Play(seShot);
+                    loop(3) {
+                        yield;
+                    }
+                }
+            } else {
+                loop(3) { //focus shot
+                    let modifier = 15*sin(count);
+                    ascent(i in -5..6) {
+                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
+                    }
+
+                    ObjSound_Play(seShot);
+                    loop(3) {
+                        yield;
+                    }
+                }
+            }
+        }
+        yield;
+    }
+}
+
+task TOption(dir) {
+    let distUnfocus = 32;
+    let distFocus = 20;
+    let distCurrent = distUnfocus;
+
+    let objOption = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objOption, pathImg);
+    ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
+    ObjSprite2D_SetDestCenter(objOption);
+    Obj_SetRenderPriority(objOption, 0.29);
+
+    OptionShot();
+
+    loop {
+        let rotationX = cos(count*4);
+        if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) {
+            distCurrent = distUnfocus;
+        } else {
+            distCurrent = distFocus;
+        }
+
+        ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent*dir*rotationX, GetPlayerY() + distCurrent*dir*sin(count*5), 1);
+
+        //Render over player as if rotating around them
+        if (rotationX == dir) {
+            Obj_SetRenderPriority(objOption, 0.29);
+        } else if (rotationX == -dir) {
+            Obj_SetRenderPriority(objOption, 0.30);
+        }
+
+        if (!Alive) {
+            Obj_SetVisible(objOption, false);
+        } else {
+            Obj_SetVisible(objOption, true);
+        }
+        yield;
+        
+    }
+
+    task OptionShot() {
+        loop {
+            if (Shooting() && Alive() && !IsPlayerSpellActive() && countShot % 10 == 0) {
+                loop(3) {
+                    let optionX = ObjRender_GetX(objOption);
+                    let optionY = ObjRender_GetY(objOption);
+                    let enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
+                    let angle = 270;
+                    if (length(enemy) > 0) {
+                        angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
+                    }
+                    CreatePlayerShotA1(optionX, optionY, 28, angle, 4, 1, 2);
+                    loop(3) {
+                        yield;
+                    }
+                }
+            }
+            yield;
+        }
+    }
+}
+
+task TSpell() {
+    let objManage = GetSpellManageObject();
+
+    SetForbidPlayerShot(true);
+    SetPlayerInvincibilityFrame(420);
+    ObjRender_SetColor(objPlayer, 255, 255, 255);
+    SetPlayerSpeed(1.53, 1.53);
+
+    //Sound created in TSpell for reasons stated in TSound
+    seSpell = ObjSound_Create();
+    ObjSound_Load(seSpell, pathSE ~ "seSpellYabu.wav");
+    ObjSound_SetSoundDivision(seSpell, SOUND_SE);
+    ObjSound_SetVolumeRate(seSpell, seVolume);
+
+    ObjSound_Play(seSpell);
+    
+    let radius = 0;
+    Effect();
+
+    loop(220) {
+        radius += 4;
+        yield;
+    }
+    loop(140) {
+        yield;
+    }
+
+    SetForbidPlayerSpell(true);
+    SetForbidPlayerShot(false);
+    SetPlayerSpeed(3, 1.53);
+    Obj_Delete(objManage);
+    loop(40) {yield;}
+
+    //vulnerability indicator
+    ObjSound_Play(seVulnerable);
+    radius = 28;
+    let circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
+    ObjPrim_SetVertexCount(circle, 17);
+    ascent(i in 0..17) {
+        ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
+    }
+    loop(20) {
+        ascent(i in 0..17) {
+            let angleT = 360/16 * i;
+            ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
+        }
+        radius -= 28/20;
+        yield;
+    }
+
+    Obj_Delete(circle);
+    Obj_Delete(seSpell);
+    SetForbidPlayerSpell(false);
+
+    task Effect() {
+        let playerX = GetPlayerX();
+        let playerY = GetPlayerY();
+        let circle = CreateCircle(playerX, playerY);
+        let lines = []; 
+        loop(10) {
+            lines = lines ~ [CreateLine(playerX, playerY)];
+        }
+
+        while (!Obj_IsDeleted(objManage)) {
+            //circle
+            ascent(i in 1..34) {
+                let angleT = 360/32 * i;
+                ObjPrim_SetVertexPosition(circle, i, playerX + radius*cos(angleT), playerY + radius*sin(angleT), 1);
+            }
+            ObjSpell_SetIntersectionCircle(circle, playerX, playerY, radius);
+            //lines
+            ascent(i in 0..5) {
+                let angleT;
+                angleT = rand(0, 3600) / 10;
+                ObjPrim_SetVertexPosition(lines[i], 1, playerX + radius*cos(angleT), playerY + radius*sin(angleT), 1);
+                angleT = rand(0, 3600) / 10;
+                ObjPrim_SetVertexPosition(lines[i + 5], 1, playerX + radius/2*cos(angleT), playerY + radius/2*sin(angleT), 1);
+            }
+            yield;
+        }
+
+        ascent(i in 0..34) {
+            ObjPrim_SetVertexColor(circle, i, 255, 255, 255);
+        }
+
+        yield;
+
+        ascent(i in 0..10) {
+            Obj_Delete(lines[i]);
+        }
+        Obj_Delete(circle);
+
+        function CreateLine(xPos, yPos) {
+            let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+            ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
+            ObjPrim_SetVertexCount(line, 2);
+            Obj_SetRenderPriority(line, 0.28);
+            ObjPrim_SetVertexPosition(line, 0, xPos, yPos, 1);
+            ObjPrim_SetVertexPosition(line, 1, xPos, yPos, 1);
+            ObjPrim_SetVertexColor(line, 0, 0, 0, 0);
+            ObjPrim_SetVertexColor(line, 1, 0, 0, 0);
+            return line;
+        }
+
+        function CreateCircle(xPos, yPos) {
+            let circle = ObjSpell_Create();
+            ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
+            ObjSpell_SetDamage(circle, 5);
+            ObjSpell_SetEraseShot(circle, true);
+            ObjPrim_SetVertexCount(circle, 34);
+            Obj_SetRenderPriority(circle, 0.28);
+            ObjPrim_SetVertexPosition(circle, 0, xPos, yPos, 1);
+            ascent(i in 0..34) {
+                ObjPrim_SetVertexColor(circle, i, 221, 204, 68);
+            }
+            ObjSpell_Regist(circle);
+            return circle;
+        }
+    }
+}

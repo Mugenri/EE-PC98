@@ -1,0 +1,37 @@
+#include "./../../lib/lib_SystemAll.dnh"
+#include "./../../lib/lib_File.dnh"
+
+//Player Directories
+let SCRIPT_PLAYERS = [
+    plDir ~ "Yabusame.dnh",
+    plDir ~ "Tsubakura.dnh"
+];
+
+let YABUSAME_STAGE = stageDir ~ "Tsurubami/tsuruStage.dnh";
+let TSUBAKURA_STAGE = stageDir ~ "Tsurubami2/tsuruStage.dnh";
+
+// --- Title Image List --- //
+let imgTitleDir = GetCurrentScriptDirectory() ~ "../../img/title/";
+
+//Loading Screen
+
+//Main Screen
+let imgTtBaseBG     = imgTitleDir ~ "placeholderBG.png";
+let imgTtYabu       = imgTitleDir ~ "titleYabu.png";
+
+//Player Select
+let imgTtPlayer1    = imgTitleDir ~ "playerSelectYabu.png";
+let imgTtPlayer2    = imgTitleDir ~ "playerSelectTsuba.png";
+
+//Other Menus
+let imgTtCursor     = imgTitleDir ~ "selectCursor.png";
+let imgTtSelectRank = imgTitleDir ~ "placeholderRank.png";
+
+// --- Title Functions --- //
+//Init
+function InitTitle{
+    SetAutoDeleteObject(true);
+}
+
+//Intro Scene
+

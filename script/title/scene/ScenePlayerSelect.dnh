@@ -1,0 +1,136 @@
+//Difficulty Selection Screen
+function ScenePlayerSelect(selectedDefault) {
+    let exitFlag = false;
+    let playMode = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+    let selectedDifficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
+    //let selectedStage = GetAreaCommonData(AREA_TITLE, "StageIndex", 0);
+    
+    //Player Icons
+    let imgPlayerPortrait = [imgTtPlayer1, imgTtPlayer2];
+
+    let selectMax = length(imgPlayerPortrait) - 1;
+    let resultIndex = -1;
+
+    let indexCurrent = selectedDefault;
+
+    let forbidIndex = [];
+    
+    // Check if player has unlocked this difficulty
+    let unlockFlag = [true, true];
+
+    //Extra Unlock
+    if (selectedDifficulty == D_EXTRA || selectedDifficulty == D_ABEX) {
+        unlockFlag = [
+            CD_GetExtraStageFlag(PLAYER_YABUSAME), 
+            CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
+    }
+    //additional else if branch for practice mode
+
+    //Forbid Indices
+    ascent(i in 0..length(unlockFlag)) {
+        if (!unlockFlag[i]) {
+            //forbidIndex = forbidIndex ~ [i];
+        }
+    }
+
+    //Don't select forbidden index as default
+    while (CheckForbidden(indexCurrent, forbidIndex)) {
+        indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+    }
+
+    CreateMenuGraphicsPlayer();
+
+    //Create Menu Items
+    let menuX = GetScreenWidth() / 2 - 128;
+    let menuY = GetScreenHeight() / 2;
+    ascent(i in 0..selectMax + 1) {
+        CreateMenuItemPlayer(i, menuX, menuY);
+        menuX = GetScreenWidth() / 2 + 128;
+    }
+
+    wait(15); //wait for screen fade from previous menu to clear
+    WaitKeysFree([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+    loop {
+        let userKey = CheckKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case(VK_LEFT) {
+            CallSFX(sndTtSelect);
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
+        }
+        case(VK_RIGHT) {
+            CallSFX(sndTtSelect);
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+        }
+        case(VK_OK) {
+            resultIndex = indexCurrent;
+            MenuSelect();
+            break;
+        }
+        case(VK_CANCEL, VK_PAUSE) {
+            CallSFX(sndTtCancel);
+            ScreenBlackout(10, 5, 10, 0x000000);
+            wait(10);
+            break;
+        }
+    }
+    exitFlag = true;
+    return(resultIndex);
+
+    function MenuSelect() {
+        CallSFX(sndTtDecide);
+        //white screen flash then fadeout
+        ScreenBlackout(0, 0, 10, 0xFFFFFF);
+        wait(60);
+        ScreenBlackout(60, 60, 0, 0x000000);
+        //fade music too, Need to set this up
+        wait(60);
+        NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
+    }
+
+    task CreateMenuGraphicsPlayer() {
+        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+        ObjPrim_SetTexture(bg, imgTtBaseBG);
+        Obj_SetRenderPriority(bg, 0.01);
+        ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
+        ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
+
+        while (!exitFlag) {yield;}
+        Obj_Delete(bg);
+    }
+
+    task CreateMenuItemPlayer(index, x, y) {
+        let objPlayerShadow = ObjPrim_Create(OBJ_SPRITE_2D);
+        Obj_SetRenderPriority(objPlayerShadow, 0.20);
+        ObjPrim_SetTexture(objPlayerShadow, imgPlayerPortrait[index]);
+        ObjSprite2D_SetSourceRect(objPlayerShadow, 0, 160, 224, 320);
+        ObjSprite2D_SetDestCenter(objPlayerShadow);
+        ObjRender_SetPosition(objPlayerShadow, x, y, 1);
+
+        let objPlayerBack = ObjPrim_Create(OBJ_SPRITE_2D);
+        Obj_SetRenderPriority(objPlayerBack, 0.20);
+        ObjPrim_SetTexture(objPlayerBack, imgPlayerPortrait[index]);
+        ObjSprite2D_SetSourceRect(objPlayerBack, 224, 0, 448, 160);
+        ObjSprite2D_SetDestCenter(objPlayerBack);
+        ObjRender_SetPosition(objPlayerBack, x, y, 1);
+
+        let objPlayerFront = ObjPrim_Create(OBJ_SPRITE_2D);
+        Obj_SetRenderPriority(objPlayerFront, 0.20);
+        ObjPrim_SetTexture(objPlayerFront, imgPlayerPortrait[index]);
+        ObjSprite2D_SetSourceRect(objPlayerFront, 0, 0, 224, 160);
+        ObjSprite2D_SetDestCenter(objPlayerFront);
+        ObjRender_SetPosition(objPlayerFront, x - 8, y - 8, 1);
+
+        while (!exitFlag) {
+            Obj_SetVisible(objPlayerFront, index == indexCurrent);
+            Obj_SetVisible(objPlayerBack, index != indexCurrent);
+            yield;
+            if (index == resultIndex) {
+                ObjSprite2D_SetSourceRect(objPlayerFront, 224, 160, 448, 320);
+            }
+        }
+        Obj_Delete(objPlayerFront);
+        Obj_Delete(objPlayerBack);
+        Obj_Delete(objPlayerShadow);
+    }
+}
+

@@ -1,0 +1,15 @@
+#include "./tsuruAnime.dnh"
+
+task BombBarrier{
+    while (ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0 && !Obj_IsDeleted(objBoss)) {
+        if (IsPlayerSpellActive()) {
+            AnimeMonochrome();
+            ObjEnemy_SetDamageRate(objBoss, 0, 0);
+            while (IsPlayerSpellActive()) {yield;}
+            wait(15);
+            AnimeMonochrome();
+            ObjEnemy_SetDamageRate(objBoss, 100, 100);
+        }
+        yield;
+    }
+}

@@ -1,0 +1,36 @@
+#include "./lib/lib_Common.dnh"
+
+task InitLoad() {
+    InitializeCommonData();
+    LoadScene();
+}
+
+task LoadScene { //loading screen
+
+    local { //load BGM manager
+        let path = GetCurrentScriptDirectory() ~ "ControlBGM.dnh";
+        let id = LoadScript(path);
+        StartScript(id);
+    }
+
+    local { //load package sfx manager
+        let path = GetCurrentScriptDirectory() ~ "ControlSFX.dnh";
+        let id = LoadScript(path);
+        StartScript(id);
+    }
+
+    InstallFont(sysFontPath); //pc9800 font
+    InstallFont(headerFontPath); //magic decimal sharp font
+
+    loop(60) {yield;} //Give loading screen time to run
+
+    //load achievement menu if i make one
+
+    //init high score
+
+    local { //Run title screen
+        let path = GetCurrentScriptDirectory() ~ "Title.dnh";
+        let id = LoadScript(path);
+        StartScript(id);
+    }
+}

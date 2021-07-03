@@ -1,0 +1,75 @@
+//Common Data areas
+let AREA_TITLE = "Title"; //Title Screen
+let AREA_CONFIG = "Config"; //Options Menu
+let AREA_SAVE = "SaveData"; //Save Data
+let AREA_SYSTEM = "System"; //STG System
+let AREA_STAGE = "Stage"; //Stage Script
+let AREA_REPLAY = "Replay"; //Replay Values
+let AREA_SPELL = "Spell"; //Spell History
+let AREA_HIGHSCORE = "HighScore"; //High Score Values
+let AREA_RESULT = "Result"; //Player Score Records
+
+//Data File Directory
+let csd = GetCurrentScriptDirectory();
+let saveCommonSAVE = csd ~ "./../data/save.dat";
+let saveCommonCONFIG = csd ~ "./../data/config.dat";
+let saveCommonSCORE = csd ~ "./../data/score.dat";
+let saveCommonRESULT = csd ~ "./../data/result.dat";
+
+task InitializeCommonData() { //creates common data areas, loads data from files
+    //Create Common Data Areas
+    CreateCommonDataArea(AREA_TITLE);
+    CreateCommonDataArea(AREA_CONFIG);
+    CreateCommonDataArea(AREA_SAVE);
+    CreateCommonDataArea(AREA_SYSTEM);
+    CreateCommonDataArea(AREA_STAGE);
+    CreateCommonDataArea(AREA_REPLAY);
+    CreateCommonDataArea(AREA_SPELL);
+    CreateCommonDataArea(AREA_HIGHSCORE);
+	CreateCommonDataArea(AREA_RESULT);
+
+    //Load save data from file (extra stage unlocks, heard music, etc)
+    LoadCommonDataAreaA2(AREA_SAVE, saveCommonSAVE);
+
+    //Load player config from file
+    LoadConfig(false);
+
+    //load high scores from file
+    //LoadCommonDataAreaA2(AREA_HIGHSCORE, saveCommonSCORE);
+
+    //load in result
+    //LoadCommonDataAreaA2(AREA_RESULT, saveCommonRESULT);
+
+    //Unlock Extra for Yabusame. This is specific to this game only. Delete this for other projects.
+    CD_SetExtraStageFlag(PLAYER_YABUSAME);
+}
+
+function LoadConfig(loadDefault) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault
+    let saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", saveCommonCONFIG);
+    if (IsCommonDataAreaExists(AREA_CONFIG)) {ClearAreaCommonData(AREA_CONFIG);}
+    if (loadDefault) {saveFile = false;}
+    if (saveFile) { //load from save file
+        CreateCommonDataArea(AREA_CONFIG);
+		CopyCommonDataArea(AREA_CONFIG, "SAVED_CONFIG");
+		SetAreaCommonData(AREA_CONFIG, "VERSION", GAME_VERSION);
+    } else { //default options, create save file
+        CreateCommonDataArea(AREA_CONFIG);
+        SetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100);
+        SetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100);
+        CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
+    }
+}
+//Unlock extra stage
+function CD_SetExtraStageFlag(player) {
+    SetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player), true);
+}
+function CD_GetExtraStageFlag(player) {
+    return(GetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player), false));
+}
+//Music room track unlocks
+function CD_SetBGMHeardFlag(trackID) {
+    SetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID), true);
+}
+function CD_GetBGMHeardFlag(trackID) {
+    return(GetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID), false));
+}

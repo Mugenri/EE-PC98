@@ -1,0 +1,17 @@
+shot_image = "./../img/character/yabusame/yabuStg.png"
+
+ShotData {
+    id = 1
+    render = ALPHA
+    rect = ( 144, 0, 160, 16 )
+    alpha = 255;
+    collision = 2;
+}
+
+ShotData {
+    id = 2
+    render = ALPHA
+    rect = ( 160, 0, 176, 16 )
+    alpha = 255;
+    collision = 2;
+}
