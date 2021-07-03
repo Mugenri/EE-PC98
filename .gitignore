@@ -9,7 +9,3 @@
 #Top level folders that aren't the script
 /REFERENCE IMAGES/
 /resource/
-
-#files I don't want in the repository
-script/data
-script/replay
