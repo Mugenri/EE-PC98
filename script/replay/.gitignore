@@ -1,3 +1,0 @@
-#ignore everything in this directory but this file
-*
-!.gitignore

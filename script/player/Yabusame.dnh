@@ -222,6 +222,11 @@ task TSpell() {
                 angleT = rand(0, 3600) / 10;
                 ObjPrim_SetVertexPosition(lines[i + 5], 1, playerX + radius/2*cos(angleT), playerY + radius/2*sin(angleT), 1);
             }
+            //iterate through shots and delete and give score
+            for each (shot in GetShotIdInCircleA1(playerX, playerY, radius)) {
+                Obj_SetValueI(shot, BULLET_SCORE, 1000);
+                DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, playerX, playerY, radius);
+            }
             yield;
         }
 
@@ -252,7 +257,7 @@ task TSpell() {
             let circle = ObjSpell_Create();
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjSpell_SetDamage(circle, 5);
-            ObjSpell_SetEraseShot(circle, true);
+            ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetVertexCount(circle, 34);
             Obj_SetRenderPriority(circle, 0.28);
             ObjPrim_SetVertexPosition(circle, 0, xPos, yPos, 1);

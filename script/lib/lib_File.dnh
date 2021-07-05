@@ -6,3 +6,11 @@ let seDir	= GetCurrentScriptDirectory() ~ "../se/";
 //let imgDataFile = imgDir ~ "img.dat";
 
 //file path constants
+
+//Effect images
+
+//System images
+let imgSystemFrame = imgDir ~ "system/systemFrame.png";
+let imgSystemText = imgDir ~ "system/systemText.png";
+let imgTextBox = imgDir ~ "system/textbox.png";
+let imgSystemFade = imgDir ~ "system/testFade.png";

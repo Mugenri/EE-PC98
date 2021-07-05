@@ -1,10 +1,4 @@
+//Includes necessary libraries for system scripts
 #include "./../../lib/lib_CommonData.dnh"
 #include "./../../lib/lib_SystemAll.dnh"
 #include "./../../lib/lib_File.dnh"
-
-task SetSystemScriptID(scriptName) {
-	loop(2) {
-		SetAreaCommonData(AREA_SYSTEM, scriptName, GetOwnScriptID());
-		yield;
-	}
-}

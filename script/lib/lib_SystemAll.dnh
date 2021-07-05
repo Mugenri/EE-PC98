@@ -1,54 +1,6 @@
 // Event constants, system fonts, boss name constants, day number, universal functions
 #include "./lib_CommonData.dnh"
-
-const GAME_VERSION = "0.01";
-
-//Font constants/paths
-const sysFont = "PC-9800";
-const sysFontPath = GetCurrentScriptDirectory() ~ "./../system/font/PC-9800.ttf";
-const headerFont = "Magic Decimal Sharp";
-const headerFontPath = GetCurrentScriptDirectory() ~ "./../system/font/MagicDecimalSharp.ttf";
-
-//Event Constants
-
-//Stage Constants
-
-//System Constants
-
-//Package Constants
-const EV_PLAY_BGM           = EV_USER_PACKAGE + 1; //Stops current track, plays new track
-const EV_RESET_VOLUME       = EV_USER_PACKAGE + 2; //do i even need this, i dont think i'm using it
-const EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3; //unlock specified achievement
-const EV_STOP_BGM           = EV_USER_PACKAGE + 4; //pass true to pause, pass false to resume
-const EV_PLAY_SFX           = EV_USER_PACKAGE + 5; //Play sfx from title sfx script
-const EV_TITLE_END          = EV_USER_PACKAGE + 6; //End title screen script
-const EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7; //Triggered when the player script is finished initializing.
-const EV_DIALOGUE_START     = EV_USER_PACKAGE + 8; //Called to start a dialogue sequence. Pass desired dialogue script.
-const EV_GET_BGM_TEXT       = EV_USER_PACKAGE + 9; //Pass BGM ID, returns an array of [name, comment].
-
-//Boss Name Constants
-const BOSS_ID_TSURUBAMI = "Tsurubami";
-//Player Name Constants
-const BOSS_ID_YABUSAME  = "Yabusame";
-const BOSS_ID_TSUBAKURA = "Tsubakura";
-
-//Player Shot Type Constants
-const PLAYER_YABUSAME  = 0;
-const PLAYER_TSUBAKURA = 1;
-
-//Difficulty Constants
-const D_EASY    = 0;
-const D_NORMAL  = 1;
-const D_HARD    = 2;
-const D_LUNATIC = 3;
-const D_EXTRA   = 4;
-const D_ABEX    = 5;
-
-//Mode Constants
-const GAME_NONE     = 0;
-const GAME_MAIN     = 1;
-const GAME_PRACTICE = 2;
-const GAME_SPELL    = 3;
+#include "./lib_Constant.dnh"
 
 //----------------------------------------------------
 //GENERAL FUNCTIONS
@@ -59,11 +11,6 @@ function StartDialogueScript(path) {NotifyEvent(GetStageScriptID(), EV_DIALOGUE_
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------
-//SFX constants in ControlSFX.dnh
-const sndTtSelect = 0;
-const sndTtDecide = 1;
-const sndTtCancel = 2;
-
 // --- SFX Functions --- //
 function CallSFX(soundID) { NotifyEvent(GetSFXScriptID(), EV_PLAY_SFX, soundID); }
 

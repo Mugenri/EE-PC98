@@ -19,7 +19,10 @@ let dir = GetCurrentScriptDirectory();
 task TPlural{
     let obj = ObjEnemyBossScene_Create();
 
+    ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh"); //for testing purposes
     ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh");
+    ObjEnemyBossScene_Add(obj, 1, dir ~ "./nonspell1.dnh");
+    ObjEnemyBossScene_Add(obj, 1, dir ~ "./nonspell1.dnh");
     // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell2.dnh");
     // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell3.dnh");
     // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell4.dnh");

@@ -8,14 +8,6 @@ let objPlayer;
 let idPlayer;
 let objScene;
 
-//Position Constants
-const MIN_X = 0;
-const MIN_Y = 0;
-const MAX_X = GetStgFrameWidth();
-const MAX_Y = GetStgFrameHeight();
-const MID_X = GetStgFrameWidth() / 2;
-const MID_Y = GetStgFrameHeight() / 2;
-
 function Init() {
     SetAutoDeleteObject(true);
 

@@ -2,7 +2,6 @@
 #include "./lib/lib_Display.dnh"
 #include "./../lib/lib_Common.dnh"
 
-
 @Initialize {
 	InitFrame();
     InitCommonData();
@@ -14,6 +13,7 @@
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     SetReplaySaveSceneScriptPath(GetCurrentScriptDirectory() ~ "ReplaySaveScene.dnh");
     SetEndSceneScriptPath(GetCurrentScriptDirectory() ~ "EndScene.dnh");
+    StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
     
     TInitDisplay();
 }
@@ -21,9 +21,9 @@
 @Event {
 	alternative(GetEventType())
 	case(EV_START_BOSS_SPELL) {
-		let path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
-		let id = LoadScript(path);
-		StartScript(id);
+		// let path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
+		// let id = LoadScript(path);
+		// StartScript(id);
         //MODIFY magic circle, remove the sound effect and place here
 	}
 	case(EV_GAIN_SPELL) {
@@ -69,6 +69,9 @@ task TInitDisplay() {
     }
 }
 
+//----------------------------------------------------
+//Common Data
+//----------------------------------------------------
 function InitCommonData() {
 	if (!IsCommonDataAreaExists(AREA_STAGE)) {CreateCommonDataArea(AREA_STAGE);}
 	if (!IsCommonDataAreaExists(AREA_SYSTEM)) {CreateCommonDataArea(AREA_SYSTEM);}

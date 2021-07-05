@@ -17,7 +17,7 @@ objScene = GetEnemyBossSceneObjectID();
 @Event {
     alternative(GetEventType())
     case(EV_REQUEST_LIFE) {
-        SetScriptResult(3500);
+        SetScriptResult(350);
     }
     case(EV_REQUEST_TIMER) {
         SetScriptResult(60);
@@ -52,7 +52,25 @@ objScene = GetEnemyBossSceneObjectID();
 task TFinalize {
     while (ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0) {yield;}
     Obj_Delete(objBoss);
-    DeleteShotAll(TYPE_ALL, TYPE_IMMEDIATE);
+
+    let score = 10;
+    let scoreBonus = 10;
+    let numBullets = 0;
+    //Need to put in a library, not do this if the spell is timed out
+    //Actual MS bullet cancel score progression
+    for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 500, TARGET_ENEMY)) {
+        numBullets++;
+        Obj_SetValueI(shot, BULLET_SCORE, score);
+        if(numBullets <= 35){
+            Obj_SetValueI(shot, BULLET_DROP_ITEM, true);
+        }
+        //ObjShot_ToItem(shot);
+        score += scoreBonus;
+        scoreBonus += 30;
+        score = min(score, 12800);
+    }
+    //^^
+    DeleteShotAll(TYPE_SHOT, TYPE_ITEM);
     SetAutoDeleteObject(true);
     CloseScript(GetOwnScriptID());
     return;

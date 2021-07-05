@@ -1,0 +1,18 @@
+#UserItemData
+
+item_image = "./../../img/system/item.png"
+
+//Power
+ItemData{id = 1 rect = (0, 0, 16, 16) render = ALPHA}
+//Point
+ItemData{id = 2 rect = (16, 0, 32, 16) render = ALPHA}
+//Dream
+ItemData{id = 3 rect = (32, 0, 48, 16) render = ALPHA}
+//Large Power
+ItemData{id = 4 rect = (48, 0, 64, 16) render = ALPHA}
+//Full Power
+ItemData{id = 5 rect = (0, 16, 16, 32) render = ALPHA}
+//Bomb
+ItemData{id = 6 rect = (16, 16, 32, 32) render = ALPHA}
+//Life
+ItemData{id = 7 rect = (32, 16, 48, 32) render = ALPHA}

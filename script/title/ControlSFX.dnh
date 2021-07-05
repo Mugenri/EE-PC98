@@ -39,5 +39,3 @@ function InitSounds() {
         ObjSound_Load(objSound, SOUNDS[i]);
     }
 }
-
-

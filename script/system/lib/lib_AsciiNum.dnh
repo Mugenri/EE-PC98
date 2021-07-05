@@ -1,0 +1,43 @@
+//Creates shot deletion and item collection score numbers
+task AsciiScoreNum(x, y, score, color){
+    let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(obj, imgSystemText);
+    ObjRender_SetColor(obj, color);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	Obj_SetRenderPriority(obj, 0.7);
+	ObjRender_SetY(obj, y);
+
+    let listNum = DigitToArray(score);
+
+    x -= 4 * length(listNum);
+
+    ascent(i in 0..length(listNum)) {
+        let num = listNum[i];
+        ObjRender_SetX(obj, x + 8*i);
+        ObjSpriteList2D_SetSourceRect(obj, 73 + num * 8, 337, 73 + (num + 1) * 8, 345);
+        ObjSpriteList2D_SetDestRect(obj, 0, 0, 8, 8);
+        ObjSpriteList2D_AddVertex(obj);
+    }
+
+    wait(60);
+
+    Obj_Delete(obj);
+}
+
+task AsciiScoreNum(x, y, score){ //if no color is provided, default to white
+    AsciiScoreNum(x, y, score, 0xFFFFFF);
+}
+
+function DigitToArray(digit) {
+	let res = [];
+	digit = truncate(digit);
+
+	loop {
+		let tnum = truncate(digit % 10);
+		digit /= 10;
+		res = [tnum] ~ res;
+		if (truncate(digit) == 0) {break;}
+	}
+
+	return res;
+}

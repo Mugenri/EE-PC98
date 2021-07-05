@@ -24,6 +24,8 @@ function InitPlayer(imageFile, shotData) {
     SetPlayerDownStateFrame(0);
     SetPlayerRebirthFrame(15);
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
+    SetPlayerInvincibleGraze(false);
+    SetPlayerIntersectionEraseShot(false);
 
     NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_PLAYER_LOADED, 0);
     //Starts the stage intro
@@ -51,24 +53,8 @@ function PlayerEvent() {
 	case(EV_PLAYER_REBIRTH) {
         TRebirth();
 	}
-	case(EV_GET_ITEM) {
-		let itemType = GetEventArgument(0);
-		alternative(itemType)
-		case(ITEM_SPELL) {
-			//WriteLog("ITEM_SPELL");
-		}
-		case(ITEM_SPELL_S) {
-			//WriteLog("ITEM_SPELL_S");
-		}
-		case(ITEM_POWER) {
-			//WriteLog("ITEM_POWER");
-		}
-		case(ITEM_POWER_S) {
-			//WriteLog("ITEM_POWER_S");
-		}
-	}
     case(EV_GRAZE) {
-        TGraze();
+        TGraze(GetEventArgument(2)); //Passes list of coords of bullets grazed
     }
 }
 
@@ -131,7 +117,7 @@ task TRender(ParentID, pathImg) {
 	}
 }
 
-task THit() {
+task THit() { //Player deathbomb window
     SetForbidPlayerShot(true);
     ObjRender_SetColor(objPlayer, 0, 0, 0);
     ObjSound_Play(seHit);
@@ -158,7 +144,7 @@ task THit() {
     Obj_Delete(circle);
 }
 
-task TMiss() {
+task TMiss() { //Player died
     SetForbidPlayerSpell(true);
     ObjRender_SetColor(objPlayer, 255, 255, 255);
     PlayerPosition = [GetPlayerX(), GetPlayerY()];
@@ -223,7 +209,7 @@ task TMiss() {
     }
 }
 
-task TRebirth() {
+task TRebirth() { //Player respawn
     ObjMove_SetPosition(objPlayer,PlayerPosition[0], PlayerPosition[1]);
     if (GetPlayerState() == STATE_END) {
         Obj_SetVisible(objPlayer, false);
@@ -268,14 +254,16 @@ task TRebirth() {
     }
 }
 
-task TGraze() {
+task TGraze(coords) { //Summon graze particle, add to particle list REWRITE NEEDED TO HANDLE LIST OF COORDS
     let speed = rand(2, 3.2);
     let angleT = rand(0, 3600);
     let objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objGraze, pathImg);
-    ObjRender_SetPosition(objGraze, GetPlayerX(), GetPlayerY(), 1);
+    ObjRender_SetPosition(objGraze, coords[0][0], coords[0][1], 1);
+    ObjRender_SetColor(objGraze, 0xEEBBAA);
 
     ObjSound_Play(seGraze);
+    AddScore(1000);
 
     let frame = 0;
     loop(43) {

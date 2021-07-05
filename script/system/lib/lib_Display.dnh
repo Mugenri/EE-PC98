@@ -1,14 +1,11 @@
 //#include high score library at some point
 
-let textImg = GetCurrentScriptDirectory() ~ "./../../img/system/PC98_Text.png";
-
 //----------------------------------------------------
 //STG Frame Display
 //----------------------------------------------------
 function InitFrame() {
-	let path = GetCurrentScriptDirectory() ~ "./../../img/system/PC98_SystemBackground.png";
 	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(obj, path);
+	ObjPrim_SetTexture(obj, imgSystemFrame);
 	Obj_SetRenderPriority(obj, 0);
 	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
 	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
@@ -20,9 +17,8 @@ function InitFrame() {
 //----------------------------------------------------
 task TIntro() {
     //Fade square sprite list
-    let testFade = GetCurrentScriptDirectory() ~ "./../../img/system/testFade.png";
     let objBG = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-    ObjPrim_SetTexture(objBG, testFade);
+    ObjPrim_SetTexture(objBG, imgSystemFade);
     Obj_SetRenderPriority(objBG, 0.79);
     let frames = 23; //number of animation frames
     ChangeFrame(0); //first frame is solid black
@@ -97,7 +93,7 @@ function TDifficulty() {
 task THighScore() {
 	//High Score Text
 	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, textImg);
+	ObjPrim_SetTexture(objScore, imgSystemText);
 	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
@@ -105,28 +101,36 @@ task THighScore() {
     ObjRender_SetPosition(objScore, 480, 48, 1);
 
 	// Digits
-	let pathDigit = textImg;
 	let count = 8;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, pathDigit);
+	ObjPrim_SetTexture(obj, imgSystemText);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 64);
 
+    let scoreRender = 0;
 	while (true) {
 		let score = GetScore();
 		score = min(score, 99999999);
-		let listNum = DigitToArray(score, count);
+		let listNum = DigitToArray(scoreRender, count);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
-		ascent(iObj in 0 .. count) {
-			let num = listNum[iObj];
-			ObjRender_SetX(obj, 448 + iObj * 16);
+		ascent (i in 0..count) {
+			let num = listNum[i];
+			ObjRender_SetX(obj, 448 + i * 16);
 			ObjSpriteList2D_SetSourceRect(obj, num * 16, 16, (num + 1) * 16, 32);
 			ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
 			ObjSpriteList2D_AddVertex(obj);
 		}
+        //Gradual increase of score counter
+        if (scoreRender < score) {
+            scoreRender += round((score - scoreRender)/10);
+            if (score - scoreRender <= 10) {
+                scoreRender = score;
+            }
+            scoreRender = min(scoreRender, score);
+        }
 		yield;
 	}
 }
@@ -137,7 +141,7 @@ task THighScore() {
 task TScore() {
 	//Score Text
 	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, textImg);
+	ObjPrim_SetTexture(objScore, imgSystemText);
 	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
@@ -145,19 +149,19 @@ task TScore() {
     ObjRender_SetPosition(objScore, 488, 80, 1);
 
 	//Digits
-	let pathDigit = textImg;
 	let count = 8;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, pathDigit);
+	ObjPrim_SetTexture(obj, imgSystemText);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 96);
 
+    let scoreRender = 0;
 	while (true) {
 		let score = GetScore();
 		score = min(score, 99999999);
-		let listNum = DigitToArray(score, count);
+		let listNum = DigitToArray(scoreRender, count);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
 		ascent(iObj in 0 .. count) {
@@ -167,6 +171,14 @@ task TScore() {
 			ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
 			ObjSpriteList2D_AddVertex(obj);
 		}
+        //Gradual increase of score counter
+        if (scoreRender < score) {
+            scoreRender += round((score - scoreRender)/10);
+            if (score - scoreRender <= 10) {
+                scoreRender = score;
+            }
+            scoreRender = min(scoreRender, score);
+        }
 		yield;
 	}
 }
@@ -174,13 +186,10 @@ task TScore() {
 //----------------------------------------------------
 //Bosss Life Display
 //----------------------------------------------------
-task TBossLife
-{
-	let path = GetCurrentScriptDirectory() ~ "./../img/system/PC98_System.png";
-
+task TBossLife {
     //Enemy!! text
     let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, textImg);
+    ObjPrim_SetTexture(objText, imgSystemText);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
     ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
@@ -198,7 +207,7 @@ task TBossLife
 
     //Max Text
     let maxText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(maxText, textImg);
+    ObjPrim_SetTexture(maxText, imgSystemText);
     ObjRender_SetBlendType(maxText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(maxText, 16, 337, 64, 348);
     ObjSprite2D_SetDestRect(maxText, 0, 0, 48, 11);
@@ -210,11 +219,9 @@ task TBossLife
 	let lifeRateRender = 0;
 
 	let objScene = ID_INVALID;
-	loop
-	{
+	loop {
 		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID)
-		{
+		if (objScene != ID_INVALID) {
 			RenderLife();
 		}
 		yield;
@@ -279,7 +286,7 @@ task TBossLife
 //----------------------------------------------------
 //Timer Display
 //----------------------------------------------------
-task TBossTimer{
+task TBossTimer {
 	let obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
@@ -288,11 +295,9 @@ task TBossTimer{
     ObjRender_SetPosition(obj, 448, 159, 1);
 
 	let objScene = ID_INVALID;
-	loop
-	{
+	loop {
 		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID)
-		{
+		if (objScene != ID_INVALID) {
 			RenderTimer();
 		}
 		yield;
@@ -318,10 +323,10 @@ task TBossTimer{
 //----------------------------------------------------
 //Player Lives Display
 //----------------------------------------------------
-task TPlayerLife{
+task TPlayerLife {
 	//life Text
 	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, textImg);
+	ObjPrim_SetTexture(objText, imgSystemText);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
     ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
@@ -331,7 +336,7 @@ task TPlayerLife{
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, textImg);
+	ObjPrim_SetTexture(obj, imgSystemText);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 177);
@@ -355,11 +360,10 @@ task TPlayerLife{
 //----------------------------------------------------
 //Player Spell Display
 //----------------------------------------------------
-task TPlayerSpell
-{
+task TPlayerSpell {
 	//Spell Text
 	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, textImg);
+	ObjPrim_SetTexture(objText, imgSystemText);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
     ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
@@ -369,7 +373,7 @@ task TPlayerSpell
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, textImg);
+	ObjPrim_SetTexture(obj, imgSystemText);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 210);
@@ -392,11 +396,10 @@ task TPlayerSpell
 //----------------------------------------------------
 //Graze Display
 //----------------------------------------------------
-task TGraze()
-{
+task TGraze() {
 	//Graze Text
 	let objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objGraze, textImg);
+	ObjPrim_SetTexture(objGraze, imgSystemText);
     ObjRender_SetBlendType(objGraze, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
     ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
@@ -405,11 +408,10 @@ task TGraze()
     ObjRender_SetPosition(objGraze, 456, 242, 1);
 
 	//Digits
-	let pathDigit = textImg;
 	let count = 4;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, pathDigit);
+	ObjPrim_SetTexture(obj, imgSystemText);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 242);
@@ -456,8 +458,7 @@ task TGainSpell(score) { //CHANGE THIS
 	ObjRender_SetX(objScore, 180);
 	ObjRender_SetY(objScore, 140);
 
-	loop(120)
-	{
+	loop(120) {
 		yield;
 	}
 	Obj_Delete(objText);
@@ -467,8 +468,7 @@ task TGainSpell(score) { //CHANGE THIS
 //----------------------------------------------------
 //FPS Display
 //----------------------------------------------------
-task TFPS()
-{
+task TFPS() {
 	let objText = ObjText_Create();
 	ObjText_SetFontSize(objText, 16);
 	ObjText_SetFontType(objText, sysFont);
@@ -479,8 +479,7 @@ task TFPS()
 	ObjRender_SetX(objText, 0);
 	ObjRender_SetY(objText, GetScreenHeight() - 20);
 
-	loop
-	{
+	loop {
 		let fps = GetCurrentFps();
 		let text = vtos("1.2f", fps) ~ "fps";
 		ObjText_SetText(objText, text);
@@ -488,8 +487,7 @@ task TFPS()
 	}
 }
 
-task TReplayFPS()
-{
+task TReplayFPS() {
 	if (!IsReplay()) {return;}
 
 	let objText = ObjText_Create();
@@ -497,7 +495,7 @@ task TReplayFPS()
 	ObjText_SetFontBold(objText, true);
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetFontBorderType(objText, BORDER_FULL);
-	ObjText_SetFontBorderColor(objText,255, 255, 255);
+	ObjText_SetFontBorderColor(objText, 255, 255, 255);
 	ObjText_SetFontBorderWidth(objText, 1);
 	Obj_SetRenderPriority(objText, 1.0);
 
@@ -506,8 +504,7 @@ task TReplayFPS()
 	ObjRender_SetX(objText, px);
 	ObjRender_SetY(objText, py);
 
-	loop
-	{
+	loop {
 		let fps = GetReplayFps();
 		let text = vtos("02d", fps);
 		ObjText_SetText(objText, text);
