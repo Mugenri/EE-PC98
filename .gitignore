@@ -3,9 +3,11 @@
 
 #Top level folder stuff
 /*.exe
-/*.dat
 /*.txt
 
 #Top level folders that aren't the script
 /REFERENCE IMAGES/
 /resource/
+
+#File types to ignore
+*.dat

@@ -18,8 +18,13 @@ task AsciiScoreNum(x, y, score, color){
         ObjSpriteList2D_SetDestRect(obj, 0, 0, 8, 8);
         ObjSpriteList2D_AddVertex(obj);
     }
+    ObjSpriteList2D_CloseVertex(obj);
 
-    wait(60);
+    wait(24);
+    loop (16) {
+        ObjRender_SetY(obj, ObjRender_GetY(obj) - 1/2);
+        yield;
+    }
 
     Obj_Delete(obj);
 }
