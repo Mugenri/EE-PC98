@@ -1,13 +1,17 @@
 #Exclude all files that are not required to run the game, including ph3sx config/execs
 #Releases of the game will include these files in the .zip
 
-#Top level folder stuff
+#Top level folder stuff to ignore
 /*.exe
 /*.txt
 
 #Top level folders that aren't the script
 /REFERENCE IMAGES/
 /resource/
+
+#Directories to ignore
+script/data
+script/replay
 
 #File types to ignore
 *.dat
