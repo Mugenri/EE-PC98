@@ -341,18 +341,31 @@ task TPlayerLife {
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 177);
 
-	while (true) { //CHANGE THIS TO ACCOUNT FOR > 5 LIVES
+	while (true) {
 		let lives = GetPlayerLife();
-		lives = min(lives, 5);
+		lives = min(lives, 9);
 		lives = max(lives, 0);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
-		ascent(iObj in 0..lives) {
-			ObjRender_SetX(obj, 496 + iObj * 16);
-            ObjSpriteList2D_SetSourceRect(obj, 97, 272, 112, 287);
-            ObjSpriteList2D_SetDestRect(obj, 0, 0, 15, 15);
-			ObjSpriteList2D_AddVertex(obj);
-		}
+        if (lives > 5) { //lives x num
+            //x
+            ObjRender_SetX(obj, 496 + 2 * 16);
+            ObjSpriteList2D_SetSourceRect(obj, 160, 0, 176, 16);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(obj);
+            //num
+            ObjRender_SetX(obj, 496 + 4 * 16);
+            ObjSpriteList2D_SetSourceRect(obj, lives * 16, 16, (lives + 1) * 16, 32);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(obj);
+        } else { //life icons
+            ascent(i in 0..lives) {
+                ObjRender_SetX(obj, 496 + i * 16);
+                ObjSpriteList2D_SetSourceRect(obj, 97, 272, 113, 288);
+                ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+                ObjSpriteList2D_AddVertex(obj);
+            }
+        }
 		yield;
 	}
 }
@@ -378,17 +391,31 @@ task TPlayerSpell {
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 210);
 
-	while (true) { //CHANGE THIS TO ACCOUNT FOR > 5 BOMBS
+	while (true) {
 		let spell = GetPlayerSpell();
-        spell = min(spell, 5);
+		spell = min(spell, 9);
+		spell = max(spell, 0);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
-		ascent(iObj in 0..spell) {
-			ObjRender_SetX(obj, 496 + iObj * 16);
-            ObjSpriteList2D_SetSourceRect(obj, 81, 272, 96, 287);
-            ObjSpriteList2D_SetDestRect(obj, 0, 0, 15, 15);
-			ObjSpriteList2D_AddVertex(obj);
-		}
+        if (spell > 5) { //spell x num
+            //x
+            ObjRender_SetX(obj, 496 + 2 * 16);
+            ObjSpriteList2D_SetSourceRect(obj, 160, 0, 176, 16);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(obj);
+            //num
+            ObjRender_SetX(obj, 496 + 4 * 16);
+            ObjSpriteList2D_SetSourceRect(obj, spell * 16, 16, (spell + 1) * 16, 32);
+            ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(obj);
+        } else { //spell icons
+            ascent(i in 0..spell) {
+                ObjRender_SetX(obj, 496 + i * 16);
+                ObjSpriteList2D_SetSourceRect(obj, 81, 272, 97, 288);
+                ObjSpriteList2D_SetDestRect(obj, 0, 0, 16, 16);
+                ObjSpriteList2D_AddVertex(obj);
+            }
+        }
 		yield;
 	}
 }
