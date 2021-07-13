@@ -1,3 +1,4 @@
+//Boss common functions library, includes all libraries in /bosslib
 #include "./lib_Common.dnh"
 
 #include "./bosslib/lib_Character.dnh"

@@ -1,11 +1,11 @@
-//expression constants (probably not) and file_portrait references from passing a boss ID
-
-function GetBossSprite(bossID) {
+//Character sprite library
+//Returns sprite sheets based on character ID found in lib_SystemAll.dnh
+function GetBossSprite(bossID) { //Returns boss stg sprite sheet
     alternative(bossID)
     case(BOSS_ID_TSURUBAMI) {return imgCharaTsurubami[1];}
 }
 
-function GetBossPortrait(bossID) {
+function GetBossPortrait(bossID) { //Returns character dialogue portrait sheet
     alternative(bossID)
     case(BOSS_ID_YABUSAME) {return imgCharaYabusame[0];}
     case(BOSS_ID_TSUBAKURA) {return imgCharaTsubakura[0];}

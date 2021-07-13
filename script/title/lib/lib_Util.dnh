@@ -1,61 +1,5 @@
-//----------------------------------------------------
-//MENU NAVIGATION
-//----------------------------------------------------
-//Move Selection, wrap between min/max
-function IncrementIndex(index, amount, min, max, forbidden) {
-    index += amount;
-    if (index < min) {
-        index = max;
-    } else if (index > max) {
-        index = min;
-    }
-
-    //check forbidden
-    while (CheckForbidden(index, forbidden)) {
-        index += amount;
-        if (index < min) {
-            index = max;
-        } else if (index > max) {
-            index = min;
-        }
-    }
-    return index;
-}
-//Version without forbidden idices
-function IncrementIndex(index, amount, min, max) {
-    index += amount;
-    if (index < min) {
-        index = max;
-    } else if (index > max) {
-        index = min;
-    }
-    return index;
-}
-//Check if index is forbidden
-function CheckForbidden(index, forbidden) {
-    if (length(forbidden) > 0) {
-        ascent(i in 0..length(forbidden)) {
-            if (index == forbidden[i]) {return true;}
-        }
-    }
-    return false;
-}
-
-//----------------------------------------------------
-//TEXT CREATION
-//----------------------------------------------------
-//Create Text object
-function CreateText(x, y, text, color) { //color is an ARGB hex value eg. 0xFFFFFFFF
-    let obj = ObjText_Create();
-    Obj_SetRenderPriority(obj, 0.21);
-    ObjRender_SetPosition(obj, x, y, 1);
-    ObjText_SetText(obj, text);
-    ObjText_SetFontSize(obj, 16);
-    ObjText_SetFontType(obj, sysFont);
-    ObjText_SetVertexColor(obj, color);
-    ObjText_SetFontBorderType(obj, BORDER_NONE);
-    return obj;
-}
+//Title Screen utility library
+#include "./../../lib/lib_Util.dnh"
 
 //Create Menu Cursor
 function CreateCursor(x, y) {
@@ -63,14 +7,11 @@ function CreateCursor(x, y) {
     ObjPrim_SetTexture(obj, imgTtCursor);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 128, 16);
     ObjSprite2D_SetDestCenter(obj);
-    Obj_SetRenderPriority(obj, 0.21);
+    Obj_SetRenderPriority(obj, 0.1);
     ObjRender_SetPosition(obj, x, y, 1);
     return obj;
 }
 
-//----------------------------------------------------
-//SCREEN FADE
-//----------------------------------------------------
 //Screen fade animation
 function ScreenBlackout(fadeOut, between, fadeIn, color) {
     let obj = ObjPrim_Create(OBJ_SPRITE_2D);

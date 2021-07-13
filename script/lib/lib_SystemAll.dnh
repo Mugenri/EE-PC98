@@ -1,4 +1,4 @@
-// Event constants, system fonts, boss name constants, day number, universal functions
+//General Game systems library
 #include "./lib_CommonData.dnh"
 #include "./lib_Constant.dnh"
 

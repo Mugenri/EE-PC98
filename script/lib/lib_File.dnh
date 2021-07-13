@@ -1,7 +1,8 @@
-let imgDir	= GetCurrentScriptDirectory() ~ "../img/";
-let plDir	= GetCurrentScriptDirectory() ~ "../player/";
-let stageDir	= GetCurrentScriptDirectory() ~ "../boss/";
-let seDir	= GetCurrentScriptDirectory() ~ "../se/";
+//File path constant library
+const imgDir	= GetCurrentScriptDirectory() ~ "../img/";
+const plDir	    = GetCurrentScriptDirectory() ~ "../player/";
+const stageDir	= GetCurrentScriptDirectory() ~ "../boss/";
+const seDir	    = GetCurrentScriptDirectory() ~ "../se/";
 
 //let imgDataFile = imgDir ~ "img.dat";
 
@@ -10,7 +11,7 @@ let seDir	= GetCurrentScriptDirectory() ~ "../se/";
 //Effect images
 
 //System images
-let imgSystemFrame = imgDir ~ "system/systemFrame.png";
-let imgSystemText = imgDir ~ "system/systemText.png";
-let imgTextBox = imgDir ~ "system/textbox.png";
-let imgSystemFade = imgDir ~ "system/testFade.png";
+const imgSystemFrame = imgDir ~ "system/systemFrame.png";
+const imgSystemText = imgDir ~ "system/systemText.png";
+const imgTextBox = imgDir ~ "system/textbox.png";
+const imgSystemFade = imgDir ~ "system/testFade.png";

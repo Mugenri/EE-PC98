@@ -1,20 +1,21 @@
+//Common Data management Library
 //Common Data areas
-let AREA_TITLE = "Title"; //Title Screen
-let AREA_CONFIG = "Config"; //Options Menu
-let AREA_SAVE = "SaveData"; //Save Data
-let AREA_SYSTEM = "System"; //STG System
-let AREA_STAGE = "Stage"; //Stage Script
-let AREA_REPLAY = "Replay"; //Replay Values
-let AREA_SPELL = "Spell"; //Spell History
-let AREA_HIGHSCORE = "HighScore"; //High Score Values
-let AREA_RESULT = "Result"; //Player Score Records
+const AREA_TITLE = "Title"; //Title Screen
+const AREA_CONFIG = "Config"; //Options Menu
+const AREA_SAVE = "SaveData"; //Save Data
+const AREA_SYSTEM = "System"; //STG System
+const AREA_STAGE = "Stage"; //Stage Script
+const AREA_REPLAY = "Replay"; //Replay Values
+const AREA_SPELL = "Spell"; //Spell History
+const AREA_HIGHSCORE = "HighScore"; //High Score Values
+const AREA_RESULT = "Result"; //Player Score Records
 
 //Data File Directory
 let csd = GetCurrentScriptDirectory();
-let saveCommonSAVE = csd ~ "./../data/save.dat";
-let saveCommonCONFIG = csd ~ "./../data/config.dat";
-let saveCommonSCORE = csd ~ "./../data/score.dat";
-let saveCommonRESULT = csd ~ "./../data/result.dat";
+const saveCommonSAVE = csd ~ "./../data/save.dat";
+const saveCommonCONFIG = csd ~ "./../data/config.dat";
+const saveCommonSCORE = csd ~ "./../data/score.dat";
+const saveCommonRESULT = csd ~ "./../data/result.dat";
 
 task InitializeCommonData() { //creates common data areas, loads data from files
     //Create Common Data Areas
@@ -49,11 +50,9 @@ function LoadConfig(loadDefault) { //load config settings from file, otherwise c
     if (IsCommonDataAreaExists(AREA_CONFIG)) {ClearAreaCommonData(AREA_CONFIG);}
     if (loadDefault) {saveFile = false;}
     if (saveFile) { //load from save file
-        CreateCommonDataArea(AREA_CONFIG);
 		CopyCommonDataArea(AREA_CONFIG, "SAVED_CONFIG");
 		SetAreaCommonData(AREA_CONFIG, "VERSION", GAME_VERSION);
     } else { //default options, create save file
-        CreateCommonDataArea(AREA_CONFIG);
         SetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100);
         SetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100);
         CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);

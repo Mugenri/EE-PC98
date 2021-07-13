@@ -1,3 +1,4 @@
+//STG window display setup library
 //#include high score library at some point
 
 //----------------------------------------------------
@@ -240,8 +241,8 @@ task TBossLife {
 		}
 
 		//Life Display
-		let lifeTotalMax = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step health
-		let lifeTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //current health
+		let lifeTotalMax = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
+		let lifeTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
 		let lifeRate = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 0, 8, 1);
@@ -276,10 +277,8 @@ task TBossLife {
 		lifeRateRender = min(lifeRateRender, 1);
 		lastRemStep = countRemStep;
 
-        //if no boss present, delete Enemy!! text
-        if (lifeTotal <= 0) {
-            Obj_Delete(objText);
-        }
+        //if no boss present, hide Enemy!! text
+        Obj_SetVisible(objText, lifeTotal > 0);
 	}
 }
 

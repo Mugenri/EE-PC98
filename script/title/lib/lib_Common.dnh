@@ -1,3 +1,4 @@
+//Title menu common library
 #include "./../../lib/lib_SystemAll.dnh"
 #include "./../../lib/lib_File.dnh"
 
@@ -7,10 +8,11 @@ let SCRIPT_PLAYERS = [
     plDir ~ "Tsubakura.dnh"
 ];
 
+//Stage script directories
 let YABUSAME_STAGE = stageDir ~ "Tsurubami/tsuruStage.dnh";
 let TSUBAKURA_STAGE = stageDir ~ "Tsurubami2/tsuruStage.dnh";
 
-// --- Title Image List --- //
+// --- Title Specific Images List --- //
 let imgTitleDir = GetCurrentScriptDirectory() ~ "../../img/title/";
 
 //Loading Screen

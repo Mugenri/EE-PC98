@@ -2,8 +2,6 @@
 #include "./lib/lib_Common.dnh"
 #include "./lib/lib_AsciiNum.dnh"
 
-let objPlayer; //not defined without including script/lib/lib_Common.dnh
-
 @Initialize {
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
     SetItemAutoDeleteClip(32, 64, 32, 64);

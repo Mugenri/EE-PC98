@@ -135,9 +135,7 @@ function SceneOption() {
 
     function SaveConfig() {
         if (IsCommonDataAreaExists("SAVED_CONFIG")) { ClearAreaCommonData("SAVED_CONFIG"); }
-		CreateCommonDataArea("SAVED_CONFIG");
 		CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
 		SaveCommonDataAreaA2("SAVED_CONFIG", saveCommonCONFIG);
     }
-
 }

@@ -1,10 +1,10 @@
 //Player Common functions
 #include "../../lib/lib_Common.dnh"
 
-let pathImg;
-let pathShot;
-let pathSE = GetCurrentScriptDirectory() ~ "../se/";
-
+let pathImg; //player sprite
+let pathShot; //player shot data
+const pathSE = GetCurrentScriptDirectory() ~ "../se/";
+//General player sound variables
 let seVolume;
 let seShot;
 let seGraze;
@@ -12,7 +12,7 @@ let seHit;
 let seMiss;
 let seVulnerable;
 
-let PlayerPosition = [0, 0];
+let PlayerPosition = [0, 0]; //used for respawning in the same position
 
 function InitPlayer(imageFile, shotData) {
     pathImg = imageFile;

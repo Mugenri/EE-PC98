@@ -1,6 +1,5 @@
 #include "./lib/lib_Common.dnh"
 #include "./lib/lib_Display.dnh"
-#include "./../lib/lib_Common.dnh"
 
 @Initialize {
 	InitFrame();

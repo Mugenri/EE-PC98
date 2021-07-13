@@ -1,17 +1,17 @@
-//character dialogue portrait loading library
+//character sprite filepath constant library
 //boss animations are in the boss animation script
 
-let charaDir = imgDir ~ "character/";
+const charaDir = imgDir ~ "character/";
 
 //arrays containing different images for each character
-let imgCharaYabusame = [
+const imgCharaYabusame = [
     charaDir ~ "yabusame/yabuPortrait.png", //dialogue portrait
     charaDir ~ "yabusame/yabuStg.png"]; //player sprites
 
-let imgCharaTsubakura = [
+const imgCharaTsubakura = [
     charaDir ~ "tsubakura/tsubaPortrait.png", //dialogue portrait
     charaDir ~ "tsubakura/tsubaStg.png"]; //player sprite
 
-let imgCharaTsurubami = [
+const imgCharaTsurubami = [
     charaDir ~ "tsubakura/tsubaPortrait.png", //CHANGE LATER dialogue portrait
     charaDir ~ "tsurubami/tsurubami.png"]; //boss sprite

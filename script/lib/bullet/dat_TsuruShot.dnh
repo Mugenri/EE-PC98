@@ -1,8 +1,8 @@
 #UserShotData
-//TODO some things unaligned?
+//TODO define custom hitboxes for most shots, delete delay_rect field for all shots
 
 shot_image = "./../../img/system/tsuruShot.png"
-delay_color = (255, 255, 255)
+delay_color = (255, 255, 255) //probably going to forego delay clouds in favor of a bullet spawn effect library
 delay_render = ALPHA
 render = ALPHA
 

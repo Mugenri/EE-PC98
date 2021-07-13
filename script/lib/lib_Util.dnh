@@ -1,1 +1,52 @@
-//check disp in thingies
+//General utility function library
+
+//Move selection index, wrap between min/max, omit forbidden indices
+function IncrementIndex(index, amount, min, max, forbidden) {
+    index += amount;
+    if (index < min) {
+        index = max;
+    } else if (index > max) {
+        index = min;
+    }
+
+    //check forbidden
+    while (CheckForbidden(index, forbidden)) {
+        index += amount;
+        if (index < min) {
+            index = max;
+        } else if (index > max) {
+            index = min;
+        }
+    }
+    return index;
+}
+//overload without forbidden idices
+function IncrementIndex(index, amount, min, max) {
+    return IncrementIndex(index, amount, min, max, []);
+}
+//Check if index is forbidden
+function CheckForbidden(index, forbidden) {
+    if (length(forbidden) > 0) {
+        ascent(i in 0..length(forbidden)) {
+            if (index == forbidden[i]) {return true;}
+        }
+    }
+    return false;
+}
+
+//Create Text object with pc9800 font
+function CreateText(x, y, priority, text, color) { //color is an ARGB hex value eg. 0xFFFFFFFF
+    let obj = ObjText_Create();
+    Obj_SetRenderPriority(obj, priority);
+    ObjRender_SetPosition(obj, x, y, 1);
+    ObjText_SetText(obj, text);
+    ObjText_SetFontSize(obj, 16);
+    ObjText_SetFontType(obj, sysFont);
+    ObjText_SetVertexColor(obj, color);
+    ObjText_SetFontBorderType(obj, BORDER_NONE);
+    return obj;
+}
+//overload with no priority
+function CreateText(x, y, text, color) {
+    return CreateText(x, y, 0.2, text, color);
+}

@@ -1,4 +1,5 @@
-#include "./lib_System.dnh"
+//System scripts common library
+#include "./../../lib/lib_Common.dnh"
 
 task SystemInit{
     SetAutoDeleteObject(true);
