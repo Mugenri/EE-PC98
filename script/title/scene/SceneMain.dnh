@@ -1,14 +1,14 @@
 //Title Screen
 
 //Menu Indices
-let INDEX_START = 0;
-let INDEX_EXTRA = 1;
-let INDEX_PRACTICE = 2;
-let INDEX_REPLAY = 3;
-let INDEX_MUSIC = 4;
-let INDEX_SCORE = 5;
-let INDEX_OPTION = 6;
-let INDEX_QUIT = 7;
+const INDEX_START = 0;
+const INDEX_EXTRA = 1;
+const INDEX_PRACTICE = 2;
+const INDEX_REPLAY = 3;
+const INDEX_MUSIC = 4;
+const INDEX_SCORE = 5;
+const INDEX_OPTION = 6;
+const INDEX_QUIT = 7;
 
 let indexCurrent;
 
@@ -16,7 +16,7 @@ let exitFlag = false; //deletes certain things upon leaving this menu
 
 task MainMenu(playIntro, selectedDefault) {
     exitFlag = false;
-    SaveCommonDataAreaA2(AREA_SAVE, saveCommonSAVE); //write data to save file
+    SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE); //write data to save file
 
     let selectMax = INDEX_QUIT;
     indexCurrent = selectedDefault;
@@ -55,11 +55,11 @@ task MainMenu(playIntro, selectedDefault) {
         let userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case(VK_UP, VK_LEFT) {
-            CallSFX(sndTtSelect);
+            CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
         case(VK_DOWN, VK_RIGHT) {
-            CallSFX(sndTtSelect);
+            CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case(VK_OK) {
@@ -68,7 +68,7 @@ task MainMenu(playIntro, selectedDefault) {
             if (temp > 0) {break;}
         }
         case(VK_CANCEL, VK_PAUSE) {
-            CallSFX(sndTtCancel);
+            CallSFX(SND_TT_Cancel);
             indexCurrent = INDEX_QUIT;
         }
     }
@@ -112,7 +112,7 @@ task MainMenu(playIntro, selectedDefault) {
         }
         case(INDEX_QUIT) {
             //Exit Game
-            SaveCommonDataAreaA2(AREA_SAVE, saveCommonSAVE);
+            SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
             ScreenBlackout(60, 200, 0, 0x000000);
             wait(80);
             ClosePackage();
@@ -122,13 +122,13 @@ task MainMenu(playIntro, selectedDefault) {
 
     task CreateMenuGraphicsMain() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(bg, imgTtBaseBG);
+        ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriority(bg, 0.01);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
         let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(yabu, imgTtYabu);
+        ObjPrim_SetTexture(yabu, IMG_TT_YABU);
         Obj_SetRenderPriority(yabu, 0.01);
         ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
         ObjSprite2D_SetDestRect(yabu, 0, 0, 288, 360);
@@ -163,7 +163,7 @@ task MainMenu(playIntro, selectedDefault) {
     }
     
     function MenuSelect() {
-        CallSFX(sndTtDecide);
+        CallSFX(SND_TT_DECIDE);
     }
 }
 

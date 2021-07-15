@@ -11,15 +11,15 @@ objPlayer = GetPlayerObjectID();
 let count = 0;
 let countShot = 0;
 
-//player specific sfx
+//player specific sfx, MOVE TO SFX SCRIPT
 let seSpell;
 let seSpellCharge;
 let seSpellWoosh;
 let seSpellLaser;
 
 @Initialize {
-    let imageFile = plDir ~ "./../img/character/Tsubakura/tsubaStg.png";
-    let shotData = plDir ~ "Tsubashot.dnh";
+    let imageFile = DIR_PLR ~ "./../img/character/Tsubakura/tsubaStg.png";
+    let shotData = DIR_PLR ~ "Tsubashot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(4.5, 2.2);
 
@@ -50,22 +50,22 @@ task TSound{
 
     //Player specific sounds
     seSpell = ObjSound_Create();
-    ObjSound_Load(seSpell, pathSE ~ "seSpellTsuba1.wav");
+    ObjSound_Load(seSpell, DIR_SE ~ "seSpellTsuba1.wav");
     ObjSound_SetSoundDivision(seSpell, SOUND_SE);
     ObjSound_SetVolumeRate(seSpell, seVolume);
 
     seSpellCharge = ObjSound_Create();
-    ObjSound_Load(seSpellCharge, pathSE ~ "seSpellTsuba2.wav");
+    ObjSound_Load(seSpellCharge, DIR_SE ~ "seSpellTsuba2.wav");
     ObjSound_SetSoundDivision(seSpellCharge, SOUND_SE);
     ObjSound_SetVolumeRate(seSpellCharge, seVolume);
 
     seSpellWoosh = ObjSound_Create();
-    ObjSound_Load(seSpellWoosh, pathSE ~ "seSpellTsuba3.wav");
+    ObjSound_Load(seSpellWoosh, DIR_SE ~ "seSpellTsuba3.wav");
     ObjSound_SetSoundDivision(seSpellWoosh, SOUND_SE);
     ObjSound_SetVolumeRate(seSpellWoosh, seVolume);
 
     seSpellLaser = ObjSound_Create();
-    ObjSound_Load(seSpellLaser, pathSE ~ "seSpellTsuba4.wav");
+    ObjSound_Load(seSpellLaser, DIR_SE ~ "seSpellTsuba4.wav");
     ObjSound_SetSoundDivision(seSpellLaser, SOUND_SE);
     ObjSound_SetVolumeRate(seSpellLaser, seVolume);
 }

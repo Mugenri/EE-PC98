@@ -11,12 +11,12 @@ objPlayer = GetPlayerObjectID();
 let count = 0;
 let countShot = 0;
 
-//player specific sfx
+//player specific sfx, MOVE TO SFX SCRIPT
 let seSpell;
 
 @Initialize {
-    let imageFile = plDir ~ "./../img/character/yabusame/yabuStg.png";
-    let shotData = plDir ~ "YabuShot.dnh";
+    let imageFile = DIR_PLR ~ "./../img/character/yabusame/yabuStg.png";
+    let shotData = DIR_PLR ~ "YabuShot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(3, 1.53);
 
@@ -153,7 +153,7 @@ task TSpell() {
 
     //Sound created in TSpell for reasons stated in TSound
     seSpell = ObjSound_Create();
-    ObjSound_Load(seSpell, pathSE ~ "seSpellYabu.wav");
+    ObjSound_Load(seSpell, DIR_SE ~ "seSpellYabu.wav");
     ObjSound_SetSoundDivision(seSpell, SOUND_SE);
     ObjSound_SetVolumeRate(seSpell, seVolume);
 

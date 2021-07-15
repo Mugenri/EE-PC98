@@ -19,8 +19,8 @@ task LoadScene { //loading screen
         StartScript(id);
     }
 
-    InstallFont(sysFontPath); //pc9800 font
-    InstallFont(headerFontPath); //magic decimal sharp font
+    InstallFont(SYS_FONT_PATH); //pc9800 font
+    InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
     loop(60) {yield;} //Give loading screen time to run
 

@@ -4,7 +4,7 @@
 //Create Menu Cursor
 function CreateCursor(x, y) {
     let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(obj, imgTtCursor);
+    ObjPrim_SetTexture(obj, IMG_TT_CURSOR);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 128, 16);
     ObjSprite2D_SetDestCenter(obj);
     Obj_SetRenderPriority(obj, 0.1);

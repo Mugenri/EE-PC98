@@ -1,10 +1,9 @@
 //Player Common functions
 #include "../../lib/lib_Common.dnh"
 
-let pathImg; //player sprite
-let pathShot; //player shot data
-const pathSE = GetCurrentScriptDirectory() ~ "../se/";
-//General player sound variables
+let pathImg; //player sprite passed by player script
+let pathShot; //player shot data passed by player script
+//General player sound variables, MOVE TO SFX SCRIPT
 let seVolume;
 let seShot;
 let seGraze;
@@ -12,14 +11,18 @@ let seHit;
 let seMiss;
 let seVulnerable;
 
+let particleList;
+
 let PlayerPosition = [0, 0]; //used for respawning in the same position
 
 function InitPlayer(imageFile, shotData) {
     pathImg = imageFile;
     pathShot = shotData;
     TRender(GetPlayerObjectID(), pathImg);
-
     LoadPlayerShotData(pathShot);
+
+    particleList = InitParticleList(IMG_EFFECT_GRAZE, 0.3, 0, 0, 7, 7);
+
     ObjPlayer_AddIntersectionCircleA1(objPlayer, 0, 0, 1, 20);
     SetPlayerDownStateFrame(0);
     SetPlayerRebirthFrame(15);
@@ -54,7 +57,10 @@ function PlayerEvent() {
         TRebirth();
 	}
     case(EV_GRAZE) {
-        TGraze(GetEventArgument(2)); //Passes list of coords of bullets grazed
+        // for each (bullet in GetEventArgument(2)) { //bullet[0] and bullet[1] are the x and y coords of each bullet grazed in this frame
+        //     TGraze(bullet[0], bullet[1]);
+        // }
+        TGraze(GetEventArgument(2)[0][0], GetEventArgument(2)[0][1]);
     }
 }
 
@@ -62,27 +68,27 @@ function InitSound() {
     seVolume = GetSFXVolume();
 
     seShot = ObjSound_Create();
-    ObjSound_Load(seShot, pathSE ~ "seShot.wav");
+    ObjSound_Load(seShot, DIR_SE ~ "seShot.wav");
     ObjSound_SetSoundDivision(seShot, SOUND_SE);
     ObjSound_SetVolumeRate(seShot, seVolume);
 
     seGraze = ObjSound_Create();
-    ObjSound_Load(seGraze, pathSE ~ "seGraze.wav");
+    ObjSound_Load(seGraze, DIR_SE ~ "seGraze.wav");
     ObjSound_SetSoundDivision(seGraze, SOUND_SE);
     ObjSound_SetVolumeRate(seGraze, seVolume);
 
     seHit = ObjSound_Create();
-    ObjSound_Load(seHit, pathSE ~ "seHit.wav");
+    ObjSound_Load(seHit, DIR_SE ~ "seHit.wav");
     ObjSound_SetSoundDivision(seHit, SOUND_SE);
     ObjSound_SetVolumeRate(seHit, seVolume);
 
     seMiss = ObjSound_Create();
-    ObjSound_Load(seMiss, pathSE ~ "seMiss.wav");
+    ObjSound_Load(seMiss, DIR_SE ~ "seMiss.wav");
     ObjSound_SetSoundDivision(seMiss, SOUND_SE);
     ObjSound_SetVolumeRate(seMiss, seVolume);
 
     seVulnerable = ObjSound_Create();
-    ObjSound_Load(seVulnerable, pathSE ~ "seVulnerable.wav");
+    ObjSound_Load(seVulnerable, DIR_SE ~ "seVulnerable.wav");
     ObjSound_SetSoundDivision(seVulnerable, SOUND_SE);
     ObjSound_SetVolumeRate(seVulnerable, seVolume);
 }
@@ -159,9 +165,9 @@ task TMiss() { //Player died
         loop(7) {
             loop(10) {
                 let speed = rand(0.2, 2.2);
-                let angleT = rand(0, 3600)/10;
+                let angleT = rand(0, 360);
                 let objGlass = ObjPrim_Create(OBJ_SPRITE_2D);
-                ObjPrim_SetTexture(objGlass, pathImg);
+                ObjPrim_SetTexture(objGlass, IMG_EFFECT_GRAZE);
                 ObjRender_SetPosition(objGlass, xPos, yPos, 1);
                 GlassMovement(objGlass, speed, angleT);
             }
@@ -175,7 +181,7 @@ task TMiss() { //Player died
                 let y = ObjRender_GetY(obj);
                 ObjRender_SetPosition(obj, x + speed*cos(angle), y + speed*sin(angle), 1);
 
-                ObjSprite2D_SetSourceRect(obj, 208 + frame*7, 0, 215 + frame*7, 7);
+                ObjSprite2D_SetSourceRect(obj, 0 + frame*7, 0, 7 + frame*7, 7);
                 ObjSprite2D_SetDestCenter(obj);
                 frame++;
                 if (frame == 7) {
@@ -254,31 +260,35 @@ task TRebirth() { //Player respawn
     }
 }
 
-task TGraze(coords) { //Summon graze particle, add to particle list REWRITE NEEDED TO HANDLE LIST OF COORDS
-    let speed = rand(2, 3.2);
-    let angleT = rand(0, 3600);
-    let objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objGraze, pathImg);
-    ObjRender_SetPosition(objGraze, coords[0][0], coords[0][1], 1);
-    ObjRender_SetColor(objGraze, 0xEEBBAA);
+task TGraze(x, y) { //Summon graze particle, add to particle list
+    let xSpeed = rand(2, 3.2);
+    let ySpeed = rand(2, 3.2);
+    //chance to make speed negative
+    if (rand_int(0, 1) == 1) xSpeed *= -1;
+    if (rand_int(0, 1) == 1) ySpeed *= -1;
+
+    ObjParticleList_SetColor(particleList, 0xEEBBAA);
 
     ObjSound_Play(seGraze);
     AddScore(1000);
 
     let frame = 0;
-    loop(43) {
-        let x = ObjRender_GetX(objGraze);
-        let y = ObjRender_GetY(objGraze);
-        ObjRender_SetPosition(objGraze, x + speed*cos(angleT), y + speed*sin(angleT), 1);
-        ObjSprite2D_SetSourceRect(objGraze, 208 + frame*7, 0, 215 + frame*7, 7);
-        ObjSprite2D_SetDestCenter(objGraze);
+    loop (43) {
+        loop (2) {
+            ObjSprite2D_SetSourceRect(particleList, 0 + frame*7, 0, 7 + frame*7, 7);
+            ObjSprite2D_SetDestCenter(particleList);
+            ObjParticleList_SetPosition(particleList, x, y, 1);
+
+            ObjParticleList_AddInstance(particleList);
+            yield;
+        }
         frame++;
-        if (frame == 7) {
+        if (frame >= 7) {
             frame = 0;
         }
-        loop(2) {yield;}
+        x += xSpeed;
+        y += ySpeed;
     }
-    Obj_Delete(objGraze);
 }
 
 function Alive() {

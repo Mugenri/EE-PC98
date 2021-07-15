@@ -2,8 +2,8 @@
 #include "./../lib/lib_Common.dnh"
 #include "./../lib/lib_Util.dnh"
 
-let MODE_NONE = 0;
-let MODE_RETRY = 1;
+const MODE_NONE = 0;
+const MODE_RETRY = 1;
 
 let dialogueRunning = false;
 let dialoguePath = "";

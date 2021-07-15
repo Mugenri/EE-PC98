@@ -1,7 +1,7 @@
 //Creates shot deletion and item collection score numbers
 task AsciiScoreNum(x, y, score, color){
     let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
     ObjRender_SetColor(obj, color);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.7);

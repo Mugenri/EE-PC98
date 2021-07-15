@@ -11,7 +11,7 @@
 let titleEnd = false;
 
 @Initialize {
-    InitTitle();
+    SetAutoDeleteObject(true);
     SetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", GetOwnScriptID());
 
     TTitleScene();

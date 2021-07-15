@@ -2,10 +2,10 @@
 const GAME_VERSION = "0.01";
 
 //Font constants/paths
-const sysFont = "PC-9800";
-const sysFontPath = GetCurrentScriptDirectory() ~ "./../system/font/PC-9800.ttf";
-const headerFont = "Magic Decimal Sharp";
-const headerFontPath = GetCurrentScriptDirectory() ~ "./../system/font/MagicDecimalSharp.ttf";
+const SYS_FONT = "PC-9800";
+const SYS_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/PC-9800.ttf";
+const HEADER_FONT = "Magic Decimal Sharp";
+const HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/MagicDecimalSharp.ttf";
 
 //Event Constants
 
@@ -51,9 +51,9 @@ const GAME_PRACTICE = 2; //Stage Practice Mode
 const GAME_SPELL    = 3; //Spell Practice Mode
 
 //Sound Constants
-const sndTtSelect = 0;
-const sndTtDecide = 1;
-const sndTtCancel = 2;
+const SND_TT_SELECT = 0;
+const SND_TT_DECIDE = 1;
+const SND_TT_Cancel = 2;
 
 //Position Constants
 const MIN_X = 0;

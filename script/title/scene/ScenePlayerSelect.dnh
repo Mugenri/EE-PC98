@@ -6,7 +6,7 @@ function ScenePlayerSelect(selectedDefault) {
     //let selectedStage = GetAreaCommonData(AREA_TITLE, "StageIndex", 0);
     
     //Player Icons
-    let imgPlayerPortrait = [imgTtPlayer1, imgTtPlayer2];
+    let imgPlayerPortrait = [IMG_TT_PLAYER1, IMG_TT_PLAYER2];
 
     let selectMax = length(imgPlayerPortrait) - 1;
     let resultIndex = -1;
@@ -15,8 +15,8 @@ function ScenePlayerSelect(selectedDefault) {
 
     let forbidIndex = [];
     
-    // Check if player has unlocked this difficulty
-    let unlockFlag = [true, true];
+    // Check if player has unlocked this difficulty (defaults to true)
+    let unlockFlag = [false, false];
 
     //Extra Unlock
     if (selectedDifficulty == D_EXTRA || selectedDifficulty == D_ABEX) {
@@ -29,7 +29,7 @@ function ScenePlayerSelect(selectedDefault) {
     //Forbid Indices
     ascent(i in 0..length(unlockFlag)) {
         if (!unlockFlag[i]) {
-            //forbidIndex = forbidIndex ~ [i];
+            //forbidIndex = forbidIndex ~ [i]; //TODO temporary for testing
         }
     }
 
@@ -54,11 +54,11 @@ function ScenePlayerSelect(selectedDefault) {
         let userKey = CheckKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case(VK_LEFT) {
-            CallSFX(sndTtSelect);
+            CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
         case(VK_RIGHT) {
-            CallSFX(sndTtSelect);
+            CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case(VK_OK) {
@@ -67,7 +67,7 @@ function ScenePlayerSelect(selectedDefault) {
             break;
         }
         case(VK_CANCEL, VK_PAUSE) {
-            CallSFX(sndTtCancel);
+            CallSFX(SND_TT_Cancel);
             ScreenBlackout(10, 5, 10, 0x000000);
             wait(10);
             break;
@@ -77,7 +77,7 @@ function ScenePlayerSelect(selectedDefault) {
     return(resultIndex);
 
     function MenuSelect() {
-        CallSFX(sndTtDecide);
+        CallSFX(SND_TT_DECIDE);
         //white screen flash then fadeout
         ScreenBlackout(0, 0, 10, 0xFFFFFF);
         wait(60);
@@ -89,7 +89,7 @@ function ScenePlayerSelect(selectedDefault) {
 
     task CreateMenuGraphicsPlayer() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(bg, imgTtBaseBG);
+        ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriority(bg, 0.01);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);

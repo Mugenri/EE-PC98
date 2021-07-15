@@ -6,7 +6,7 @@
 //----------------------------------------------------
 function InitFrame() {
 	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(obj, imgSystemFrame);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_FRAME);
 	Obj_SetRenderPriority(obj, 0);
 	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
 	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
@@ -17,9 +17,9 @@ function InitFrame() {
 //Stage Fade in
 //----------------------------------------------------
 task TIntro() {
-    //Fade square sprite list
+    //Fade square sprite list TODO make this a particle list?
     let objBG = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-    ObjPrim_SetTexture(objBG, imgSystemFade);
+    ObjPrim_SetTexture(objBG, IMG_SYSTEM_FADE);
     Obj_SetRenderPriority(objBG, 0.79);
     let frames = 23; //number of animation frames
     ChangeFrame(0); //first frame is solid black
@@ -79,7 +79,7 @@ function TDifficulty() {
     let objText = ObjText_Create();
 	ObjText_SetText(objText, texts[diff]);
 	ObjText_SetFontSize(objText, 16);
-    ObjText_SetFontType(objText, headerFont);
+    ObjText_SetFontType(objText, HEADER_FONT);
 	ObjText_SetVertexColor(objText, colors[diff]);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
 	Obj_SetRenderPriority(objText, 0.1);
@@ -94,7 +94,7 @@ function TDifficulty() {
 task THighScore() {
 	//High Score Text
 	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, imgSystemText);
+	ObjPrim_SetTexture(objScore, IMG_SYSTEM_TEXT);
 	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
@@ -105,7 +105,7 @@ task THighScore() {
 	let count = 8;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 64);
@@ -142,7 +142,7 @@ task THighScore() {
 task TScore() {
 	//Score Text
 	let objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, imgSystemText);
+	ObjPrim_SetTexture(objScore, IMG_SYSTEM_TEXT);
 	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
@@ -153,7 +153,7 @@ task TScore() {
 	let count = 8;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 96);
@@ -190,7 +190,7 @@ task TScore() {
 task TBossLife {
     //Enemy!! text
     let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, imgSystemText);
+    ObjPrim_SetTexture(objText, IMG_SYSTEM_TEXT);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
     ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
@@ -208,7 +208,7 @@ task TBossLife {
 
     //Max Text
     let maxText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(maxText, imgSystemText);
+    ObjPrim_SetTexture(maxText, IMG_SYSTEM_TEXT);
     ObjRender_SetBlendType(maxText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(maxText, 16, 337, 64, 348);
     ObjSprite2D_SetDestRect(maxText, 0, 0, 48, 11);
@@ -325,7 +325,7 @@ task TBossTimer {
 task TPlayerLife {
 	//life Text
 	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, imgSystemText);
+	ObjPrim_SetTexture(objText, IMG_SYSTEM_TEXT);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
     ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
@@ -335,7 +335,7 @@ task TPlayerLife {
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 177);
@@ -375,7 +375,7 @@ task TPlayerLife {
 task TPlayerSpell {
 	//Spell Text
 	let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, imgSystemText);
+	ObjPrim_SetTexture(objText, IMG_SYSTEM_TEXT);
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
     ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
@@ -385,7 +385,7 @@ task TPlayerSpell {
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 210);
@@ -425,7 +425,7 @@ task TPlayerSpell {
 task TGraze() {
 	//Graze Text
 	let objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objGraze, imgSystemText);
+	ObjPrim_SetTexture(objGraze, IMG_SYSTEM_TEXT);
     ObjRender_SetBlendType(objGraze, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
     ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
@@ -437,7 +437,7 @@ task TGraze() {
 	let count = 4;
 
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, imgSystemText);
+	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriority(obj, 0.1);
 	ObjRender_SetY(obj, 242);
@@ -466,7 +466,7 @@ task TGainSpell(score) { //CHANGE THIS
 	let objText = ObjText_Create();
 	ObjText_SetText(objText, "Spell Card Bonus!");
 	ObjText_SetFontSize(objText, 16);
-    ObjText_SetFontType(objText, sysFont);
+    ObjText_SetFontType(objText, SYS_FONT);
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
 	Obj_SetRenderPriority(objText, 0.6);
@@ -497,7 +497,7 @@ task TGainSpell(score) { //CHANGE THIS
 task TFPS() {
 	let objText = ObjText_Create();
 	ObjText_SetFontSize(objText, 16);
-	ObjText_SetFontType(objText, sysFont);
+	ObjText_SetFontType(objText, SYS_FONT);
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
 	ObjText_SetMaxWidth(objText, GetScreenWidth() - 8);

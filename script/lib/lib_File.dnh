@@ -1,17 +1,21 @@
 //File path constant library
-const imgDir	= GetCurrentScriptDirectory() ~ "../img/";
-const plDir	    = GetCurrentScriptDirectory() ~ "../player/";
-const stageDir	= GetCurrentScriptDirectory() ~ "../boss/";
-const seDir	    = GetCurrentScriptDirectory() ~ "../se/";
+const DIR_IMG	= GetCurrentScriptDirectory() ~ "../img/";
+const DIR_PLR	    = GetCurrentScriptDirectory() ~ "../player/";
+const DIR_STG	= GetCurrentScriptDirectory() ~ "../boss/";
+const DIR_HLSL   = GetCurrentScriptDirectory() ~ "hlsl/";
+const DIR_SE	    = GetCurrentScriptDirectory() ~ "../se/";
 
-//let imgDataFile = imgDir ~ "img.dat";
+//const IMG_FILE_DATA = DIR_IMG ~ "img.dat";
 
 //file path constants
+//hlsl shaders
+const HLSL_PARTICLE = DIR_HLSL ~ "TexParticle.hlsl";
 
 //Effect images
+const IMG_EFFECT_GRAZE = DIR_IMG ~ "effect/graze.png";
 
 //System images
-const imgSystemFrame = imgDir ~ "system/systemFrame.png";
-const imgSystemText = imgDir ~ "system/systemText.png";
-const imgTextBox = imgDir ~ "system/textbox.png";
-const imgSystemFade = imgDir ~ "system/testFade.png";
+const IMG_SYSTEM_FRAME = DIR_IMG ~ "system/systemFrame.png";
+const IMG_SYSTEM_TEXT = DIR_IMG ~ "system/systemText.png";
+const IMG_SYSTEM_TEXTBOX = DIR_IMG ~ "system/textbox.png";
+const IMG_SYSTEM_FADE = DIR_IMG ~ "system/testFade.png";

@@ -41,7 +41,7 @@ function CreateText(x, y, priority, text, color) { //color is an ARGB hex value 
     ObjRender_SetPosition(obj, x, y, 1);
     ObjText_SetText(obj, text);
     ObjText_SetFontSize(obj, 16);
-    ObjText_SetFontType(obj, sysFont);
+    ObjText_SetFontType(obj, SYS_FONT);
     ObjText_SetVertexColor(obj, color);
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     return obj;
@@ -49,4 +49,23 @@ function CreateText(x, y, priority, text, color) { //color is an ARGB hex value 
 //overload with no priority
 function CreateText(x, y, text, color) {
     return CreateText(x, y, 0.2, text, color);
+}
+
+//Initializes a 2D particle list
+function InitParticleList(path, priority, l, t, r, b) {
+    let obj = ObjParticleList_Create(OBJ_PARTICLE_LIST_2D);
+	Obj_SetRenderPriority(obj, priority);
+	ObjPrim_SetTexture(obj, path);
+	ObjRender_SetBlendType(obj, BLEND_ALPHA);
+	ObjSprite2D_SetSourceRect(obj, l, t, r, b);
+	ObjSprite2D_SetDestCenter(obj);
+	ObjPrim_SetVertexIndex(obj, [0, 1, 2, 3]);
+    return obj;
+}
+
+function ParticleListShader(list, floatX, floatY) { //float values are cell size/matrix size of the sprite sheet
+    ObjShader_SetShaderF(list, HLSL_PARTICLE);
+    ObjShader_SetTechnique(list, "Render");
+    ObjShader_SetFloat(list, "STEP_X", floatX);
+    ObjShader_SetFloat(list, "STEP_Y", floatY);
 }
