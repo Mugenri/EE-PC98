@@ -166,32 +166,36 @@ task TMiss() { //Player died
     task MissGlass() {
         loop (7) {
             loop (10) {
-                let speed = rand(0.2, 2.2);
-                let angleT = rand(0, 360);
-                let objGlass = ObjPrim_Create(OBJ_SPRITE_2D);
-                ObjPrim_SetTexture(objGlass, IMG_EFFECT_GRAZE);
-                ObjRender_SetPosition(objGlass, xPos, yPos, 1);
-                GlassMovement(objGlass, speed, angleT);
+                GlassMovement();
             }
             yield;
         }
 
-        task GlassMovement(obj, speed, angle) {
+        task GlassMovement() {
+            let x = xPos;
+            let y = yPos;
+            let xSpeed = rand(0.2, 2.2);
+            let ySpeed = rand(0.2, 2.2);
+            //chance to make speed negative
+            if (rand_int(0, 1) == 1) xSpeed *= -1;
+            if (rand_int(0, 1) == 1) ySpeed *= -1;
             let frame = 0;
             loop (70) {
-                let x = ObjRender_GetX(obj);
-                let y = ObjRender_GetY(obj);
-                ObjRender_SetPosition(obj, x + speed*cos(angle), y + speed*sin(angle), 1);
-
-                ObjSprite2D_SetSourceRect(obj, 0 + frame*7, 0, 7 + frame*7, 7);
-                ObjSprite2D_SetDestCenter(obj);
+                loop (2) {
+                    ObjParticleList_SetPosition(particleList, x, y, 1);
+                    ObjParticleList_SetExtraData(particleList, frame, 0, 0);
+                    ObjParticleList_SetColor(particleList, 0xFFFFFF);
+                    
+                    ObjParticleList_AddInstance(particleList);
+                    yield;
+                }
                 frame++;
-                if (frame == 7) {
+                if (frame >= 7) {
                     frame = 0;
                 }
-                loop (2) {yield;}
+                x += xSpeed;
+                y += ySpeed;
             }
-            Obj_Delete(obj);
         }
     }
 
@@ -269,8 +273,6 @@ task TGraze(x, y) { //Summon graze particle, add to particle list
     if (rand_int(0, 1) == 1) xSpeed *= -1;
     if (rand_int(0, 1) == 1) ySpeed *= -1;
 
-    ObjParticleList_SetColor(particleList, 0xEEBBAA);
-
     ObjSound_Play(seGraze);
     AddScore(1000);
 
@@ -279,6 +281,7 @@ task TGraze(x, y) { //Summon graze particle, add to particle list
         loop (2) {
             ObjParticleList_SetPosition(particleList, x, y, 1);
             ObjParticleList_SetExtraData(particleList, frame, 0, 0);
+            ObjParticleList_SetColor(particleList, 0xEEBBAA);
 
             ObjParticleList_AddInstance(particleList);
             yield;
