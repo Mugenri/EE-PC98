@@ -27,7 +27,7 @@ function DigitToArray(digit, count) {
 		if (truncate(digit) == 0) {break;}
 	}
 
-	loop(max(0, count - length(res))) {
+	loop (max(0, count - length(res))) {
 		res = [0] ~ res;
 	}
 

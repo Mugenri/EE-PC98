@@ -22,7 +22,7 @@ task LoadScene { //loading screen
     InstallFont(SYS_FONT_PATH); //pc9800 font
     InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
-    loop(60) {yield;} //Give loading screen time to run
+    loop (60) {yield;} //Give loading screen time to run
 
     //load achievement menu if i make one
 

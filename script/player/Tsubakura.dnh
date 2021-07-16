@@ -82,9 +82,9 @@ task TShot() {
 
     loop {
         if (Shooting() && Alive() && !IsPlayerSpellActive() && countShot % 10 == 0) {
-            loop(3) {
+            loop (3) {
                 ObjSound_Play(seShot);
-                loop(3) {
+                loop (3) {
                     yield;
                 }
             }
@@ -186,11 +186,11 @@ task TOption(offset) {
     task OptionShot() {
         while (!Obj_IsDeleted(objPlayer)) {
             if (Shooting() && Alive() && !IsPlayerSpellActive() && countShot % 10 == 0) {
-                loop(3) {
+                loop (3) {
                     let optionX = ObjRender_GetX(objOption);
                     let optionY = ObjRender_GetY(objOption);
                     CreatePlayerShotA1(optionX, optionY, 28, 270, 0.5, 1, 1);
-                    loop(3) {
+                    loop (3) {
                         yield;
                     }
                 }
@@ -214,13 +214,13 @@ task TSpell() {
     Effect();
     
     //spell time
-    loop(250) {yield;}
+    loop (250) {yield;}
 
     SetForbidPlayerSpell(true);
     SetForbidPlayerShot(false);
     SetPlayerSpeed(4.5, 2.2);
     Obj_Delete(objManage);
-    loop(40) {yield;}
+    loop (40) {yield;}
 
     //vulnerability indicator
     ObjSound_Play(seVulnerable);
@@ -231,7 +231,7 @@ task TSpell() {
     ascent(i in 0..17) {
         ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     }
-    loop(20) {
+    loop (20) {
         ascent(i in 0..17) {
             let angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
@@ -249,7 +249,7 @@ task TSpell() {
         let bCircle = CreateCircle([0, 0, 0]);
 
         //Expand Black Circle
-        loop(70) {
+        loop (70) {
             radius += 600/70;
             ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent(i in 1..34) {
@@ -267,14 +267,14 @@ task TSpell() {
         }
         ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), 600);
 
-        loop(30) {
+        loop (30) {
             ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), 600);
             yield;
         }
 
         //Retract Black Circle
         ObjSound_Play(seSpellWoosh);
-        loop(45) {
+        loop (45) {
             ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent(i in 1..34) {
                 let angleT = 360/32 * i;
@@ -289,7 +289,7 @@ task TSpell() {
         //Retract White Circle
         radius = 600;
         ObjSound_Play(seSpellWoosh);
-        loop(35) {
+        loop (35) {
             ObjPrim_SetVertexPosition(wCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent(i in 1..34) {
                 let angleT = 360/32 * i;
@@ -311,7 +311,7 @@ task TSpell() {
 
         let hitboxLength = 0;
         let modifier = 0;
-        loop(60) {
+        loop (60) {
             CreateLaserEffect(1);
             CreateLaserEffect(-1);
             modifier += 360/14;
@@ -353,7 +353,7 @@ task TSpell() {
 
             ObjRender_SetPosition(shot1, GetPlayerX() + 20*direction*cos(modifier), GetPlayerY() + direction*4, 1);
             ObjRender_SetPosition(shot2, GetPlayerX() + 15*direction*cos(modifier + 90), GetPlayerY() + direction*8, 1);
-            loop(20) {
+            loop (20) {
                 ObjRender_SetY(shot1, ObjRender_GetY(shot1) - 28); //bullet speed
                 ObjRender_SetY(shot2, ObjRender_GetY(shot2) - 28);
                 yield;

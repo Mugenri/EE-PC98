@@ -77,7 +77,7 @@ task TBackground() {
         let yMid = GetStgFrameHeight() / 2;
 
         //Vertical Lines
-        loop(5) {
+        loop (5) {
             CreateLine(x, y, 71, 7, true);
             x += 139;
         }
@@ -86,7 +86,7 @@ task TBackground() {
         y = yOrigin + 70; //Height of a rectangle
 
         //Horizontal Lines
-        loop(5) {
+        loop (5) {
             CreateLine(x, y, 140, 7, false);
             y += 70;
         }

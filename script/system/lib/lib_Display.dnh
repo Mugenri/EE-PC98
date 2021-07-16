@@ -19,12 +19,17 @@ function InitFrame() {
 //Stage Fade in
 //----------------------------------------------------
 task TIntro() {
-    //Fade square sprite list TODO make this a particle list?
-    let objBG = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-    ObjPrim_SetTexture(objBG, IMG_SYSTEM_FADE);
+    let objBG = ObjPrim_Create(OBJ_SPRITE_2D); //black rectangle so the particle list doesn't have to be processed before it's animating
+    ObjSprite2D_SetSourceRect(objBG, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(objBG, 0, 0, 384, 368);
     Obj_SetRenderPriorityI(objBG, 79);
-    let frames = 23; //number of animation frames
-    ChangeFrame(0); //first frame is solid black
+    ObjRender_SetColor(objBG, 0x000000);
+
+    //Fade square particle list
+    let objFade = InitParticleList(IMG_SYSTEM_FADE, 79, 0, 16, 16, 32);
+    ObjParticleList_SetColor(objFade, 0x000000);
+
+    let frames = 9; //number of animation frames
 
     //TODO Game logo when i get it
     let objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
@@ -40,33 +45,42 @@ task TIntro() {
     let tempSpeed = GetPlayerSpeed();
     SetPlayerSpeed(0, 0);
 
-    wait(60); //add logo fade in/out before this point when i get to making one
+    wait(60); //TODO add logo fade in/out before this point when i get to making one
 
     //resume player movement when the transition begins
     SetForbidPlayerShot(false);
     SetForbidPlayerSpell(false);
     SetPlayerSpeed(tempSpeed[0], tempSpeed[1]);
 
-    ascent(i in 0..frames) {
-        ChangeFrame(i);
-        wait(4);
+    //delete black rectangle
+    Obj_Delete(objBG);
+
+    //intro animation
+    let frame = 0;
+    loop (frames) {
+        ObjSprite2D_SetSourceRect(objFade, 0 + (frame * 16), 16, 16 + (frame * 16), 32);
+        ObjSprite2D_SetDestRect(objFade, 0, 0, 16, 16);
+        loop (10) { //number of frames to hold each animation frame
+            PlayAnimation(frame);
+            yield;
+        }
+        frame++;
     }
     
-    Obj_Delete(objBG);
+    Obj_Delete(objFade);
     Obj_Delete(objLogo);
 
-    function ChangeFrame(animationFrame) {
-        //Changes the animation frame of the fade effect
-        ObjRender_SetPosition(objBG, 0, 0, 1);
-        ObjSpriteList2D_ClearVertexCount(objBG);
-        loop(23) { //vertical
-            loop(24) { //horizontal
-                ObjSpriteList2D_SetSourceRect(objBG, 0 + animationFrame*16 , 0, 16 + animationFrame*16, 16);
-                ObjSpriteList2D_SetDestRect(objBG, 0, 0, 16, 16);
-                ObjSpriteList2D_AddVertex(objBG);
-                ObjRender_SetX(objBG, ObjRender_GetX(objBG) + 16);
+    function PlayAnimation(frame) {
+        let x = 0;
+        let y = 0;
+        loop (23) { //vertical
+            loop (24) { //horizontal
+                ObjParticleList_SetPosition(objFade, x, y, 1);
+                ObjParticleList_AddInstance(objFade);
+                x += 16;
             }
-            ObjRender_SetPosition(objBG, 0, ObjRender_GetY(objBG) + 16, 1);
+            x = 0;
+            y += 16;
         }
     }
 }
@@ -486,7 +500,7 @@ task TGainSpell(score) { //CHANGE THIS
 	ObjRender_SetX(objScore, 180);
 	ObjRender_SetY(objScore, 140);
 
-	loop(120) {
+	loop (120) {
 		yield;
 	}
 	Obj_Delete(objText);

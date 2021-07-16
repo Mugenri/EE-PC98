@@ -81,9 +81,9 @@ task PatternA{
     wait(20);
     if (ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0) {return;}
     let angleT = rand(0, 360);
-    loop(5) {
+    loop (5) {
         let id = 1;
-        loop(10) {
+        loop (10) {
             let obj = CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 4, angleT, id, 20);
             angleT += 360/10;
             id++;

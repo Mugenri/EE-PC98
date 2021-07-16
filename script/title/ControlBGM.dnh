@@ -83,7 +83,7 @@ task Package_PlayBGM(trackID, fade, delay) {
 
     objBGM = ID; //both point to same value. different when a new track is played. ID is used to control fade out while objBGM prepares a new track to be played
 
-    loop(delay) {yield;}
+    loop (delay) {yield;}
 
     ObjSound_Play(ID);
 

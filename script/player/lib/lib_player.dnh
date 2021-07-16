@@ -138,7 +138,7 @@ task THit() { //Player deathbomb window
     ascent(i in 0..17) {
         ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     }
-    loop(14) {
+    loop (14) {
         ascent(i in 0..17) {
             let angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
@@ -164,8 +164,8 @@ task TMiss() { //Player died
     MissCircle();
     
     task MissGlass() {
-        loop(7) {
-            loop(10) {
+        loop (7) {
+            loop (10) {
                 let speed = rand(0.2, 2.2);
                 let angleT = rand(0, 360);
                 let objGlass = ObjPrim_Create(OBJ_SPRITE_2D);
@@ -178,7 +178,7 @@ task TMiss() { //Player died
 
         task GlassMovement(obj, speed, angle) {
             let frame = 0;
-            loop(70) {
+            loop (70) {
                 let x = ObjRender_GetX(obj);
                 let y = ObjRender_GetY(obj);
                 ObjRender_SetPosition(obj, x + speed*cos(angle), y + speed*sin(angle), 1);
@@ -189,7 +189,7 @@ task TMiss() { //Player died
                 if (frame == 7) {
                     frame = 0;
                 }
-                loop(2) {yield;}
+                loop (2) {yield;}
             }
             Obj_Delete(obj);
         }
@@ -204,7 +204,7 @@ task TMiss() { //Player died
         ascent(i in 0..17) {
             ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         }
-        loop(120) {
+        loop (120) {
             ascent(i in 0..17) {
                 let angleT = 360/16 * i;
                 ObjPrim_SetVertexPosition(circle, i, xPos + radius*cos(angleT), yPos + radius*sin(angleT), 1);
@@ -230,15 +230,15 @@ task TRebirth() { //Player respawn
     SetPlayerInvincibilityFrame(240);
 
     RebirthEffect();
-    loop(240) {yield;}
+    loop (240) {yield;}
     SetForbidPlayerSpell(false);
 
     task RebirthEffect() {
-        loop(55) { //blink red
+        loop (55) { //blink red
             ObjRender_SetColor(objPlayer, 255, 0, 0);
             yield;
             ObjRender_SetColor(objPlayer, 255, 255, 255);
-            loop(3) {yield;}
+            loop (3) {yield;}
         }
 
         //blue circle indicating vulnerability
@@ -250,7 +250,7 @@ task TRebirth() { //Player respawn
         ascent(i in 0..17) {
             ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         }
-        loop(20) {
+        loop (20) {
             ascent(i in 0..17) {
                 let angleT = 360/16 * i;
                 ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);

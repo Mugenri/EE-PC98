@@ -52,7 +52,7 @@ task TShot() {
     loop {
         if (Shooting() && !IsPlayerSpellActive() && Alive() && countShot % 10 == 0) {
             if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) {
-                loop(3) { //unfocus shot
+                loop (3) { //unfocus shot
                     let offset = 80;
                     ascent(i in 1..7) {
                         CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13*i*(sin(count + i*offset)), 1, 1, 1);
@@ -60,19 +60,19 @@ task TShot() {
                     }
 
                     ObjSound_Play(seShot);
-                    loop(3) {
+                    loop (3) {
                         yield;
                     }
                 }
             } else {
-                loop(3) { //focus shot
+                loop (3) { //focus shot
                     let modifier = 15*sin(count);
                     ascent(i in -5..6) {
                         CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
                     }
 
                     ObjSound_Play(seShot);
-                    loop(3) {
+                    loop (3) {
                         yield;
                     }
                 }
@@ -124,7 +124,7 @@ task TOption(dir) {
     task OptionShot() {
         loop {
             if (Shooting() && Alive() && !IsPlayerSpellActive() && countShot % 10 == 0) {
-                loop(3) {
+                loop (3) {
                     let optionX = ObjRender_GetX(objOption);
                     let optionY = ObjRender_GetY(objOption);
                     let enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
@@ -133,7 +133,7 @@ task TOption(dir) {
                         angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
                     }
                     CreatePlayerShotA1(optionX, optionY, 28, angle, 4, 1, 2);
-                    loop(3) {
+                    loop (3) {
                         yield;
                     }
                 }
@@ -162,11 +162,11 @@ task TSpell() {
     let radius = 0;
     Effect();
 
-    loop(220) {
+    loop (220) {
         radius += 4;
         yield;
     }
-    loop(140) {
+    loop (140) {
         yield;
     }
 
@@ -174,7 +174,7 @@ task TSpell() {
     SetForbidPlayerShot(false);
     SetPlayerSpeed(3, 1.53);
     Obj_Delete(objManage);
-    loop(40) {yield;}
+    loop (40) {yield;}
 
     //vulnerability indicator
     ObjSound_Play(seVulnerable);
@@ -185,7 +185,7 @@ task TSpell() {
     ascent(i in 0..17) {
         ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     }
-    loop(20) {
+    loop (20) {
         ascent(i in 0..17) {
             let angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
@@ -203,7 +203,7 @@ task TSpell() {
         let playerY = GetPlayerY();
         let circle = CreateCircle(playerX, playerY);
         let lines = []; 
-        loop(10) {
+        loop (10) {
             lines = lines ~ [CreateLine(playerX, playerY)];
         }
 
