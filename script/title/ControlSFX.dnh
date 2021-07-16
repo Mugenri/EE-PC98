@@ -19,8 +19,8 @@ let objSound = ObjSound_Create();
 }
 
 @Event {
-	alternative(GetEventType())
-	case(EV_PLAY_SFX) {
+	alternative (GetEventType())
+	case (EV_PLAY_SFX) {
 		let seID = GetEventArgument(0);
         ObjSound_Load(objSound, SOUNDS[seID]);
         ObjSound_SetVolumeRate(objSound, GetSFXVolume());

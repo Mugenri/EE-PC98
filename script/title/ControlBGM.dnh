@@ -14,17 +14,17 @@ let flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
 }
 
 @Event {
-    alternative(GetEventType())
-    case(EV_PLAY_BGM) { //Set common data for MainTask to use
+    alternative (GetEventType())
+    case (EV_PLAY_BGM) { //Set common data for MainTask to use
         currentBGM = GetEventArgument(0)[0];
         SetAreaCommonData(AREA_TITLE, "BGM_ID", GetEventArgument(0)[0]); //track ID in BGMData.dnh
         SetAreaCommonData(AREA_TITLE, "BGM_Fade", GetEventArgument(0)[1]); //fade out time in frames
         SetAreaCommonData(AREA_TITLE, "BGM_Delay", GetEventArgument(0)[2]); //delay track start time in frames
     }
-    case(EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
+    case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         flagStop = GetEventArgument(0);
     }
-    case(EV_GET_BGM_TEXT) {
+    case (EV_GET_BGM_TEXT) {
         let info = GetBGMText(GetEventArgument(0));
         SetScriptResult(info[0]);
     }

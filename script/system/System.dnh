@@ -18,19 +18,19 @@
 }
 
 @Event {
-	alternative(GetEventType())
-	case(EV_START_BOSS_SPELL) {
+	alternative (GetEventType())
+	case (EV_START_BOSS_SPELL) {
 		// let path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
 		// let id = LoadScript(path);
 		// StartScript(id);
         //MODIFY magic circle, remove the sound effect and place here
 	}
-	case(EV_GAIN_SPELL) {
+	case (EV_GAIN_SPELL) {
 		let objScene = GetEnemyBossSceneObjectID();
 		let score = ObjEnemyBossScene_GetInfo(objScene, INFO_SPELL_SCORE);
 		TGainSpell(score);
 	}
-    case(EV_PLAYER_LOADED) {
+    case (EV_PLAYER_LOADED) {
         objPlayer = GetPlayerObjectID();
     }
 }

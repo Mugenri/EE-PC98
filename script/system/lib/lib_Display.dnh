@@ -1,13 +1,15 @@
 //STG window display setup library
 //#include high score library at some point
 
+const UI_PRIORITY = 10;
+
 //----------------------------------------------------
 //STG Frame Display
 //----------------------------------------------------
 function InitFrame() {
 	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_FRAME);
-	Obj_SetRenderPriority(obj, 0);
+	Obj_SetRenderPriorityI(obj, 0);
 	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
 	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
     SetStgFrame(32, 16, 416, 384, 20, 80);
@@ -20,13 +22,13 @@ task TIntro() {
     //Fade square sprite list TODO make this a particle list?
     let objBG = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
     ObjPrim_SetTexture(objBG, IMG_SYSTEM_FADE);
-    Obj_SetRenderPriority(objBG, 0.79);
+    Obj_SetRenderPriorityI(objBG, 79);
     let frames = 23; //number of animation frames
     ChangeFrame(0); //first frame is solid black
 
     //TODO Game logo when i get it
     let objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriority(objLogo, 0.79);
+    Obj_SetRenderPriorityI(objLogo, 79);
 
     while (objPlayer < 0) { //wait for player to load (~1 frame)
         yield;
@@ -82,7 +84,7 @@ function TDifficulty() {
     ObjText_SetFontType(objText, HEADER_FONT);
 	ObjText_SetVertexColor(objText, colors[diff]);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
-	Obj_SetRenderPriority(objText, 0.1);
+	Obj_SetRenderPriorityI(objText, UI_PRIORITY);
 	ObjRender_SetPosition(objText, 420, 20, 1);
     ObjText_SetMaxWidth(objText, 186);
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
@@ -98,7 +100,7 @@ task THighScore() {
 	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
-	Obj_SetRenderPriority(objScore, 0.1);
+	Obj_SetRenderPriorityI(objScore, UI_PRIORITY);
     ObjRender_SetPosition(objScore, 480, 48, 1);
 
 	// Digits
@@ -107,7 +109,7 @@ task THighScore() {
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
 	ObjRender_SetY(obj, 64);
 
     let scoreRender = 0;
@@ -146,7 +148,7 @@ task TScore() {
 	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
     ObjRender_SetColor(objScore, 0xFFFF00);
-	Obj_SetRenderPriority(objScore, 0.1);
+	Obj_SetRenderPriorityI(objScore, UI_PRIORITY);
     ObjRender_SetPosition(objScore, 488, 80, 1);
 
 	//Digits
@@ -155,7 +157,7 @@ task TScore() {
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
 	ObjRender_SetY(obj, 96);
 
     let scoreRender = 0;
@@ -195,14 +197,14 @@ task TBossLife {
     ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
     ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
     ObjRender_SetColor(objText, 0xFFFF00);
-    Obj_SetRenderPriority(objText, 0.1);
+    Obj_SetRenderPriorityI(objText, UI_PRIORITY);
     ObjRender_SetPosition(objText, 488, 129, 1);
 
     //Lifebar
 	let obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
     ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
     ObjPrim_SetVertexCount(obj, 4);
     ObjRender_SetPosition(obj, 448, 148, 1);
 
@@ -212,7 +214,7 @@ task TBossLife {
     ObjRender_SetBlendType(maxText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(maxText, 16, 337, 64, 348);
     ObjSprite2D_SetDestRect(maxText, 0, 0, 48, 11);
-    Obj_SetRenderPriority(maxText, 0.1);
+    Obj_SetRenderPriorityI(maxText, UI_PRIORITY);
     ObjRender_SetPosition(maxText, 529, 145, 1);
     Obj_SetVisible(maxText, false);
 
@@ -289,7 +291,7 @@ task TBossTimer {
 	let obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
     ObjPrim_SetVertexCount(obj, 2);
     ObjRender_SetPosition(obj, 448, 159, 1);
 
@@ -330,14 +332,14 @@ task TPlayerLife {
 	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
     ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
     ObjRender_SetColor(objText, 0xFFFF00);
-	Obj_SetRenderPriority(objText, 0.1);
+	Obj_SetRenderPriorityI(objText, UI_PRIORITY);
     ObjRender_SetPosition(objText, 456, 178, 1);
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
 	ObjRender_SetY(obj, 177);
 
 	while (true) {
@@ -380,14 +382,14 @@ task TPlayerSpell {
 	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
     ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
     ObjRender_SetColor(objText, 0xFFFF00);
-	Obj_SetRenderPriority(objText, 0.1);
+	Obj_SetRenderPriorityI(objText, UI_PRIORITY);
     ObjRender_SetPosition(objText, 456, 210, 1);
 
 	//Amount
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
 	ObjRender_SetY(obj, 210);
 
 	while (true) {
@@ -430,7 +432,7 @@ task TGraze() {
 	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
     ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
     ObjRender_SetColor(objGraze, 0xFFFF00);
-	Obj_SetRenderPriority(objGraze, 0.1);
+	Obj_SetRenderPriorityI(objGraze, UI_PRIORITY);
     ObjRender_SetPosition(objGraze, 456, 242, 1);
 
 	//Digits
@@ -439,7 +441,7 @@ task TGraze() {
 	let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.1);
+	Obj_SetRenderPriorityI(obj, UI_PRIORITY);
 	ObjRender_SetY(obj, 242);
 
 	while (true) {
@@ -469,7 +471,7 @@ task TGainSpell(score) { //CHANGE THIS
     ObjText_SetFontType(objText, SYS_FONT);
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
-	Obj_SetRenderPriority(objText, 0.6);
+	Obj_SetRenderPriorityI(objText, 60);
 	ObjRender_SetX(objText, 32);
 	ObjRender_SetY(objText, 98);
 
@@ -480,7 +482,7 @@ task TGainSpell(score) { //CHANGE THIS
 	ObjText_SetFontBold(objScore, true);
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetFontBorderType(objScore, BORDER_NONE);
-	Obj_SetRenderPriority(objScore, 0.6);
+	Obj_SetRenderPriorityI(objScore, 60);
 	ObjRender_SetX(objScore, 180);
 	ObjRender_SetY(objScore, 140);
 
@@ -501,7 +503,7 @@ task TFPS() {
 	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
 	ObjText_SetMaxWidth(objText, GetScreenWidth() - 8);
-	Obj_SetRenderPriority(objText, 1.0);
+	Obj_SetRenderPriorityI(objText, 100);
 	ObjRender_SetX(objText, 0);
 	ObjRender_SetY(objText, GetScreenHeight() - 20);
 
@@ -523,7 +525,7 @@ task TReplayFPS() {
 	ObjText_SetFontBorderType(objText, BORDER_FULL);
 	ObjText_SetFontBorderColor(objText, 255, 255, 255);
 	ObjText_SetFontBorderWidth(objText, 1);
-	Obj_SetRenderPriority(objText, 1.0);
+	Obj_SetRenderPriorityI(objText, 100);
 
 	let px = GetStgFrameLeft() + GetStgFrameWidth() - 18;
 	let py = GetStgFrameTop() + GetScreenHeight() - 14;

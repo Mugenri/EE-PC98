@@ -18,8 +18,8 @@ let titleEnd = false;
 }
 
 @Event {
-    alternative(GetEventType())
-    case(EV_TITLE_END) {
+    alternative (GetEventType())
+    case (EV_TITLE_END) {
         titleEnd = true;
     }
 }
@@ -33,7 +33,7 @@ let titleEnd = false;
 //Load Title
 task TTitleScene() {
     let testBG = ObjPrim_Create(OBJ_SPRITE_2D); //If this is ever visible something is wrong
-    Obj_SetRenderPriority(testBG, 0.01);
+    Obj_SetRenderPriorityI(testBG, 0);
     ObjSprite2D_SetSourceRect(testBG, 0, 0, 640, 400);
     ObjSprite2D_SetDestRect(testBG, 0, 0, 640, 400);
     ObjRender_SetColor(testBG, 0xFF0000); //its a bigass red rectangle

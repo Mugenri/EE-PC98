@@ -16,8 +16,8 @@ let dialoguePath = "";
 }
 
 @Event {
-    alternative(GetEventType())
-    case(EV_DIALOGUE_START) {
+    alternative (GetEventType())
+    case (EV_DIALOGUE_START) {
         dialogueRunning = true;
         dialoguePath =  GetEventArgument(0);
     }
@@ -55,11 +55,11 @@ task TStageScene(stageMode) {
         //--------------------------------------------------------------------
         if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH) {
             let pauseResult = PauseMenu();
-            alternative(pauseResult)
-            case(RESULT_RETRY) {
+            alternative (pauseResult)
+            case (RESULT_RETRY) {
                 //retry
             }
-            case(RESULT_END) {
+            case (RESULT_END) {
                 //Stop stage script
                 ClearBGM();
                 TerminateStageScene();
@@ -78,14 +78,14 @@ task TStageScene(stageMode) {
         if (stageState == STAGE_STATE_FINISHED) {
             let stageResult = GetStageSceneResult();
 
-            alternative(stageResult)
-            case(STAGE_RESULT_CLEARED) { //Game Won
+            alternative (stageResult)
+            case (STAGE_RESULT_CLEARED) { //Game Won
 
             }
-            case(STAGE_RESULT_PLAYER_DOWN) { //Game Over
+            case (STAGE_RESULT_PLAYER_DOWN) { //Game Over
 
             }
-            case(STAGE_RESULT_BREAK_OFF) { //CHECK WHAT THIS IS, this might be quit
+            case (STAGE_RESULT_BREAK_OFF) { //CHECK WHAT THIS IS, this might be quit
                 Default();
                 break;
             }

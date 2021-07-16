@@ -1,13 +1,13 @@
 //Character sprite library
 //Returns sprite sheets based on character ID found in lib_SystemAll.dnh
 function GetBossSprite(bossID) { //Returns boss stg sprite sheet
-    alternative(bossID)
-    case(BOSS_ID_TSURUBAMI) {return IMG_CHARA_TSURUBAMI[1];}
+    alternative (bossID)
+    case (BOSS_ID_TSURUBAMI) {return IMG_CHARA_TSURUBAMI[1];}
 }
 
 function GetBossPortrait(bossID) { //Returns character dialogue portrait sheet
-    alternative(bossID)
-    case(BOSS_ID_YABUSAME) {return IMG_CHARA_YABUSAME[0];}
-    case(BOSS_ID_TSUBAKURA) {return IMG_CHARA_TSUBAKURA[0];}
-    case(BOSS_ID_TSURUBAMI) {return IMG_CHARA_TSURUBAMI[0];}
+    alternative (bossID)
+    case (BOSS_ID_YABUSAME) {return IMG_CHARA_YABUSAME[0];}
+    case (BOSS_ID_TSUBAKURA) {return IMG_CHARA_TSUBAKURA[0];}
+    case (BOSS_ID_TSURUBAMI) {return IMG_CHARA_TSURUBAMI[0];}
 }

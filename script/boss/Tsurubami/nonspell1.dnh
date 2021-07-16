@@ -15,14 +15,14 @@ let loopTime = 60;
 objScene = GetEnemyBossSceneObjectID();
 
 @Event {
-    alternative(GetEventType())
-    case(EV_REQUEST_LIFE) {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
         SetScriptResult(350);
     }
-    case(EV_REQUEST_TIMER) {
+    case (EV_REQUEST_TIMER) {
         SetScriptResult(60);
     }
-    case(EV_REQUEST_SPELL_SCORE) {
+    case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(1000000);
     }
 }

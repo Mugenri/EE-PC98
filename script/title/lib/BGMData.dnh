@@ -3,10 +3,10 @@
 //Returns loop times for the specified track
 function GetBGMSample(bgmID) {
     alternative (bgmID)
-    //case(0) {return [3974884, 11330759];}  //Cute Devil's Innocence
-    case(0) {return[0, 4871328];} //Title Track
-    case(1) {return [352969, 7842912];} //Eternal Dance Engine
-    case(2) {return [0, 10598280];} //Broken Eternal Dance Engine
+    //case (0) {return [3974884, 11330759];}  //Cute Devil's Innocence
+    case (0) {return[0, 4871328];} //Title Track
+    case (1) {return [352969, 7842912];} //Eternal Dance Engine
+    case (2) {return [0, 10598280];} //Broken Eternal Dance Engine
     others {return [0,0];}
 }
 
@@ -14,10 +14,10 @@ function GetBGMSample(bgmID) {
 function GetBGMPath(bgmID) {
     let musicDir = GetCurrentScriptDirectory() ~ "./../../bgm/";
     alternative (bgmID)
-    //case(0) {return (musicDir ~ "gengetsu.ogg");} //Cute Devil's Innocence
-    case(0) {return (musicDir ~ "title.ogg");} //To the Village that isn't Real ~ Chain Link?
-    case(1) {return (musicDir ~ "tsurubami1.ogg");} //Eternal Dance Engine
-    case(2) {return (musicDir ~ "tsurubami2.ogg");} //Broken Eternal Dance Engine
+    //case (0) {return (musicDir ~ "gengetsu.ogg");} //Cute Devil's Innocence
+    case (0) {return (musicDir ~ "title.ogg");} //To the Village that isn't Real ~ Chain Link?
+    case (1) {return (musicDir ~ "tsurubami1.ogg");} //Eternal Dance Engine
+    case (2) {return (musicDir ~ "tsurubami2.ogg");} //Broken Eternal Dance Engine
     others {return ("");}
 }
 
@@ -26,20 +26,20 @@ function GetBGMText(bgmID) {
     //returns array of name, comment
     let name = "";
     let comment = "";
-    alternative(bgmID)
-    case(-1) { //music room default text
+    alternative (bgmID)
+    case (-1) { //music room default text
         name = "...";
         comment = "Select a track...";
     }
-    case(0) { //title
+    case (0) { //title
         name = "To the Village that isn't Real ~ Chain Link?";
         comment = "Test description";
     }
-    case(1) { //boss 1
+    case (1) { //boss 1
         name = "Eternal Dance Engine ~ Shall We Dance!!";
         comment = "testy 2";
     }
-    case(2) { //boss 2
+    case (2) { //boss 2
         name = "Broken Eternal Dance Engine";
         comment = "test descrippy 3 my guy";
     }

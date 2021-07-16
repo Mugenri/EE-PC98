@@ -54,63 +54,63 @@ task MainMenu(playIntro, selectedDefault) {
     loop { //Wait for input loop
         let userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
-        case(VK_UP, VK_LEFT) {
+        case (VK_UP, VK_LEFT) {
             CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
-        case(VK_DOWN, VK_RIGHT) {
+        case (VK_DOWN, VK_RIGHT) {
             CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
-        case(VK_OK) {
+        case (VK_OK) {
             MenuSelect();
             let temp = SelectItem(indexCurrent);
             if (temp > 0) {break;}
         }
-        case(VK_CANCEL, VK_PAUSE) {
+        case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_Cancel);
             indexCurrent = INDEX_QUIT;
         }
     }
 
     function SelectItem(index) {
-        alternative(index)
-        case(INDEX_START) {
+        alternative (index)
+        case (INDEX_START) {
             //Game Start
             TSelectStart();
             return 1;
         }
-        case(INDEX_EXTRA) {
+        case (INDEX_EXTRA) {
             //Extra Start
             TSelectExtra();
             return 1;
         }
-        case(INDEX_PRACTICE) {
+        case (INDEX_PRACTICE) {
             //Stage Practice
             TSelectPractice();
             return 1;
         }
-        case(INDEX_REPLAY) {
+        case (INDEX_REPLAY) {
             //Replays
             TSelectReplay();
             return 1;
         }
-        case(INDEX_MUSIC) {
+        case (INDEX_MUSIC) {
             //Music Room
             TSelectMusic();
             return 1;
         }
-        case(INDEX_SCORE) {
+        case (INDEX_SCORE) {
             //Result
             TSelectScore();
             return 1;
         }
-        case(INDEX_OPTION) {
+        case (INDEX_OPTION) {
             //Options
             TSelectOption();
             return 1;
         }
-        case(INDEX_QUIT) {
+        case (INDEX_QUIT) {
             //Exit Game
             SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
             ScreenBlackout(60, 200, 0, 0x000000);
@@ -123,13 +123,13 @@ task MainMenu(playIntro, selectedDefault) {
     task CreateMenuGraphicsMain() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriority(bg, 0.01);
+        Obj_SetRenderPriorityI(bg, 1);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
         let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(yabu, IMG_TT_YABU);
-        Obj_SetRenderPriority(yabu, 0.01);
+        Obj_SetRenderPriorityI(yabu, 1);
         ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
         ObjSprite2D_SetDestRect(yabu, 0, 0, 288, 360);
 

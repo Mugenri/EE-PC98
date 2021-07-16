@@ -6,7 +6,7 @@
 #include "./bosslib/lib_Character.dnh" //boss sprites/portrait retrieval
 #include "./loadlib/file_character.dnh" //boss sprites/portraits file paths
 
-const DIALOGUE_PRIORITY = 0.9; //Render priority
+const DIALOGUE_PRIORITY = 90; //Render priority
 let endDialogue = false; //flag for end of dialogue sequence
 let skip = false; //flag for skipping dialogue
 let reading = false; //text currently scrolling
@@ -53,7 +53,7 @@ task CreateTextBoxes() {
     function CreateTextBox(isBoss) {
         let obj = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXTBOX);
-        Obj_SetRenderPriority(obj, DIALOGUE_PRIORITY);
+        Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
         ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
         if (isBoss) {
             ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
@@ -86,7 +86,7 @@ function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in t
     }
 
     let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriority(obj, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
     ObjPrim_SetTexture(obj, GetBossPortrait(characterID));
     ObjRender_SetPosition(obj, xPos, yPos, 1);
 
@@ -96,52 +96,52 @@ function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in t
 function SetPortrait(obj, frame) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
     let top = 0;
     let left = 0;
-    alternative(frame) //select portrait frame
-    case(1) {
+    alternative (frame) //select portrait frame
+    case (1) {
         top = 0;
         left = 0;
     }
-    case(2) {
+    case (2) {
         top = 0;
         left = 128;
     }
-    case(3) {
+    case (3) {
         top = 0;
         left = 256;
     }
-    case(4) {
+    case (4) {
         top = 0;
         left = 384;
     }
-    case(5) {
+    case (5) {
         top = 128;
         left = 0;
     }
-    case(6) {
+    case (6) {
         top = 128;
         left = 128;
     }
-    case(7) {
+    case (7) {
         top = 128;
         left = 256;
     }
-    case(8) {
+    case (8) {
         top = 128;
         left = 384;
     }
-    case(9) {
+    case (9) {
         top = 256;
         left = 0;
     }
-    case(10) {
+    case (10) {
         top = 256;
         left = 128;
     }
-    case(11) {
+    case (11) {
         top = 256;
         left = 256;
     }
-    case(12) {
+    case (12) {
         top = 256;
         left = 384;
     }
@@ -172,7 +172,7 @@ function CreateDialogueText(isBoss) { //creates the dialogue text object
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     ObjText_SetLinePitch(obj, 0);
     ObjText_SetMaxWidth(obj, 242);
-    Obj_SetRenderPriority(obj, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
     ObjRender_SetPosition(obj, xPos, yPos, 1);
     return obj;
 }
@@ -254,12 +254,12 @@ function SkipCheck(flag) { //hold key to skip dialogue
 function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whiteout that places the boss sprite 
     //boss sprite to be placed, autodeletes upon script closure
     let bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriority(bossSprite, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(bossSprite, DIALOGUE_PRIORITY);
     ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID));
 
     //screen whiteout
     let whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriority(whiteout, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(whiteout, DIALOGUE_PRIORITY);
     ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
     ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window

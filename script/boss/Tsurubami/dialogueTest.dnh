@@ -14,7 +14,7 @@
 
 @Finalize {}
 
-task TBackground{
+task TBackground() {
 	let target = GetTransitionRenderTargetName();
 	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
 	ObjPrim_SetTexture(obj, target);
@@ -52,20 +52,20 @@ function Dialogue() {
 
     function DialogueLine(line) {
         //-----------------------------
-        alternative(line)
-        case(0) {
+        alternative (line)
+        case (0) {
             SetPortrait(playerCutin, 2);
             SetText(false, "Isn't it cool how the text/can scroll now?");
         }
-        case(1) {
+        case (1) {
             SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, GetStgFrameWidth()/2, 60);
             SetPortrait(playerCutin, 4);
             SetText(false, "Nobody asked you, nerd./This text is going on for/a very long time innit.");
         }
-        case(2) {
+        case (2) {
             SetBossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
         }
-        case(3) {
+        case (3) {
             SetText(true, "I just wanted to be involved/:(");
         }
         others{

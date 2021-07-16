@@ -21,7 +21,8 @@ function InitPlayer(imageFile, shotData) {
     TRender(GetPlayerObjectID(), pathImg);
     LoadPlayerShotData(pathShot);
 
-    particleList = InitParticleList(IMG_EFFECT_GRAZE, 0.3, 0, 0, 7, 7);
+    particleList = InitParticleList(IMG_EFFECT_GRAZE, 30, 0, 0, 7, 7);
+    ParticleListShader(particleList, 7/64, 1);
 
     ObjPlayer_AddIntersectionCircleA1(objPlayer, 0, 0, 1, 20);
     SetPlayerDownStateFrame(0);
@@ -35,8 +36,8 @@ function InitPlayer(imageFile, shotData) {
 }
 
 function PlayerEvent() {
-    alternative(GetEventType())
-	case(EV_REQUEST_SPELL) {
+    alternative (GetEventType())
+	case (EV_REQUEST_SPELL) {
 		let spell = GetPlayerSpell();
 		if (spell >= 1) {
 			SetScriptResult(true);
@@ -47,16 +48,16 @@ function PlayerEvent() {
 			SetScriptResult(false);
 		}
 	}
-	case(EV_HIT) {
+	case (EV_HIT) {
 		THit();
 	}
-    case(EV_PLAYER_SHOOTDOWN) {
+    case (EV_PLAYER_SHOOTDOWN) {
         TMiss();
     }
-	case(EV_PLAYER_REBIRTH) {
+	case (EV_PLAYER_REBIRTH) {
         TRebirth();
 	}
-    case(EV_GRAZE) {
+    case (EV_GRAZE) {
         // for each (bullet in GetEventArgument(2)) { //bullet[0] and bullet[1] are the x and y coords of each bullet grazed in this frame
         //     TGraze(bullet[0], bullet[1]);
         // }
@@ -95,12 +96,13 @@ function InitSound() {
 
 task TRender(ParentID, pathImg) {
 	ObjPrim_SetTexture(objPlayer, pathImg);
+    Obj_SetRenderPriorityI(objPlayer, 30);
 
     let objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objHitbox, pathImg);
     ObjSprite2D_SetSourceRect(objHitbox, 198, 6, 202, 10);
     ObjSprite2D_SetDestCenter(objHitbox);
-    Obj_SetRenderPriority(objHitbox, 0.31);
+    Obj_SetRenderPriorityI(objHitbox, 60);
 
 	while (!Obj_IsDeleted(ParentID)) {
 		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) {
@@ -275,9 +277,8 @@ task TGraze(x, y) { //Summon graze particle, add to particle list
     let frame = 0;
     loop (43) {
         loop (2) {
-            ObjSprite2D_SetSourceRect(particleList, 0 + frame*7, 0, 7 + frame*7, 7);
-            ObjSprite2D_SetDestCenter(particleList);
             ObjParticleList_SetPosition(particleList, x, y, 1);
+            ObjParticleList_SetExtraData(particleList, frame, 0, 0);
 
             ObjParticleList_AddInstance(particleList);
             yield;

@@ -53,20 +53,20 @@ function ScenePlayerSelect(selectedDefault) {
     loop {
         let userKey = CheckKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
-        case(VK_LEFT) {
+        case (VK_LEFT) {
             CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
-        case(VK_RIGHT) {
+        case (VK_RIGHT) {
             CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
-        case(VK_OK) {
+        case (VK_OK) {
             resultIndex = indexCurrent;
             MenuSelect();
             break;
         }
-        case(VK_CANCEL, VK_PAUSE) {
+        case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_Cancel);
             ScreenBlackout(10, 5, 10, 0x000000);
             wait(10);
@@ -90,7 +90,7 @@ function ScenePlayerSelect(selectedDefault) {
     task CreateMenuGraphicsPlayer() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriority(bg, 0.01);
+        Obj_SetRenderPriorityI(bg, 1);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
@@ -100,21 +100,21 @@ function ScenePlayerSelect(selectedDefault) {
 
     task CreateMenuItemPlayer(index, x, y) {
         let objPlayerShadow = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriority(objPlayerShadow, 0.20);
+        Obj_SetRenderPriorityI(objPlayerShadow, 20);
         ObjPrim_SetTexture(objPlayerShadow, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerShadow, 0, 160, 224, 320);
         ObjSprite2D_SetDestCenter(objPlayerShadow);
         ObjRender_SetPosition(objPlayerShadow, x, y, 1);
 
         let objPlayerBack = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriority(objPlayerBack, 0.20);
+        Obj_SetRenderPriorityI(objPlayerBack, 20);
         ObjPrim_SetTexture(objPlayerBack, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerBack, 224, 0, 448, 160);
         ObjSprite2D_SetDestCenter(objPlayerBack);
         ObjRender_SetPosition(objPlayerBack, x, y, 1);
 
         let objPlayerFront = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriority(objPlayerFront, 0.20);
+        Obj_SetRenderPriorityI(objPlayerFront, 20);
         ObjPrim_SetTexture(objPlayerFront, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerFront, 0, 0, 224, 160);
         ObjSprite2D_SetDestCenter(objPlayerFront);

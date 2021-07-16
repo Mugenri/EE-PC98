@@ -78,7 +78,7 @@ float4 mainPS(PS_INPUT inPs) : COLOR0 {
 
 technique Render {
 	pass P0 {
-		VertexShader = compile vs_2_0 mainVS();
+		VertexShader = compile vs_3_0 mainVS();
 		PixelShader = compile ps_3_0 mainPS();
 	}
 }

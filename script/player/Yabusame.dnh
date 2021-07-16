@@ -91,7 +91,7 @@ task TOption(dir) {
     ObjPrim_SetTexture(objOption, pathImg);
     ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriority(objOption, 0.29);
+    Obj_SetRenderPriorityI(objOption, 29);
 
     OptionShot();
 
@@ -107,9 +107,9 @@ task TOption(dir) {
 
         //Render over player as if rotating around them
         if (rotationX == dir) {
-            Obj_SetRenderPriority(objOption, 0.29);
+            Obj_SetRenderPriorityI(objOption, 29);
         } else if (rotationX == -dir) {
-            Obj_SetRenderPriority(objOption, 0.30);
+            Obj_SetRenderPriorityI(objOption, 30);
         }
 
         if (!Alive) {
@@ -245,7 +245,7 @@ task TSpell() {
             let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
             ObjPrim_SetVertexCount(line, 2);
-            Obj_SetRenderPriority(line, 0.28);
+            Obj_SetRenderPriorityI(line, 28);
             ObjPrim_SetVertexPosition(line, 0, xPos, yPos, 1);
             ObjPrim_SetVertexPosition(line, 1, xPos, yPos, 1);
             ObjPrim_SetVertexColor(line, 0, 0, 0, 0);
@@ -259,7 +259,7 @@ task TSpell() {
             ObjSpell_SetDamage(circle, 5);
             ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriority(circle, 0.28);
+            Obj_SetRenderPriorityI(circle, 28);
             ObjPrim_SetVertexPosition(circle, 0, xPos, yPos, 1);
             ascent(i in 0..34) {
                 ObjPrim_SetVertexColor(circle, i, 221, 204, 68);

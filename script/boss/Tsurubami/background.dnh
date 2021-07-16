@@ -30,7 +30,7 @@ task TBackground() {
     ObjRender_SetTextureFilterMin(bg, 0);
     ObjRender_SetTextureFilterMag(bg, 0);
     ObjRender_SetTextureFilterMip(bg, 0);
-    Obj_SetRenderPriority(bg, 0.2);
+    Obj_SetRenderPriorityI(bg, 20);
 
     let count = 30;
     let color = 0;
@@ -105,7 +105,7 @@ task TBackground() {
 
             let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
-            Obj_SetRenderPriority(line, 0.2);
+            Obj_SetRenderPriorityI(line, 20);
             ObjPrim_SetVertexCount(line, points);
             ascent(i in 0..points) {
                 ObjPrim_SetVertexColor(line, i, 78, 78, 78);

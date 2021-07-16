@@ -4,7 +4,7 @@ task AsciiScoreNum(x, y, score, color){
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
     ObjRender_SetColor(obj, color);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriority(obj, 0.7);
+	Obj_SetRenderPriorityI(obj, 70);
 	ObjRender_SetY(obj, y);
 
     let listNum = DigitToArray(score);
