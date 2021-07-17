@@ -67,7 +67,7 @@ function ScenePlayerSelect(selectedDefault) {
             break;
         }
         case (VK_CANCEL, VK_PAUSE) {
-            CallSFX(SND_TT_Cancel);
+            CallSFX(SND_TT_CANCEL);
             ScreenBlackout(10, 5, 10, 0x000000);
             wait(10);
             break;

@@ -53,7 +53,7 @@ const GAME_SPELL    = 3; //Spell Practice Mode
 //Sound Constants
 const SND_TT_SELECT = 0;
 const SND_TT_DECIDE = 1;
-const SND_TT_Cancel = 2;
+const SND_TT_CANCEL = 2;
 
 //Position Constants
 const MIN_X = 0;

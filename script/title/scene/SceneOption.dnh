@@ -65,7 +65,7 @@ function SceneOption() {
             }
         }
         case (VK_CANCEL, VK_PAUSE) {
-            CallSFX(SND_TT_Cancel);
+            CallSFX(SND_TT_CANCEL);
             indexCurrent = INDEX_QUIT;
         }
     }

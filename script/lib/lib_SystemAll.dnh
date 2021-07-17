@@ -11,25 +11,23 @@ function StartDialogueScript(path) {NotifyEvent(GetStageScriptID(), EV_DIALOGUE_
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------
-// --- SFX Functions --- //
-function CallSFX(soundID) { NotifyEvent(GetSFXScriptID(), EV_PLAY_SFX, soundID); }
-
-function GetSFXScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_SFX", -1)); }
-
-function GetSFXVolume() { return(GetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100)); }
-
+function GetAudioScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", -1)); }
 // --- BGM Functions --- //
-function GetBGMScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_BGM", -1)); }
 //Play track
-function StartBGM(trackID, fade, delay) { NotifyEvent(GetBGMScriptID(), EV_PLAY_BGM, [trackID, fade, delay]); }
+function StartBGM(trackID, fade, delay) { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [trackID, fade, delay]); }
 //Pause track
-function StopBGM() { NotifyEvent(GetBGMScriptID(), EV_STOP_BGM, true); }
+function StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
-function RestartBGM() { NotifyEvent(GetBGMScriptID(), EV_STOP_BGM, false); }
+function RestartBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
 //Reset track
-function ClearBGM() { NotifyEvent(GetBGMScriptID(), EV_PLAY_BGM, [-1, 0, 0]); }
+function ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [-1, 0, 0]); }
 
 function GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
+
+// --- SFX Functions --- //
+function CallSFX(soundID) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID); }
+
+function GetSFXVolume() { return(GetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100)); }
 
 //----------------------------------------------------
 //MENU KEY FUNCTIONS

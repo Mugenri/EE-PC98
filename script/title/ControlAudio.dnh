@@ -2,19 +2,30 @@
 #include "./lib/BGMData.dnh"
 #include "./lib/lib_Common.dnh"
 
-let objBGM = -1; //used to hold the current playing BGM ID
+//BGM globals
+let objBGM = -1; //used to hold the current playing BGM ID. this is not the actual sound object
 let currentBGM = -1; //used to check current playing track in MainTask
-let stop = false; //compared against stop for pausing and restarting BGM track
 let flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
 
+//SFX globals
+let objSFX = ObjSound_Create();
+const SOUNDS = [
+    //Title
+    /*0*/ DIR_SE ~ "menuselect.wav",
+    /*1*/ DIR_SE ~ "menudecide.wav",
+    /*2*/ DIR_SE ~ "menucancel.wav",
+];
+
 @Initialize {
-    SetAreaCommonData(AREA_TITLE, "SCRIPT_BGM", GetOwnScriptID());
+    SetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", GetOwnScriptID());
     SetAutoDeleteObject(true);
+    InitAudio();
     MainTask();
 }
 
 @Event {
     alternative (GetEventType())
+    //BGM events
     case (EV_PLAY_BGM) { //Set common data for MainTask to use
         currentBGM = GetEventArgument(0)[0];
         SetAreaCommonData(AREA_TITLE, "BGM_ID", GetEventArgument(0)[0]); //track ID in BGMData.dnh
@@ -23,11 +34,19 @@ let flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
     }
     case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         flagStop = GetEventArgument(0);
+
     }
     case (EV_GET_BGM_TEXT) {
         let info = GetBGMText(GetEventArgument(0));
         SetScriptResult(info[0]);
     }
+    //SFX events
+    case (EV_PLAY_SFX) {
+		let seID = GetEventArgument(0);
+        ObjSound_Load(objSFX, SOUNDS[seID]);
+        ObjSound_SetVolumeRate(objSFX, GetSFXVolume());
+        ObjSound_Play(objSFX);
+	}
 }
 
 @MainLoop {
@@ -37,7 +56,6 @@ let flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
 @Finalize {}
 
 task MainTask{
-    stop = false;
     let BGMID = -1;
 
     loop {
@@ -87,12 +105,14 @@ task Package_PlayBGM(trackID, fade, delay) {
 
     ObjSound_Play(ID);
 
+    let stop = false;
+
     while (!Obj_IsDeleted(ID) && !Obj_GetValueD(ID, "BGM_End", false)) {
 
         ObjSound_SetVolumeRate(ID, GetBGMVolume());
         if (stop != flagStop) {
-            if (flagStop) {ObjSound_Stop(ID);}
-            else {ObjSound_Play(ID);}
+            if (flagStop) ObjSound_Stop(ID);
+            else ObjSound_Play(ID);
             stop = flagStop;
         }
         yield;
@@ -111,4 +131,21 @@ task Package_PlayBGM(trackID, fade, delay) {
         }
     }
     Obj_Delete(ID);
+}
+
+function InitAudio() { //preload all audio files to prevent weird stuttering upon first play
+    //BGM
+    let tempID = 0;
+    let tempPath = "";
+    loop {
+        tempPath = GetBGMPath(tempID);
+        if (tempPath == "") break;
+        LoadSound(tempPath);
+        tempID++;
+    }
+    //SFX
+    ObjSound_SetSoundDivision(objSFX, SOUND_SE);
+    for each (sound in SOUNDS) {
+        LoadSound(sound);
+    }
 }

@@ -7,14 +7,8 @@ task InitLoad() {
 
 task LoadScene { //loading screen
 
-    local { //load BGM manager
-        let path = GetCurrentScriptDirectory() ~ "ControlBGM.dnh";
-        let id = LoadScript(path);
-        StartScript(id);
-    }
-
-    local { //load package sfx manager
-        let path = GetCurrentScriptDirectory() ~ "ControlSFX.dnh";
+    local { //load audio manager
+        let path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
         let id = LoadScript(path);
         StartScript(id);
     }
