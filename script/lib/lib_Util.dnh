@@ -46,9 +46,9 @@ function CreateText(x, y, priority, text, color) { //color is an ARGB hex value 
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     return obj;
 }
-//overload with no priority
+//overload with no specified priority
 function CreateText(x, y, text, color) {
-    return CreateText(x, y, 20, text, color);
+    return CreateText(x, y, RP_UI_TEXT, text, color);
 }
 
 //Initializes a 2D particle list

@@ -21,7 +21,7 @@ task TBackground() {
     ObjRender_SetBlendType(obj, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 640, 400);
     ObjSprite2D_SetDestRect(obj, 0, 0, 640, 400);
-	Obj_SetRenderPriorityI(obj, 0);
+	Obj_SetRenderPriorityI(obj, RP_UI_MIN);
 }
 
 //dialogue function

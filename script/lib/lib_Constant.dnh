@@ -1,4 +1,5 @@
 //Constants library
+//Version number
 const GAME_VERSION = "0.01";
 
 //Font constants/paths
@@ -12,18 +13,18 @@ const HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/MagicDe
 //Stage Constants
 
 //System Constants
-const EV_CREATE_ITEM        = EV_USER_SYSTEM + 1; //Create Item, pass [x, y, type_constant]
+const EV_CREATE_ITEM        = EV_USER_SYSTEM + 1i; //Create Item, pass [x, y, type_constant]
 
 //Package Constants
-const EV_PLAY_BGM           = EV_USER_PACKAGE + 1; //Stops current track, plays new track
-const EV_RESET_VOLUME       = EV_USER_PACKAGE + 2; //do i even need this, i dont think i'm using it
-const EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3; //unlock specified achievement
-const EV_STOP_BGM           = EV_USER_PACKAGE + 4; //pass true to pause, pass false to resume
-const EV_PLAY_SFX           = EV_USER_PACKAGE + 5; //Play sfx from title sfx script
-const EV_TITLE_END          = EV_USER_PACKAGE + 6; //End title screen script
-const EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7; //Triggered when the player script is finished initializing
-const EV_DIALOGUE_START     = EV_USER_PACKAGE + 8; //Called to start a dialogue sequence. Pass desired dialogue script
-const EV_GET_BGM_TEXT       = EV_USER_PACKAGE + 9; //Pass BGM ID, returns an array of [name, comment]
+const EV_PLAY_BGM           = EV_USER_PACKAGE + 1i; //Stops current track, plays new track
+const EV_RESET_VOLUME       = EV_USER_PACKAGE + 2i; //do i even need this, i dont think i'm using it
+const EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3i; //unlock specified achievement
+const EV_STOP_BGM           = EV_USER_PACKAGE + 4i; //pass true to pause, pass false to resume
+const EV_PLAY_SFX           = EV_USER_PACKAGE + 5i; //Play sfx from title sfx script
+const EV_TITLE_END          = EV_USER_PACKAGE + 6i; //End title screen script
+const EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7i; //Triggered when the player script is finished initializing
+const EV_DIALOGUE_START     = EV_USER_PACKAGE + 8i; //Called to start a dialogue sequence. Pass desired dialogue script
+const EV_GET_BGM_TEXT       = EV_USER_PACKAGE + 9i; //Pass BGM ID, returns an array of [name, comment]
 
 //Boss Name Constants
 const BOSS_ID_TSURUBAMI = "Tsurubami";
@@ -33,27 +34,45 @@ const BOSS_ID_YABUSAME  = "Yabusame";
 const BOSS_ID_TSUBAKURA = "Tsubakura";
 
 //Player Shot Type Constants
-const PLAYER_YABUSAME  = 0;
-const PLAYER_TSUBAKURA = 1;
+const PLAYER_YABUSAME  = 0i;
+const PLAYER_TSUBAKURA = 1i;
 
 //Difficulty Constants
-const D_EASY    = 0;
-const D_NORMAL  = 1;
-const D_HARD    = 2;
-const D_LUNATIC = 3;
-const D_EXTRA   = 4;
-const D_ABEX    = 5;
+const D_EASY    = 0i;
+const D_NORMAL  = 1i;
+const D_HARD    = 2i;
+const D_LUNATIC = 3i;
+const D_EXTRA   = 4i;
+const D_ABEX    = 5i;
 
 //Mode Constants
-const GAME_NONE     = 0; //None
-const GAME_MAIN     = 1; //Normal Game
-const GAME_PRACTICE = 2; //Stage Practice Mode
-const GAME_SPELL    = 3; //Spell Practice Mode
+const GAME_NONE     = 0i; //None
+const GAME_MAIN     = 1i; //Normal Game
+const GAME_PRACTICE = 2i; //Stage Practice Mode
+const GAME_SPELL    = 3i; //Spell Practice Mode
 
 //Sound Constants
-const SND_TT_SELECT = 0;
-const SND_TT_DECIDE = 1;
-const SND_TT_CANCEL = 2;
+const SND_TT_SELECT = 0i;
+const SND_TT_DECIDE = 1i;
+const SND_TT_CANCEL = 2i;
+
+//Render Priority Constants
+const RP_UI_MIN     = 0i;  //Min render priority
+const RP_UI_BG      = 2i;  //Menu backgrounds
+const RP_UI_IMG     = 5i;  //Menu/UI images
+const RP_UI_TEXT    = 10i; //Menu/UI text
+const RP_STG_MIN    = 20i; //Min stage render priority
+const RP_STG_BG     = 22i; //Stage backgrounds
+const RP_STG_EFFECT = 25i; //Effects that render over the background only
+const RP_STG_ENEMY  = 30i; //Boss/Enemy sprite
+const RP_STG_PLAYER = 40i; //Player sprite/bullets
+const RP_STG_ITEM   = 50i; //Items
+const RP_STG_SHOT   = 60i; //Bullets
+const RP_STG_HITBOX = 70i; //Player hitbox
+const RP_STG_TEXT   = 75i; //Item pickup text
+const RP_STG_END    = 78i; //End of stage screen
+const RP_STG_MAX    = 80i; //Max stage render priority
+const RP_UI_MAX     = 100i;//Max render priority
 
 //Position Constants
 const MIN_X = 0;
@@ -64,14 +83,14 @@ const MID_X = GetStgFrameWidth() / 2;
 const MID_Y = GetStgFrameHeight() / 2;
 
 //Item Constants
-const ITEM_POW      = 1; //Power
-const ITEM_SCORE    = 2; //Point
-const ITEM_DREAM    = 3; //Dream
-const ITEM_POW_L    = 4; //Large Power
-const ITEM_POW_FULL = 5; //Full Power
-const ITEM_BOMB     = 6; //Bomb
-const ITEM_EXTEND   = 7; //Life
+const ITEM_POW      = 1i; //Power
+const ITEM_SCORE    = 2i; //Point
+const ITEM_DREAM    = 3i; //Dream
+const ITEM_POW_L    = 4i; //Large Power
+const ITEM_POW_FULL = 5i; //Full Power
+const ITEM_BOMB     = 6i; //Bomb
+const ITEM_EXTEND   = 7i; //Life
 
 //Bullet Cancel Key Field Constants (these are not the values)
-const BULLET_SCORE      = 0; //How much score the bullet should give
-const BULLET_DROP_ITEM  = 1; //If the bullet spawns a point item when cancelled
+const BULLET_SCORE      = 0i; //How much score the bullet should give
+const BULLET_DROP_ITEM  = 1i; //If the bullet spawns a point item when cancelled

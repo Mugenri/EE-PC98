@@ -119,7 +119,7 @@ task TShot() {
         let objEffect = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(objEffect, pathImg);
         ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff - 16, 1);
-        Obj_SetRenderPriorityI(objEffect, 29);
+        Obj_SetRenderPriorityI(objEffect, RP_STG_PLAYER-1i);
 
         let frame = 0;
 
@@ -154,7 +154,7 @@ task TOption(offset) {
     ObjPrim_SetTexture(objOption, pathImg);
     ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriorityI(objOption, 29);
+    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
 
     OptionShot();
 
@@ -170,9 +170,9 @@ task TOption(offset) {
 
         //Render over player as if rotating around them
         if (rotationX == 1) {
-            Obj_SetRenderPriorityI(objOption, 29);
+            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
         } else if (rotationX == -1) {
-            Obj_SetRenderPriorityI(objOption, 30);
+            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
         }
 
         if (!Alive) {
@@ -327,7 +327,7 @@ task TSpell() {
             ObjSpell_SetEraseShot(circle, true);
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, 28);
+            Obj_SetRenderPriorityI(circle, RP_STG_EFFECT);
             ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent(i in 0..34) {
                 ObjPrim_SetVertexColor(circle, i, color[0], color[1], color[2]);

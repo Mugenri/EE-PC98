@@ -78,13 +78,13 @@ function SceneOption() {
     task CreateMenuGraphicsOption() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriorityI(bg, 1);
+        Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
         let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(yabu, IMG_TT_YABU);
-        Obj_SetRenderPriorityI(yabu, 1);
+        Obj_SetRenderPriorityI(yabu, RP_UI_BG);
         ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
         ObjSprite2D_SetDestRect(yabu, 0, 0, 288, 360);
 
@@ -107,6 +107,8 @@ function SceneOption() {
         if (index == INDEX_VOLUME_BGM || index == INDEX_VOLUME_SFX) {
             CreateOptionSlider(index);
         }
+
+        //Additional options would go here
 
         while (!exitFlag) {
             Obj_SetVisible(objTextHighlight, index == indexCurrent);

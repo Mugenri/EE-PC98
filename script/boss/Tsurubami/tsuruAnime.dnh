@@ -8,6 +8,7 @@ task DrawBoss(objBoss) {
     ObjPrim_SetTexture(objBoss, imgChara);
     ObjSprite2D_SetSourceRect(objBoss, 0, 0, 64, 64);
     ObjSprite2D_SetDestCenter(objBoss);
+    Obj_SetRenderPriorityI(objBoss, RP_STG_ENEMY);
 
     let frame = 0;
     let frameCharge = 0;

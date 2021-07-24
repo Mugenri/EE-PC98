@@ -53,7 +53,7 @@ task CreateTextBoxes() {
     function CreateTextBox(isBoss) {
         let obj = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXTBOX);
-        Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
+        Obj_SetRenderPriorityI(obj, RP_UI_IMG);
         ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
         if (isBoss) {
             ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
@@ -86,7 +86,7 @@ function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in t
     }
 
     let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(obj, RP_UI_IMG);
     ObjPrim_SetTexture(obj, GetBossPortrait(characterID));
     ObjRender_SetPosition(obj, xPos, yPos, 1);
 
@@ -172,7 +172,7 @@ function CreateDialogueText(isBoss) { //creates the dialogue text object
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     ObjText_SetLinePitch(obj, 0);
     ObjText_SetMaxWidth(obj, 242);
-    Obj_SetRenderPriorityI(obj, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
     ObjRender_SetPosition(obj, xPos, yPos, 1);
     return obj;
 }
@@ -254,12 +254,12 @@ function SkipCheck(flag) { //hold key to skip dialogue
 function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whiteout that places the boss sprite 
     //boss sprite to be placed, autodeletes upon script closure
     let bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(bossSprite, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(bossSprite, RP_UI_IMG);
     ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID));
 
     //screen whiteout
     let whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(whiteout, DIALOGUE_PRIORITY);
+    Obj_SetRenderPriorityI(whiteout, RP_UI_MAX);
     ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
     ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window

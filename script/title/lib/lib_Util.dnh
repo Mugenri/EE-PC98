@@ -7,7 +7,7 @@ function CreateCursor(x, y) {
     ObjPrim_SetTexture(obj, IMG_TT_CURSOR);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 128, 16);
     ObjSprite2D_SetDestCenter(obj);
-    Obj_SetRenderPriorityI(obj, 10);
+    Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
     ObjRender_SetPosition(obj, x, y, 1);
     return obj;
 }
@@ -15,7 +15,7 @@ function CreateCursor(x, y) {
 //Screen fade animation
 function ScreenBlackout(fadeOut, between, fadeIn, color) {
     let obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(obj, 100);
+    Obj_SetRenderPriorityI(obj, RP_UI_MAX);
     ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
     ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
     ObjRender_SetColor(obj, color);

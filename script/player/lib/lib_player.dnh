@@ -21,7 +21,7 @@ function InitPlayer(imageFile, shotData) {
     TRender(GetPlayerObjectID(), pathImg);
     LoadPlayerShotData(pathShot);
 
-    particleList = InitParticleList(IMG_EFFECT_GRAZE, 30, 0, 0, 7, 7);
+    particleList = InitParticleList(IMG_EFFECT_GRAZE, RP_STG_PLAYER, 0, 0, 7, 7);
     ParticleListShader(particleList, 7/64, 1);
 
     ObjPlayer_AddIntersectionCircleA1(objPlayer, 0, 0, 1, 20);
@@ -96,13 +96,13 @@ function InitSound() {
 
 task TRender(ParentID, pathImg) {
 	ObjPrim_SetTexture(objPlayer, pathImg);
-    Obj_SetRenderPriorityI(objPlayer, 30);
+    Obj_SetRenderPriorityI(objPlayer, RP_STG_PLAYER);
 
     let objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objHitbox, pathImg);
     ObjSprite2D_SetSourceRect(objHitbox, 198, 6, 202, 10);
     ObjSprite2D_SetDestCenter(objHitbox);
-    Obj_SetRenderPriorityI(objHitbox, 60);
+    Obj_SetRenderPriorityI(objHitbox, RP_STG_HITBOX);
 
 	while (!Obj_IsDeleted(ParentID)) {
 		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) {

@@ -90,7 +90,7 @@ function ScenePlayerSelect(selectedDefault) {
     task CreateMenuGraphicsPlayer() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriorityI(bg, 1);
+        Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
@@ -100,21 +100,21 @@ function ScenePlayerSelect(selectedDefault) {
 
     task CreateMenuItemPlayer(index, x, y) {
         let objPlayerShadow = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerShadow, 20);
+        Obj_SetRenderPriorityI(objPlayerShadow, RP_UI_IMG);
         ObjPrim_SetTexture(objPlayerShadow, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerShadow, 0, 160, 224, 320);
         ObjSprite2D_SetDestCenter(objPlayerShadow);
         ObjRender_SetPosition(objPlayerShadow, x, y, 1);
 
         let objPlayerBack = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerBack, 20);
+        Obj_SetRenderPriorityI(objPlayerBack, RP_UI_IMG);
         ObjPrim_SetTexture(objPlayerBack, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerBack, 224, 0, 448, 160);
         ObjSprite2D_SetDestCenter(objPlayerBack);
         ObjRender_SetPosition(objPlayerBack, x, y, 1);
 
         let objPlayerFront = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerFront, 20);
+        Obj_SetRenderPriorityI(objPlayerFront, RP_UI_IMG);
         ObjPrim_SetTexture(objPlayerFront, imgPlayerPortrait[index]);
         ObjSprite2D_SetSourceRect(objPlayerFront, 0, 0, 224, 160);
         ObjSprite2D_SetDestCenter(objPlayerFront);

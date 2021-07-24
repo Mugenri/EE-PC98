@@ -1,5 +1,5 @@
+#include "./../../lib/lib_Common.dnh"
 let bSpell = false;
-let csd = GetCurrentScriptDirectory();
 
 @Initialize {
     SetAutoDeleteObject(true);
@@ -22,7 +22,7 @@ let csd = GetCurrentScriptDirectory();
 
 task TBackground() {
     //bg
-    let path = csd ~ "./../../img/stg/tsurubamiBG.png";
+    let path = DIR_IMG ~ "stg/tsurubamiBG.png";
     let bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, path);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
@@ -30,7 +30,7 @@ task TBackground() {
     ObjRender_SetTextureFilterMin(bg, 0);
     ObjRender_SetTextureFilterMag(bg, 0);
     ObjRender_SetTextureFilterMip(bg, 0);
-    Obj_SetRenderPriorityI(bg, 20);
+    Obj_SetRenderPriorityI(bg, RP_STG_BG);
 
     let count = 30;
     let color = 0;
@@ -105,7 +105,7 @@ task TBackground() {
 
             let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
-            Obj_SetRenderPriorityI(line, 20);
+            Obj_SetRenderPriorityI(line, RP_STG_BG);
             ObjPrim_SetVertexCount(line, points);
             ascent(i in 0..points) {
                 ObjPrim_SetVertexColor(line, i, 78, 78, 78);

@@ -69,7 +69,7 @@ function SceneRankSelect(selectedDefault) {
     task CreateMenuGraphicsRank() {
         let bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriorityI(bg, 1);
+        Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
@@ -79,14 +79,14 @@ function SceneRankSelect(selectedDefault) {
 
     task CreateMenuItemRank(index, x, y, imgIndex) {
         let objText = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objText, 20);
+        Obj_SetRenderPriorityI(objText, RP_UI_IMG);
         ObjPrim_SetTexture(objText, IMG_TT_RANK);
         ObjSprite2D_SetSourceRect(objText, 0, imgIndex * 16, 223, (imgIndex+1) * 16);
         ObjSprite2D_SetDestCenter(objText);
         ObjRender_SetPosition(objText, x, y, 1);
 
         let objTextHighlight = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objTextHighlight, 20);
+        Obj_SetRenderPriorityI(objTextHighlight, RP_UI_IMG);
         ObjPrim_SetTexture(objTextHighlight, IMG_TT_RANK);
         ObjSprite2D_SetSourceRect(objTextHighlight, 0, imgIndex * 16, 223, (imgIndex+1) * 16);
         ObjSprite2D_SetDestCenter(objTextHighlight);
