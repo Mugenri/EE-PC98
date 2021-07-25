@@ -6,8 +6,10 @@
 //GENERAL FUNCTIONS
 //----------------------------------------------------
 function GetStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
+function GetPlayMode() { return(GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE)); }
+function GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
-function StartDialogueScript(path) {NotifyEvent(GetStageScriptID(), EV_DIALOGUE_START, path);}
+function StartDialogueScript(path) { NotifyEvent(GetStageScriptID(), EV_DIALOGUE_START, path); }
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------

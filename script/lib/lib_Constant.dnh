@@ -45,11 +45,16 @@ const D_LUNATIC = 3i;
 const D_EXTRA   = 4i;
 const D_ABEX    = 5i;
 
-//Mode Constants
+//Game Mode Constants
 const GAME_NONE     = 0i; //None
 const GAME_MAIN     = 1i; //Normal Game
 const GAME_PRACTICE = 2i; //Stage Practice Mode
 const GAME_SPELL    = 3i; //Spell Practice Mode
+
+//Stage Mode Constants
+const MODE_NONE     = 0i; //Normal stage start
+const MODE_RETRY    = 1i; //Retry from pause menu
+const MODE_CONTINUE = 2i; //After using a continue
 
 //Sound Constants
 const SND_TT_SELECT = 0i;

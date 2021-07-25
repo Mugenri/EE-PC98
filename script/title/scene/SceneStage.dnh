@@ -2,9 +2,6 @@
 #include "./../lib/lib_Common.dnh"
 #include "./../lib/lib_Util.dnh"
 
-const MODE_NONE = 0;
-const MODE_RETRY = 1;
-
 let dialogueRunning = false;
 let dialoguePath = "";
 
@@ -57,11 +54,13 @@ task TStageScene(stageMode) {
             let pauseResult = PauseMenu();
             alternative (pauseResult)
             case (RESULT_RETRY) {
-                //retry
+                //Retry Stage
+                TerminateStageScene();
+                TStageScene(MODE_RETRY);
+                return;
             }
             case (RESULT_END) {
                 //Stop stage script
-                ClearBGM();
                 TerminateStageScene();
             }
         }
@@ -85,7 +84,7 @@ task TStageScene(stageMode) {
             case (STAGE_RESULT_PLAYER_DOWN) { //Game Over
 
             }
-            case (STAGE_RESULT_BREAK_OFF) { //CHECK WHAT THIS IS, this might be quit
+            case (STAGE_RESULT_BREAK_OFF) { //Exit Game
                 Default();
                 break;
             }
