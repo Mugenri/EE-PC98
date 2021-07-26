@@ -36,7 +36,7 @@ task MainMenu(playIntro, selectedDefault) {
     CreateMenuGraphicsMain();
 
     //Set up the menu
-    local {
+    {
         let menuX = 400;
         let menuY = 244;
         let xOffset = [0, 110, -30, 90, -50, 80, -20, 100];

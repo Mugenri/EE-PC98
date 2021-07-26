@@ -19,7 +19,7 @@ function SceneMusicRoom() {
     let descriptionText = CreateText(32, 288, GetBGMText(-1)[1], 0xFFFFFFFF); //track comments
 
     //Create Menu Items
-    local {
+    {
         let menuX = 32;
         let menuY = 64;
         ascent(i in 0..indexListSize + 1) {

@@ -96,7 +96,7 @@ task Package_PlayBGM(trackID, fade, delay) {
     ObjSound_Load(ID, path);
     ObjSound_SetSoundDivision(ID, SOUND_BGM);
     ObjSound_SetLoopEnable(ID, true);
-    ObjSound_SetRestartEnable(ID, true);
+    ObjSound_SetResumeEnable(ID, true);
     ObjSound_SetLoopSampleCount(ID, sample[0], sample[1]);
 
     objBGM = ID; //both point to same value. different when a new track is played. ID is used to control fade out while objBGM prepares a new track to be played

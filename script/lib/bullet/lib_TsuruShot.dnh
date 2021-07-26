@@ -1,4 +1,3 @@
-local
 {
 	let csd = GetCurrentScriptDirectory();
 	let path = csd ~ "./dat_TsuruShot.dnh";

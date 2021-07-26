@@ -7,7 +7,7 @@ task InitLoad() {
 
 task LoadScene { //loading screen
 
-    local { //load audio manager
+    { //load audio manager
         let path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
         let id = LoadScript(path);
         StartScript(id);
@@ -22,7 +22,7 @@ task LoadScene { //loading screen
 
     //init high score
 
-    local { //Run title screen
+    { //Run title screen
         let path = GetCurrentScriptDirectory() ~ "Title.dnh";
         let id = LoadScript(path);
         StartScript(id);

@@ -18,7 +18,7 @@ function SceneOption() {
 
     //Set up the menu
     let commonName = ["BGM_Volume", "SFX_Volume"]; //common area names
-    local {
+    {
         let menuX = 460;
         let menuY = 280;
         let yOffset = 15;

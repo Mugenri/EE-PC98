@@ -147,7 +147,7 @@ function RunDialogue(path) {
 
 function SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
 	let textureName = GetTransitionRenderTargetName();
-	RenderToTextureA1(textureName, 0, 100, true);
+	RenderToTextureA1(textureName, RP_UI_MIN, RP_UI_MAX, true);
 }
 
 task Default() { //Reset Common Data
@@ -160,7 +160,7 @@ task Default() { //Reset Common Data
 }
 
 task ReturnToTitle() { //Run title screen
-    local {
+    {
         let path = GetCurrentScriptDirectory() ~ "../Title.dnh";
         let ID = LoadScript(path);
         StartScript(ID);
