@@ -2,8 +2,8 @@
 #include "./../lib/lib_Common.dnh"
 #include "./../lib/lib_Util.dnh"
 
-let dialogueRunning = false;
-let dialoguePath = "";
+bool _dialogueRunning = false;
+string _dialoguePath = "";
 
 @Initialize {
     SetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", GetOwnScriptID());
@@ -15,19 +15,19 @@ let dialoguePath = "";
 @Event {
     alternative (GetEventType())
     case (EV_DIALOGUE_START) {
-        dialogueRunning = true;
-        dialoguePath =  GetEventArgument(0);
+        _dialogueRunning = true;
+        _dialoguePath =  GetEventArgument(0);
     }
 }
 
 @MainLoop {yield;}
 
-task TStageScene(stageMode) {
-    let playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
-    let _GetPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
-    let _GetRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-    let _ReplayPath     = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
-    let pathPlayer      = SCRIPT_PLAYERS[playerType];
+task TStageScene(int stageMode_) {
+    int playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
+    int _GetPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+    int _GetRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
+    string _ReplayPath     = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
+    string pathPlayer      = SCRIPT_PLAYERS[playerType];
 
     InitializeStageScene();
 
@@ -35,7 +35,7 @@ task TStageScene(stageMode) {
         SetStageReplayFile(_ReplayPath);
     }
 
-    let stageScript;
+    string stageScript;
     if (playerType == PLAYER_YABUSAME) {
         stageScript = YABUSAME_STAGE;
     } else {
@@ -51,7 +51,7 @@ task TStageScene(stageMode) {
         //Pause Menu
         //--------------------------------------------------------------------
         if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH) {
-            let pauseResult = PauseMenu();
+            int pauseResult = PauseMenu();
             alternative (pauseResult)
             case (RESULT_RETRY) {
                 //Retry Stage
@@ -67,15 +67,15 @@ task TStageScene(stageMode) {
         //--------------------------------------------------------------------
         //Dialogue Scene
         //--------------------------------------------------------------------
-        if (dialogueRunning) {
-            RunDialogue(dialoguePath);
+        if (_dialogueRunning) {
+            RunDialogue(_dialoguePath);
         }
         //--------------------------------------------------------------------
         //Stage Result Upon Ending
         //--------------------------------------------------------------------
-        let stageState = GetStageSceneState();
+        int stageState = GetStageSceneState();
         if (stageState == STAGE_STATE_FINISHED) {
-            let stageResult = GetStageSceneResult();
+            int stageResult = GetStageSceneResult();
 
             alternative (stageResult)
             case (STAGE_RESULT_CLEARED) { //Game Won
@@ -85,7 +85,7 @@ task TStageScene(stageMode) {
 
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
-                Default();
+                TDefault();
                 break;
             }
         }
@@ -93,28 +93,28 @@ task TStageScene(stageMode) {
     }
 
     if (!IsReplay()) {
-        ReturnToTitle();
+        TReturnToTitle();
     } else {
-        Default();
-        ReturnToTitle();
+        TDefault();
+        TReturnToTitle();
     }
 
-    function StartStage() {
+    function<void> StartStage() {
         SetStageMainScript(stageScript);
         SetStagePlayerScript(pathPlayer);
         StartStageScene();
     }
 }
 
-function PauseMenu() {
+function<int> PauseMenu() {
 	StopBGM(); //pause music
     SetTransitionTexture(); //save current frame as pause bg
     PauseStageScene(true); //pause stage
 	
-	let pathScript = GetCurrentScriptDirectory() ~ "../../system/Pause.dnh";
+	string pathScript = GetCurrentScriptDirectory() ~ "../../system/Pause.dnh";
 	
 	//Run pause script
-	let idScript = LoadScript(pathScript);
+	int idScript = LoadScript(pathScript);
 	StartScript(idScript);
 	
 	while (!IsCloseScript(idScript)) {
@@ -123,16 +123,16 @@ function PauseMenu() {
 	
     //resume stage
 	PauseStageScene(false);
-	let res = GetScriptResult(idScript);
+	int res = GetScriptResult(idScript);
 	return res;
 }
 
-function RunDialogue(path) {
+function<void> RunDialogue(string path_) {
     SetTransitionTexture();
     PauseStageScene(true);
 
     //Start dialogue
-    let idScript = LoadScript(path);
+    int idScript = LoadScript(path_);
     StartScript(idScript);
 
     while (!IsCloseScript(idScript)) {
@@ -140,17 +140,18 @@ function RunDialogue(path) {
     }
 
     //resume
-    dialogueRunning = false;
+    _dialogueRunning = false;
     PauseStageScene(false);
+    UnloadScriptFromCache(path_);
     return;
 }
 
-function SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
-	let textureName = GetTransitionRenderTargetName();
+function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
+	string textureName = GetTransitionRenderTargetName();
 	RenderToTextureA1(textureName, RP_UI_MIN, RP_UI_MAX, true);
 }
 
-task Default() { //Reset Common Data
+task TDefault() { //Reset Common Data
 	SetAreaCommonData(AREA_TITLE, "ReplayPath", "");
 	SetAreaCommonData(AREA_TITLE, "PlayerType", 0);
 	SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
@@ -159,10 +160,10 @@ task Default() { //Reset Common Data
 	//SetAreaCommonData(AREA_TITLE, "ExtraMode", 0);
 }
 
-task ReturnToTitle() { //Run title screen
+task TReturnToTitle() { //Run title screen
     {
-        let path = GetCurrentScriptDirectory() ~ "../Title.dnh";
-        let ID = LoadScript(path);
+        string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
+        int ID = LoadScript(path);
         StartScript(ID);
     }
 }

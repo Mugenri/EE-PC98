@@ -2,35 +2,34 @@
 #include "./../../lib/lib_Util.dnh"
 
 //Create Menu Cursor
-function CreateCursor(x, y) {
-    let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+function<int> CreateCursor(int x_, int y_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(obj, IMG_TT_CURSOR);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 128, 16);
     ObjSprite2D_SetDestCenter(obj);
     Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
-    ObjRender_SetPosition(obj, x, y, 1);
+    ObjRender_SetPosition(obj, x_, y_, 1);
     return obj;
 }
 
 //Screen fade animation
-function ScreenBlackout(fadeOut, between, fadeIn, color) {
-    let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+function<void> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(obj, RP_UI_MAX);
     ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
     ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
-    ObjRender_SetColor(obj, color);
-    BlackoutAnimation(obj);
+    ObjRender_SetColor(obj, color_);
 
-    task BlackoutAnimation(obj) {
-        descent(i in 0..fadeOut) {
-            let alpha = 255 - (i+1)/fadeOut*255;
+    async {
+        descent (i in 0..fadeOut_) {
+            real alpha = 255 - (i+1)/fadeOut_*255;
             ObjRender_SetAlpha(obj, alpha);
             yield;
         }
         ObjRender_SetAlpha(obj, 255);
-        wait(between);
-        ascent(i in 0..fadeIn) {
-            let alpha = 255 - (i+1)/fadeIn*255;
+        wait(between_);
+        ascent (i in 0..fadeIn_) {
+            real alpha = 255 - (i+1)/fadeIn_*255;
             ObjRender_SetAlpha(obj, alpha);
             yield;
         }

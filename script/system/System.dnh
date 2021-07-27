@@ -1,13 +1,14 @@
+//System Script
 #include "./lib/lib_Common.dnh"
 #include "./lib/lib_Display.dnh"
 
 @Initialize {
 	InitFrame();
     InitCommonData();
-    SystemInit();
+    TSystemInit();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
-    SetItemRenderPriorityI(50);
-	SetShotRenderPriorityI(60);
+    SetItemRenderPriorityI(RP_STG_ITEM);
+	SetShotRenderPriorityI(RP_STG_SHOT);
 
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     SetReplaySaveSceneScriptPath(GetCurrentScriptDirectory() ~ "ReplaySaveScene.dnh");
@@ -20,14 +21,14 @@
 @Event {
 	alternative (GetEventType())
 	case (EV_START_BOSS_SPELL) {
-		// let path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
-		// let id = LoadScript(path);
+		// string path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
+		// int id = LoadScript(path);
 		// StartScript(id);
         //MODIFY magic circle, remove the sound effect and place here
 	}
 	case (EV_GAIN_SPELL) {
-		let objScene = GetEnemyBossSceneObjectID();
-		let score = ObjEnemyBossScene_GetInfo(objScene, INFO_SPELL_SCORE);
+		int objScene = GetEnemyBossSceneObjectID();
+		int score = ObjEnemyBossScene_GetInfo(objScene, INFO_SPELL_SCORE);
 		TGainSpell(score);
 	}
     case (EV_PLAYER_LOADED) {
@@ -42,9 +43,9 @@
 //----------------------------------------------------
 //Sound Event Script
 //----------------------------------------------------
-function ControlSFX() {
-    let path = (GetCurrentScriptDirectory() ~ "./ControlSFX.dnh");
-    let id = LoadScript(path);
+function<void> ControlSFX() {
+    string path = (GetCurrentScriptDirectory() ~ "./ControlSFX.dnh");
+    int id = LoadScript(path);
     StartScript(id);
 }
 
@@ -53,7 +54,7 @@ function ControlSFX() {
 //----------------------------------------------------
 task TInitDisplay() {
     TIntro();
-    TDifficulty();
+    Difficulty();
     THighScore();
     TScore();
     TBossLife();
@@ -71,14 +72,14 @@ task TInitDisplay() {
 //----------------------------------------------------
 //Common Data
 //----------------------------------------------------
-function InitCommonData() {
-	if (!IsCommonDataAreaExists(AREA_STAGE)) {CreateCommonDataArea(AREA_STAGE);}
-	if (!IsCommonDataAreaExists(AREA_SYSTEM)) {CreateCommonDataArea(AREA_SYSTEM);}
-	if (!IsCommonDataAreaExists(AREA_REPLAY)) {CreateCommonDataArea(AREA_REPLAY);}
+function<void> InitCommonData() {
+	if (!IsCommonDataAreaExists(AREA_STAGE)) CreateCommonDataArea(AREA_STAGE);
+	if (!IsCommonDataAreaExists(AREA_SYSTEM)) CreateCommonDataArea(AREA_SYSTEM);
+	if (!IsCommonDataAreaExists(AREA_REPLAY)) CreateCommonDataArea(AREA_REPLAY);
 	LoadSystemCommonData();
 }
 
-function LoadSystemCommonData() {
+function<void> LoadSystemCommonData() {
 	if (IsReplay()) {
 		LoadCommonDataAreaFromReplayFile(AREA_STAGE);
 		LoadCommonDataAreaFromReplayFile(AREA_SYSTEM);

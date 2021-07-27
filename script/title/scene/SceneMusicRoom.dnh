@@ -1,29 +1,29 @@
 //Music Room
 #include "../lib/BGMData.dnh"
 
-function SceneMusicRoom() {
-    let exitFlag = false;
+function<void> SceneMusicRoom() {
+    bool exitFlag = false;
 
-    let selectMax = 19; //number of tracks - 1 (starts from index 0)
-    let indexListSize = 7; //number of tracks on screen at once - 1 (starts from index 0)
-    let indexListTop = 0; //index at the top of the track list, used for scrolling the list
+    int selectMax = 19; //number of tracks - 1 (starts from index 0)
+    int indexListSize = 7; //number of tracks on screen at once - 1 (starts from index 0)
+    int indexListTop = 0; //index at the top of the track list, used for scrolling the list
 
-    let indexCurrent = 0;
+    int indexCurrent = 0;
 
-    let revealPrompt = false; //has the player attempted to play an undiscovered track?
-    let revealIndex = -1; //used to reveal unknown tracks on prompt
+    bool revealPrompt = false; //has the player attempted to play an undiscovered track?
+    int revealIndex = -1; //used to reveal unknown tracks on prompt
 
-    CreateMenuGraphicsMusic();
+    TCreateMenuGraphicsMusic();
     //default texts
-    let playingText = CreateText(32, 268, GetBGMText(-1)[0], 0xFFFFFFFF); //currently playing track
-    let descriptionText = CreateText(32, 288, GetBGMText(-1)[1], 0xFFFFFFFF); //track comments
+    int playingText = CreateText(32, 268, GetBGMText(-1)[0], 0xFFFFFFFF); //currently playing track
+    int descriptionText = CreateText(32, 288, GetBGMText(-1)[1], 0xFFFFFFFF); //track comments
 
     //Create Menu Items
     {
-        let menuX = 32;
-        let menuY = 64;
-        ascent(i in 0..indexListSize + 1) {
-            CreateMenuItemMusic(i, menuX, menuY);
+        int menuX = 32;
+        int menuY = 64;
+        ascent (i in 0..indexListSize + 1) {
+            TCreateMenuItemMusic(i, menuX, menuY);
             menuY+= 16;
         }
     }
@@ -31,7 +31,7 @@ function SceneMusicRoom() {
     wait(15); //wait for screen fade from previous menu to clear
     WaitKeysFree([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop {
-        let userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_UP) {
             //CallSFX(SND_TT_SELECT);
@@ -58,17 +58,14 @@ function SceneMusicRoom() {
             break;
         }
         //check if cursor has scrolled outside music list
-        if (indexCurrent > indexListTop + indexListSize) {
-            indexListTop = indexCurrent - indexListSize;
-        } else if (indexCurrent < indexListTop) {
-            indexListTop = indexCurrent;
-        }
+        if (indexCurrent > indexListTop + indexListSize) indexListTop = indexCurrent - indexListSize;
+        else if (indexCurrent < indexListTop) indexListTop = indexCurrent;
     }
     exitFlag = true;
     Obj_Delete(descriptionText);
     Obj_Delete(playingText);
 
-    function MenuSelect() {
+    function<void> MenuSelect() {
         //play music track if heard previously, change description text
         if (!CD_GetBGMHeardFlag(indexCurrent)) { //prompt player on selecting undiscovered music
             if (revealPrompt) {
@@ -92,35 +89,35 @@ function SceneMusicRoom() {
         ObjText_SetText(descriptionText, GetBGMText(indexCurrent)[1]);
     }
 
-    task CreateMenuGraphicsMusic() {
-        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    task TCreateMenuGraphicsMusic() {
+        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
-        while (!exitFlag) {yield;}
+        while (!exitFlag) yield;
         Obj_Delete(bg);
     }
 
-    task CreateMenuItemMusic(index, x, y) {
-        let objText;
-        let objTextHighlight;
-        let bgmID = indexListTop + index; //actual track number = index at top of list + position in the list
-        let indexNumber = vtos("2d", bgmID+1) ~ ". "; //prepended track number
+    task TCreateMenuItemMusic(int index_, int x_, int y_) {
+        int objText;
+        int objTextHighlight;
+        int bgmID = indexListTop + index_; //actual track number = index at top of list + position in the list
+        string indexNumber = vtos("2d", bgmID+1) ~ ". "; //prepended track number
 
         //Initial list creation
         if (!CD_GetBGMHeardFlag(bgmID)) {
-            objText = CreateText(x, y, indexNumber ~ "???", 0xFFFFFFFF);
-            objTextHighlight = CreateText(x, y, indexNumber ~ "???", 0xFFFFFF00);
+            objText = CreateText(x_, y_, indexNumber ~ "???", 0xFFFFFFFF);
+            objTextHighlight = CreateText(x_, y_, indexNumber ~ "???", 0xFFFFFF00);
         } else {
-            objText = CreateText(x, y, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFFFF);
-            objTextHighlight = CreateText(x, y, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFF00);
+            objText = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFFFF);
+            objTextHighlight = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFF00);
         }
 
         while (!exitFlag) {
-            if (indexListTop + index != bgmID) { //update list if it scrolls beyond the current boundaries
-                bgmID = indexListTop + index;
+            if (indexListTop + index_ != bgmID) { //update list if it scrolls beyond the current boundaries
+                bgmID = indexListTop + index_;
                 indexNumber = vtos("2d", bgmID+1) ~ ". ";
                 if (!CD_GetBGMHeardFlag(bgmID)) {
                     ObjText_SetText(objText, indexNumber ~ "???");
@@ -130,7 +127,7 @@ function SceneMusicRoom() {
                     ObjText_SetText(objTextHighlight, indexNumber ~ GetBGMText(bgmID)[0]);
                 }
             }
-            if (revealIndex == indexListTop + index) { //play undiscovered track
+            if (revealIndex == indexListTop + index_) { //play undiscovered track
                 ObjText_SetText(objText, indexNumber ~ GetBGMText(bgmID)[0]);
                 ObjText_SetText(objTextHighlight, indexNumber ~ GetBGMText(bgmID)[0]);
                 revealIndex = -1;
@@ -142,7 +139,7 @@ function SceneMusicRoom() {
         Obj_Delete(objTextHighlight);
     }
 
-    function CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
+    function<void> CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
         ObjText_SetVertexColor(playingText, 0xFFFFFFFF);
         ObjText_SetVertexColor(descriptionText, 0xFFFFFFFF);
         ObjText_SetText(playingText, GetBGMText(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1))[0]);

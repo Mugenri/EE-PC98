@@ -3,31 +3,31 @@
 #include "./../../lib/lib_File.dnh"
 
 //Player Directories
-const SCRIPT_PLAYERS = [
+const string[] SCRIPT_PLAYERS = [
     DIR_PLR ~ "Yabusame.dnh",
     DIR_PLR ~ "Tsubakura.dnh"
 ];
 
 //Stage script directories
-const YABUSAME_STAGE = DIR_STG ~ "Tsurubami/tsuruStage.dnh";
-const TSUBAKURA_STAGE = DIR_STG ~ "Tsurubami2/tsuruStage.dnh";
+const string YABUSAME_STAGE = DIR_STG ~ "Tsurubami/tsuruStage.dnh";
+const string TSUBAKURA_STAGE = DIR_STG ~ "Tsurubami2/tsuruStage.dnh";
 
 // --- Title Specific Images List --- //
-const DIR_IMG_TITLE = GetCurrentScriptDirectory() ~ "../../img/title/";
+const string DIR_IMG_TITLE = GetCurrentScriptDirectory() ~ "../../img/title/";
 
 //Loading Screen
 
 //Main Screen
-const IMG_TT_BG     = DIR_IMG_TITLE ~ "placeholderBG.png";
-const IMG_TT_YABU       = DIR_IMG_TITLE ~ "titleYabu.png";
+const string IMG_TT_BG          = DIR_IMG_TITLE ~ "placeholderBG.png";
+const string IMG_TT_YABU        = DIR_IMG_TITLE ~ "titleYabu.png";
 
 //Player Select
-const IMG_TT_PLAYER1    = DIR_IMG_TITLE ~ "playerSelectYabu.png";
-const IMG_TT_PLAYER2    = DIR_IMG_TITLE ~ "playerSelectTsuba.png";
+const string IMG_TT_PLAYER1     = DIR_IMG_TITLE ~ "playerSelectYabu.png";
+const string IMG_TT_PLAYER2     = DIR_IMG_TITLE ~ "playerSelectTsuba.png";
 
 //Other Menus
-const IMG_TT_CURSOR     = DIR_IMG_TITLE ~ "selectCursor.png";
-const IMG_TT_RANK = DIR_IMG_TITLE ~ "placeholderRank.png";
+const string IMG_TT_CURSOR      = DIR_IMG_TITLE ~ "selectCursor.png";
+const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "placeholderRank.png";
 
 // --- Title Functions --- //
 //Intro Scene

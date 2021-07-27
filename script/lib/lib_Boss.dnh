@@ -6,36 +6,36 @@
 #include "./loadlib/file_character.dnh"
 
 /*
-Moves the boss between r1..r2, within the rectangle
-created by xmin..xmax, ymin..ymax, over given amount of frames
+Moves the boss between r1_..r2_, within the rectangle
+created by xmin_..xmax_, ymin_..ymax_, over given amount of frames_
 */
-function MoveBossInRadius(objE, r1, r2, xmin, xmax, ymin, ymax, frames) {
-    if (xmin > xmax) {
-        let temp = xmax;
-        xmax = xmin;
-        xmin = temp;
+function<void> MoveBossInRadius(int objE_, int r1_, int r2_, int xmin_, int xmax_, int ymin_, int ymax_, int frames_) {
+    if (xmin_ > xmax_) {
+        int temp = xmax_;
+        xmax_ = xmin_;
+        xmin_ = temp;
     }
-    if (ymin > ymax) {
-        let temp = ymax;
-        ymax = ymin;
-        ymin = temp;
-    }
-
-    let angleT = rand_angle();
-    let distance = rand(r1, r2);
-    let newX = ObjMove_GetX(objE) + distance*cos(angleT);
-    let newY = ObjMove_GetY(objE) + distance*sin(angleT);
-
-    if (newX <= xmin) {
-        newX = xmin;
-    } else if (newX >= xmax) {
-        newX = xmax;
-    }
-    if (newY <= ymin) {
-        newY = ymin;
-    } else if (newY >= ymax) {
-        newY = ymax;
+    if (ymin_ > ymax_) {
+        int temp = ymax_;
+        ymax_ = ymin_;
+        ymin_ = temp;
     }
 
-    ObjMove_SetDestAtFrame(objE, newX, newY, frames);
+    real angleT = rand(0, 360);
+    real distance = rand(r1_, r2_);
+    int newX = ObjMove_GetX(objE_) + distance*cos(angleT);
+    int newY = ObjMove_GetY(objE_) + distance*sin(angleT);
+
+    if (newX <= xmin_) {
+        newX = xmin_;
+    } else if (newX >= xmax_) {
+        newX = xmax_;
+    }
+    if (newY <= ymin_) {
+        newY = ymin_;
+    } else if (newY >= ymax_) {
+        newY = ymax_;
+    }
+
+    ObjMove_SetDestAtFrame(objE_, newX, newY, frames_);
 }

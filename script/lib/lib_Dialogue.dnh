@@ -6,34 +6,33 @@
 #include "./bosslib/lib_Character.dnh" //boss sprites/portrait retrieval
 #include "./loadlib/file_character.dnh" //boss sprites/portraits file paths
 
-const DIALOGUE_PRIORITY = 90; //Render priority
-let endDialogue = false; //flag for end of dialogue sequence
-let skip = false; //flag for skipping dialogue
-let reading = false; //text currently scrolling
-let firstLine = true; //flag to prevent accidental skipping upon loading the first line of dialogue
+bool _endDialogue = false; //flag for end of dialogue sequence
+bool _skip = false; //flag for skipping dialogue
+bool _reading = false; //text currently scrolling
+bool _firstLine = true; //flag to prevent accidental skipping upon loading the first line of dialogue
 
 //Text objects
-let playerText;
-let bossText;
+int _playerText;
+int _bossText;
 
-function StartDialogue() { //call to start dialogue sequence
-    CreateTextBoxes(); //player and enemy text boxes
-    playerText = CreateDialogueText(false);
-    bossText = CreateDialogueText(true);
+function<void> StartDialogue() { //call to start dialogue sequence
+    TCreateTextBoxes(); //player and enemy text boxes
+    _playerText = CreateDialogueText(false);
+    _bossText = CreateDialogueText(true);
     wait(48);
 }
 
-function EndDialogue() { //call to end dialogue sequence
-    Obj_Delete(playerText);
-    Obj_Delete(bossText);
-    endDialogue = true;
+function<void> EndDialogue() { //call to end dialogue sequence
+    Obj_Delete(_playerText);
+    Obj_Delete(_bossText);
+    _endDialogue = true;
 }
 
-task CreateTextBoxes() {
-    let playerBoxPos = [80, 320];
-    let enemyBoxPos = [48, 192];
-    let playerBox = CreateTextBox(false);
-    let enemyBox = CreateTextBox(true);
+task TCreateTextBoxes() {
+    int[] playerBoxPos = [80, 320];
+    int[] enemyBoxPos = [48, 192];
+    int playerBox = CreateTextBox(false);
+    int enemyBox = CreateTextBox(true);
     
     //fade in animation
     wait(12);
@@ -43,19 +42,19 @@ task CreateTextBoxes() {
     ChangeFrame(playerBox, 2, false);
     ChangeFrame(enemyBox, 2, true);
 
-    while (!endDialogue) {
+    while (!_endDialogue) {
         yield;
     }
     //maybe fade out animation here?
     Obj_Delete(playerBox);
     Obj_Delete(enemyBox);
 
-    function CreateTextBox(isBoss) {
-        let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+    function<int> CreateTextBox(bool isBoss_) {
+        int obj = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXTBOX);
         Obj_SetRenderPriorityI(obj, RP_UI_IMG);
         ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
-        if (isBoss) {
+        if (isBoss_) {
             ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
         } else {
             ObjRender_SetPosition(obj, playerBoxPos[0], playerBoxPos[1], 1);
@@ -63,21 +62,21 @@ task CreateTextBoxes() {
         return obj;
     }
 
-    function ChangeFrame(obj, frame, isBoss) {
-        ObjSprite2D_SetSourceRect(obj, 0, 0 + 48*frame, 320, 48 + 48*frame);
-        ObjSprite2D_SetDestRect(obj, 0, 0, 320, 48); //position controlled by objrender_setposition();
+    function<void> ChangeFrame(int obj_, int frame_, bool isBoss_) {
+        ObjSprite2D_SetSourceRect(obj_, 0, 0 + 48*frame_, 320, 48 + 48*frame_);
+        ObjSprite2D_SetDestRect(obj_, 0, 0, 320, 48); //position controlled by objrender_setposition();
     }
 }
 
 //----------------------------------------------------
 //Character Portraits
 //----------------------------------------------------
-function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in the player or boss position with the given characterID
-    let xPos;
-    let yPos;
+function<int> CreateDialoguePortrait(string characterID_, bool isBoss_) { //creates a portrait in the player or boss position with the given characterID
+    int xPos;
+    int yPos;
 
     //assign object reference;
-    if (isBoss) {
+    if (isBoss_) {
         xPos = 288;
         yPos = 112;
     } else {
@@ -85,18 +84,18 @@ function CreateDialoguePortrait(characterID, isBoss) { //creates a portrait in t
         yPos = 240;
     }
 
-    let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(obj, RP_UI_IMG);
-    ObjPrim_SetTexture(obj, GetBossPortrait(characterID));
+    ObjPrim_SetTexture(obj, GetBossPortrait(characterID_));
     ObjRender_SetPosition(obj, xPos, yPos, 1);
 
     return obj;
 }
 
-function SetPortrait(obj, frame) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
-    let top = 0;
-    let left = 0;
-    alternative (frame) //select portrait frame
+function<void> SetPortrait(int obj_, int frame_) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
+    int top = 0;
+    int left = 0;
+    alternative (frame_) //select portrait frame
     case (1) {
         top = 0;
         left = 0;
@@ -146,18 +145,18 @@ function SetPortrait(obj, frame) { //assumes character portraits are in a 4x3 gr
         left = 384;
     }
     //change portrait frame
-    ObjSprite2D_SetSourceRect(obj, left, top, left+128, top+128);
-    ObjSprite2D_SetDestRect(obj, 0, 0, 128, 128); //position controlled by objrender_setposition();
+    ObjSprite2D_SetSourceRect(obj_, left, top, left+128, top+128);
+    ObjSprite2D_SetDestRect(obj_, 0, 0, 128, 128); //position controlled by objrender_setposition();
 }
 
 //----------------------------------------------------
 //Text Control
 //----------------------------------------------------
-function CreateDialogueText(isBoss) { //creates the dialogue text object
-    let xPos;
-    let yPos;
+function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text object
+    int xPos;
+    int yPos;
 
-    if (isBoss) {
+    if (isBoss_) {
         xPos = 49;
         yPos = 191;
     } else {
@@ -165,7 +164,7 @@ function CreateDialogueText(isBoss) { //creates the dialogue text object
         yPos = 319;
     }
 
-    let obj = ObjText_Create();
+    int obj = ObjText_Create();
     ObjText_SetFontType(obj, SYS_FONT);
     ObjText_SetFontSize(obj, 16);
     ObjText_SetVertexColor(obj, 0xFFFFFFFF);
@@ -177,40 +176,40 @@ function CreateDialogueText(isBoss) { //creates the dialogue text object
     return obj;
 }
 
-function SetText(isBoss, text) { //Sets selected text field to desired new text. Colors blue if left unchanged for a line
+function<void> SetText(bool isBoss_, string text_) { //Sets selected text field to desired new text. Colors blue if left unchanged for a line
     //29 characters per line max, font is unispaced
     //-----------------------------   <-- this long
-    if (isBoss) {
-        ObjText_SetHorizontalAlignment(bossText, ALIGNMENT_LEFT);
-        ObjText_SetVertexColor(bossText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(playerText, 0xFF0000FF);
-        TextScroll(bossText, text);
+    if (isBoss_) {
+        ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_LEFT);
+        ObjText_SetVertexColor(_bossText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(_playerText, 0xFF0000FF);
+        TTextScroll(_bossText, text_);
     } else {
-        ObjText_SetVertexColor(playerText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(bossText, 0xFF0000FF);
-        TextScroll(playerText, text);
+        ObjText_SetVertexColor(_playerText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(_bossText, 0xFF0000FF);
+        TTextScroll(_playerText, text_);
     }
 }
 
-function SetBossTitle(text) { //Centers text for use in boss titles/names
-    ObjText_SetHorizontalAlignment(bossText, ALIGNMENT_CENTER);
-    ObjText_SetVertexColor(bossText, 0xFFFFFFFF);
-    ObjText_SetVertexColor(playerText, 0xFF0000FF);
-    TextScroll(bossText, text);
+function<void> SetBossTitle(string text_) { //Centers text for use in boss titles/names
+    ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_CENTER);
+    ObjText_SetVertexColor(_bossText, 0xFFFFFFFF);
+    ObjText_SetVertexColor(_playerText, 0xFF0000FF);
+    TTextScroll(_bossText, text_);
 }
 
-task TextScroll(obj, text) { //Makes text fill gradually in text boxes
-    reading = true;
-    let tempStrings = SplitString(text, "/"); //use / for newlines instead of [r]
-    let tempString = "";
+task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text boxes
+    _reading = true;
+    string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
+    string tempString = "";
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
         SetVirtualKeyState(VK_OK, KEY_FREE);
     }
-    ascent(i in 0..length(tempStrings)) { //list of substrings
-        ascent(j in 0..length(tempStrings[i])) { //for each character in a substring
+    ascent (i in 0..length(tempStrings)) { //list of substrings
+        ascent (j in 0..length(tempStrings[i])) { //for each character in a substring
             tempString = tempString ~ [tempStrings[i][j]];
-            ObjText_SetText(obj, tempString);
-            if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !skip) { //skip if player presses button or dialogue is being skipped
+            ObjText_SetText(obj_, tempString);
+            if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
                 yield;
             }
         }
@@ -219,46 +218,46 @@ task TextScroll(obj, text) { //Makes text fill gradually in text boxes
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents the keystate from carrying over to the reading check in WaitForInput()
         SetVirtualKeyState(VK_OK, KEY_FREE);
     }
-    reading = false;
+    _reading = false;
 }
 
 //----------------------------------------------------
 //Utility
 //----------------------------------------------------
-function WaitForInput() { //function that waits for player input to advance text
-    if (firstLine) {
-		firstLine = false;
-		while (GetVirtualKeyState(VK_OK) != KEY_FREE) {yield;}
+function<void> WaitForInput() { //waits for player input to advance text
+    if (_firstLine) {
+		_firstLine = false;
+		while (GetVirtualKeyState(VK_OK) != KEY_FREE) yield;
 	}
     yield;
-    let skipFlag = 0;
+    int skipFlag = 0;
 	loop {
         SkipCheck(skipFlag);
-		if (((GetVirtualKeyState(VK_OK) == KEY_PUSH) && !reading) || skip) {return;}
-		if (GetVirtualKeyState(VK_OK) == KEY_PUSH || GetVirtualKeyState(VK_OK) == KEY_HOLD) {skipFlag++;}
-		else {skipFlag = 0;}
+		if ((_skip || (!_reading && GetVirtualKeyState(VK_OK) == KEY_PUSH))) return;
+		if (GetVirtualKeyState(VK_OK) == KEY_HOLD || GetVirtualKeyState(VK_OK) == KEY_PUSH) skipFlag++;
+		else skipFlag = 0;
 		yield;
     }
 }
 
-function SkipCheck(flag) { //hold key to skip dialogue
-    if (flag > 60 && !skip) {
-        skip = true;
-        flag = 0;
+function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
+    if (!_skip && flag_ > 60) {
+        _skip = true;
+        flag_ = 0;
     }
     if (GetVirtualKeyState(VK_OK) != KEY_HOLD) {
-        skip = false;
+        _skip = false;
     }
 }
 
-function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whiteout that places the boss sprite 
+function<void> SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID_, int xPos_, int yPos_) { //Screen whiteout that places the boss sprite 
     //boss sprite to be placed, autodeletes upon script closure
-    let bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
+    int bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(bossSprite, RP_UI_IMG);
-    ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID));
+    ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID_));
 
     //screen whiteout
-    let whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
+    int whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(whiteout, RP_UI_MAX);
     ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
@@ -266,8 +265,8 @@ function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whi
     ObjRender_SetColor(whiteout, 0xFFFFFF);
 
     //animation
-    descent(i in 0..fadeIn) {
-        let alpha = 255 - (i+1)/fadeIn*255;
+    descent (i in 0..fadeIn_) {
+        int alpha = 255 - (i+1)/fadeIn_*255;
         ObjRender_SetAlpha(whiteout, alpha);
         yield;
     }
@@ -275,11 +274,11 @@ function SummonBoss(fadeIn, between, fadeOut, bossID, xPos, yPos) { //Screen whi
     //if i try to use objrender_setvisible on this instead of setting rects at this point it makes the whiteout effect flicker, no idea why.
     ObjSprite2D_SetSourceRect(bossSprite, 0, 0, 64, 64); //THIS MUST BE STANDARDIZED
     ObjSprite2D_SetDestCenter(bossSprite);
-    ObjRender_SetPosition(bossSprite, xPos + 32, yPos + 16, 1); //shifted to align with stg window coordinates
+    ObjRender_SetPosition(bossSprite, xPos_ + 32, yPos_ + 16, 1); //shifted to align with stg window coordinates
 
-    wait(between);
-    ascent(i in 0..fadeOut) {
-        let alpha = 255 - (i+1)/fadeOut*255;
+    wait(between_);
+    ascent (i in 0..fadeOut_) {
+        int alpha = 255 - (i+1)/fadeOut_*255;
         ObjRender_SetAlpha(whiteout, alpha);
         yield;
     }

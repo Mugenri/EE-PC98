@@ -5,7 +5,7 @@
 @Initialize {
     SetAutoDeleteObject(true);
     TBackground();
-    MainTask();
+    TMain();
 }
 
 @Event {}
@@ -15,8 +15,8 @@
 @Finalize {}
 
 task TBackground() {
-	let target = GetTransitionRenderTargetName();
-	let obj = ObjPrim_Create(OBJ_SPRITE_2D);
+	string target = GetTransitionRenderTargetName();
+	int obj = ObjPrim_Create(OBJ_SPRITE_2D);
 	ObjPrim_SetTexture(obj, target);
     ObjRender_SetBlendType(obj, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 640, 400);
@@ -25,34 +25,30 @@ task TBackground() {
 }
 
 //dialogue function
-task MainTask() {
+task TMain() {
     StartDialogue(); //pause game, create text boxes
-
     Dialogue(); //main dialogue function
-
-    //remove player and boss cutins/text
     EndDialogue(); //remove text boxes
-
     CloseScript(GetOwnScriptID());
 }
 
-function Dialogue() {
+function<void> Dialogue() {
     //create player/enemy portraits and text fields
-    let playerCutin = CreateDialoguePortrait(BOSS_ID_YABUSAME, false);
-    let bossCutin = CreateDialoguePortrait(BOSS_ID_TSUBAKURA, true);
+    int playerCutin = CreateDialoguePortrait(BOSS_ID_YABUSAME, false);
+    int bossCutin = CreateDialoguePortrait(BOSS_ID_TSUBAKURA, true);
 
     //dialogue line position
-    let line = 0;
+    int line = 0;
     loop {
-        let end = DialogueLine(line);
-        if (end) {break;}
+        bool end = DialogueLine(line);
+        if (end) break;
         line++;
         WaitForInput();
     }
 
-    function DialogueLine(line) {
+    function<bool> DialogueLine(int line_) {
         //-----------------------------
-        alternative (line)
+        alternative (line_)
         case (0) {
             SetPortrait(playerCutin, 2);
             SetText(false, "Isn't it cool how the text/can scroll now?");

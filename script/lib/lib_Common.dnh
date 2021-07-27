@@ -4,11 +4,11 @@
 #include "./lib_Util.dnh"
 
 //Common variables
-let objPlayer;
-let idPlayer;
-let objScene;
+int objPlayer;
+int idPlayer;
+int objScene;
 
-function Init() {
+function<void> Init() {
     SetAutoDeleteObject(true);
 
     objPlayer = GetPlayerObjectID();
@@ -16,18 +16,17 @@ function Init() {
 	objScene = GetEnemyBossSceneObjectID();
 }
 
-function DigitToArray(digit, count) {
-	let res = [];
-	digit = truncate(digit);
+function<int[]> DigitToArray(int digit_, int count_) {
+	int[] res = [];
 
 	loop {
-		let tnum = truncate(digit % 10);
-		digit /= 10;
+		int tnum = truncate(digit_ % 10);
+		digit_ /= 10;
 		res = [tnum] ~ res;
-		if (truncate(digit) == 0) {break;}
+		if (truncate(digit_) == 0) break;
 	}
 
-	loop (max(0, count - length(res))) {
+	loop (max(0, count_ - length(res))) {
 		res = [0] ~ res;
 	}
 

@@ -1,23 +1,23 @@
 //Common Data management Library
 //Common Data areas
-const AREA_TITLE = "Title"; //Title Screen
-const AREA_CONFIG = "Config"; //Options Menu
-const AREA_SAVE = "SaveData"; //Save Data
-const AREA_SYSTEM = "System"; //STG System
-const AREA_STAGE = "Stage"; //Stage Script
-const AREA_REPLAY = "Replay"; //Replay Values
-const AREA_SPELL = "Spell"; //Spell History
-const AREA_HIGHSCORE = "HighScore"; //High Score Values
-const AREA_RESULT = "Result"; //Player Score Records
+const string AREA_TITLE     = "Title"; //Title Screen
+const string AREA_CONFIG    = "Config"; //Options Menu
+const string AREA_SAVE      = "SaveData"; //Save Data
+const string AREA_SYSTEM    = "System"; //STG System
+const string AREA_STAGE     = "Stage"; //Stage Script
+const string AREA_REPLAY    = "Replay"; //Replay Values
+const string AREA_SPELL     = "Spell"; //Spell History
+const string AREA_HIGHSCORE = "HighScore"; //High Score Values
+const string AREA_RESULT    = "Result"; //Player Score Records
 
 //Data File Directory
-let csd = GetCurrentScriptDirectory();
-const SAVE_COMMON_SAVE = csd ~ "./../data/save.dat";
-const SAVE_COMMON_CONFIG = csd ~ "./../data/config.dat";
-const SAVE_COMMON_SCORE = csd ~ "./../data/score.dat";
-const SAVE_COMMON_RESULT = csd ~ "./../data/result.dat";
+string DIR_SAVE = GetCurrentScriptDirectory();
+const string SAVE_COMMON_SAVE   = DIR_SAVE ~ "./../data/save.dat";
+const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "./../data/config.dat";
+const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "./../data/score.dat";
+const string SAVE_COMMON_RESULT = DIR_SAVE ~ "./../data/result.dat";
 
-task InitializeCommonData() { //creates common data areas, loads data from files
+function<void> InitializeCommonData() { //creates common data areas, loads data from files
     //Create Common Data Areas
     CreateCommonDataArea(AREA_TITLE);
     CreateCommonDataArea(AREA_CONFIG);
@@ -45,10 +45,10 @@ task InitializeCommonData() { //creates common data areas, loads data from files
     CD_SetExtraStageFlag(PLAYER_YABUSAME);
 }
 
-function LoadConfig(loadDefault) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault
-    let saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
-    if (IsCommonDataAreaExists(AREA_CONFIG)) {ClearAreaCommonData(AREA_CONFIG);}
-    if (loadDefault) {saveFile = false;}
+function<void> LoadConfig(bool loadDefault_) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault_
+    bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
+    if (IsCommonDataAreaExists(AREA_CONFIG)) ClearAreaCommonData(AREA_CONFIG);
+    if (loadDefault_) saveFile = false;
     if (saveFile) { //load from save file
 		CopyCommonDataArea(AREA_CONFIG, "SAVED_CONFIG");
 		SetAreaCommonData(AREA_CONFIG, "VERSION", GAME_VERSION);
@@ -59,16 +59,16 @@ function LoadConfig(loadDefault) { //load config settings from file, otherwise c
     }
 }
 //Unlock extra stage
-function CD_SetExtraStageFlag(player) {
-    SetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player), true);
+function<void> CD_SetExtraStageFlag(int player_) {
+    SetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player_), true);
 }
-function CD_GetExtraStageFlag(player) {
-    return(GetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player), false));
+function<bool> CD_GetExtraStageFlag(int player_) {
+    return(GetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player_), false));
 }
 //Music room track unlocks
-function CD_SetBGMHeardFlag(trackID) {
-    SetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID), true);
+function<void> CD_SetBGMHeardFlag(int trackID_) {
+    SetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID_), true);
 }
-function CD_GetBGMHeardFlag(trackID) {
-    return(GetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID), false));
+function<bool> CD_GetBGMHeardFlag(int trackID_) {
+    return(GetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID_), false));
 }

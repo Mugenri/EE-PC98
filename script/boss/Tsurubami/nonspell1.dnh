@@ -9,9 +9,9 @@
 #include "./tsuruAnime.dnh"
 #include "./lib_Tsuru.dnh"
 
-let objBoss;
-let count = -180;
-let loopTime = 60;
+int objBoss;
+int count = -180;
+int loopTime = 60;
 objScene = GetEnemyBossSceneObjectID();
 
 @Event {
@@ -32,9 +32,9 @@ objScene = GetEnemyBossSceneObjectID();
     ObjEnemy_Regist(objBoss);
     ObjMove_SetPosition(objBoss, MID_X, 60);
 
-    //BombBarrier();
+    //TBombBarrier();
 
-    DrawBoss(objBoss);
+    TDrawBoss(objBoss);
     TFinalize;
 }
 
@@ -42,26 +42,26 @@ objScene = GetEnemyBossSceneObjectID();
     ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
     ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
     if (count % loopTime == 0 && count >= 0) {
-        PatternA;
+        TPatternA;
     }
     count++;
 
     yield;
 }
 
-task TFinalize {
-    while (ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0) {yield;}
+task TFinalize() {
+    while (ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0) yield;
     Obj_Delete(objBoss);
 
-    let score = 10;
-    let scoreBonus = 10;
-    let numBullets = 0;
+    int score = 10;
+    int scoreBonus = 10;
+    int numBullets = 0;
     //Need to put in a library, not do this if the spell is timed out
     //Actual MS bullet cancel score progression
     for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 500, TARGET_ENEMY)) {
         numBullets++;
         Obj_SetValueI(shot, BULLET_SCORE, score);
-        if(numBullets <= 35){
+        if (numBullets <= 35) {
             Obj_SetValueI(shot, BULLET_DROP_ITEM, true);
         }
         //ObjShot_ToItem(shot);
@@ -76,15 +76,15 @@ task TFinalize {
     return;
 }
 
-task PatternA{
+task TPatternA() {
     AnimeCharge();
     wait(20);
-    if (ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0) {return;}
-    let angleT = rand(0, 360);
+    if (ObjEnemy_GetInfo(objBoss, INFO_LIFE) <= 0) return;
+    real angleT = rand(0, 360);
     loop (5) {
-        let id = 1;
+        int id = 1;
         loop (10) {
-            let obj = CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 4, angleT, id, 20);
+            int obj = CreateShotA1(ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 4, angleT, id, 20);
             angleT += 360/10;
             id++;
             yield;

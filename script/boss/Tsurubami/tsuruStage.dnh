@@ -20,13 +20,13 @@
 @Finalize {
 }
 
-task TStage{
-    let csd = GetCurrentScriptDirectory();
-    let path = csd ~ "tsuruPlural.dnh";
-    let ID = LoadScriptInThread(path);
+task TStage() {
+    string csd = GetCurrentScriptDirectory();
+    string path = csd ~ "tsuruPlural.dnh";
+    int ID = LoadScriptInThread(path);
     wait(160);
     //dialogue here then boss? probably
-    let dialoguePath = csd ~ "dialogueTest.dnh";
+    string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
     yield; //TEMPORARY until i think of something better
     StartScript(ID);

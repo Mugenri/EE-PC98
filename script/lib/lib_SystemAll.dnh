@@ -5,39 +5,39 @@
 //----------------------------------------------------
 //GENERAL FUNCTIONS
 //----------------------------------------------------
-function GetStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
-function GetPlayMode() { return(GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE)); }
-function GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
+function<int> GetStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
+function<int> GetPlayMode() { return(GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE)); }
+function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
-function StartDialogueScript(path) { NotifyEvent(GetStageScriptID(), EV_DIALOGUE_START, path); }
+function<void> StartDialogueScript(string path_) { NotifyEvent(GetStageScriptID(), EV_DIALOGUE_START, path_); }
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------
-function GetAudioScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", -1)); }
+function<int> GetAudioScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", -1)); }
 // --- BGM Functions --- //
 //Play track
-function StartBGM(trackID, fade, delay) { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [trackID, fade, delay]); }
+function<void> StartBGM(int trackID_, int fade_, int delay_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [trackID_, fade_, delay_]); }
 //Pause track
-function StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
+function<void> StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
-function RestartBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
+function<void> RestartBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
 //Reset track
-function ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [-1, 0, 0]); }
+function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [-1, 0, 0]); }
 
-function GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
+function<int> GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
 
 // --- SFX Functions --- //
-function CallSFX(soundID) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID); }
+function<void> CallSFX(int soundID_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID_); }
 
-function GetSFXVolume() { return(GetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100)); }
+function<int> GetSFXVolume() { return(GetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100)); }
 
 //----------------------------------------------------
 //MENU KEY FUNCTIONS
 //----------------------------------------------------
-function CheckKeyPressed(keys) { //waits and returns the first key to be pressed in the passed list of keys
-    let keyCount = length(keys);
-    let keyValue = GetCommonData("key", -1); //last held key
-    let holdKey = GetCommonData("hold", 0);
+function<int> CheckKeyPressed(int[] keys_) { //waits and returns the first key to be pressed in the passed list of keys
+    int keyCount = length(keys_);
+    int keyValue = GetCommonData("key", -1); //last held key
+    int holdKey = GetCommonData("hold", 0);
 
     loop {
         while (holdKey > 0) {
@@ -55,9 +55,9 @@ function CheckKeyPressed(keys) { //waits and returns the first key to be pressed
             yield;
         }
         //key wasn't held before entering function or held key was released
-        ascent(i in 0..keyCount) {
-            if (GetVirtualKeyState(keys[i]) == KEY_PUSH || GetVirtualKeyState(keys[i]) == KEY_HOLD) {
-                keyValue = keys[i];
+        ascent (i in 0..keyCount) {
+            if (GetVirtualKeyState(keys_[i]) == KEY_PUSH || GetVirtualKeyState(keys_[i]) == KEY_HOLD) {
+                keyValue = keys_[i];
                 SetCommonData("key", keyValue);
                 SetCommonData("hold", 1);
                 return keyValue;
@@ -67,12 +67,12 @@ function CheckKeyPressed(keys) { //waits and returns the first key to be pressed
     }
 }
 
-function WaitKeysFree(keys) { //Wait for the list of keys passed to all be unpressed
-    let keyCount = length(keys);
+function<void> WaitKeysFree(int[] keys_) { //Wait for the list of keys passed to all be unpressed
+    int keyCount = length(keys_);
     loop {
-        let keysFree = true;
-        ascent(i in 0..keyCount) {
-            if (GetVirtualKeyState(keys[i]) != KEY_FREE) {
+        bool keysFree = true;
+        ascent (i in 0..keyCount) {
+            if (GetVirtualKeyState(keys_[i]) != KEY_FREE) {
                 keysFree = false;
             }
         }

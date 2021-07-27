@@ -14,17 +14,17 @@
 @Event {
     alternative (GetEventType())
     case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
-        let obj = GetEventArgument(0);
-        let pos = GetEventArgument(1);
+        int obj = GetEventArgument(0);
+        real[] pos = GetEventArgument(1);
 
         AddScore(100); //temp?
         //bullet deletion effect
         //TODO
     }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
-        let obj = GetEventArgument(0);
-        let pos = GetEventArgument(1);
-        let score = Obj_GetValueDI(obj, BULLET_SCORE, 0);
+        int obj = GetEventArgument(0);
+        real[] pos = GetEventArgument(1);
+        int score = Obj_GetValueDI(obj, BULLET_SCORE, 0);
 
         if (Obj_GetValueDI(obj, BULLET_DROP_ITEM, false)) { //create item in place of bullet
             NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
@@ -38,22 +38,22 @@
         //TODO
     }
     case (EV_CREATE_ITEM) { //TODO Change how high the items pop upwards
-        let obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
+        int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
         ObjItem_SetAutoCollectEnable(obj, false);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
     case (EV_GET_ITEM) {
-        let type = GetEventArgument(0);
-        let obj = GetEventArgument(1);
+        int type = GetEventArgument(0);
+        int obj = GetEventArgument(1);
 
         alternative (type)
         case (ITEM_POW) {
             WriteLog("No Power System");
-            let score = 10;
+            int score = 10;
         }
         case (ITEM_SCORE) {
-            let score = rand_int(10, 200);
-            let color = 0xFFFFFF;
+            int score = rand_int(10, 200);
+            int color = 0xFFFFFF;
 
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
@@ -69,27 +69,27 @@
         }
         case (ITEM_DREAM) {
             WriteLog("No Dream Bonus System");
-            let score = 10;
+            int score = 10;
             //PLAY SFX
         }
         case (ITEM_POW_L) {
             WriteLog("No Power System");
-            let score = 10;
+            int score = 10;
             //PLAY SFX
         }
         case (ITEM_POW_FULL) {
             WriteLog("No Power System");
-            let score = 10;
+            int score = 10;
             //PLAY SFX
         }
         case (ITEM_BOMB) {
-            let score = 1000;
+            int score = 1000;
             SetPlayerSpell(GetPlayerSpell() + 1);
             AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score);
             //PLAY SFX
         }
         case (ITEM_EXTEND) {
-            let score = 1000;
+            int score = 1000;
             SetPlayerLife(GetPlayerLife() + 1);
             AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score);
             //PLAY SFX

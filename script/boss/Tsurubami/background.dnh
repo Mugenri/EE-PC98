@@ -1,5 +1,5 @@
 #include "./../../lib/lib_Common.dnh"
-let bSpell = false;
+bool _bSpell = false;
 
 @Initialize {
     SetAutoDeleteObject(true);
@@ -8,22 +8,22 @@ let bSpell = false;
 }
 
 @MainLoop {
-    let objScene = GetEnemyBossSceneObjectID();
+    int objScene = GetEnemyBossSceneObjectID();
 	if (objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(objScene, INFO_IS_SPELL))
 	{
-		bSpell = true;
+		_bSpell = true;
 	}
 	else
 	{
-		bSpell = false;
+		_bSpell = false;
 	}
 	yield;
 }
 
 task TBackground() {
     //bg
-    let path = DIR_IMG ~ "stg/tsurubamiBG.png";
-    let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    string path = DIR_IMG ~ "stg/tsurubamiBG.png";
+    int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, path);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
@@ -32,16 +32,16 @@ task TBackground() {
     ObjRender_SetTextureFilterMip(bg, 0);
     Obj_SetRenderPriorityI(bg, RP_STG_BG);
 
-    let count = 30;
-    let color = 0;
-    let increment = true;
+    int count = 30;
+    int color = 0;
+    bool increment = true;
 
-    LineEffect();
+    TLineEffect();
 
     loop {
-        if (bSpell) {
+        if (_bSpell) {
             //do thing
-        } else if (!bSpell) {
+        } else if (!_bSpell) {
             ObjRender_SetColor(bg, color, color, color);
         }
 
@@ -61,24 +61,20 @@ task TBackground() {
         yield;
     }
 
-    task LineEffect() {
+    task TLineEffect() {
         //Used for movement
-        let count = 0;
+        int count = 0;
 
         //starting point for line columns/rows
-        let xOrigin = -17;
-        let yOrigin = -26;
+        int xOrigin = -17;
+        int yOrigin = -26;
 
-        let x = xOrigin;
-        let y = yOrigin;
-
-        //Center of Screen
-        let xMid = GetStgFrameWidth() / 2;
-        let yMid = GetStgFrameHeight() / 2;
+        int x = xOrigin;
+        int y = yOrigin;
 
         //Vertical Lines
         loop (5) {
-            CreateLine(x, y, 71, 7, true);
+            TCreateLine(x, y, 71, 7, true);
             x += 139;
         }
 
@@ -87,7 +83,7 @@ task TBackground() {
 
         //Horizontal Lines
         loop (5) {
-            CreateLine(x, y, 140, 7, false);
+            TCreateLine(x, y, 140, 7, false);
             y += 70;
         }
 
@@ -100,43 +96,39 @@ task TBackground() {
             yield;
         }
 
-        task CreateLine(xStart, yStart, step, points, vertical) {
-            let positions = [];
+        task TCreateLine(int xStart_, int yStart_, int step_, int points_, bool vertical_) {
+            int[][] positions = [];
 
-            let line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+            int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
             Obj_SetRenderPriorityI(line, RP_STG_BG);
-            ObjPrim_SetVertexCount(line, points);
-            ascent(i in 0..points) {
+            ObjPrim_SetVertexCount(line, points_);
+            ascent (i in 0..points_) {
                 ObjPrim_SetVertexColor(line, i, 78, 78, 78);
             }
-            ascent(i in 0..points) {
-                ObjPrim_SetVertexPosition(line, i, xStart, yStart, 1);
-                positions = positions ~ [[xStart, yStart]];
-                if (vertical) {
-                    yStart += step;
-                } else {
-                    xStart += step;
-                }
+            ascent (i in 0..points_) {
+                ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);
+                positions = positions ~ [[xStart_, yStart_]];
+                if (vertical_) yStart_ += step_;
+                else xStart_ += step_;
             }
 
             //set positions based on grid position and multiplier based on distance from the middle
             loop {
-                ascent(i in 0..length(positions)) {
-                    let xCurr = positions[i][0] - count;
-                    let yCurr = positions[i][1];
-                    xCurr -= (xCurr - xMid) * 0.06 * (absolute(yCurr - yMid) * 0.02);
-                    yCurr += (yCurr - yMid) * 0.06 * (absolute(xCurr - xMid) * 0.02);
+                ascent (i in 0..length(positions)) {
+                    int xCurr = positions[i][0] - count;
+                    int yCurr = positions[i][1];
+                    xCurr -= (xCurr - MID_X) * 0.06 * (absolute(yCurr - MID_Y) * 0.02);
+                    yCurr += (yCurr - MID_Y) * 0.06 * (absolute(xCurr - MID_X) * 0.02);
 
                     ObjPrim_SetVertexPosition(line, i, xCurr, yCurr, 1);
                 }
                 yield;
-
             }
         }
     }
 }
 
 task TSpellBackground() {
-
+    //TODO spell bg
 }

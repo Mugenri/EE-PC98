@@ -1,40 +1,40 @@
-let imgChara = GetCurrentScriptDirectory() ~ "./../../img/character/tsurubami/tsurubami.png";
-let charge = false;
-let monochrome = false;
-let frameCount = 0;
-let frameCountCharge = 0;
+string imgChara = GetCurrentScriptDirectory() ~ "./../../img/character/tsurubami/tsurubami.png";
+bool _charge = false;
+bool _monochrome = false;
+int _frameCount = 0;
+int _frameCountCharge = 0;
 
-task DrawBoss(objBoss) {
-    ObjPrim_SetTexture(objBoss, imgChara);
-    ObjSprite2D_SetSourceRect(objBoss, 0, 0, 64, 64);
-    ObjSprite2D_SetDestCenter(objBoss);
-    Obj_SetRenderPriorityI(objBoss, RP_STG_ENEMY);
+task TDrawBoss(int objBoss_) {
+    ObjPrim_SetTexture(objBoss_, imgChara);
+    ObjSprite2D_SetSourceRect(objBoss_, 0, 0, 64, 64);
+    ObjSprite2D_SetDestCenter(objBoss_);
+    Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
 
-    let frame = 0;
-    let frameCharge = 0;
+    int frame_ = 0;
+    int frameCharge_ = 0;
 
-    while (!Obj_IsDeleted(objBoss)) {
-         if (monochrome || ObjMove_GetSpeed(objBoss) > 0) { //monochrome frame
-            ObjSprite2D_SetSourceRect(objBoss, 64 * 5, 0, 64 * 6, 64);
-        } else if (frameCountCharge == 0) { //idle animation
-            frame = floor(frameCount / 30);
-            ObjSprite2D_SetSourceRect(objBoss, (64 * frame), 0, 64 * (frame + 1), 64);
-        } else if ((charge || frameCountCharge > 0)) { //charge anim
-            frameCharge = floor(frameCountCharge / 8);
-            ObjSprite2D_SetSourceRect(objBoss, 64 * frameCharge, 0, 64 * (frameCharge + 1), 64);
+    while (!Obj_IsDeleted(objBoss_)) {
+         if (_monochrome || ObjMove_GetSpeed(objBoss_) > 0) { //_monochrome frame
+            ObjSprite2D_SetSourceRect(objBoss_, 64 * 5, 0, 64 * 6, 64);
+        } else if (_frameCountCharge == 0) { //idle animation
+            frame_ = floor(_frameCount / 30);
+            ObjSprite2D_SetSourceRect(objBoss_, (64 * frame_), 0, 64 * (frame_ + 1), 64);
+        } else if ((_charge || _frameCountCharge > 0)) { //_charge anim
+            frameCharge_ = floor(_frameCountCharge / 8);
+            ObjSprite2D_SetSourceRect(objBoss_, 64 * frameCharge_, 0, 64 * (frameCharge_ + 1), 64);
         }
-        frameCount++;
-        if (frameCount >= 60 || frameCountCharge > 0 || monochrome) {frameCount = 0;}
-        if (charge && frameCountCharge < 32) {frameCountCharge++;}
-        if (!charge && frameCountCharge > 0) {frameCountCharge--;}
+        _frameCount++;
+        if (_frameCount >= 60 || _frameCountCharge > 0 || _monochrome) _frameCount = 0;
+        if (_charge && _frameCountCharge < 32) _frameCountCharge++;
+        if (!_charge && _frameCountCharge > 0) _frameCountCharge--;
         yield;
     }
 }
 
-function AnimeCharge() {
-    charge = !charge;
+function<void> AnimeCharge() {
+    _charge = !_charge;
 }
 
-function AnimeMonochrome() {
-    monochrome = !monochrome;
+function<void> AnimeMonochrome() {
+    _monochrome = !_monochrome;
 }

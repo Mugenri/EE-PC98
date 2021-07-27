@@ -1,28 +1,27 @@
 //Player Common functions
 #include "../../lib/lib_Common.dnh"
 
-let pathImg; //player sprite passed by player script
-let pathShot; //player shot data passed by player script
-//General player sound variables, MOVE TO SFX SCRIPT
-let seVolume;
-let seShot;
-let seGraze;
-let seHit;
-let seMiss;
-let seVulnerable;
+string _pathImg; //player sprite passed by player script
+string _pathShot; //player shot data passed by player script
 
-let particleList;
+//General player sound variables, TODO MOVE TO SFX SCRIPT
+int seVolume;
+int seShot;
+int seGraze;
+int seHit;
+int seMiss;
+int seVulnerable;
 
-let PlayerPosition = [0, 0]; //used for respawning in the same position
+int _particleList;
 
-function InitPlayer(imageFile, shotData) {
-    pathImg = imageFile;
-    pathShot = shotData;
-    TRender(GetPlayerObjectID(), pathImg);
-    LoadPlayerShotData(pathShot);
+function<void> InitPlayer(string imageFile_, string shotFile_) {
+    _pathImg = imageFile_;
+    _pathShot = shotFile_;
+    TRender(GetPlayerObjectID());
+    LoadPlayerShotData(_pathShot);
 
-    particleList = InitParticleList(IMG_EFFECT_GRAZE, RP_STG_PLAYER, 0, 0, 7, 7);
-    ParticleListShader(particleList, 7/64, 1);
+    _particleList = InitParticleList(IMG_EFFECT_GRAZE, RP_STG_PLAYER, 0, 0, 7, 7);
+    ParticleListShader(_particleList, 7/64, 1);
 
     ObjPlayer_AddIntersectionCircleA1(objPlayer, 0, 0, 1, 20);
     SetPlayerDownStateFrame(0);
@@ -35,13 +34,13 @@ function InitPlayer(imageFile, shotData) {
     //Starts the stage intro
 }
 
-function PlayerEvent() {
+function<void> PlayerEvent() {
     alternative (GetEventType())
 	case (EV_REQUEST_SPELL) {
-		let spell = GetPlayerSpell();
+		int spell = GetPlayerSpell();
 		if (spell >= 1) {
 			SetScriptResult(true);
-			SetPlayerSpell(spell-1);
+			SetPlayerSpell(spell - 1);
 			TSpell();
 		}
 		else {
@@ -58,14 +57,11 @@ function PlayerEvent() {
         TRebirth();
 	}
     case (EV_GRAZE) {
-        // for each (bullet in GetEventArgument(2)) { //bullet[0] and bullet[1] are the x and y coords of each bullet grazed in this frame
-        //     TGraze(bullet[0], bullet[1]);
-        // }
         TGraze(GetEventArgument(2)[0][0], GetEventArgument(2)[0][1]);
     }
 }
 
-function InitSound() {
+function<void> InitSound() { //TODO move to audio script
     seVolume = GetSFXVolume();
 
     seShot = ObjSound_Create();
@@ -94,17 +90,17 @@ function InitSound() {
     ObjSound_SetVolumeRate(seVulnerable, seVolume);
 }
 
-task TRender(ParentID, pathImg) {
-	ObjPrim_SetTexture(objPlayer, pathImg);
+task TRender(int ParentID_) {
+	ObjPrim_SetTexture(objPlayer, _pathImg);
     Obj_SetRenderPriorityI(objPlayer, RP_STG_PLAYER);
 
-    let objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objHitbox, pathImg);
+    int objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objHitbox, _pathImg);
     ObjSprite2D_SetSourceRect(objHitbox, 198, 6, 202, 10);
     ObjSprite2D_SetDestCenter(objHitbox);
     Obj_SetRenderPriorityI(objHitbox, RP_STG_HITBOX);
 
-	while (!Obj_IsDeleted(ParentID)) {
+	while (!Obj_IsDeleted(ParentID_)) {
 		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) {
 			ObjSprite2D_SetSourceRect(objPlayer, 48, 0, 96, 48);
 		} else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) {
@@ -131,16 +127,16 @@ task THit() { //Player deathbomb window
     ObjSound_Play(seHit);
     
     //Closing circle
-    let radius = 28;
-    let circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    real radius = 28;
+    int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
     ObjPrim_SetVertexCount(circle, 17);
-    ascent(i in 0..17) {
+    ascent (i in 0..17) {
         ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     }
     loop (14) {
-        ascent(i in 0..17) {
-            let angleT = 360/16 * i;
+        ascent (i in 0..17) {
+            real angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
         }
         radius -= 2;
@@ -155,62 +151,60 @@ task THit() { //Player deathbomb window
 task TMiss() { //Player died
     SetForbidPlayerSpell(true);
     ObjRender_SetColor(objPlayer, 255, 255, 255);
-    PlayerPosition = [GetPlayerX(), GetPlayerY()];
-    let xPos = GetPlayerX();
-    let yPos = GetPlayerY();
+    SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
+    real xPos = GetPlayerX();
+    real yPos = GetPlayerY();
     ObjSound_Play(seMiss);
 
-    MissGlass();
-    MissCircle();
+    TMissGlass();
+    TMissCircle();
     
-    task MissGlass() {
+    task TMissGlass() {
         loop (7) {
             loop (10) {
-                GlassMovement();
+                TGlassMovement();
             }
             yield;
         }
 
-        task GlassMovement() {
-            let x = xPos;
-            let y = yPos;
-            let xSpeed = rand(0.2, 2.2);
-            let ySpeed = rand(0.2, 2.2);
+        task TGlassMovement() {
+            real x = xPos;
+            real y = yPos;
+            real xSpeed = rand(0.2, 2.2);
+            real ySpeed = rand(0.2, 2.2);
             //chance to make speed negative
             if (rand_int(0, 1) == 1) xSpeed *= -1;
             if (rand_int(0, 1) == 1) ySpeed *= -1;
-            let frame = 0;
+            int frame = 0;
             loop (70) {
                 loop (2) {
-                    ObjParticleList_SetPosition(particleList, x, y, 1);
-                    ObjParticleList_SetExtraData(particleList, frame, 0, 0);
-                    ObjParticleList_SetColor(particleList, 0xFFFFFF);
+                    ObjParticleList_SetPosition(_particleList, x, y, 1);
+                    ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
+                    ObjParticleList_SetColor(_particleList, 0xFFFFFF);
                     
-                    ObjParticleList_AddInstance(particleList);
+                    ObjParticleList_AddInstance(_particleList);
                     yield;
                 }
                 frame++;
-                if (frame >= 7) {
-                    frame = 0;
-                }
+                if (frame >= 7) frame = 0;
                 x += xSpeed;
                 y += ySpeed;
             }
         }
     }
 
-    task MissCircle() {
-        let radius = 0;
-        let decayRate = 3.5;
-        let circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    task TMissCircle() {
+        real radius = 0;
+        real decayRate = 3.5;
+        int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
         ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
         ObjPrim_SetVertexCount(circle, 17);
-        ascent(i in 0..17) {
+        ascent (i in 0..17) {
             ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         }
         loop (120) {
-            ascent(i in 0..17) {
-                let angleT = 360/16 * i;
+            ascent (i in 0..17) {
+                real angleT = 360/16 * i;
                 ObjPrim_SetVertexPosition(circle, i, xPos + radius*cos(angleT), yPos + radius*sin(angleT), 1);
             }
             radius += decayRate;
@@ -222,7 +216,6 @@ task TMiss() { //Player died
 }
 
 task TRebirth() { //Player respawn
-    ObjMove_SetPosition(objPlayer,PlayerPosition[0], PlayerPosition[1]);
     if (GetPlayerState() == STATE_END) {
         Obj_SetVisible(objPlayer, false);
         SetForbidPlayerShot(true);
@@ -233,30 +226,30 @@ task TRebirth() { //Player respawn
     SetForbidPlayerSpell(true);
     SetPlayerInvincibilityFrame(240);
 
-    RebirthEffect();
-    loop (240) {yield;}
+    TRebirthEffect();
+    wait(240);
     SetForbidPlayerSpell(false);
 
-    task RebirthEffect() {
+    task TRebirthEffect() {
         loop (55) { //blink red
             ObjRender_SetColor(objPlayer, 255, 0, 0);
             yield;
             ObjRender_SetColor(objPlayer, 255, 255, 255);
-            loop (3) {yield;}
+            wait(3);
         }
 
         //blue circle indicating vulnerability
         ObjSound_Play(seVulnerable);
-        let radius = 28;
-        let circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+        real radius = 28;
+        int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
         ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
         ObjPrim_SetVertexCount(circle, 17);
-        ascent(i in 0..17) {
+        ascent (i in 0..17) {
             ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         }
         loop (20) {
-            ascent(i in 0..17) {
-                let angleT = 360/16 * i;
+            ascent (i in 0..17) {
+                real angleT = 360/16 * i;
                 ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
             }
             radius -= 28/20;
@@ -266,9 +259,9 @@ task TRebirth() { //Player respawn
     }
 }
 
-task TGraze(x, y) { //Summon graze particle, add to particle list
-    let xSpeed = rand(2, 3.2);
-    let ySpeed = rand(2, 3.2);
+task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
+    real xSpeed = rand(2, 3.2);
+    real ySpeed = rand(2, 3.2);
     //chance to make speed negative
     if (rand_int(0, 1) == 1) xSpeed *= -1;
     if (rand_int(0, 1) == 1) ySpeed *= -1;
@@ -276,29 +269,29 @@ task TGraze(x, y) { //Summon graze particle, add to particle list
     ObjSound_Play(seGraze);
     AddScore(1000);
 
-    let frame = 0;
+    int frame = 0;
     loop (43) {
         loop (2) {
-            ObjParticleList_SetPosition(particleList, x, y, 1);
-            ObjParticleList_SetExtraData(particleList, frame, 0, 0);
-            ObjParticleList_SetColor(particleList, 0xEEBBAA);
+            ObjParticleList_SetPosition(_particleList, x_, y_, 1);
+            ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
+            ObjParticleList_SetColor(_particleList, 0xEEBBAA);
 
-            ObjParticleList_AddInstance(particleList);
+            ObjParticleList_AddInstance(_particleList);
             yield;
         }
         frame++;
         if (frame >= 7) {
             frame = 0;
         }
-        x += xSpeed;
-        y += ySpeed;
+        x_ += xSpeed;
+        y_ += ySpeed;
     }
 }
 
-function Alive() {
+function<bool> Alive() {
 	return GetPlayerState == STATE_NORMAL || GetPlayerState == STATE_HIT;
 }
 
-function Shooting() {
+function<bool> Shooting() {
     return (GetVirtualKeyState(VK_SHOT) != KEY_FREE) && IsPermitPlayerShot();
 }

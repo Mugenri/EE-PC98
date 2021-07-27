@@ -1,46 +1,46 @@
 //Difficulty Selection Screen
-function SceneRankSelect(selectedDefault) {
-    let exitFlag = false; //Delete certain things upon leaving this menu
-    let playMode = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+function<int> SceneRankSelect(int selectedDefault_) {
+    bool exitFlag = false; //Delete certain things upon leaving this menu
+    int playMode = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
 
-    let extraMode = (selectedDefault == D_EXTRA || selectedDefault == D_ABEX);
-    let imgValue = [0, 1, 2, 3];
+    bool extraMode = (selectedDefault_ == D_EXTRA || selectedDefault_ == D_ABEX);
+    int[] imgValue = [0, 1, 2, 3];
 
     //Extra Stage menu
     if (extraMode) {
-        selectedDefault = 0;
+        selectedDefault_ = 0;
         imgValue = [4, 5];
     }
 
-    let selectMax = length(imgValue) - 1;
-    let resultIndex = -1; //value returned from this menu
+    int selectMax = length(imgValue) - 1;
+    int resultIndex = -1; //value returned from this menu
 
-    let indexCurrent = selectedDefault;
+    int indexCurrent = selectedDefault_;
 
-    let forbidIndex = [];
+    int[] forbidIndex = [];
 
-    CreateMenuGraphicsRank();
+    TCreateMenuGraphicsRank();
 
     //Create Menu Items
-    let menuX = GetScreenWidth() / 2;
-    let menuY = GetScreenHeight() / 2 - (25 * selectMax);
-    ascent(i in 0..selectMax + 1) {
-        CreateMenuItemRank(i, menuX, menuY, imgValue[i]);
+    int menuX = GetScreenWidth() / 2;
+    int menuY = GetScreenHeight() / 2 - (25 * selectMax);
+    ascent (i in 0..selectMax + 1) {
+        TCreateMenuItemRank(i, menuX, menuY, imgValue[i]);
         menuY += 50;
     }
 
     wait(15); //wait for screen fade from previous menu to clear
     WaitKeysFree([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop {
-        let userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_UP) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, 0);
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
         case (VK_DOWN) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, 0);
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case (VK_OK) {
             resultIndex = indexCurrent;
@@ -55,46 +55,46 @@ function SceneRankSelect(selectedDefault) {
         }
     }
     exitFlag = true;
-    if (resultIndex == 0 && extraMode) {resultIndex = D_EXTRA;}
-    if (resultIndex == 1 && extraMode) {resultIndex = D_ABEX;}
+    if (resultIndex == 0 && extraMode) resultIndex = D_EXTRA;
+    if (resultIndex == 1 && extraMode) resultIndex = D_ABEX;
     SetAreaCommonData(AREA_TITLE, "Difficulty", resultIndex);
     return(resultIndex);
 
-    function MenuSelect() {
+    function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
         ScreenBlackout(10, 5, 10, 0x000000);
         wait(10);
     }
 
-    task CreateMenuGraphicsRank() {
-        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    task TCreateMenuGraphicsRank() {
+        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
-        while (!exitFlag) {yield;}
+        while (!exitFlag) yield;
         Obj_Delete(bg);
     }
 
-    task CreateMenuItemRank(index, x, y, imgIndex) {
-        let objText = ObjPrim_Create(OBJ_SPRITE_2D);
+    task TCreateMenuItemRank(int index_, int x_, int y_, int imgIndex_) {
+        int objText = ObjPrim_Create(OBJ_SPRITE_2D);
         Obj_SetRenderPriorityI(objText, RP_UI_IMG);
         ObjPrim_SetTexture(objText, IMG_TT_RANK);
-        ObjSprite2D_SetSourceRect(objText, 0, imgIndex * 16, 223, (imgIndex+1) * 16);
+        ObjSprite2D_SetSourceRect(objText, 0, imgIndex_ * 16, 223, (imgIndex_+1) * 16);
         ObjSprite2D_SetDestCenter(objText);
-        ObjRender_SetPosition(objText, x, y, 1);
+        ObjRender_SetPosition(objText, x_, y_, 1);
 
-        let objTextHighlight = ObjPrim_Create(OBJ_SPRITE_2D);
+        int objTextHighlight = ObjPrim_Create(OBJ_SPRITE_2D);
         Obj_SetRenderPriorityI(objTextHighlight, RP_UI_IMG);
         ObjPrim_SetTexture(objTextHighlight, IMG_TT_RANK);
-        ObjSprite2D_SetSourceRect(objTextHighlight, 0, imgIndex * 16, 223, (imgIndex+1) * 16);
+        ObjSprite2D_SetSourceRect(objTextHighlight, 0, imgIndex_ * 16, 223, (imgIndex_+1) * 16);
         ObjSprite2D_SetDestCenter(objTextHighlight);
-        ObjRender_SetPosition(objTextHighlight, x, y, 1);
+        ObjRender_SetPosition(objTextHighlight, x_, y_, 1);
         ObjRender_SetColor(objTextHighlight, 0xFFFF00);
 
         while (!exitFlag) {
-            Obj_SetVisible(objTextHighlight, index == indexCurrent);
+            Obj_SetVisible(objTextHighlight, index_ == indexCurrent);
             yield;
         }
         Obj_Delete(objText);

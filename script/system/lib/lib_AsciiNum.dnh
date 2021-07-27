@@ -1,47 +1,49 @@
 //Creates shot deletion and item collection score numbers
-task AsciiScoreNum(x, y, score, color){
-    let obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
 	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
-    ObjRender_SetColor(obj, color);
+    ObjRender_SetColor(obj, color_);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	Obj_SetRenderPriorityI(obj, RP_STG_TEXT);
-	ObjRender_SetY(obj, y);
+	ObjRender_SetY(obj, y_);
 
-    let listNum = DigitToArray(score);
+    int[] listNum = DigitToArray(score_);
 
-    x -= 4 * length(listNum);
+    x_ -= 4 * length(listNum);
 
-    ascent(i in 0..length(listNum)) {
-        let num = listNum[i];
-        ObjRender_SetX(obj, x + 8*i);
+    ascent (i in 0..length(listNum)) {
+        int num = listNum[i];
+        ObjRender_SetX(obj, x_ + 8*i);
         ObjSpriteList2D_SetSourceRect(obj, 73 + num * 8, 337, 73 + (num + 1) * 8, 345);
         ObjSpriteList2D_SetDestRect(obj, 0, 0, 8, 8);
         ObjSpriteList2D_AddVertex(obj);
     }
     ObjSpriteList2D_CloseVertex(obj);
 
-    wait(24);
-    loop (16) {
-        ObjRender_SetY(obj, ObjRender_GetY(obj) - 1/2);
-        yield;
+    async {
+        wait(24);
+        loop (16) {
+            ObjRender_SetY(obj, ObjRender_GetY(obj) - 1/2);
+            yield;
+        }
+
+        Obj_Delete(obj);
     }
-
-    Obj_Delete(obj);
 }
 
-task AsciiScoreNum(x, y, score){ //if no color is provided, default to white
-    AsciiScoreNum(x, y, score, 0xFFFFFF);
+function<void> AsciiScoreNum(real x_, real y_, int score_) { //if no color is provided, default to white
+    AsciiScoreNum(x_, y_, score_, 0xFFFFFF);
 }
 
-function DigitToArray(digit) {
-	let res = [];
-	digit = truncate(digit);
+function<int[]> DigitToArray(int digit_) {
+	int[] res = [];
+	digit_ = truncate(digit_);
 
 	loop {
-		let tnum = truncate(digit % 10);
-		digit /= 10;
+		int tnum = truncate(digit_ % 10);
+		digit_ /= 10;
 		res = [tnum] ~ res;
-		if (truncate(digit) == 0) {break;}
+		if (truncate(digit_) == 0) break;
 	}
 
 	return res;

@@ -1,30 +1,30 @@
 #include "./lib/lib_Common.dnh"
 
-task InitLoad() {
+function<void> InitLoad() {
     InitializeCommonData();
-    LoadScene();
+    TLoadScene();
 }
 
-task LoadScene { //loading screen
+task TLoadScene() { //loading screen
 
     { //load audio manager
-        let path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
-        let id = LoadScript(path);
+        string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
+        int id = LoadScript(path);
         StartScript(id);
     }
 
     InstallFont(SYS_FONT_PATH); //pc9800 font
     InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
-    loop (60) {yield;} //Give loading screen time to run
+    wait(60); //Give loading screen time to run
 
     //load achievement menu if i make one
 
     //init high score
 
     { //Run title screen
-        let path = GetCurrentScriptDirectory() ~ "Title.dnh";
-        let id = LoadScript(path);
+        string path = GetCurrentScriptDirectory() ~ "Title.dnh";
+        int id = LoadScript(path);
         StartScript(id);
     }
 }

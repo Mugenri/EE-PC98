@@ -8,11 +8,12 @@
 #include "./scene/ScenePlayerSelect.dnh"
 #include "./scene/SceneRankSelect.dnh"
 
-let titleEnd = false;
+bool _titleEnd = false;
 
 @Initialize {
     SetAutoDeleteObject(true);
     SetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", GetOwnScriptID());
+    //TODO unload/uncache all scripts that were created during the stage, perhaps with a stage management script
 
     TTitleScene();
 }
@@ -20,7 +21,7 @@ let titleEnd = false;
 @Event {
     alternative (GetEventType())
     case (EV_TITLE_END) {
-        titleEnd = true;
+        _titleEnd = true;
     }
 }
 
@@ -32,16 +33,16 @@ let titleEnd = false;
 
 //Load Title
 task TTitleScene() {
-    let testBG = ObjPrim_Create(OBJ_SPRITE_2D); //If this is ever visible something is wrong
+    int testBG = ObjPrim_Create(OBJ_SPRITE_2D); //If this is ever visible something is wrong
     Obj_SetRenderPriorityI(testBG, RP_UI_MIN);
     ObjSprite2D_SetSourceRect(testBG, 0, 0, 640, 400);
     ObjSprite2D_SetDestRect(testBG, 0, 0, 640, 400);
     ObjRender_SetColor(testBG, 0xFF0000); //its a bigass red rectangle
 
     StartBGM(0, 60, 30);
-    MainMenu(true, INDEX_START);
+    TMainMenu(true, INDEX_START);
 
-    while (!titleEnd) {
+    while (!_titleEnd) {
         yield;
     }
 

@@ -1,80 +1,80 @@
 //Title Screen
 
 //Menu Indices
-const INDEX_START = 0;
-const INDEX_EXTRA = 1;
-const INDEX_PRACTICE = 2;
-const INDEX_REPLAY = 3;
-const INDEX_MUSIC = 4;
-const INDEX_SCORE = 5;
-const INDEX_OPTION = 6;
-const INDEX_QUIT = 7;
+const int INDEX_START = 0;
+const int INDEX_EXTRA = 1;
+const int INDEX_PRACTICE = 2;
+const int INDEX_REPLAY = 3;
+const int INDEX_MUSIC = 4;
+const int INDEX_SCORE = 5;
+const int INDEX_OPTION = 6;
+const int INDEX_QUIT = 7;
 
-let indexCurrent;
+int _indexCurrent;
 
-let exitFlag = false; //deletes certain things upon leaving this menu
+bool _exitFlag = false; //deletes certain things upon leaving this menu
 
-task MainMenu(playIntro, selectedDefault) {
-    exitFlag = false;
+task TMainMenu(bool playIntro_, int selectedDefault_) {
+    _exitFlag = false;
     SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE); //write data to save file
 
-    let selectMax = INDEX_QUIT;
-    indexCurrent = selectedDefault;
+    int selectMax = INDEX_QUIT;
+    _indexCurrent = selectedDefault_;
 
-    let forbidIndex = [INDEX_START, INDEX_PRACTICE]; //Can't select these menu options
+    int[] forbidIndex = [INDEX_START, INDEX_PRACTICE]; //Can't select these menu options
 
     //Don't allow menu cursor to start on a forbidden index
-    while (CheckForbidden(indexCurrent, forbidIndex)) {
-        indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+    while (CheckForbidden(_indexCurrent, forbidIndex)) {
+        _indexCurrent = IncrementIndex(_indexCurrent, 1, 0, selectMax, forbidIndex);
     }
 
-    if (playIntro) {
-        //play intro anim
+    if (playIntro_) {
+        //TODO play intro anim, this should be blocking and cancel upon pressing a button
     }
 
     //Init title graphics/replace intro prims with images
-    CreateMenuGraphicsMain();
+    TCreateMenuGraphicsMain();
 
     //Set up the menu
     {
-        let menuX = 400;
-        let menuY = 244;
-        let xOffset = [0, 110, -30, 90, -50, 80, -20, 100];
-        let yOffset = 15;
-        let texts = ["Start", "Extra Start", "Practice", "Replays", "Music Room", "Result", "Options", "Quit"];
-        ascent(i in 0..selectMax + 1) {
-            CreateMenuItemMain(i, menuX, menuY, xOffset[i], yOffset, texts[i]);
+        int menuX = 400;
+        int menuY = 244;
+        int[] xOffset = [0, 110, -30, 90, -50, 80, -20, 100];
+        int yOffset = 15;
+        string[] texts = ["Start", "Extra Start", "Practice", "Replays", "Music Room", "Result", "Options", "Quit"];
+        ascent (i in 0..selectMax + 1) {
+            TCreateMenuItemMain(i, menuX, menuY, xOffset[i], yOffset, texts[i]);
             menuY += yOffset;
         }
-        CreateMenuInfo(1, GetScreenHeight() - 16); //version text
+        TCreateMenuInfo(1, GetScreenHeight() - 16); //version text
     }
 
     wait(15); //wait for screen fade from previous menu to clear
     WaitKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop { //Wait for input loop
-        let userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_UP, VK_LEFT) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
+            _indexCurrent = IncrementIndex(_indexCurrent, -1, 0, selectMax, forbidIndex);
         }
         case (VK_DOWN, VK_RIGHT) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+            _indexCurrent = IncrementIndex(_indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case (VK_OK) {
             MenuSelect();
-            let temp = SelectItem(indexCurrent);
-            if (temp > 0) {break;}
+            int temp = SelectItem(_indexCurrent);
+            if (temp > 0) break;
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            indexCurrent = INDEX_QUIT;
+            _indexCurrent = INDEX_QUIT;
         }
     }
 
-    function SelectItem(index) {
-        alternative (index)
+    function<int> SelectItem(int index_) {
+        alternative (index_)
         case (INDEX_START) {
             //Game Start
             TSelectStart();
@@ -120,14 +120,14 @@ task MainMenu(playIntro, selectedDefault) {
         }
     }
 
-    task CreateMenuGraphicsMain() {
-        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    task TCreateMenuGraphicsMain() {
+        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
-        let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
+        int yabu = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(yabu, IMG_TT_YABU);
         Obj_SetRenderPriorityI(yabu, RP_UI_BG);
         ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
@@ -135,20 +135,20 @@ task MainMenu(playIntro, selectedDefault) {
 
         ObjRender_SetPosition(yabu, 40, 20, 1);
 
-        while (!exitFlag) {yield;}
+        while (!_exitFlag) yield;
         Obj_Delete(bg);
         Obj_Delete(yabu);
     }
 
-    task CreateMenuItemMain(index, x, y, xOff, yOff, text) {
-        let color = 0xFFFFFFFF;
-        if (CheckForbidden(index, forbidIndex)) {color = 0xFF111166;}
-        let objText = CreateText(x + xOff, y + yOff, text, color);
-        let objTextHighlight = CreateText(x + xOff, y + yOff, text, 0xFFFFFF00);
-        let objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
-        while (!exitFlag) {
-            Obj_SetVisible(objTextHighlight, index == indexCurrent);
-            Obj_SetVisible(objCursor, index == indexCurrent);
+    task TCreateMenuItemMain(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
+        int color = 0xFFFFFFFF;
+        if (CheckForbidden(index_, forbidIndex)) color = 0xFF111166;
+        int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, color);
+        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, 0xFFFFFF00);
+        int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
+        while (!_exitFlag) {
+            Obj_SetVisible(objTextHighlight, index_ == _indexCurrent);
+            Obj_SetVisible(objCursor, index_ == _indexCurrent);
             yield;
         }
         Obj_Delete(objText);
@@ -156,13 +156,13 @@ task MainMenu(playIntro, selectedDefault) {
         Obj_Delete(objCursor);
     }
 
-    task CreateMenuInfo(x, y) {
-        let objText = CreateText(x, y, "Version " ~GAME_VERSION, 0xFFFFFFFF);
-        while (!exitFlag) {yield;}
+    task TCreateMenuInfo(int x_, int y_) {
+        int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, 0xFFFFFFFF);
+        while (!_exitFlag) yield;
         Obj_Delete(objText);
     }
     
-    function MenuSelect() {
+    function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
     }
 }
@@ -170,23 +170,23 @@ task MainMenu(playIntro, selectedDefault) {
 task TSelectStart() { //UNUSED
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
     //Declare variables to be set by submenus
-    let selectedRank = D_NORMAL;
-    let selectedPlayer = PLAYER_YABUSAME;
+    int selectedRank = D_NORMAL;
+    int selectedPlayer = PLAYER_YABUSAME;
     //Main Play Mode
     SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
 
-    let tempSelect = 0;
+    int tempSelect = 0;
     loop {
         //Select Difficulty
         tempSelect = SceneRankSelect(selectedRank);
-        if (tempSelect < 0) {break;}
+        if (tempSelect < 0) break;
         selectedRank = tempSelect;
         loop {
             //Select Player
             tempSelect = ScenePlayerSelect(selectedPlayer);
-            if (tempSelect < 0) {break;}
+            if (tempSelect < 0) break;
             selectedPlayer = tempSelect;
 
             //Set CommonData for player selections
@@ -195,36 +195,36 @@ task TSelectStart() { //UNUSED
             SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
             //Run main stage script
-            let pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-            let idScript = LoadScript(pathScript);
+            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+            int idScript = LoadScript(pathScript);
             StartScript(idScript);
             return;
         }
     }
     //Only Runs if the submenu is exited
-    MainMenu(false, INDEX_START);
+    TMainMenu(false, INDEX_START);
 }
 
 task TSelectExtra() {
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
     //Declare variables to be set by submenus
-    let selectedRank = D_EXTRA;
-    let selectedPlayer = PLAYER_YABUSAME;
+    int selectedRank = D_EXTRA;
+    int selectedPlayer = PLAYER_YABUSAME;
     //Main Play Mode
     SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
 
-    let tempSelect = 0;
+    int tempSelect = 0;
     loop {
         //Select Difficulty
         tempSelect = SceneRankSelect(selectedRank);
-        if (tempSelect < 0) {break;}
+        if (tempSelect < 0) break;
         selectedRank = tempSelect;
         loop {
             //Select Player
             tempSelect = ScenePlayerSelect(selectedPlayer);
-            if (tempSelect < 0) {break;}
+            if (tempSelect < 0) break;
             selectedPlayer = tempSelect;
 
             //Set CommonData for player selections
@@ -233,60 +233,60 @@ task TSelectExtra() {
             SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
             //Run main stage script
-            let pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-            let idScript = LoadScript(pathScript);
+            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+            int idScript = LoadScript(pathScript);
             StartScript(idScript);
             return;
         }
     }
     //Only Runs if the submenu is exited
-    MainMenu(false, INDEX_EXTRA);
+    TMainMenu(false, INDEX_EXTRA);
 }
 
 task TSelectPractice() { //UNUSED
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
 
     //Only Runs if the submenu is exited
-    MainMenu(false, INDEX_PRACTICE);
+    TMainMenu(false, INDEX_PRACTICE);
 }
 
 task TSelectReplay() {
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
 
     //Only Runs if the submenu is exited
-    MainMenu(false, INDEX_REPLAY);
+    TMainMenu(false, INDEX_REPLAY);
 }
 
 task TSelectMusic() {
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
     SceneMusicRoom();
 
     //probably reset the bgm track here
 
     //Exited music menu
     StartBGM(0, 60, 15);
-    MainMenu(false, INDEX_MUSIC);
+    TMainMenu(false, INDEX_MUSIC);
 }
 
 task TSelectScore() {
     ScreenBlackout(10, 5, 10, 0x000000);
     wait(10);
-    exitFlag = true;
+    _exitFlag = true;
 
     //Exited player score menu
-    MainMenu(false, INDEX_SCORE);
+    TMainMenu(false, INDEX_SCORE);
 }
 
 task TSelectOption() {
-    exitFlag = true;
+    _exitFlag = true;
     SceneOption();
 
     //Exited option menu
-    MainMenu(false, INDEX_OPTION);
+    TMainMenu(false, INDEX_OPTION);
 }

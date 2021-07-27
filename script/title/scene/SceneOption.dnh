@@ -1,30 +1,28 @@
 //Options Menu
-function SceneOption() {
+function<void> SceneOption() {
     //Menu Indices
-    const INDEX_VOLUME_BGM = 0;
-    const INDEX_VOLUME_SFX = 1;
+    const int INDEX_VOLUME_BGM = 0;
+    const int INDEX_VOLUME_SFX = 1;
     
-    const INDEX_DEFAULT = 2;
-    const INDEX_QUIT = 3;
+    const int INDEX_DEFAULT = 2;
+    const int INDEX_QUIT = 3;
 
-    let exitFlag = false;
+    bool exitFlag = false;
 
-    let selectMax = INDEX_QUIT;
-    let indexCurrent = 0;
+    int selectMax = INDEX_QUIT;
+    int indexCurrent = 0;
 
-    let forbidIndex = [];
-
-    CreateMenuGraphicsOption();
+    TCreateMenuGraphicsOption();
 
     //Set up the menu
-    let commonName = ["BGM_Volume", "SFX_Volume"]; //common area names
+    string[] commonName = ["BGM_Volume", "SFX_Volume"]; //common data field names
     {
-        let menuX = 460;
-        let menuY = 280;
-        let yOffset = 15;
-        let texts = ["BGM Volume    ", "SFX Volume    ", "Default", "Quit"]; //volume given more space to accomodate a space and 3 extra characters (volume numbers)
-        ascent(i in 0..selectMax + 1) {
-            CreateMenuItemOption(i, menuX, menuY, 0, yOffset, texts[i]);
+        int menuX = 460;
+        int menuY = 280;
+        int yOffset = 15;
+        string[] texts = ["BGM Volume    ", "SFX Volume    ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
+        ascent (i in 0..selectMax + 1) {
+            TCreateMenuItemOption(i, menuX, menuY, 0, yOffset, texts[i]);
             menuY += yOffset;
         }
     }
@@ -32,15 +30,15 @@ function SceneOption() {
     //no fade from previous menu, so no wait time
     WaitKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop { //Wait for input loop
-        let userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_UP) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax);
         }
         case (VK_DOWN) {
             CallSFX(SND_TT_SELECT);
-            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax);
         }
         case (VK_LEFT) {
             if (indexCurrent == INDEX_VOLUME_BGM || indexCurrent == INDEX_VOLUME_SFX) {
@@ -71,18 +69,18 @@ function SceneOption() {
     }
     exitFlag = true;
 
-    function MenuSelect() {
+    function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
     }
 
-    task CreateMenuGraphicsOption() {
-        let bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    task TCreateMenuGraphicsOption() {
+        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriorityI(bg, RP_UI_BG);
         ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
         ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
 
-        let yabu = ObjPrim_Create(OBJ_SPRITE_2D);
+        int yabu = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(yabu, IMG_TT_YABU);
         Obj_SetRenderPriorityI(yabu, RP_UI_BG);
         ObjSprite2D_SetSourceRect(yabu, 0, 0, 288, 360);
@@ -90,52 +88,52 @@ function SceneOption() {
 
         ObjRender_SetPosition(yabu, 40, 20, 1);
 
-        while (!exitFlag) {yield;}
+        while (!exitFlag) yield;
         Obj_Delete(bg);
         Obj_Delete(yabu);
     }
 
-    task CreateMenuItemOption(index, x, y, xOff, yOff, text) {
-        let objText = CreateText(x + xOff, y + yOff, text, 0xFFFFFFFF);
-        let objTextHighlight = CreateText(x + xOff, y + yOff, text, 0xFFFFFF00);
-        let objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
+    task TCreateMenuItemOption(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
+        int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, 0xFFFFFFFF);
+        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, 0xFFFFFF00);
+        int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         //Align to middle
         ObjRender_SetX(objText, ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText) / 2);
         ObjRender_SetX(objTextHighlight, ObjRender_GetX(objTextHighlight) - ObjText_GetTotalWidth(objTextHighlight) / 2);
         ObjRender_SetX(objCursor, ObjRender_GetX(objCursor) - ObjText_GetTotalWidth(objText) / 2);
 
-        if (index == INDEX_VOLUME_BGM || index == INDEX_VOLUME_SFX) {
-            CreateOptionSlider(index);
+        if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) {
+            TCreateOptionSlider(index_);
         }
 
         //Additional options would go here
 
         while (!exitFlag) {
-            Obj_SetVisible(objTextHighlight, index == indexCurrent);
-            Obj_SetVisible(objCursor, index == indexCurrent);
+            Obj_SetVisible(objTextHighlight, index_ == indexCurrent);
+            Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
         Obj_Delete(objText);
         Obj_Delete(objTextHighlight);
         Obj_Delete(objCursor);
 
-        task CreateOptionSlider(index) {
-            let objSlider = CreateText(x + 8 + ObjText_GetTotalWidth(objText) / 4, y + yOff, "000", 0xFFFFFFFF);
+        task TCreateOptionSlider(int index_) {
+            int objSlider = CreateText(x_ + 8 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", 0xFFFFFFFF);
             
             while (!exitFlag) {
-                ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index], 100)));
+                ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100)));
                 yield;
             }
             Obj_Delete(objSlider);
         }
     }
 
-    function IncrementVolume(index, value) {
-        let newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index], 100) + value, 0, 100); 
-        SetAreaCommonData(AREA_CONFIG, commonName[index], newValue);
+    function<void> IncrementVolume(int index_, int value_) {
+        int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100) + value_, 0, 100); 
+        SetAreaCommonData(AREA_CONFIG, commonName[index_], newValue);
     }
 
-    function SaveConfig() {
+    function<void> SaveConfig() {
         if (IsCommonDataAreaExists("SAVED_CONFIG")) { ClearAreaCommonData("SAVED_CONFIG"); }
 		CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
 		SaveCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
