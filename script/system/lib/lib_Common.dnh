@@ -3,5 +3,5 @@
 
 task TSystemInit() {
     SetAutoDeleteObject(true);
-    objPlayer = GetPlayerObjectID();
+    _objPlayer = GetPlayerObjectID();
 }

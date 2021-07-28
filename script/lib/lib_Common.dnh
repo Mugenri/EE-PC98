@@ -4,16 +4,16 @@
 #include "./lib_Util.dnh"
 
 //Common variables
-int objPlayer;
-int idPlayer;
-int objScene;
+int _objPlayer;
+int _idPlayer;
+int _objScene;
 
 function<void> Init() {
     SetAutoDeleteObject(true);
 
-    objPlayer = GetPlayerObjectID();
-	idPlayer = GetPlayerScriptID();
-	objScene = GetEnemyBossSceneObjectID();
+    _objPlayer = GetPlayerObjectID();
+	_idPlayer = GetPlayerScriptID();
+	_objScene = GetEnemyBossSceneObjectID();
 }
 
 function<int[]> DigitToArray(int digit_, int count_) {

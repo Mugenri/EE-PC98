@@ -33,7 +33,7 @@ task TIntro() {
     int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(objLogo, RP_STG_MAX);
 
-    while (objPlayer < 0) { //wait for player to load (~1 frame)
+    while (_objPlayer < 0) { //wait for player to load (~1 frame)
         yield;
     }
 
@@ -233,7 +233,7 @@ task TBossLife() {
 	int lastRemStep = -1;
 	real lifeRateRender = 0;
 
-	int objScene = ID_INVALID;
+	int objScene = ID_INVALID; //TODO replace all getenemybossscene things with the common lib globals
 	loop {
 		objScene = GetEnemyBossSceneObjectID();
 		if (objScene != ID_INVALID) {

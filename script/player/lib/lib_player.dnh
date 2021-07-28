@@ -23,7 +23,7 @@ function<void> InitPlayer(string imageFile_, string shotFile_) {
     _particleList = InitParticleList(IMG_EFFECT_GRAZE, RP_STG_PLAYER, 0, 0, 7, 7);
     ParticleListShader(_particleList, 7/64, 1);
 
-    ObjPlayer_AddIntersectionCircleA1(objPlayer, 0, 0, 1, 20);
+    ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 20);
     SetPlayerDownStateFrame(0);
     SetPlayerRebirthFrame(15);
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
@@ -91,8 +91,8 @@ function<void> InitSound() { //TODO move to audio script
 }
 
 task TRender(int ParentID_) {
-	ObjPrim_SetTexture(objPlayer, _pathImg);
-    Obj_SetRenderPriorityI(objPlayer, RP_STG_PLAYER);
+	ObjPrim_SetTexture(_objPlayer, _pathImg);
+    Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
 
     int objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objHitbox, _pathImg);
@@ -102,11 +102,11 @@ task TRender(int ParentID_) {
 
 	while (!Obj_IsDeleted(ParentID_)) {
 		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) {
-			ObjSprite2D_SetSourceRect(objPlayer, 48, 0, 96, 48);
+			ObjSprite2D_SetSourceRect(_objPlayer, 48, 0, 96, 48);
 		} else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) {
-			ObjSprite2D_SetSourceRect(objPlayer, 96, 0, 144, 48);
+			ObjSprite2D_SetSourceRect(_objPlayer, 96, 0, 144, 48);
 		} else {
-			ObjSprite2D_SetSourceRect(objPlayer, 0, 0, 48, 48);
+			ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 48, 48);
 		}
 
         if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive()) {
@@ -115,7 +115,7 @@ task TRender(int ParentID_) {
             Obj_SetVisible(objHitbox, false);
         }
 
-		ObjSprite2D_SetDestCenter(objPlayer);
+		ObjSprite2D_SetDestCenter(_objPlayer);
         ObjRender_SetPosition(objHitbox, GetPlayerX(), GetPlayerY(), 1);
 		yield;
 	}
@@ -123,7 +123,7 @@ task TRender(int ParentID_) {
 
 task THit() { //Player deathbomb window
     SetForbidPlayerShot(true);
-    ObjRender_SetColor(objPlayer, 0, 0, 0);
+    ObjRender_SetColor(_objPlayer, 0, 0, 0);
     ObjSound_Play(seHit);
     
     //Closing circle
@@ -150,7 +150,7 @@ task THit() { //Player deathbomb window
 
 task TMiss() { //Player died
     SetForbidPlayerSpell(true);
-    ObjRender_SetColor(objPlayer, 255, 255, 255);
+    ObjRender_SetColor(_objPlayer, 255, 255, 255);
     SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
     real xPos = GetPlayerX();
     real yPos = GetPlayerY();
@@ -217,7 +217,7 @@ task TMiss() { //Player died
 
 task TRebirth() { //Player respawn
     if (GetPlayerState() == STATE_END) {
-        Obj_SetVisible(objPlayer, false);
+        Obj_SetVisible(_objPlayer, false);
         SetForbidPlayerShot(true);
         return;
     }
@@ -232,9 +232,9 @@ task TRebirth() { //Player respawn
 
     task TRebirthEffect() {
         loop (55) { //blink red
-            ObjRender_SetColor(objPlayer, 255, 0, 0);
+            ObjRender_SetColor(_objPlayer, 255, 0, 0);
             yield;
-            ObjRender_SetColor(objPlayer, 255, 255, 255);
+            ObjRender_SetColor(_objPlayer, 255, 255, 255);
             wait(3);
         }
 

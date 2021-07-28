@@ -6,8 +6,6 @@
 
 #include "./../../lib/lib_Common.dnh"
 
-string dir = GetCurrentScriptDirectory();
-
 @Initialize {
     TPlural() ;
 }
@@ -17,6 +15,7 @@ string dir = GetCurrentScriptDirectory();
 @MainLoop {yield;}
 
 task TPlural() {
+    string dir = GetCurrentScriptDirectory();
     int obj = ObjEnemyBossScene_Create();
 
     ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh"); //for testing purposes

@@ -7,7 +7,7 @@
 
 #include "./lib/lib_player.dnh"
 
-objPlayer = GetPlayerObjectID();
+_objPlayer = GetPlayerObjectID();
 int _count = 0;
 int _countShot = 0;
 
@@ -148,7 +148,7 @@ task TSpell() {
 
     SetForbidPlayerShot(true);
     SetPlayerInvincibilityFrame(420);
-    ObjRender_SetColor(objPlayer, 255, 255, 255);
+    ObjRender_SetColor(_objPlayer, 255, 255, 255);
     SetPlayerSpeed(1.53, 1.53);
 
     //Sound created in TSpell for reasons stated in TSound

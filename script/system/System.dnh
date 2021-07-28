@@ -32,7 +32,7 @@
 		TGainSpell(score);
 	}
     case (EV_PLAYER_LOADED) {
-        objPlayer = GetPlayerObjectID();
+        _objPlayer = GetPlayerObjectID();
     }
 }
 

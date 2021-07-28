@@ -7,7 +7,7 @@
 
 #include "./lib/lib_player.dnh"
 
-objPlayer = GetPlayerObjectID();
+_objPlayer = GetPlayerObjectID();
 int _count = 0;
 int _countShot = 0;
 
@@ -103,7 +103,7 @@ task TShot() {
         ObjStLaser_SetAngle(objLaser, 270);
         ObjShot_Regist(objLaser);
 
-        while (!Obj_IsDeleted(objPlayer)) {
+        while (!Obj_IsDeleted(_objPlayer)) {
             ObjMove_SetPosition(objLaser, GetPlayerX(), GetPlayerY());
             if (Shooting() && !IsPlayerSpellActive() && Alive()) {
                 ObjShot_SetIntersectionEnable(objLaser, true);
@@ -123,7 +123,7 @@ task TShot() {
 
         int frame = 0;
 
-        while (!Obj_IsDeleted(objPlayer)) {
+        while (!Obj_IsDeleted(_objPlayer)) {
             ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff_ - 16, 1);
             ObjSprite2D_SetSourceRect(objEffect, 160, frame*4, 176, frame*4+32);
             ObjSprite2D_SetDestCenter(objEffect);
@@ -158,7 +158,7 @@ task TOption(int offset_) {
 
     TOptionShot();
 
-    while (!Obj_IsDeleted(objPlayer)) {
+    while (!Obj_IsDeleted(_objPlayer)) {
         real rotationX = cos(_count*4 + 360/6*offset_);
         if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) {
             distCurrent = distUnfocus;
@@ -184,7 +184,7 @@ task TOption(int offset_) {
     }
 
     task TOptionShot() {
-        while (!Obj_IsDeleted(objPlayer)) {
+        while (!Obj_IsDeleted(_objPlayer)) {
             if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
                 loop (3) {
                     CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270, 0.5, 1, 1);
@@ -203,7 +203,7 @@ task TSpell() {
 
     SetForbidPlayerShot(true);
     SetPlayerInvincibilityFrame(310);
-    ObjRender_SetColor(objPlayer, 0xFFFFFF);
+    ObjRender_SetColor(_objPlayer, 0xFFFFFF);
     SetPlayerSpeed(2.2, 2.2);
 
     ObjSound_Play(seSpell);

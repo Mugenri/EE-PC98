@@ -34,7 +34,6 @@ const string[] SOUNDS = [
     }
     case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         _flagStop = GetEventArgument(0);
-
     }
     case (EV_GET_BGM_TEXT) {
         string info = GetBGMText(GetEventArgument(0));
@@ -47,6 +46,9 @@ const string[] SOUNDS = [
         ObjSound_SetVolumeRate(_objSFX, GetSFXVolume());
         ObjSound_Play(_objSFX);
 	}
+    case (EV_STOP_SFX) {
+        ObjSound_Stop(_objSFX);
+    }
 }
 
 @MainLoop {

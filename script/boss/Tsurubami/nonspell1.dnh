@@ -12,7 +12,7 @@
 int objBoss;
 int count = -180;
 int loopTime = 60;
-objScene = GetEnemyBossSceneObjectID();
+_objScene = GetEnemyBossSceneObjectID();
 
 @Event {
     alternative (GetEventType())
