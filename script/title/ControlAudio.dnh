@@ -11,9 +11,20 @@ bool _flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
 int _objSFX = ObjSound_Create();
 const string[] SOUNDS = [
     //Title
-    /*0*/ DIR_SE ~ "menuselect.wav",
-    /*1*/ DIR_SE ~ "menudecide.wav",
-    /*2*/ DIR_SE ~ "menucancel.wav",
+    /*00*/ DIR_SE ~ "seMenuSelect.wav",
+    /*01*/ DIR_SE ~ "seMenuDecide.wav",
+    /*02*/ DIR_SE ~ "seMenuCancel.wav",
+    /*03*/ DIR_SE ~ "seShot.wav", 
+    /*04*/ DIR_SE ~ "seGraze.wav",
+    /*05*/ DIR_SE ~ "seHit.wav",
+    /*06*/ DIR_SE ~ "seMiss.wav",
+    /*07*/ DIR_SE ~ "seVulnerable.wav",
+    /*08*/ DIR_SE ~ "seSpellYabu1.wav",
+    /*09*/ DIR_SE ~ "seSpellYabu2.wav",
+    /*10*/ DIR_SE ~ "seSpellTsuba1.wav",
+    /*11*/ DIR_SE ~ "seSpellTsuba2.wav",
+    /*12*/ DIR_SE ~ "seSpellTsuba3.wav",
+    /*13*/ DIR_SE ~ "seSpellTsuba4.wav"
 ];
 
 @Initialize {

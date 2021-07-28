@@ -11,16 +11,12 @@ _objPlayer = GetPlayerObjectID();
 int _count = 0;
 int _countShot = 0;
 
-//player specific sfx, TODO MOVE TO SFX SCRIPT
-int seSpell;
-
 @Initialize {
     string imageFile = DIR_PLR ~ "./../img/character/yabusame/yabuStg.png";
     string shotData = DIR_PLR ~ "YabuShot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(3, 1.53);
 
-    TSound();
     TShot();
     TOption(1);
     TOption(-1);
@@ -42,12 +38,6 @@ int seSpell;
 
 @Finalize {}
 
-task TSound() {
-    //General player sounds
-    InitSound();
-   //seSpell created in TSpell because it cuts off and behaves strangely for some reason otherwise
-}
-
 task TShot() {
     loop {
         if (Shooting() && !IsPlayerSpellActive() && Alive() && _countShot % 10 == 0) {
@@ -59,7 +49,7 @@ task TShot() {
                         CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13*i*(sin(_count + i*offset)), 1, 1, 1);
                     }
 
-                    ObjSound_Play(seShot);
+                    CallSFX(SND_PL_SHOT);
                     loop (3) {
                         yield;
                     }
@@ -71,7 +61,7 @@ task TShot() {
                         CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
                     }
 
-                    ObjSound_Play(seShot);
+                    CallSFX(SND_PL_SHOT);
                     loop (3) {
                         yield;
                     }
@@ -151,13 +141,7 @@ task TSpell() {
     ObjRender_SetColor(_objPlayer, 255, 255, 255);
     SetPlayerSpeed(1.53, 1.53);
 
-    //Sound created in TSpell for reasons stated in TSound
-    seSpell = ObjSound_Create();
-    ObjSound_Load(seSpell, DIR_SE ~ "seSpellYabu.wav");
-    ObjSound_SetSoundDivision(seSpell, SOUND_SE);
-    ObjSound_SetVolumeRate(seSpell, seVolume);
-
-    ObjSound_Play(seSpell);
+    CallSFX(SND_PL_Y_SPELL1);
     
     real radius = 0;
     TEffect();
@@ -175,7 +159,7 @@ task TSpell() {
     wait(40);
 
     //vulnerability indicator
-    ObjSound_Play(seVulnerable);
+    CallSFX(SND_PL_VULNERABLE);
     radius = 28;
     int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
@@ -193,7 +177,6 @@ task TSpell() {
     }
 
     Obj_Delete(circle);
-    Obj_Delete(seSpell);
     SetForbidPlayerSpell(false);
 
     task TEffect() {
@@ -230,6 +213,8 @@ task TSpell() {
         ascent (i in 0..34) {
             ObjPrim_SetVertexColor(circle, i, 0xFFFFFF);
         }
+
+        CallSFX(SND_PL_Y_SPELL2);
 
         yield;
 

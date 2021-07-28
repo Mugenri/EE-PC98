@@ -11,19 +11,12 @@ _objPlayer = GetPlayerObjectID();
 int _count = 0;
 int _countShot = 0;
 
-//player specific sfx, TODO MOVE TO SFX SCRIPT
-int seSpell;
-int seSpellCharge;
-int seSpellWoosh;
-int seSpellLaser;
-
 @Initialize {
     string imageFile = DIR_PLR ~ "./../img/character/Tsubakura/tsubaStg.png";
     string shotData = DIR_PLR ~ "Tsubashot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(4.5, 2.2);
 
-    TSound();
     TShot();
 }
 
@@ -44,32 +37,6 @@ int seSpellLaser;
 
 @Finalize {}
 
-task TSound() { //TODO move to sfx script
-    //General player sounds
-    InitSound();
-
-    //Player specific sounds
-    seSpell = ObjSound_Create();
-    ObjSound_Load(seSpell, DIR_SE ~ "seSpellTsuba1.wav");
-    ObjSound_SetSoundDivision(seSpell, SOUND_SE);
-    ObjSound_SetVolumeRate(seSpell, seVolume);
-
-    seSpellCharge = ObjSound_Create();
-    ObjSound_Load(seSpellCharge, DIR_SE ~ "seSpellTsuba2.wav");
-    ObjSound_SetSoundDivision(seSpellCharge, SOUND_SE);
-    ObjSound_SetVolumeRate(seSpellCharge, seVolume);
-
-    seSpellWoosh = ObjSound_Create();
-    ObjSound_Load(seSpellWoosh, DIR_SE ~ "seSpellTsuba3.wav");
-    ObjSound_SetSoundDivision(seSpellWoosh, SOUND_SE);
-    ObjSound_SetVolumeRate(seSpellWoosh, seVolume);
-
-    seSpellLaser = ObjSound_Create();
-    ObjSound_Load(seSpellLaser, DIR_SE ~ "seSpellTsuba4.wav");
-    ObjSound_SetSoundDivision(seSpellLaser, SOUND_SE);
-    ObjSound_SetVolumeRate(seSpellLaser, seVolume);
-}
-
 task TShot() {
     TCreateLaser();
     ascent (i in 0..13) {
@@ -83,7 +50,7 @@ task TShot() {
     loop {
         if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
             loop (3) {
-                ObjSound_Play(seShot);
+                CallSFX(SND_PL_SHOT);
                 loop (3) {
                     yield;
                 }
@@ -206,8 +173,8 @@ task TSpell() {
     ObjRender_SetColor(_objPlayer, 0xFFFFFF);
     SetPlayerSpeed(2.2, 2.2);
 
-    ObjSound_Play(seSpell);
-    ObjSound_Play(seSpellCharge);
+    CallSFX(SND_PL_T_SPELL1);
+    CallSFX(SND_PL_T_SPELL2);
 
     TEffect();
     
@@ -221,7 +188,7 @@ task TSpell() {
     wait(40);
 
     //vulnerability indicator
-    ObjSound_Play(seVulnerable);
+    CallSFX(SND_PL_VULNERABLE);
     real radius = 28;
     int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
@@ -271,7 +238,7 @@ task TSpell() {
         }
 
         //Retract Black Circle
-        ObjSound_Play(seSpellWoosh);
+        CallSFX(SND_PL_T_SPELL3);
         loop (45) {
             ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 1..34) {
@@ -286,7 +253,7 @@ task TSpell() {
 
         //Retract White Circle
         radius = 600;
-        ObjSound_Play(seSpellWoosh);
+        CallSFX(SND_PL_T_SPELL3);
         loop (35) {
             ObjPrim_SetVertexPosition(wCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 1..34) {
@@ -300,7 +267,7 @@ task TSpell() {
         Obj_Delete(wCircle);
 
         //monochrome ray
-        ObjSound_Play(seSpellLaser);
+        CallSFX(SND_PL_T_SPELL4);
 
         int laser = ObjSpell_Create();
         ObjSpell_SetEraseShot(laser, true);

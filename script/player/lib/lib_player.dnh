@@ -4,14 +4,6 @@
 string _pathImg; //player sprite passed by player script
 string _pathShot; //player shot data passed by player script
 
-//General player sound variables, TODO MOVE TO SFX SCRIPT
-int seVolume;
-int seShot;
-int seGraze;
-int seHit;
-int seMiss;
-int seVulnerable;
-
 int _particleList;
 
 function<void> InitPlayer(string imageFile_, string shotFile_) {
@@ -61,35 +53,6 @@ function<void> PlayerEvent() {
     }
 }
 
-function<void> InitSound() { //TODO move to audio script
-    seVolume = GetSFXVolume();
-
-    seShot = ObjSound_Create();
-    ObjSound_Load(seShot, DIR_SE ~ "seShot.wav");
-    ObjSound_SetSoundDivision(seShot, SOUND_SE);
-    ObjSound_SetVolumeRate(seShot, seVolume);
-
-    seGraze = ObjSound_Create();
-    ObjSound_Load(seGraze, DIR_SE ~ "seGraze.wav");
-    ObjSound_SetSoundDivision(seGraze, SOUND_SE);
-    ObjSound_SetVolumeRate(seGraze, seVolume);
-
-    seHit = ObjSound_Create();
-    ObjSound_Load(seHit, DIR_SE ~ "seHit.wav");
-    ObjSound_SetSoundDivision(seHit, SOUND_SE);
-    ObjSound_SetVolumeRate(seHit, seVolume);
-
-    seMiss = ObjSound_Create();
-    ObjSound_Load(seMiss, DIR_SE ~ "seMiss.wav");
-    ObjSound_SetSoundDivision(seMiss, SOUND_SE);
-    ObjSound_SetVolumeRate(seMiss, seVolume);
-
-    seVulnerable = ObjSound_Create();
-    ObjSound_Load(seVulnerable, DIR_SE ~ "seVulnerable.wav");
-    ObjSound_SetSoundDivision(seVulnerable, SOUND_SE);
-    ObjSound_SetVolumeRate(seVulnerable, seVolume);
-}
-
 task TRender(int ParentID_) {
 	ObjPrim_SetTexture(_objPlayer, _pathImg);
     Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
@@ -124,7 +87,7 @@ task TRender(int ParentID_) {
 task THit() { //Player deathbomb window
     SetForbidPlayerShot(true);
     ObjRender_SetColor(_objPlayer, 0, 0, 0);
-    ObjSound_Play(seHit);
+    CallSFX(SND_PL_HIT);
     
     //Closing circle
     real radius = 28;
@@ -154,7 +117,7 @@ task TMiss() { //Player died
     SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
     real xPos = GetPlayerX();
     real yPos = GetPlayerY();
-    ObjSound_Play(seMiss);
+    CallSFX(SND_PL_MISS);
 
     TMissGlass();
     TMissCircle();
@@ -239,7 +202,7 @@ task TRebirth() { //Player respawn
         }
 
         //blue circle indicating vulnerability
-        ObjSound_Play(seVulnerable);
+        CallSFX(SND_PL_VULNERABLE);
         real radius = 28;
         int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
         ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
@@ -266,7 +229,7 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     if (rand_int(0, 1) == 1) xSpeed *= -1;
     if (rand_int(0, 1) == 1) ySpeed *= -1;
 
-    ObjSound_Play(seGraze);
+    CallSFX(SND_PL_GRAZE);
     AddScore(1000);
 
     int frame = 0;
