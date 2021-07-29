@@ -8,7 +8,7 @@ int _objPlayer;
 int _idPlayer;
 int _objScene;
 
-function<void> Init() {
+function<void> InitCommon() {
     SetAutoDeleteObject(true);
 
     _objPlayer = GetPlayerObjectID();

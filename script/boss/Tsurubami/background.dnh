@@ -8,8 +8,8 @@ bool _bSpell = false;
 }
 
 @MainLoop {
-    int objScene = GetEnemyBossSceneObjectID();
-	if (objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(objScene, INFO_IS_SPELL))
+    _objScene = GetEnemyBossSceneObjectID(); //TODO probably change this
+	if (_objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL))
 	{
 		_bSpell = true;
 	}

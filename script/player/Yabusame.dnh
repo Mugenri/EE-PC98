@@ -7,7 +7,6 @@
 
 #include "./lib/lib_player.dnh"
 
-_objPlayer = GetPlayerObjectID();
 int _count = 0;
 int _countShot = 0;
 

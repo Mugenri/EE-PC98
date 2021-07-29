@@ -2,15 +2,16 @@
 #ScriptVersion[3]
 #Title["Tsurubami Stage"]
 #System["./../../system/System.dnh"]
-#Background["./background.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
 
 @Initialize {
+    Background();
     TStage();
 }
 
 @Event {
+    //TODO maybe have event here to start scripts
 }
 
 @MainLoop {
@@ -24,11 +25,10 @@ task TStage() {
     string csd = GetCurrentScriptDirectory();
     string path = csd ~ "tsuruPlural.dnh";
     int ID = LoadScriptInThread(path);
-    wait(160);
-    //dialogue here then boss? probably
+    wait(160); //stage intro
     string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
-    yield; //TEMPORARY until i think of something better
+    yield; //TODO TEMPORARY until i think of something better
     StartScript(ID);
     StartBGM(1, 0, 0);
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
@@ -36,4 +36,10 @@ task TStage() {
     }
     wait(60);
     CloseStgScene();
+}
+
+function<void> Background() {
+    string path = GetCurrentScriptDirectory() ~ "background.dnh";
+    int ID = LoadScript(path);
+    StartScript(ID);
 }

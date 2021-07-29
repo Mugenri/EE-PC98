@@ -198,6 +198,7 @@ task TScore() {
 	}
 }
 
+//TODO move the boss display things to lib_Boss.dnh
 //----------------------------------------------------
 //Bosss Life Display
 //----------------------------------------------------

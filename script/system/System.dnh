@@ -5,7 +5,6 @@
 @Initialize {
 	InitFrame();
     InitCommonData();
-    TSystemInit();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
@@ -14,25 +13,21 @@
     SetReplaySaveSceneScriptPath(GetCurrentScriptDirectory() ~ "ReplaySaveScene.dnh");
     SetEndSceneScriptPath(GetCurrentScriptDirectory() ~ "EndScene.dnh");
     StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
-    
-    TInitDisplay();
 }
 
 @Event {
 	alternative (GetEventType())
 	case (EV_START_BOSS_SPELL) {
-		// string path = GetCurrentScriptDirectory() ~ "System_MagicCircle.dnh";
-		// int id = LoadScript(path);
-		// StartScript(id);
-        //MODIFY magic circle, remove the sound effect and place here
+		//TODO magic circle
 	}
 	case (EV_GAIN_SPELL) {
-		int objScene = GetEnemyBossSceneObjectID();
-		int score = ObjEnemyBossScene_GetInfo(objScene, INFO_SPELL_SCORE);
+		_objScene = GetEnemyBossSceneObjectID();
+		int score = ObjEnemyBossScene_GetInfo(_objScene, INFO_SPELL_SCORE);
 		TGainSpell(score);
 	}
-    case (EV_PLAYER_LOADED) {
-        _objPlayer = GetPlayerObjectID();
+    case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
+        TSystemInit();
+        TInitDisplay();
     }
 }
 

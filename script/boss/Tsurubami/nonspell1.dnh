@@ -12,7 +12,6 @@
 int objBoss;
 int count = -180;
 int loopTime = 60;
-_objScene = GetEnemyBossSceneObjectID();
 
 @Event {
     alternative (GetEventType())
@@ -30,6 +29,7 @@ _objScene = GetEnemyBossSceneObjectID();
 @Initialize {
     objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
     ObjEnemy_Regist(objBoss);
+    InitCommon(); //TODO change to initboss and a boss library
     ObjMove_SetPosition(objBoss, MID_X, 60);
 
     //TBombBarrier();

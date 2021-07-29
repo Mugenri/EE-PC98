@@ -2,6 +2,5 @@
 #include "./../../lib/lib_Common.dnh"
 
 task TSystemInit() {
-    SetAutoDeleteObject(true);
-    _objPlayer = GetPlayerObjectID();
+    InitCommon();
 }

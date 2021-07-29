@@ -7,7 +7,7 @@
 #include "./../../lib/lib_Common.dnh"
 
 @Initialize {
-    TPlural() ;
+    TPlural();
 }
 
 @Event {}
