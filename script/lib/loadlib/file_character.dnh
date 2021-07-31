@@ -1,17 +1,15 @@
 //character sprite filepath constant library
 //boss animations are in the boss animation script
 
-const string DIR_CHARA = DIR_IMG ~ "character/";
-
 //arrays containing different images for each character
 const string[] IMG_CHARA_YABUSAME = [
-    DIR_CHARA ~ "yabusame/yabuPortrait.png", //dialogue portrait
-    DIR_CHARA ~ "yabusame/yabuStg.png"]; //player sprites
+    IMG_PORTRAIT_YABUSAME, //dialogue portrait
+    IMG_PLR_YABUSAME]; //player sprites
 
 const string[] IMG_CHARA_TSUBAKURA = [
-    DIR_CHARA ~ "tsubakura/tsubaPortrait.png", //dialogue portrait
-    DIR_CHARA ~ "tsubakura/tsubaStg.png"]; //player sprite
+    IMG_PORTRAIT_TSUBAKURA, //dialogue portrait
+    IMG_PLR_TSUBAKURA]; //player sprite
 
 const string[] IMG_CHARA_TSURUBAMI = [
-    DIR_CHARA ~ "tsubakura/tsubaPortrait.png", //TODO CHANGE TO TSURUBAMI LATER dialogue portrait
-    DIR_CHARA ~ "tsurubami/tsurubami.png"]; //boss sprite
+    IMG_PORTRAIT_TSUBAKURA, //TODO CHANGE TO TSURUBAMI LATER dialogue portrait
+    IMG_STG_TSURUBAMI]; //boss sprite

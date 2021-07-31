@@ -9,8 +9,8 @@ const string[] SCRIPT_PLAYERS = [
 ];
 
 //Stage script directories
-const string YABUSAME_STAGE = DIR_STG ~ "Tsurubami/tsuruStage.dnh";
-const string TSUBAKURA_STAGE = DIR_STG ~ "Tsurubami2/tsuruStage.dnh";
+const string STAGE_YABUSAME = DIR_STG ~ "Tsurubami/tsuruStage.dnh";
+const string STAGE_TSUBAKURA = DIR_STG ~ "Tsurubami2/tsuruStage.dnh";
 
 // --- Title Specific Images List --- //
 const string DIR_IMG_TITLE = GetCurrentScriptDirectory() ~ "../../img/title/";
@@ -31,4 +31,6 @@ const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "placeholderRank.png";
 
 // --- Title Functions --- //
 //Intro Scene
+
+//Stage Select?
 

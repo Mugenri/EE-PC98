@@ -293,6 +293,7 @@ task TBossLife() {
 		lastRemStep = countRemStep;
 
         //if no boss present, hide Enemy!! text
+        //TODO fix minor visibility stutter upon new spells activating
         Obj_SetVisible(objText, lifeTotal > 0);
 	}
 }

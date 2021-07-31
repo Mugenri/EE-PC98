@@ -1,11 +1,10 @@
-string imgChara = GetCurrentScriptDirectory() ~ "./../../img/character/tsurubami/tsurubami.png";
 bool _charge = false;
 bool _monochrome = false;
 int _frameCount = 0;
 int _frameCountCharge = 0;
 
 task TDrawBoss(int objBoss_) {
-    ObjPrim_SetTexture(objBoss_, imgChara);
+    ObjPrim_SetTexture(objBoss_, IMG_STG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(objBoss_, 0, 0, 64, 64);
     ObjSprite2D_SetDestCenter(objBoss_);
     Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);

@@ -11,7 +11,7 @@ int _count = 0;
 int _countShot = 0;
 
 @Initialize {
-    string imageFile = DIR_PLR ~ "./../img/character/Tsubakura/tsubaStg.png";
+    string imageFile = IMG_PLR_TSUBAKURA;
     string shotData = DIR_PLR ~ "Tsubashot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(4.5, 2.2);

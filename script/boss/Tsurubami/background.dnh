@@ -22,7 +22,7 @@ bool _bSpell = false;
 
 task TBackground() {
     //bg
-    string path = DIR_IMG ~ "stg/tsurubamiBG.png";
+    string path = IMG_BG_TSURUBAMI;
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, path);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);

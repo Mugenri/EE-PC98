@@ -11,7 +11,7 @@ int _count = 0;
 int _countShot = 0;
 
 @Initialize {
-    string imageFile = DIR_PLR ~ "./../img/character/yabusame/yabuStg.png";
+    string imageFile = IMG_PLR_YABUSAME;
     string shotData = DIR_PLR ~ "YabuShot.dnh";
     InitPlayer(imageFile, shotData);
     SetPlayerSpeed(3, 1.53);

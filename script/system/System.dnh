@@ -1,10 +1,10 @@
 //System Script
-#include "./lib/lib_Common.dnh"
+#include "./lib/lib_CommonSystem.dnh"
 #include "./lib/lib_Display.dnh"
 
 @Initialize {
 	InitFrame();
-    InitCommonData();
+    InitSystemCommonData();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
@@ -67,14 +67,7 @@ task TInitDisplay() {
 //----------------------------------------------------
 //Common Data
 //----------------------------------------------------
-function<void> InitCommonData() {
-	if (!IsCommonDataAreaExists(AREA_STAGE)) CreateCommonDataArea(AREA_STAGE);
-	if (!IsCommonDataAreaExists(AREA_SYSTEM)) CreateCommonDataArea(AREA_SYSTEM);
-	if (!IsCommonDataAreaExists(AREA_REPLAY)) CreateCommonDataArea(AREA_REPLAY);
-	LoadSystemCommonData();
-}
-
-function<void> LoadSystemCommonData() {
+function<void> InitSystemCommonData() {
 	if (IsReplay()) {
 		LoadCommonDataAreaFromReplayFile(AREA_STAGE);
 		LoadCommonDataAreaFromReplayFile(AREA_SYSTEM);

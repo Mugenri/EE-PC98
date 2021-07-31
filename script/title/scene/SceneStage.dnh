@@ -1,5 +1,5 @@
 //Stage Control Script
-#include "./../lib/lib_Common.dnh"
+#include "./../lib/lib_CommonTitle.dnh"
 #include "./../lib/lib_Util.dnh"
 
 bool _dialogueRunning = false;
@@ -37,9 +37,9 @@ task TStageScene(int stageMode_) {
 
     string stageScript;
     if (playerType == PLAYER_YABUSAME) {
-        stageScript = YABUSAME_STAGE;
+        stageScript = STAGE_YABUSAME;
     } else {
-        stageScript = YABUSAME_STAGE;//CHANGE THIS TO TSUB
+        stageScript = STAGE_YABUSAME;//TODO CHANGE THIS TO TSUB
     }
 
     ScreenBlackout(0, 35, 0, 0x000000); //grants 5 frames of black screen to hide any loading artifacts

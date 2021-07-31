@@ -11,13 +11,13 @@ const string AREA_HIGHSCORE = "HighScore"; //High Score Values
 const string AREA_RESULT    = "Result"; //Player Score Records
 
 //Data File Directory
-string DIR_SAVE = GetCurrentScriptDirectory();
+const string DIR_SAVE = GetCurrentScriptDirectory() ~ "../data/";
 const string SAVE_COMMON_SAVE   = DIR_SAVE ~ "./../data/save.dat";
 const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "./../data/config.dat";
 const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "./../data/score.dat";
 const string SAVE_COMMON_RESULT = DIR_SAVE ~ "./../data/result.dat";
 
-function<void> InitializeCommonData() { //creates common data areas, loads data from files
+function<void> InitCommonData() { //creates common data areas, loads data from files
     //Create Common Data Areas
     CreateCommonDataArea(AREA_TITLE);
     CreateCommonDataArea(AREA_CONFIG);

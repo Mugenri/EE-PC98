@@ -1,7 +1,8 @@
-#include "./lib/lib_Common.dnh"
+#include "./lib/lib_CommonTitle.dnh"
+#include "./lib/lib_LoadTexture.dnh"
 
 function<void> InitLoad() {
-    InitializeCommonData();
+    InitCommonData();
     TLoadScene();
 }
 
@@ -16,11 +17,14 @@ task TLoadScene() { //loading screen
     InstallFont(SYS_FONT_PATH); //pc9800 font
     InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
-    wait(60); //Give loading screen time to run
-
-    //load achievement menu if i make one
+    //load achievement script if i make one
 
     //init high score
+
+    //Preload textures
+    InitTexture();
+
+    wait(60); //Give loading screen time to run
 
     { //Run title screen
         string path = GetCurrentScriptDirectory() ~ "Title.dnh";
