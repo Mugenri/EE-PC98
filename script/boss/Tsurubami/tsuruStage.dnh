@@ -5,13 +5,20 @@
 
 #include "./../../lib/lib_Common.dnh"
 
+bool _start = false;
+
 @Initialize {
+    SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
     Background();
     TStage();
 }
 
 @Event {
-    //TODO maybe have event here to start scripts
+    alternative (GetEventType())
+    case (EV_START_STAGE) _start = true;
+    case (EV_STAGE_INTRO_START) {
+        SetPauseEnable(true);
+    } 
 }
 
 @MainLoop {
@@ -25,7 +32,9 @@ task TStage() {
     string csd = GetCurrentScriptDirectory();
     string path = csd ~ "tsuruPlural.dnh";
     int ID = LoadScriptInThread(path);
-    wait(160); //stage intro
+
+    while (!_start) yield;
+    
     string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
     yield; //TODO TEMPORARY until i think of something better

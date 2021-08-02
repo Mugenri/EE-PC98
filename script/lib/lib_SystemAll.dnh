@@ -5,11 +5,13 @@
 //----------------------------------------------------
 //GENERAL FUNCTIONS
 //----------------------------------------------------
-function<int> GetStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
+function<int> GetPackageStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
+function<int> GetStageScriptID() { return(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", -1)); }
 function<int> GetPlayMode() { return(GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE)); }
 function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
-function<void> StartDialogueScript(string path_) { NotifyEvent(GetStageScriptID(), EV_DIALOGUE_START, path_); }
+function<void> SetPauseEnable(bool enable_) { NotifyEvent(GetPackageStageScriptID(), EV_PAUSE_ENABLE, enable_); }
+function<void> StartDialogueScript(string path_) { NotifyEvent(GetPackageStageScriptID(), EV_DIALOGUE_START, path_); }
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------

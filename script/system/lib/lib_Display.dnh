@@ -32,10 +32,11 @@ task TIntro() {
     //TODO Game logo when i get it
     int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(objLogo, RP_STG_MAX);
+    ObjSprite2D_SetDestRect(objLogo, -40, -40, 40, 40);
+    ObjRender_SetPosition(objLogo, MID_X, MID_Y - 40, 1);
+    ObjRender_SetAlpha(objLogo, 0);
 
-    while (_objPlayer < 0) { //wait for player to load (~1 frame)
-        yield;
-    }
+    wait(60);
 
     //Stop player movement while screen is black
     SetForbidPlayerShot(true);
@@ -43,7 +44,23 @@ task TIntro() {
     real[] tempSpeed = GetPlayerSpeed();
     SetPlayerSpeed(0, 0);
 
-    wait(60); //TODO add logo fade in/out before this point when i get to making one
+    ascent (i in 1..4) {
+        real alpha = 255/3 * i;
+        ObjRender_SetAlpha(objLogo, alpha);
+        wait(10);
+    }
+    wait(60);
+    ascent (i in 1..4) {
+        real alpha = 255 - (255/3 * i);
+        ObjRender_SetAlpha(objLogo, alpha);
+        wait(10);
+    }
+    Obj_Delete(objLogo);
+
+    wait(10);
+
+    //Transition begin event
+    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", -1), EV_STAGE_INTRO_START, 0);
 
     //resume player movement when the transition begins
     SetForbidPlayerShot(false);
@@ -66,7 +83,10 @@ task TIntro() {
     }
     
     Obj_Delete(objFade);
-    Obj_Delete(objLogo);
+
+    wait(30);
+
+    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE"), EV_START_STAGE, 0); //used by stage script
 
     function<void> AddParticles() { //creates matrix of black squares
         int x = 0;

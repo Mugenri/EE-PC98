@@ -2,6 +2,7 @@
 #include "./../lib/lib_CommonTitle.dnh"
 #include "./../lib/lib_Util.dnh"
 
+bool _pauseEnable = false;
 bool _dialogueRunning = false;
 string _dialoguePath = "";
 
@@ -18,6 +19,9 @@ string _dialoguePath = "";
         _dialogueRunning = true;
         _dialoguePath =  GetEventArgument(0);
     }
+    case (EV_PAUSE_ENABLE) {
+        _pauseEnable = GetEventArgument(0);
+    }
 }
 
 @MainLoop {yield;}
@@ -26,8 +30,8 @@ task TStageScene(int stageMode_) {
     int playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
     int _GetPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
     int _GetRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-    string _ReplayPath     = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
-    string pathPlayer      = SCRIPT_PLAYERS[playerType];
+    string _ReplayPath  = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
+    string pathPlayer   = SCRIPT_PLAYERS[playerType];
 
     InitializeStageScene();
 
@@ -50,7 +54,7 @@ task TStageScene(int stageMode_) {
         //--------------------------------------------------------------------
         //Pause Menu
         //--------------------------------------------------------------------
-        if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH) {
+        if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH && _pauseEnable) {
             int pauseResult = PauseMenu();
             alternative (pauseResult)
             case (RESULT_RETRY) {
