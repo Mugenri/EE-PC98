@@ -89,6 +89,7 @@ const int RP_STG_EFFECT = 25; //Effects that render over the background only
 const int RP_STG_ENEMY  = 30; //Boss/Enemy sprite
 const int RP_STG_PLAYER = 40; //Player sprite/bullets
 const int RP_STG_ITEM   = 50; //Items
+const int RP_STG_LASER  = 56; //Enemy Lasers
 const int RP_STG_SHOT   = 60; //Bullets
 const int RP_STG_HITBOX = 70; //Player hitbox
 const int RP_STG_TEXT   = 75; //Item pickup text

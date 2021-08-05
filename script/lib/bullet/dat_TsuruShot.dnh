@@ -5,54 +5,54 @@ shot_image = "./../../img/system/tsuruShot.png"
 render = ALPHA
 
 // White Bullets ------------------------------------
-ShotData{ //White Ball
+ShotData { //White Ball
     id = 1
     rect = ( 0, 0, 16, 16 )
     fixed_angle = true
 }
-ShotData{ //White Double Needles
+ShotData { //White Double Needles
     id = 2
     rect = ( 0, 16, 16, 32 )
     fixed_angle = false
 }
-ShotData{ //White Pill
+ShotData { //White Pill
     id = 3
     rect = ( 0, 32, 16, 48 )
     fixed_angle = false
 }
-ShotData{ //White Talisman
+ShotData { //White Talisman
     id = 4
     rect = ( 0, 48, 16, 64 )
     fixed_angle = false
 }
-ShotData{ //White Medium Ball
+ShotData { //White Medium Ball
     id = 5
     rect = ( 32, 0, 64, 32 )
     fixed_angle = true
 }
 
 // Black Bullets ------------------------------------ 
-ShotData{ //Black Ball
+ShotData { //Black Ball
     id = 6
     rect = ( 16, 0, 32, 16 )
     fixed_angle = true
 }
-ShotData{ //Black Double Needles
+ShotData { //Black Double Needles
     id = 7
     rect = ( 16, 16, 32, 32 )
     fixed_angle = false
 }
-ShotData{ //Black Pill
+ShotData { //Black Pill
     id = 8
     rect = ( 16, 32, 32, 48 )
     fixed_angle = false
 }
-ShotData{ //Black Talisman
+ShotData { //Black Talisman
     id = 9
     rect = ( 16, 48, 32, 64 )
     fixed_angle = false
 }
-ShotData{ //Black Medium Ball
+ShotData { //Black Medium Ball
     id = 10
     rect = ( 32, 32, 64, 64 )
     fixed_angle = true

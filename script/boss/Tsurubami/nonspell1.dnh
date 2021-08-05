@@ -8,10 +8,11 @@
 #include "./../../lib/lib_Common.dnh"
 #include "./tsuruAnime.dnh"
 #include "./lib_Tsuru.dnh"
+#include "./../../lib/lib_Shot.dnh"
 
 int objBoss;
-int count = -180;
-int loopTime = 60;
+int count = -120;
+int loopTime = 120;
 
 @Event {
     alternative (GetEventType())
@@ -42,7 +43,12 @@ int loopTime = 60;
     ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
     ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
     if (count % loopTime == 0 && count >= 0) {
-        TPatternA;
+        //TPatternA();
+        async {
+            TPatternB(1);
+            wait(60);
+            TPatternB(-1);
+        }
     }
     count++;
 
@@ -92,4 +98,31 @@ task TPatternA() {
     }
     wait(10);
     AnimeCharge();
+}
+
+task TPatternB(int dir_) {
+    real angleT = 0;
+    loop (8) {
+        real x = ObjMove_GetX(objBoss) + 30 * cos(angleT);
+        real y = ObjMove_GetY(objBoss) + 30 * sin(angleT);
+        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 600, 60, 0xFF0000, 60);
+        angleT += 45;
+        TMove(obj);
+    }
+
+    task TMove(int laser_) {
+        real x = ObjMove_GetX(laser_);
+        loop (50) {
+            ObjMove_SetX(laser_, x);
+            ObjStLaser_SetAngle(laser_, GetAngleToPlayer(laser_));
+            x += 3 * dir_;
+            yield;
+        }
+        loop (70) {
+            ObjMove_SetX(laser_, x);
+            x += 1.5 * dir_;
+            yield;
+        }
+    }
+    
 }

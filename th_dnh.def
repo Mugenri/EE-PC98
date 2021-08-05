@@ -1,5 +1,5 @@
 package.script.main = script/Package.dnh
-window.title = testGame v0.01
+window.title = EE Extra PC98 v0.01
 screen.width = 640
 screen.height = 400
 window.size.list = 640x400
