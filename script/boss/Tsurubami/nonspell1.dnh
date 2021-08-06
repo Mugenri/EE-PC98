@@ -32,6 +32,7 @@ int loopTime = 120;
     ObjEnemy_Regist(objBoss);
     InitCommon(); //TODO change to initboss and a boss library
     ObjMove_SetPosition(objBoss, MID_X, 60);
+    
 
     //TBombBarrier();
 
@@ -45,9 +46,7 @@ int loopTime = 120;
     if (count % loopTime == 0 && count >= 0) {
         //TPatternA();
         async {
-            TPatternB(1);
-            wait(60);
-            TPatternB(-1);
+            TPatternC();
         }
     }
     count++;
@@ -102,10 +101,11 @@ task TPatternA() {
 
 task TPatternB(int dir_) {
     real angleT = 0;
+
     loop (8) {
         real x = ObjMove_GetX(objBoss) + 30 * cos(angleT);
         real y = ObjMove_GetY(objBoss) + 30 * sin(angleT);
-        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 600, 60, 0xFF0000, 60);
+        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 80, 60, 0xFF0000, 60);
         angleT += 45;
         TMove(obj);
     }
@@ -124,5 +124,21 @@ task TPatternB(int dir_) {
             yield;
         }
     }
-    
+}
+
+task TPatternC() {
+    real angle = 180;
+    loop (11) {
+        int dist = 25;
+        CreateLooseLaserU1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 200, 0x444444, 0);
+        angle -= 18;
+        wait(5);
+    }
+    angle = 0;
+    loop (11) {
+        int dist = 15;
+        CreateLooseLaserU1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 200, 0x444444, 0);
+        angle += 18;
+        wait(3);
+    }
 }

@@ -1,9 +1,122 @@
 //Custom shot behavior library
 
+function<int> CreateLooseLaserU1(real x_, real y_, real speed_, real angle_, real maxLength_, int color_, real delay_) {
+    //Object Creation
+    //Hitbox and position/angle
+    int time = 550/speed_ + maxLength_/speed_; //rough amount of frames it will take the laser to leave the screen
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 12, time, 1, delay_);
+    ObjLaser_SetInvalidLength(hitbox, 0, 0);
+    Obj_SetVisible(hitbox, false);
+    //colored
+    int circle1 = CreateCircle(true);
+    int line1 = CreateLine(true);
+    //white
+    int circle2 = CreateCircle(false);
+    int line2 = CreateLine(false);
+
+    //Update loop 
+    async {
+        wait(delay_);
+        Obj_SetVisible(circle1, true);
+        Obj_SetVisible(line1, true);
+        Obj_SetVisible(circle2, true);
+        Obj_SetVisible(line2, true);
+
+        real laserLength = 0;
+        bool full = false;
+
+        while (!Obj_IsDeleted(hitbox)) {
+            real x = ObjMove_GetX(hitbox);
+            real y = ObjMove_GetY(hitbox);
+            real angle = ObjStLaser_GetAngle(hitbox);
+            if (laserLength < maxLength_) {
+                laserLength = min(laserLength + speed_, maxLength_);
+                ObjLaser_SetLength(hitbox, laserLength);
+                UpdateCircle(x, y);
+            } else if (!full) {
+                full = true;
+                Obj_Delete(circle1);
+                Obj_Delete(circle2);
+            }
+            
+            if (full) {
+                x += speed_ * cos(angle);
+                y += speed_ * sin(angle);
+                ObjMove_SetX(hitbox, x);
+                ObjMove_SetY(hitbox, y);
+            }
+
+            UpdateLine(x, y, angle, laserLength);
+            yield;
+        }
+
+        if (!Obj_IsDeleted(circle1)) Obj_Delete(circle1);
+        if (!Obj_IsDeleted(circle2)) Obj_Delete(circle2);
+        Obj_Delete(line1);
+        Obj_Delete(line2);
+
+        function<void> UpdateCircle(real x_, real y_) {
+            ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
+            ascent (i in 1..14) {
+                real angleT = 360/12 * i;
+                ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + 6 * cos(angleT), as_int(y_) + 6 * sin(angleT), 1);
+            }
+            ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
+            ascent (i in 1..14) {
+                real angleT = 360/12 * i;
+                ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + 4 * cos(angleT), as_int(y_) + 4 * sin(angleT), 1);
+            }
+        }
+
+        function<void> UpdateLine(real x_, real y_, real angle_, real length_) {
+            //colored
+            ObjPrim_SetVertexPosition(line1, 0, x_ + 4 * cos(angle_ + 90), y_ + 4 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(line1, 1, x_ + 4 * cos(angle_ - 90), y_ + 4 * sin(angle_ - 90), 1);
+            ObjPrim_SetVertexPosition(line1, 2, x_ + length_ * cos(angle_) + 4 * cos(angle_ + 90), y_ + length_ * sin(angle_) + 4 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(line1, 3, x_ + length_ * cos(angle_) + 4 * cos(angle_ - 90), y_ + length_ * sin(angle_) + 4 * sin(angle_ - 90), 1);
+            //white
+            ObjPrim_SetVertexPosition(line2, 0, x_ + 2 * cos(angle_ + 90), y_ + 2 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(line2, 1, x_ + 2 * cos(angle_ - 90), y_ + 2 * sin(angle_ - 90), 1);
+            ObjPrim_SetVertexPosition(line2, 2, x_ + length_ * cos(angle_) + 2 * cos(angle_ + 90), y_ + length_ * sin(angle_) + 2 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(line2, 3, x_ + length_ * cos(angle_) + 2 * cos(angle_ - 90), y_ + length_ * sin(angle_) + 2 * sin(angle_ - 90), 1);
+        }
+    }
+
+    return hitbox;
+
+    function<int> CreateCircle(bool colored_) {
+        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLEFAN);
+        ObjPrim_SetVertexCount(obj, 14);
+        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        Obj_SetVisible(obj, false);
+        //set color
+        int color = colored_ ? color_ : 0xFFFFFF;
+        ascent (i in 0..14) {
+        ObjPrim_SetVertexColor(obj, i, color);
+        }
+        return obj;
+    }
+
+    function<int> CreateLine(bool colored_) {
+        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
+        ObjPrim_SetVertexCount(obj, 4);
+        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        Obj_SetVisible(obj, false);
+        //set color
+        int color = colored_ ? color_ : 0xFFFFFF;
+        ascent (i in 0..4) {
+            ObjPrim_SetVertexColor(obj, i, color);
+        }
+        return obj;
+    }
+}
+
 function<int> CreateStraightLaserU1(real x_, real y_, real angle_, real length_, real sustain_, int color_, real delay_) {
     //Object Creation
     //Hitbox and position/angle
-    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 15, sustain_, 1, delay_);
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_, 1, delay_);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
     //colored
