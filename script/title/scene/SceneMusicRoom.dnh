@@ -104,7 +104,7 @@ function<void> SceneMusicRoom() {
         int objText;
         int objTextHighlight;
         int bgmID = indexListTop + index_; //actual track number = index at top of list + position in the list
-        string indexNumber = vtos("2d", bgmID+1) ~ ". "; //prepended track number
+        string indexNumber = StringFormat("%2.0d%s", "ds", bgmID + 1, ". "); //prepended track number
 
         //Initial list creation
         if (!CD_GetBGMHeardFlag(bgmID)) {
@@ -118,7 +118,7 @@ function<void> SceneMusicRoom() {
         while (!exitFlag) {
             if (indexListTop + index_ != bgmID) { //update list if it scrolls beyond the current boundaries
                 bgmID = indexListTop + index_;
-                indexNumber = vtos("2d", bgmID+1) ~ ". ";
+                indexNumber = StringFormat("%2.0d%s", "ds", bgmID + 1, ". ");
                 if (!CD_GetBGMHeardFlag(bgmID)) {
                     ObjText_SetText(objText, indexNumber ~ "???");
                     ObjText_SetText(objTextHighlight, indexNumber ~ "???");

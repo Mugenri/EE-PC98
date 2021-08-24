@@ -46,7 +46,8 @@ int loopTime = 120;
     if (count % loopTime == 0 && count >= 0) {
         //TPatternA();
         async {
-            TPatternC();
+            TPatternB(1);
+            TPatternB(-1);
         }
     }
     count++;
@@ -105,7 +106,7 @@ task TPatternB(int dir_) {
     loop (8) {
         real x = ObjMove_GetX(objBoss) + 30 * cos(angleT);
         real y = ObjMove_GetY(objBoss) + 30 * sin(angleT);
-        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 80, 60, 0xFF0000, 60);
+        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 540, 60, 0xFF00FF, 60);
         angleT += 45;
         TMove(obj);
     }
