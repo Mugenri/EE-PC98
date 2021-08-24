@@ -1,0 +1,15 @@
+//Shot constants
+
+// White Bullets ------------------------------------
+const int WHITE_BALL      = 1;
+const int WHITE_2NEEDLE   = 2;
+const int WHITE_PILL      = 3;
+const int WHITE_CARD      = 4;
+const int WHITE_BALL_M    = 5;
+
+// Black Bullets ------------------------------------ 
+const int BLACK_BALL      = 6;
+const int BLACK_2NEEDLE   = 7;
+const int BLACK_PILL      = 8;
+const int BLACK_CARD      = 9;
+const int BLACK_BALL_M    = 10;

@@ -1,0 +1,16 @@
+//NOT INTENDED TO BE USED AS ACTUAL BULLETS
+//This is animation data for bullet spawn animations
+#UserShotData
+
+shot_image = "./../../img/system/tsuruShotAnimation.png"
+render = ALPHA
+
+//Sizes are sprite size of actual bullet
+// 8x8
+// 16x16
+//White Ball
+ShotData { id = 300     rect = ( 0, 0, 32, 32 )     collision = 3   fixed_angle = true }
+ShotData { id = 301     rect = ( 32, 0, 64, 32 )    collision = 3   fixed_angle = true }
+ShotData { id = 302     rect = ( 64, 0, 96, 32 )    collision = 3   fixed_angle = true }
+ShotData { id = 303     rect = ( 96, 0, 128, 32 )   collision = 3   fixed_angle = true }
+// 32x32

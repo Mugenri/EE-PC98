@@ -16,45 +16,46 @@
     case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
+        int score = Obj_GetValueDI(obj, BULLET_SCORE, 100);
 
-        AddScore(100); //temp?
-        //bullet deletion effect
-        //TODO
+        AddScore(score);
+        if (Obj_GetType(obj) == OBJ_SHOT) {
+            AsciiScoreNum(pos[0], pos[1], score);
+            //TODO deletion effect
+        }
     }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, BULLET_SCORE, 0);
+        int score = Obj_GetValueDI(obj, BULLET_SCORE, 100);
 
         if (Obj_GetValueDI(obj, BULLET_DROP_ITEM, false)) { //create item in place of bullet
             NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
         }
 
         AddScore(score);
-        if (score > 0) { //score text
+        if (Obj_GetType(obj) == OBJ_SHOT) {
             AsciiScoreNum(pos[0], pos[1], score);
+            //TODO deletion effect
         }
-        //bullet deletion effect
-        //TODO
     }
-    case (EV_CREATE_ITEM) { //TODO Change how high the items pop upwards
+    case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
+        ObjMove_AddPatternB2(obj, 0, 0, -4, 0, 0.08, 0, 4);
         ObjItem_SetAutoCollectEnable(obj, false);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
     case (EV_GET_ITEM) {
         int type = GetEventArgument(0);
         int obj = GetEventArgument(1);
+        int score = 10;
+        int color = 0xFFFFFF;
 
         alternative (type)
         case (ITEM_POW) {
             WriteLog("No Power System");
-            int score = 10;
         }
         case (ITEM_SCORE) {
-            int score = rand_int(10, 200);
-            int color = 0xFFFFFF;
-
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
                 color = 0xFFFF00;
@@ -62,38 +63,32 @@
                 score = 25600 - 25600*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
             }
-
-            AddScore(score);
-            AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color); 
             //PLAY SFX
         }
         case (ITEM_DREAM) {
             WriteLog("No Dream Bonus System");
-            int score = 10;
             //PLAY SFX
         }
         case (ITEM_POW_L) {
             WriteLog("No Power System");
-            int score = 10;
             //PLAY SFX
         }
         case (ITEM_POW_FULL) {
             WriteLog("No Power System");
-            int score = 10;
             //PLAY SFX
         }
         case (ITEM_BOMB) {
             int score = 1000;
             SetPlayerSpell(GetPlayerSpell() + 1);
-            AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score);
             //PLAY SFX
         }
         case (ITEM_EXTEND) {
             int score = 1000;
             SetPlayerLife(GetPlayerLife() + 1);
-            AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score);
             //PLAY SFX
         }
+        AddScore(score);
+        AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
     }
 }
 

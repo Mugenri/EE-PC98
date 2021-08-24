@@ -1,0 +1,5 @@
+//Shot spawn animation constants
+
+//16x16
+//White -------------
+const int A_WHITE_BALL = 300;

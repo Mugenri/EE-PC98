@@ -18,6 +18,9 @@ const string IMG_SYSTEM_FRAME = DIR_IMG ~ "system/systemFrame.png";
 const string IMG_SYSTEM_TEXT = DIR_IMG ~ "system/systemText.png";
 const string IMG_SYSTEM_TEXTBOX = DIR_IMG ~ "system/textbox.png";
 const string IMG_SYSTEM_FADE = DIR_IMG ~ "system/testFade.png";
+const string IMG_SYSTEM_ITEM = DIR_IMG ~ "system/item.png";
+const string IMG_SYSTEM_SHOT = DIR_IMG ~ "system/tsuruShot.png";
+const string IMG_SYSTEM_SHOTANIM = DIR_IMG ~ "system/tsuruShotAnimation.png";
 
 //Player Images
 const string IMG_PLR_YABUSAME = DIR_IMG ~ "character/yabusame/yabuSTG.png";
