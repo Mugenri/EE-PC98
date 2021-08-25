@@ -36,13 +36,13 @@ task TIntro() {
     ObjRender_SetPosition(objLogo, MID_X, MID_Y - 40, 1);
     ObjRender_SetAlpha(objLogo, 0);
 
-    wait(60);
-
     //Stop player movement while screen is black
     SetForbidPlayerShot(true);
     SetForbidPlayerSpell(true);
     real[] tempSpeed = GetPlayerSpeed();
     SetPlayerSpeed(0, 0);
+
+    wait(60);
 
     ascent (i in 1..4) {
         real alpha = 255/3 * i;

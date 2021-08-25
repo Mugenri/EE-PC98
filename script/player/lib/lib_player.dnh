@@ -6,7 +6,7 @@ string _pathShot; //player shot data passed by player script
 
 int _particleList;
 
-function<void> InitPlayer(string imageFile_, string shotFile_) {
+function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_) {
     InitCommon();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
@@ -22,6 +22,8 @@ function<void> InitPlayer(string imageFile_, string shotFile_) {
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
     SetPlayerInvincibleGraze(false);
     SetPlayerIntersectionEraseShot(false);
+
+    SetPlayerSpeed(speed_, focusSpeed_);
 
     NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_PLAYER_LOADED, 0);
     //Starts the stage intro
