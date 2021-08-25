@@ -7,7 +7,7 @@
 #include "./title/loadScreen.dnh"
 
 @Initialize {
-    //bosm adds an image archive file here
+    //TODO add an image archive file here
     InitLoad();
 }
 
