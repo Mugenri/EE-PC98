@@ -36,15 +36,6 @@
 }
 
 //----------------------------------------------------
-//Sound Event Script
-//----------------------------------------------------
-function<void> ControlSFX() {
-    string path = (GetCurrentScriptDirectory() ~ "./ControlSFX.dnh");
-    int id = LoadScript(path);
-    StartScript(id);
-}
-
-//----------------------------------------------------
 //STG Window Frame
 //----------------------------------------------------
 task TInitDisplay() {
