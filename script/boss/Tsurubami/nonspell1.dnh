@@ -47,9 +47,9 @@ int loopTime = 120;
         //TPatternA();
         async {
             //TPatternC();
-            //TPatternD();
-            TPatternB(1);
-            TPatternB(-1);
+            TPatternD();
+            //TPatternB(1);
+            //TPatternB(-1);
         }
     }
     count++;

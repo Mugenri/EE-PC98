@@ -26,7 +26,7 @@ string _dialoguePath = "";
 
 @MainLoop {yield;}
 
-task TStageScene(int stageMode_) {
+task TStageScene(int stageMode_) { //TODO serious refactoring
     int playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
     int _GetPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
     int _GetRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
