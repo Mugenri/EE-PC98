@@ -52,6 +52,7 @@ function<void> PlayerEvent() {
         TRebirth();
 	}
     case (EV_GRAZE) {
+        //TODO properly set x and y values for lasers
         TGraze(GetEventArgument(2)[0][0], GetEventArgument(2)[0][1]);
     }
 }
@@ -136,11 +137,10 @@ task TMiss() { //Player died
         task TGlassMovement() {
             real x = xPos;
             real y = yPos;
-            real xSpeed = rand(0.2, 2.2);
-            real ySpeed = rand(0.2, 2.2);
-            //chance to make speed negative
-            if (rand_int(0, 1) == 1) xSpeed *= -1;
-            if (rand_int(0, 1) == 1) ySpeed *= -1;
+            real angle = rand_int(0, 360);
+            real speed = rand(2, 3.2);
+            real xStep = speed * cos(angle);
+            real yStep = speed * sin(angle);
             int frame = 0;
             loop (70) {
                 loop (2) {
@@ -153,8 +153,8 @@ task TMiss() { //Player died
                 }
                 frame++;
                 if (frame >= 7) frame = 0;
-                x += xSpeed;
-                y += ySpeed;
+                x += xStep;
+                y += yStep;
             }
         }
     }
@@ -226,11 +226,10 @@ task TRebirth() { //Player respawn
 }
 
 task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
-    real xSpeed = rand(2, 3.2);
-    real ySpeed = rand(2, 3.2);
-    //chance to make speed negative
-    if (rand_int(0, 1) == 1) xSpeed *= -1;
-    if (rand_int(0, 1) == 1) ySpeed *= -1;
+    real speed = rand(2, 3.2);
+    real angle = rand_int(0, 360);
+    real xStep = speed * cos(angle);
+    real yStep = speed * sin(angle);
 
     CallSFX(SND_PL_GRAZE);
     AddScore(1000);
@@ -249,8 +248,8 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
         if (frame >= 7) {
             frame = 0;
         }
-        x_ += xSpeed;
-        y_ += ySpeed;
+        x_ += xStep;
+        y_ += yStep;
     }
 }
 
