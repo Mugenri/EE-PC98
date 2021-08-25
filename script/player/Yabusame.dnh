@@ -43,8 +43,10 @@ task TShot() {
                 loop (3) { //unfocus shot
                     int offset = 80;
                     ascent (i in 1..7) {
-                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13*i*(sin(_count + i*offset)), 1, 1, 1);
-                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13*i*(sin(_count + i*offset)), 1, 1, 1);
+                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13*i*(sin(_count + i*offset)), 1, 1, 1);
+                        int shot2 = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13*i*(sin(_count + i*offset)), 1, 1, 1);
+                        Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
+                        Obj_SetRenderPriorityI(shot2, RP_STG_PLAYER);
                     }
 
                     CallSFX(SND_PL_SHOT);
@@ -56,7 +58,8 @@ task TShot() {
                 loop (3) { //focus shot
                     real modifier = 15*sin(_count);
                     ascent (i in -5..6) {
-                        CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
+                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
+                        Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                     }
 
                     CallSFX(SND_PL_SHOT);
@@ -79,7 +82,7 @@ task TOption(int dir_) {
     ObjPrim_SetTexture(objOption, _pathImg);
     ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
+    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
 
     TOptionShot();
 
@@ -95,7 +98,7 @@ task TOption(int dir_) {
 
         //Render over player as if rotating around them
         if (rotationX == dir_) {
-            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
+            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
         } else if (rotationX == -dir_) {
             Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
         }
@@ -120,7 +123,8 @@ task TOption(int dir_) {
                     if (length(enemy) > 0) {
                         angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
                     }
-                    CreatePlayerShotA1(optionX, optionY, 28, angle, 4, 1, 2);
+                    int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 4, 1, 2);
+                    Obj_SetRenderPriorityI(shot, Obj_GetRenderPriorityI(objOption));
                     loop (3) {
                         yield;
                     }
@@ -201,10 +205,7 @@ task TSpell() {
                 angleT = rand(0, 3600) / 10;
                 ObjPrim_SetVertexPosition(lines[i + 5], 1, playerX + radius/2*cos(angleT), playerY + radius/2*sin(angleT), 1);
             }
-            //iterate through shots and delete
-            for each (shot in GetShotIdInCircleA1(playerX, playerY, radius)) {
-                DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, playerX, playerY, radius);
-            }
+            DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, playerX, playerY, radius);
             yield;
         }
 

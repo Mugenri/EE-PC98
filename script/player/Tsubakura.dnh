@@ -57,7 +57,7 @@ task TShot() {
         yield;
     }
 
-    task TCreateLaser() { //Graphic
+    task TCreateLaser() { //Hitbox
         int objLaser = ObjShot_Create(OBJ_STRAIGHT_LASER);
         ObjShot_SetGraphic(objLaser, 1);
         ObjShot_SetDamage(objLaser, 4);
@@ -80,11 +80,11 @@ task TShot() {
         Obj_Delete(objLaser);
     }
 
-    task TCreateLaserEffect(int yOff_) { //Hitbox
+    task TCreateLaserEffect(int yOff_) { //Graphic
         int objEffect = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(objEffect, _pathImg);
         ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff_ - 16, 1);
-        Obj_SetRenderPriorityI(objEffect, RP_STG_PLAYER-1i);
+        Obj_SetRenderPriorityI(objEffect, RP_STG_PLAYER - 1i);
 
         int frame = 0;
 
@@ -119,7 +119,7 @@ task TOption(int offset_) {
     ObjPrim_SetTexture(objOption, _pathImg);
     ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
+    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
 
     TOptionShot();
 
@@ -135,7 +135,7 @@ task TOption(int offset_) {
 
         //Render over player as if rotating around them
         if (rotationX == 1) {
-            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER-1i);
+            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
         } else if (rotationX == -1) {
             Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
         }
@@ -152,7 +152,8 @@ task TOption(int offset_) {
         while (!Obj_IsDeleted(_objPlayer)) {
             if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
                 loop (3) {
-                    CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270, 0.5, 1, 1);
+                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270, 0.5, 1, 1);
+                    Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                     loop (3) {
                         yield;
                     }
@@ -219,7 +220,7 @@ task TSpell() {
                 real angleT = 360/32 * i;
                 ObjPrim_SetVertexPosition(bCircle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
             }
-            ObjSpell_SetIntersectionCircle(bCircle, GetPlayerX(), GetPlayerY(), radius);
+            DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, GetPlayerX(), GetPlayerY(), radius);
             yield;
         }
 
@@ -228,10 +229,9 @@ task TSpell() {
             real angleT = 360/32 * i;
             ObjPrim_SetVertexPosition(wCircle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
         }
-        ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), 600);
 
         loop (30) {
-            ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), 600);
+            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
             yield;
         }
 
@@ -243,7 +243,7 @@ task TSpell() {
                 real angleT = 360/32 * i;
                 ObjPrim_SetVertexPosition(bCircle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
             }
-            ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), 600);
+            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
             radius -= 600/45;
             yield;
         }
@@ -258,7 +258,7 @@ task TSpell() {
                 real angleT = 360/32 * i;
                 ObjPrim_SetVertexPosition(wCircle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
             }
-            ObjSpell_SetIntersectionCircle(wCircle, GetPlayerX(), GetPlayerY(), radius);
+            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
             radius -= 600/35;
             yield;
         }
@@ -268,7 +268,7 @@ task TSpell() {
         CallSFX(SND_PL_T_SPELL4);
 
         int laser = ObjSpell_Create();
-        ObjSpell_SetEraseShot(laser, true);
+        ObjSpell_SetEraseShot(laser, false);
         ObjSpell_SetDamage(laser, 45);
         ObjSpell_Regist(laser);
 
@@ -279,6 +279,7 @@ task TSpell() {
             TCreateLaserEffect(-1);
             modifier += 360/14;
             ObjSpell_SetIntersectionLine(laser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - hitboxLength, 12);
+            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
             hitboxLength += 28; //bullet speed
             yield;
         }
@@ -287,7 +288,7 @@ task TSpell() {
         function<int> CreateCircle(int color_) {
             int circle = ObjSpell_Create();
             ObjSpell_SetDamage(circle, 0);
-            ObjSpell_SetEraseShot(circle, true);
+            ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjPrim_SetVertexCount(circle, 34);
             Obj_SetRenderPriorityI(circle, RP_STG_EFFECT);
@@ -308,11 +309,14 @@ task TSpell() {
             ObjPrim_SetTexture(shot1, _pathImg);
             ObjSprite2D_SetSourceRect(shot1, 144, 0, 160, 16);
             ObjSprite2D_SetDestCenter(shot1);
+            Obj_SetRenderPriorityI(shot1, RP_STG_PLAYER - 2i);
+
 
             int shot2 = ObjPrim_Create(OBJ_SPRITE_2D); //white bullet
             ObjPrim_SetTexture(shot2, _pathImg);
             ObjSprite2D_SetSourceRect(shot2, 144, 16, 160, 32);
             ObjSprite2D_SetDestCenter(shot2);
+            Obj_SetRenderPriorityI(shot2, RP_STG_PLAYER - 2i);
 
             ObjRender_SetPosition(shot1, GetPlayerX() + 20*direction_*cos(modifier), GetPlayerY() + direction_*4, 1);
             ObjRender_SetPosition(shot2, GetPlayerX() + 15*direction_*cos(modifier + 90), GetPlayerY() + direction_*8, 1);
