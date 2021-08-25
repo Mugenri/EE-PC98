@@ -115,5 +115,5 @@ const int ITEM_BOMB     = 6; //Bomb
 const int ITEM_EXTEND   = 7; //Life
 
 //Bullet Cancel Key Field Constants (these are not the values)
-const int BULLET_SCORE      = 0; //How much score the bullet should give
-const int BULLET_DROP_ITEM  = 1; //If the bullet spawns a point item when cancelled
+const int SHOT_SCORE      = 0; //How much score the bullet should give
+const int SHOT_DROP_ITEM  = 1; //If the bullet spawns a point item when cancelled

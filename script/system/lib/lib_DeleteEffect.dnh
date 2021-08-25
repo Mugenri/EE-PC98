@@ -7,24 +7,22 @@ function<void> InitEffectList() {
     ParticleListShader(_deleteEffect, 32/128, 1);
 }
 
-function<void> DeleteEffectShot(int obj_) {
+task TDeleteEffectShot(int obj_) {
     real x = ObjMove_GetX(obj_);
     real y = ObjMove_GetY(obj_);
     real speed = ObjMove_GetSpeed(obj_);
     real angle = ObjMove_GetAngle(obj_);
-    int ID = ObjShot_GetImageID(obj_);
+    //int ID = ObjShot_GetImageID(obj_); TODO either base delete effects on the bullet or give the bullet a key/value for the delete effect
 
-    async {
-        real frame = 0;
-        while (frame < 4) {
-            ObjParticleList_SetPosition(_deleteEffect, x, y, 1);
-            ObjParticleList_SetExtraData(_deleteEffect, trunc(frame), 0, 0);
+    real frame = 0;
+    while (frame < 4) {
+        ObjParticleList_SetPosition(_deleteEffect, x, y, 1);
+        ObjParticleList_SetExtraData(_deleteEffect, trunc(frame), 0, 0);
 
-            ObjParticleList_AddInstance(_deleteEffect);
-            frame += 1/10;
-            x += speed * cos(angle);
-            y += speed * sin(angle);
-            yield;
-        }
+        ObjParticleList_AddInstance(_deleteEffect);
+        frame += 1/5;
+        x += speed * cos(angle);
+        y += speed * sin(angle);
+        yield;
     }
 }

@@ -18,27 +18,27 @@
     case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, BULLET_SCORE, 100);
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100);
 
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            DeleteEffectShot(obj);
+            TDeleteEffectShot(obj);
         }
         WriteLog("delete");
     }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, BULLET_SCORE, 100);
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100);
 
-        if (Obj_GetValueDI(obj, BULLET_DROP_ITEM, false)) { //create item in place of bullet
+        if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) { //create item in place of bullet
             NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
         }
 
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
             AsciiScoreNum(pos[0], pos[1], score);
-            DeleteEffectShot(obj);
+            TDeleteEffectShot(obj);
         }
     }
     case (EV_CREATE_ITEM) {
