@@ -63,7 +63,7 @@ function<int> InitParticleList(string path_, int priority_, int l_, int t_, int 
     return obj;
 }
 //Allows for asynchronous sprite animation frames of particles
-function<void> ParticleListShader(int list_, real floatX_, real floatY_) { //float values are cell size/image size of the sprite sheet
+function<void> ParticleListShader(int list_, real floatX_, real floatY_) { //float values are (cell size / image size) of the sprite sheet
     ObjShader_SetShaderF(list_, HLSL_PARTICLE);
     ObjShader_SetTechnique(list_, "Render");
     ObjShader_SetFloat(list_, "STEP_X", floatX_);

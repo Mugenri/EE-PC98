@@ -12,6 +12,7 @@ const string DIR_SE     = GetCurrentScriptDirectory() ~ "../se/";
 
 //Effect images
 const string IMG_EFFECT_GRAZE = DIR_IMG ~ "effect/graze.png";
+const string IMG_EFFECT_DELETE = DIR_IMG ~ "effect/testEffect.png";
 
 //System images
 const string IMG_SYSTEM_FRAME = DIR_IMG ~ "system/systemFrame.png";

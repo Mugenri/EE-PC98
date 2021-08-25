@@ -1,0 +1,30 @@
+//Bullet deletion effect library
+
+int _deleteEffect;
+
+function<void> InitEffectList() {
+    _deleteEffect = InitParticleList(IMG_EFFECT_DELETE, RP_STG_SHOT, 0, 0, 32, 32); 
+    ParticleListShader(_deleteEffect, 32/128, 1);
+}
+
+function<void> DeleteEffectShot(int obj_) {
+    real x = ObjMove_GetX(obj_);
+    real y = ObjMove_GetY(obj_);
+    real speed = ObjMove_GetSpeed(obj_);
+    real angle = ObjMove_GetAngle(obj_);
+    int ID = ObjShot_GetImageID(obj_);
+
+    async {
+        real frame = 0;
+        while (frame < 4) {
+            ObjParticleList_SetPosition(_deleteEffect, x, y, 1);
+            ObjParticleList_SetExtraData(_deleteEffect, trunc(frame), 0, 0);
+
+            ObjParticleList_AddInstance(_deleteEffect);
+            frame += 1/10;
+            x += speed * cos(angle);
+            y += speed * sin(angle);
+            yield;
+        }
+    }
+}
