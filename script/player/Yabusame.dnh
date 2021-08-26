@@ -140,7 +140,7 @@ task TSpell() {
 
     SetForbidPlayerShot(true);
     SetPlayerInvincibilityFrame(420);
-    ObjRender_SetColor(_objPlayer, 255, 255, 255);
+    ObjRender_SetColor(_objPlayer, 0xFFFFFF);
     SetPlayerSpeed(1.53, 1.53);
 
     CallSFX(SND_PL_Y_SPELL1);

@@ -90,7 +90,7 @@ task TRender(int ParentID_) {
 
 task THit() { //Player deathbomb window
     SetForbidPlayerShot(true);
-    ObjRender_SetColor(_objPlayer, 0, 0, 0);
+    ObjRender_SetColor(_objPlayer, 0x000000);
     CallSFX(SND_PL_HIT);
     
     //Closing circle
@@ -117,11 +117,13 @@ task THit() { //Player deathbomb window
 
 task TMiss() { //Player died
     SetForbidPlayerSpell(true);
-    ObjRender_SetColor(_objPlayer, 255, 255, 255);
+    ObjRender_SetColor(_objPlayer, 0xFFFFFF);
     SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
     real xPos = GetPlayerX();
     real yPos = GetPlayerY();
     CallSFX(SND_PL_MISS);
+
+    DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
 
     TMissGlass();
     TMissCircle();
@@ -198,9 +200,9 @@ task TRebirth() { //Player respawn
 
     task TRebirthEffect() {
         loop (55) { //blink red
-            ObjRender_SetColor(_objPlayer, 255, 0, 0);
+            ObjRender_SetColor(_objPlayer, 0xFF0000);
             yield;
-            ObjRender_SetColor(_objPlayer, 255, 255, 255);
+            ObjRender_SetColor(_objPlayer, 0xFFFFFF);
             wait(3);
         }
 
