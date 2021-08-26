@@ -1,4 +1,5 @@
 // The purpose of this shader is to allow for 'extra 1' and 'extra 2' to serve as shift indecies for STEP_X and STEP_Y
+// Thanks Natashi <3
 
 sampler samp0_ : register(s0);
 
