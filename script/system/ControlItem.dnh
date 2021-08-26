@@ -43,7 +43,7 @@
     }
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
-        ObjMove_AddPatternB2(obj, 0, 0, -4, 0, 0.08, 0, 4);
+        ObjMove_AddPatternB2(obj, 0, 0, -3.2, 0, 0.06, 0, 4);
         ObjItem_SetAutoCollectEnable(obj, false);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
