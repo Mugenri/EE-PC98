@@ -1,6 +1,6 @@
 //Custom laser behavior library
 
-function<int> CreateLooseLaserU1(real x_, real y_, real speed_, real angle_, real maxLength_, int color_, int delay_) {
+function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, real maxLength_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
     int time = 550/speed_ + maxLength_/speed_; //rough amount of frames it will take the laser to leave the screen (550px is hypotenuse of stg window)
@@ -149,7 +149,7 @@ function<int> CreateLooseLaserU1(real x_, real y_, real speed_, real angle_, rea
     }
 }
 
-function<int> CreateStraightLaserU1(real x_, real y_, real angle_, real length_, real sustain_, int color_, int delay_) {
+function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_, real sustain_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
     int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_, 1, delay_);

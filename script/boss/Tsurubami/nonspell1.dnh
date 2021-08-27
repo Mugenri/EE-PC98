@@ -44,7 +44,8 @@ int loopTime = 1200;
     ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
     ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
     if (count % loopTime == 0 && count >= 0) {
-        TPatternG();
+        TPatternF(1);
+        TPatternF(-1);
     }
     count++;
 
@@ -62,8 +63,9 @@ task TFinalize() {
     int score = 10;
     int scoreBonus = 10;
     int numBullets = 0;
-    loop (7) {
-        for each (shot in GetShotIdInCircleA2(xPos, yPos, 500, TARGET_ENEMY)) {
+    real radius = 100;
+    loop (5) {
+        for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
             Obj_SetValueI(shot, SHOT_SCORE, score);
             if (numBullets < 40 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 40 bullets drop point items
                 Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
@@ -72,9 +74,9 @@ task TFinalize() {
             score += scoreBonus;
             scoreBonus += 30;
             score = min(score, 12800);
-            ObjShot_ToItem(shot);
         }
-        yield;
+        DeleteShotInCircle(TYPE_SHOT, TYPE_ITEM, xPos, yPos, radius);
+        radius += 100;
     }
     //^^
     DeleteShotAll(TYPE_ALL, TYPE_ITEM);
@@ -110,7 +112,7 @@ task TPatternB(int dir_) {
     loop (8) {
         real x = ObjMove_GetX(objBoss) + 30 * cos(angleT);
         real y = ObjMove_GetY(objBoss) + 30 * sin(angleT);
-        int obj = CreateStraightLaserU1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 550, 60, 0xFF00FF, 60);
+        int obj = CreateStraightLaserUA1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 550, 60, 0xFF00FF, 60);
         angleT += 45;
         TMove(obj);
     }
@@ -136,7 +138,7 @@ task TPatternC() {
     loop (11) {
         if (!ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0) return;
         int dist = 25;
-        let obj = CreateLooseLaserU1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
+        let obj = CreateLooseLaserUA1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle -= 18;
         wait(5);
     }
@@ -144,9 +146,9 @@ task TPatternC() {
     loop (11) {
         if (!ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0) return;
         int dist = 15;
-        CreateLooseLaserU1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
+        CreateLooseLaserUA1(ObjMove_GetX(objBoss) + dist * cos(angle), ObjMove_GetY(objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle += 18;
-        wait(3);
+        wait(5);
     }
 }
 
@@ -190,4 +192,8 @@ task TPatternG() {
     CreateShotUB1(MID_X, MID_Y, 1, 2, BLACK_2NEEDLE, 0, A_WHITE_BALL);
     wait(60);
     CreateShotUB2(MID_X, MID_Y, 1, 2, 0.2, 0.2, 5, 3, WHITE_CARD, 0, A_WHITE_BALL);
+}
+
+task TPatternH() {
+    CreateStraightLaserUA1(MID_X - 40, MID_Y, 0, 80, 1000, 0x00FF00, 30);
 }
