@@ -51,8 +51,8 @@ function<void> PlayerEvent() {
 	case (EV_PLAYER_REBIRTH) {
         TRebirth();
 	}
-    case (EV_GRAZE) { //TODO shortest distance from point to line
-        int[] objList = GetEventArgument(1);
+    case (EV_GRAZE) {
+        int[] objList = GetEventArgument(1); //list of bullets grazed in last frame
         
         for each (obj in objList) {
             int num = 0;
@@ -71,7 +71,7 @@ function<void> PlayerEvent() {
                     real distNearest = distPlayer * cos(anglePlayer - angleLaser);
                     x += distNearest * cos(angleLaser);
                     y += distNearest * sin(angleLaser);
-                }
+                } //if player is behind the base of the laser, particle spawns at original (x, y)
             }
             num++;
             TGraze(x, y);
