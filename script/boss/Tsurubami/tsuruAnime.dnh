@@ -35,7 +35,7 @@ task TDrawBoss(int objBoss_) {
         if (!_charge && _frameCountCharge > 0) _frameCountCharge--;
 
         //flash on hit
-        if (flash == false && ObjEnemy_GetInfo(objBoss, INFO_LIFE) < bossHealth) {
+        if (flash == false && ObjEnemy_GetInfo(objBoss, INFO_LIFE) < bossHealth) { //TODO its possible for this to stay white if the single ends and the player stops shooting
             flash = true;
             async {
                 loop (3) {
