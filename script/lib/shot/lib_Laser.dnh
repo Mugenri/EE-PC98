@@ -58,30 +58,6 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
         Obj_Delete(line1);
         Obj_Delete(line2);
 
-        //Deletion Animation
-        int deleteLine1 = CreateDeleteLine(); //clockwise to laser
-        int deleteLine2 = CreateDeleteLine(); //counterclockwise to laser
-
-        real dist = 0; //distance of delete line to the original laser center
-        loop (15) {
-            ObjPrim_SetVertexPosition(deleteLine1, 0, x + dist * cos(angle + 90), y + dist * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(deleteLine1, 1, x + dist * cos(angle + 90) + laserLength * cos(angle), y + dist * sin(angle + 90) + laserLength * sin(angle), 1);
-            ObjPrim_SetVertexPosition(deleteLine2, 0, x + dist * cos(angle - 90), y + dist * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(deleteLine2, 1, x + dist * cos(angle - 90) + laserLength * cos(angle), y + dist * sin(angle - 90) + laserLength * sin(angle), 1);
-
-            if (!full) {
-                laserLength += speed_ / 2;
-            } else {
-                x += speed_ * cos(angle) / 2;
-                y += speed_ * sin(angle) / 2;
-            }
-            dist += 0.5;
-            yield;
-        }
-
-        Obj_Delete(deleteLine1);
-        Obj_Delete(deleteLine2);
-
         function<void> UpdateCircle(real x_, real y_) {
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
             ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
@@ -107,14 +83,6 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
             ObjPrim_SetVertexPosition(line2, 1, x_ + 2 * cos(angle_ - 90), y_ + 2 * sin(angle_ - 90), 1);
             ObjPrim_SetVertexPosition(line2, 2, x_ + 2 * cos(angle_ + 90) + length_ * cos(angle_), y_ + 2 * sin(angle_ + 90) + length_ * sin(angle_), 1);
             ObjPrim_SetVertexPosition(line2, 3, x_ + 2 * cos(angle_ - 90) + length_ * cos(angle_), y_ + 2 * sin(angle_ - 90) + length_ * sin(angle_), 1);
-        }
-
-        function<int> CreateDeleteLine() {
-            int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-            ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
-            ObjPrim_SetVertexCount(obj, 2);
-            Obj_SetRenderPriorityI(obj, RP_STG_LASER);
-            return obj;
         }
     }
 

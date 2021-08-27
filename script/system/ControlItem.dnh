@@ -23,6 +23,8 @@
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
             TDeleteEffectShot(obj);
+        } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) {
+            TDeleteEffectLaser(obj);
         }
         WriteLog("delete");
     }
@@ -39,6 +41,8 @@
         if (Obj_GetType(obj) == OBJ_SHOT) {
             AsciiScoreNum(pos[0], pos[1], score);
             TDeleteEffectShot(obj);
+        } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) {
+            TDeleteEffectLaser(obj);
         }
     }
     case (EV_CREATE_ITEM) {

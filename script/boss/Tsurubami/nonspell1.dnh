@@ -11,7 +11,7 @@
 
 int objBoss;
 int count = -120;
-int loopTime = 1200;
+int loopTime = 200;
 
 @Event {
     alternative (GetEventType())
@@ -44,8 +44,8 @@ int loopTime = 1200;
     ObjEnemy_SetIntersectionCircleToShot(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 32);
     ObjEnemy_SetIntersectionCircleToPlayer(objBoss, ObjMove_GetX(objBoss), ObjMove_GetY(objBoss), 24);
     if (count % loopTime == 0 && count >= 0) {
-        TPatternF(1);
-        TPatternF(-1);
+        TPatternB(1);
+        TPatternB(-1);
     }
     count++;
 
@@ -81,7 +81,6 @@ task TFinalize() {
     //^^
     DeleteShotAll(TYPE_ALL, TYPE_ITEM);
     SetAutoDeleteObject(true);
-    wait(30);
     CloseScript(GetOwnScriptID());
     return;
 }
