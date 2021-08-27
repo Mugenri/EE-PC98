@@ -51,9 +51,31 @@ function<void> PlayerEvent() {
 	case (EV_PLAYER_REBIRTH) {
         TRebirth();
 	}
-    case (EV_GRAZE) {
-        //TODO properly set x and y values for lasers
-        TGraze(GetEventArgument(2)[0][0], GetEventArgument(2)[0][1]);
+    case (EV_GRAZE) { //TODO shortest distance from point to line
+        int[] objList = GetEventArgument(1);
+        
+        for each (obj in objList) {
+            int num = 0;
+            real x = GetEventArgument(2)[num][0];
+            real y = GetEventArgument(2)[num][1];
+            if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) { //Get closest point to laser
+                real angleLaser = ObjStLaser_GetAngle(obj);
+                real anglePlayer = GetAngleToPlayer(obj);
+                real distPlayer = distance(x, y, GetPlayerX(), GetPlayerY());
+
+                if (distPlayer > ObjLaser_GetLength(obj)) { //Player is beyond tip of laser
+                    real len = ObjLaser_GetLength(obj);
+                    x += len * cos(angleLaser);
+                    y += len * sin(angleLaser);
+                } else if (absolute(anglePlayer - angleLaser) <= 90) { //Player not behind base of laser
+                    real distNearest = distPlayer * cos(anglePlayer - angleLaser);
+                    x += distNearest * cos(angleLaser);
+                    y += distNearest * sin(angleLaser);
+                }
+            }
+            num++;
+            TGraze(x, y);
+        }
     }
 }
 
