@@ -1,0 +1,2 @@
+//General Effect library
+#include "./effect/lib_EffectParticle.dnh"

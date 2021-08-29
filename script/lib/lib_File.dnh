@@ -13,6 +13,7 @@ const string DIR_SE     = GetCurrentScriptDirectory() ~ "../se/";
 //Effect images
 const string IMG_EFFECT_GRAZE = DIR_IMG ~ "effect/graze.png";
 const string IMG_EFFECT_DELETE = DIR_IMG ~ "effect/testEffect.png";
+const string IMG_EFFECT_PARTICLE = DIR_IMG ~ "effect/testShotEffect.png";
 
 //System images
 const string IMG_SYSTEM_FRAME = DIR_IMG ~ "system/systemFrame.png";
@@ -38,3 +39,4 @@ const string IMG_BG_TSURUBAMI = DIR_IMG ~ "stg/tsurubamiBG.png";
 
 //HLSL Shaders
 const string HLSL_PARTICLE = DIR_HLSL ~ "TexParticle.hlsl";
+const string HLSL_WHITE = DIR_HLSL ~ "TexWhite.hlsl";
