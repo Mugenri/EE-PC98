@@ -1,14 +1,14 @@
 #include "./tsuruAnime.dnh"
 
-task TBombBarrier() {
-    while (ObjEnemy_GetInfo(objBoss, INFO_LIFE) > 0 && !Obj_IsDeleted(objBoss)) {
+task TBombBarrier(int objBoss_) {
+    while (ObjEnemy_GetInfo(objBoss_, INFO_LIFE) > 0 && !Obj_IsDeleted(objBoss_)) {
         if (IsPlayerSpellActive()) {
             AnimeMonochrome();
-            ObjEnemy_SetDamageRate(objBoss, 0, 0);
+            ObjEnemy_SetDamageRate(objBoss_, 0, 0);
             while (IsPlayerSpellActive()) yield;
             wait(15);
             AnimeMonochrome();
-            ObjEnemy_SetDamageRate(objBoss, 100, 100);
+            ObjEnemy_SetDamageRate(objBoss_, 100, 100);
         }
         yield;
     }

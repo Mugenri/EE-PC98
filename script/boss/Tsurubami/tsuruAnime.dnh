@@ -10,12 +10,12 @@ task TDrawBoss(int objBoss_) {
     ObjSprite2D_SetDestCenter(objBoss_);
     Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
 
-    ObjShader_SetShaderF(objBoss, GetCurrentScriptDirectory() ~ "./../../lib/hlsl/TexWhite.hlsl");
+    ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
     ObjShader_SetTechnique(objBoss_, "TecWhite");
 
     int frame_ = 0;
     int frameCharge_ = 0;
-    int bossHealth = ObjEnemy_GetInfo(objBoss, INFO_LIFE);
+    int bossHealth = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 
     bool flash = false;
 
@@ -35,7 +35,7 @@ task TDrawBoss(int objBoss_) {
         if (!_charge && _frameCountCharge > 0) _frameCountCharge--;
 
         //flash on hit
-        if (flash == false && ObjEnemy_GetInfo(objBoss, INFO_LIFE) < bossHealth) { //TODO its possible for this to stay white if the single ends and the player stops shooting
+        if (flash == false && ObjEnemy_GetInfo(objBoss_, INFO_LIFE) < bossHealth) { //TODO its possible for this to stay white if the single ends and the player stops shooting
             flash = true;
             async {
                 loop (3) {
@@ -47,7 +47,7 @@ task TDrawBoss(int objBoss_) {
                 flash = false;
             }
         }
-        bossHealth = ObjEnemy_GetInfo(objBoss, INFO_LIFE);
+        bossHealth = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
         yield;
     }
 }
