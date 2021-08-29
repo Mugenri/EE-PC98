@@ -15,8 +15,8 @@ function<void> SceneMusicRoom() {
 
     TCreateMenuGraphicsMusic();
     //default texts
-    int playingText = CreateText(32, 268, GetBGMText(-1)[0], 0xFFFFFFFF); //currently playing track
-    int descriptionText = CreateText(32, 288, GetBGMText(-1)[1], 0xFFFFFFFF); //track comments
+    int playingText = CreateText(32, 268, GetBGMText(-1)[0], COLOR_WHITE); //currently playing track
+    int descriptionText = CreateText(32, 288, GetBGMText(-1)[1], COLOR_WHITE); //track comments
 
     //Create Menu Items
     {
@@ -52,7 +52,7 @@ function<void> SceneMusicRoom() {
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            ScreenBlackout(10, 5, 10, 0x000000);
+            ScreenBlackout(10, 5, 10, COLOR_BLACK);
             ClearBGM();
             wait(10);
             break;
@@ -72,8 +72,8 @@ function<void> SceneMusicRoom() {
                 revealIndex = indexCurrent;
                 revealPrompt = false;
             } else {
-                ObjText_SetVertexColor(playingText, 0xFFFF0000);
-                ObjText_SetVertexColor(descriptionText, 0xFFFF0000);
+                ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_RED);
+                ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_RED);
                 ObjText_SetText(playingText, "???");
                 ObjText_SetText(descriptionText, "are you sure?");
                 revealPrompt = true;
@@ -83,8 +83,8 @@ function<void> SceneMusicRoom() {
         ClearBGM(); //allows restarting the same track if it's already playing
         yield;
         StartBGM(indexCurrent, 15, 15);
-        ObjText_SetVertexColor(playingText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(descriptionText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_WHITE);
         ObjText_SetText(playingText, GetBGMText(indexCurrent)[0]);
         ObjText_SetText(descriptionText, GetBGMText(indexCurrent)[1]);
     }
@@ -108,11 +108,11 @@ function<void> SceneMusicRoom() {
 
         //Initial list creation
         if (!CD_GetBGMHeardFlag(bgmID)) {
-            objText = CreateText(x_, y_, indexNumber ~ "???", 0xFFFFFFFF);
-            objTextHighlight = CreateText(x_, y_, indexNumber ~ "???", 0xFFFFFF00);
+            objText = CreateText(x_, y_, indexNumber ~ "???", COLOR_WHITE);
+            objTextHighlight = CreateText(x_, y_, indexNumber ~ "???", COLOR_YELLOW);
         } else {
-            objText = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFFFF);
-            objTextHighlight = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], 0xFFFFFF00);
+            objText = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], COLOR_WHITE);
+            objTextHighlight = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], COLOR_YELLOW);
         }
 
         while (!exitFlag) {
@@ -140,8 +140,8 @@ function<void> SceneMusicRoom() {
     }
 
     function<void> CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
-        ObjText_SetVertexColor(playingText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(descriptionText, 0xFFFFFFFF);
+        ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_WHITE);
         ObjText_SetText(playingText, GetBGMText(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1))[0]);
         ObjText_SetText(descriptionText, GetBGMText(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1))[1]);
         revealPrompt = false;

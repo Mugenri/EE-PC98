@@ -49,7 +49,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            ScreenBlackout(10, 5, 10, 0x000000);
+            ScreenBlackout(10, 5, 10, COLOR_BLACK);
             wait(10);
             break;
         }
@@ -62,7 +62,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
 
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
-        ScreenBlackout(10, 5, 10, 0x000000);
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
         wait(10);
     }
 
@@ -91,7 +91,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
         ObjSprite2D_SetSourceRect(objTextHighlight, 0, imgIndex_ * 16, 223, (imgIndex_+1) * 16);
         ObjSprite2D_SetDestCenter(objTextHighlight);
         ObjRender_SetPosition(objTextHighlight, x_, y_, 1);
-        ObjRender_SetColor(objTextHighlight, 0xFFFF00);
+        ObjRender_SetColor(objTextHighlight, COLOR_YELLOW);
 
         while (!exitFlag) {
             Obj_SetVisible(objTextHighlight, index_ == indexCurrent);

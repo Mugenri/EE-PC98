@@ -95,7 +95,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
         Obj_SetRenderPriorityI(obj, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
-        int color = colored_ ? color_ : 0xFFFFFF;
+        int color = colored_ ? color_ : COLOR_WHITE;
         ascent (i in 0..14) {
         ObjPrim_SetVertexColor(obj, i, color);
         }
@@ -109,7 +109,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
         Obj_SetRenderPriorityI(obj, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
-        int color = colored_ ? color_ : 0xFFFFFF;
+        int color = colored_ ? color_ : COLOR_WHITE;
         ascent (i in 0..4) {
             ObjPrim_SetVertexColor(obj, i, color);
         }
@@ -229,7 +229,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
         Obj_SetRenderPriorityI(obj, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
-        int color = colored_ ? color_ : 0xFFFFFF;
+        int color = colored_ ? color_ : COLOR_WHITE;
         ascent (i in 0..14) {
         ObjPrim_SetVertexColor(obj, i, color);
         }
@@ -243,10 +243,14 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
         Obj_SetRenderPriorityI(obj, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
-        int color = colored_ ? color_ : 0xFFFFFF;
+        int color = colored_ ? color_ : COLOR_WHITE;
         ascent (i in 0..4) {
             ObjPrim_SetVertexColor(obj, i, color);
         }
         return obj;
     }
+}
+
+function<int> CreateCurveLaserUA1() {
+    //TODO cheeto lasers
 }

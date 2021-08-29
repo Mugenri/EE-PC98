@@ -167,7 +167,7 @@ function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text obj
     int obj = ObjText_Create();
     ObjText_SetFontType(obj, SYS_FONT);
     ObjText_SetFontSize(obj, 16);
-    ObjText_SetVertexColor(obj, 0xFFFFFFFF);
+    ObjText_SetVertexColor(obj, 0xFF000000 + COLOR_WHITE);
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     ObjText_SetLinePitch(obj, 0);
     ObjText_SetMaxWidth(obj, 242);
@@ -181,20 +181,20 @@ function<void> SetText(bool isBoss_, string text_) { //Sets selected text field 
     //-----------------------------   <-- this long
     if (isBoss_) {
         ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_LEFT);
-        ObjText_SetVertexColor(_bossText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(_playerText, 0xFF0000FF);
+        ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
         TTextScroll(_bossText, text_);
     } else {
-        ObjText_SetVertexColor(_playerText, 0xFFFFFFFF);
-        ObjText_SetVertexColor(_bossText, 0xFF0000FF);
+        ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_BLUE);
         TTextScroll(_playerText, text_);
     }
 }
 
 function<void> SetBossTitle(string text_) { //Centers text for use in boss titles/names
     ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_CENTER);
-    ObjText_SetVertexColor(_bossText, 0xFFFFFFFF);
-    ObjText_SetVertexColor(_playerText, 0xFF0000FF);
+    ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
+    ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
     TTextScroll(_bossText, text_);
 }
 
@@ -262,7 +262,7 @@ function<void> SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID
     ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
     ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
-    ObjRender_SetColor(whiteout, 0xFFFFFF);
+    ObjRender_SetColor(whiteout, COLOR_WHITE);
 
     //animation
     descent (i in 0..fadeIn_) {

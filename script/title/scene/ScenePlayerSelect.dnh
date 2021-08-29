@@ -69,7 +69,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            ScreenBlackout(10, 5, 10, 0x000000);
+            ScreenBlackout(10, 5, 10, COLOR_BLACK);
             wait(10);
             break;
         }
@@ -80,9 +80,9 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
         //white screen flash then fadeout
-        ScreenBlackout(0, 0, 10, 0xFFFFFF);
+        ScreenBlackout(0, 0, 10, COLOR_WHITE);
         wait(60);
-        ScreenBlackout(60, 60, 0, 0x000000);
+        ScreenBlackout(60, 60, 0, COLOR_BLACK);
         //fade music too, Need to set this up
         wait(60);
         NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);

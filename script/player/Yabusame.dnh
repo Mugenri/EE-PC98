@@ -140,7 +140,7 @@ task TSpell() {
 
     SetForbidPlayerShot(true);
     SetPlayerInvincibilityFrame(420);
-    ObjRender_SetColor(_objPlayer, 0xFFFFFF);
+    ObjRender_SetColor(_objPlayer, COLOR_WHITE);
     SetPlayerSpeed(1.53, 1.53);
 
     CallSFX(SND_PL_Y_SPELL1);
@@ -210,7 +210,7 @@ task TSpell() {
         }
 
         ascent (i in 0..34) {
-            ObjPrim_SetVertexColor(circle, i, 0xFFFFFF);
+            ObjPrim_SetVertexColor(circle, i, COLOR_WHITE);
         }
 
         CallSFX(SND_PL_Y_SPELL2);
@@ -226,7 +226,7 @@ task TSpell() {
             int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
             ObjPrim_SetVertexCount(line, 2);
-            Obj_SetRenderPriorityI(line, RP_STG_EFFECT);
+            Obj_SetRenderPriorityI(line, RP_STG_EFF_LOW);
             ObjPrim_SetVertexPosition(line, 0, xPos_, yPos_, 1);
             ObjPrim_SetVertexPosition(line, 1, xPos_, yPos_, 1);
             ObjPrim_SetVertexColor(line, 0, 0, 0, 0);
@@ -240,10 +240,10 @@ task TSpell() {
             ObjSpell_SetDamage(circle, 5);
             ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFFECT);
+            Obj_SetRenderPriorityI(circle, RP_STG_EFF_LOW);
             ObjPrim_SetVertexPosition(circle, 0, xPos_, yPos_, 1);
             ascent (i in 0..34) {
-                ObjPrim_SetVertexColor(circle, i, 0xDDCC44);
+                ObjPrim_SetVertexColor(circle, i, COLOR_YELLOW_D);
             }
             ObjSpell_Regist(circle);
             return circle;

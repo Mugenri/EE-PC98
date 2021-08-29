@@ -55,7 +55,7 @@
         int type = GetEventArgument(0);
         int obj = GetEventArgument(1);
         int score = 10;
-        int color = 0xFFFFFF;
+        int color = COLOR_WHITE;
 
         alternative (type)
         case (ITEM_POW) {
@@ -64,7 +64,7 @@
         case (ITEM_SCORE) {
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
-                color = 0xFFFF00;
+                color = COLOR_YELLOW;
             } else {
                 score = 25600 - 25600*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down

@@ -32,7 +32,7 @@ function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
 }
 
 function<void> AsciiScoreNum(real x_, real y_, int score_) { //if no color is provided, default to white
-    AsciiScoreNum(x_, y_, score_, 0xFFFFFF);
+    AsciiScoreNum(x_, y_, score_, COLOR_WHITE);
 }
 
 function<int[]> DigitToArray(int digit_) {

@@ -113,7 +113,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         case (INDEX_QUIT) {
             //Exit Game
             SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
-            ScreenBlackout(60, 200, 0, 0x000000);
+            ScreenBlackout(60, 200, 0, COLOR_BLACK);
             wait(80);
             ClosePackage();
             return 1;
@@ -141,10 +141,10 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     task TCreateMenuItemMain(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
-        int color = 0xFFFFFFFF;
-        if (CheckForbidden(index_, forbidIndex)) color = 0xFF111166;
+        int color = COLOR_WHITE;
+        if (CheckForbidden(index_, forbidIndex)) color = COLOR_BLUE_D;
         int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, color);
-        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, 0xFFFFFF00);
+        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_YELLOW);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         while (!_exitFlag) {
             Obj_SetVisible(objTextHighlight, index_ == _indexCurrent);
@@ -157,7 +157,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     task TCreateMenuInfo(int x_, int y_) {
-        int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, 0xFFFFFFFF);
+        int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, COLOR_WHITE);
         while (!_exitFlag) yield;
         Obj_Delete(objText);
     }
@@ -168,7 +168,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
 }
 
 task TSelectStart() { //UNUSED
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
     //Declare variables to be set by submenus
@@ -206,7 +206,7 @@ task TSelectStart() { //UNUSED
 }
 
 task TSelectExtra() {
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
     //Declare variables to be set by submenus
@@ -244,7 +244,7 @@ task TSelectExtra() {
 }
 
 task TSelectPractice() { //UNUSED
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
 
@@ -253,7 +253,7 @@ task TSelectPractice() { //UNUSED
 }
 
 task TSelectReplay() {
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
 
@@ -262,7 +262,7 @@ task TSelectReplay() {
 }
 
 task TSelectMusic() {
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
     SceneMusicRoom();
@@ -275,7 +275,7 @@ task TSelectMusic() {
 }
 
 task TSelectScore() {
-    ScreenBlackout(10, 5, 10, 0x000000);
+    ScreenBlackout(10, 5, 10, COLOR_BLACK);
     wait(10);
     _exitFlag = true;
 

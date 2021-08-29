@@ -79,23 +79,25 @@ const int SND_PL_T_SPELL4   = 13;
 //Stage
 
 //Render Priority Constants
-const int RP_UI_MIN     = 0;  //Min render priority
-const int RP_UI_BG      = 2;  //Menu backgrounds
-const int RP_UI_IMG     = 5;  //Menu/UI images
-const int RP_UI_TEXT    = 10; //Menu/UI text
-const int RP_STG_MIN    = 20; //Min stage render priority
-const int RP_STG_BG     = 22; //Stage backgrounds
-const int RP_STG_EFFECT = 25; //Effects that render over the background only
-const int RP_STG_ENEMY  = 30; //Boss/Enemy sprite
-const int RP_STG_PLAYER = 40; //Player sprite/bullets
-const int RP_STG_ITEM   = 50; //Items
-const int RP_STG_LASER  = 56; //Enemy Lasers
-const int RP_STG_SHOT   = 60; //Bullets
-const int RP_STG_HITBOX = 70; //Player hitbox
-const int RP_STG_TEXT   = 75; //Item pickup text
-const int RP_STG_END    = 78; //End of stage screen
-const int RP_STG_MAX    = 80; //Max stage render priority
-const int RP_UI_MAX     = 100;//Max render priority
+const int RP_UI_MIN      = 0;  //Min render priority
+const int RP_UI_BG       = 2;  //Menu backgrounds
+const int RP_UI_IMG      = 5;  //Menu/UI images
+const int RP_UI_TEXT     = 10; //Menu/UI text
+const int RP_STG_MIN     = 20; //Min stage render priority
+const int RP_STG_BG      = 22; //Stage backgrounds
+const int RP_STG_EFF_LOW = 25; //Effects that render over the background only
+const int RP_STG_ENEMY   = 30; //Boss/Enemy sprite
+const int RP_STG_PLAYER  = 40; //Player sprite/bullets
+const int RP_STG_EFF_MID = 45; //Effects that render over the player/boss sprites, but below bullets
+const int RP_STG_ITEM    = 50; //Items
+const int RP_STG_LASER   = 56; //Enemy Lasers
+const int RP_STG_SHOT    = 60; //Bullets
+const int RP_STG_EFF_HI  = 65; //Effects that render over bullets
+const int RP_STG_HITBOX  = 70; //Player hitbox
+const int RP_STG_TEXT    = 75; //Item pickup text
+const int RP_STG_END     = 78; //End of stage screen
+const int RP_STG_MAX     = 80; //Max stage render priority
+const int RP_UI_MAX      = 100;//Max render priority
 
 //Position Constants
 const real MIN_X = 0;
@@ -117,3 +119,36 @@ const int ITEM_EXTEND   = 7; //Life
 //Bullet Cancel Key Field Constants (these are not the values)
 const int SHOT_SCORE      = 0; //How much score the bullet should give
 const int SHOT_DROP_ITEM  = 1; //If the bullet spawns a point item when cancelled
+
+//Color Constants
+const int COLOR_WHITE       = 0xFFFFFF;
+const int COLOR_GRAY        = 0x999999;
+const int COLOR_GRAY_D      = 0x666666;
+const int COLOR_BLACK       = 0x000000;
+const int COLOR_RED         = 0xFF0000;
+const int COLOR_RED_L       = 0xFF4444; 
+const int COLOR_RED_D       = 0x880000;
+const int COLOR_ORANGE      = 0xFF9900;
+const int COLOR_ORANGE_D    = 0xBB5500;
+const int COLOR_YELLOW      = 0xFFFF00;
+const int COLOR_YELLOW_L    = 0xFFFF55;
+const int COLOR_YELLOW_D    = 0xDDCC44;
+const int COLOR_GREEN       = 0x44BB33;
+const int COLOR_GREEN_D     = 0x226622;
+const int COLOR_BLUE        = 0x0000FF;
+const int COLOR_BLUE_L      = 0xAAAAFF;
+const int COLOR_BLUE_D      = 0x111166;
+const int COLOR_TEAL        = 0x00FFFF
+const int COLOR_INDIGO      = 0x6655BB;
+const int COLOR_INDIGO_L    = 0xBBBBFF;
+const int COLOR_INDIGO_D    = 0x554499;
+const int COLOR_PURPLE      = 0x880088; 
+const int COLOR_PURPLE_L    = 0xCC55CC;
+const int COLOR_PURPLE_D    = 0x660055;
+const int COLOR_MAGENTA     = 0xCC33AA;
+const int COLOR_MAGENTA_L   = 0xFF00FF;
+const int COLOR_MAGENTA_D   = 0x880066;
+const int COLOR_PINK        = 0xFFAABB;
+const int COLOR_TAN         = 0xEEBBAA;
+const int COLOR_BROWN       = 0xAA6622;
+const int COLOR_BROWN_D     = 0x995500;

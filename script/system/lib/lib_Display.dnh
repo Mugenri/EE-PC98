@@ -1,5 +1,5 @@
 //STG window display setup library
-//#include high score library at some point
+//TODO #include high score library at some point
 
 //----------------------------------------------------
 //STG Frame Display
@@ -21,11 +21,11 @@ task TIntro() {
     ObjSprite2D_SetSourceRect(objBG, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(objBG, 0, 0, 384, 368);
     Obj_SetRenderPriorityI(objBG, RP_STG_MAX);
-    ObjRender_SetColor(objBG, 0x000000);
+    ObjRender_SetColor(objBG, COLOR_BLACK);
 
     //Fade square particle list
     int objFade = InitParticleList(IMG_SYSTEM_FADE, RP_STG_MAX, 0, 16, 16, 32);
-    ObjParticleList_SetColor(objFade, 0x000000);
+    ObjParticleList_SetColor(objFade, COLOR_BLACK);
 
     int frames = 9; //number of animation frames
 
@@ -108,13 +108,13 @@ task TIntro() {
 //----------------------------------------------------
 function<void> Difficulty() {
     string[] texts = ["Easy", "Normal", "Hard", "Unreal", "Extra", "Ab-Ex"];
-    int[] colors = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF0000, 0xFFFFFFFF];
+    int[] colors = [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_RED, COLOR_WHITE];
     int diff = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     int objText = ObjText_Create();
 	ObjText_SetText(objText, texts[diff]);
 	ObjText_SetFontSize(objText, 16);
     ObjText_SetFontType(objText, HEADER_FONT);
-	ObjText_SetVertexColor(objText, colors[diff]);
+	ObjText_SetVertexColor(objText, 0xFF000000 + colors[diff]);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
 	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
 	ObjRender_SetPosition(objText, 420, 20, 1);
@@ -125,13 +125,13 @@ function<void> Difficulty() {
 //----------------------------------------------------
 //High Score Display
 //----------------------------------------------------
-task THighScore() {
+task THighScore() { //TODO make this the actual high score
 	//High Score Text
 	int objScore = ObjPrim_Create(OBJ_SPRITE_2D);
 	ObjPrim_SetTexture(objScore, IMG_SYSTEM_TEXT);
 	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
-    ObjRender_SetColor(objScore, 0xFFFF00);
+    ObjRender_SetColor(objScore, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
     ObjRender_SetPosition(objScore, 480, 48, 1);
 
@@ -179,7 +179,7 @@ task TScore() {
 	ObjPrim_SetTexture(objScore, IMG_SYSTEM_TEXT);
 	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
     ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
-    ObjRender_SetColor(objScore, 0xFFFF00);
+    ObjRender_SetColor(objScore, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
     ObjRender_SetPosition(objScore, 488, 80, 1);
 
@@ -229,7 +229,7 @@ task TBossLife() {
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
     ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
-    ObjRender_SetColor(objText, 0xFFFF00);
+    ObjRender_SetColor(objText, COLOR_YELLOW);
     Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 488, 129, 1);
 
@@ -292,15 +292,15 @@ task TBossLife() {
         }
 
         //Life Color
-        int color = 0xFFFFFF;
+        int color = COLOR_WHITE;
         if (lifeRate <= 0.25) {
-            color = 0xFF0000;
+            color = COLOR_RED;
         } else if (lifeRate <= 0.5) {
-            color = 0xFF00FF;
+            color = COLOR_MAGENTA_L;
         } else if (lifeRate <= 0.75) {
-            color = 0x00FFFF;
+            color = COLOR_TEAL;
         } else if (lifeRate < 1) {
-            color = 0xFFFF00;
+            color = COLOR_YELLOW;
         }
 
         ascent (i in 0..4) {
@@ -349,8 +349,8 @@ task TBossTimer() {
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 129 * (timer/timerTotal) , 0, 1);
 
-        ObjPrim_SetVertexColor(obj, 0, 0xFFFFFF);
-        ObjPrim_SetVertexColor(obj, 1, 0xFFFFFF);
+        ObjPrim_SetVertexColor(obj, 0, COLOR_WHITE);
+        ObjPrim_SetVertexColor(obj, 1, COLOR_WHITE);
 
 	}
 }
@@ -365,7 +365,7 @@ task TPlayerLife() {
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
     ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
-    ObjRender_SetColor(objText, 0xFFFF00);
+    ObjRender_SetColor(objText, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 178, 1);
 
@@ -415,7 +415,7 @@ task TPlayerSpell() {
     ObjRender_SetBlendType(objText, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
     ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
-    ObjRender_SetColor(objText, 0xFFFF00);
+    ObjRender_SetColor(objText, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 210, 1);
 
@@ -465,7 +465,7 @@ task TGraze() {
     ObjRender_SetBlendType(objGraze, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
     ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
-    ObjRender_SetColor(objGraze, 0xFFFF00);
+    ObjRender_SetColor(objGraze, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objGraze, RP_UI_TEXT);
     ObjRender_SetPosition(objGraze, 456, 242, 1);
 
@@ -503,7 +503,7 @@ task TGainSpell(int score_) { //TODO refactor/change this
 	ObjText_SetText(objText, "Spell Card Bonus!");
 	ObjText_SetFontSize(objText, 16);
     ObjText_SetFontType(objText, SYS_FONT);
-	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
 	Obj_SetRenderPriorityI(objText, RP_STG_TEXT);
 	ObjRender_SetX(objText, 32);
@@ -514,7 +514,7 @@ task TGainSpell(int score_) { //TODO refactor/change this
 	ObjText_SetText(objScore, strScore);
 	ObjText_SetFontSize(objScore, 32);
 	ObjText_SetFontBold(objScore, true);
-	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
 	ObjText_SetFontBorderType(objScore, BORDER_NONE);
 	Obj_SetRenderPriorityI(objScore, RP_STG_TEXT);
 	ObjRender_SetX(objScore, 180);
@@ -532,7 +532,7 @@ task TFPS() {
 	int objText = ObjText_Create();
 	ObjText_SetFontSize(objText, 16);
 	ObjText_SetFontType(objText, SYS_FONT);
-	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
 	ObjText_SetMaxWidth(objText, GetScreenWidth() - 8);
 	Obj_SetRenderPriorityI(objText, RP_UI_MAX);
@@ -553,7 +553,7 @@ task TReplayFPS() {
 	int objText = ObjText_Create();
 	ObjText_SetFontSize(objText, 12);
 	ObjText_SetFontBold(objText, true);
-	ObjText_SetVertexColor(objText, 0xFFFFFFFF);
+	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
 	ObjText_SetFontBorderType(objText, BORDER_FULL);
 	ObjText_SetFontBorderColor(objText, 255, 255, 255);
 	ObjText_SetFontBorderWidth(objText, 1);

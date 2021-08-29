@@ -112,7 +112,7 @@ task TRender(int ParentID_) {
 
 task THit() { //Player deathbomb window
     SetForbidPlayerShot(true);
-    ObjRender_SetColor(_objPlayer, 0x000000);
+    ObjRender_SetColor(_objPlayer, COLOR_BLACK);
     CallSFX(SND_PL_HIT);
     
     //Closing circle
@@ -139,7 +139,7 @@ task THit() { //Player deathbomb window
 
 task TMiss() { //Player died
     SetForbidPlayerSpell(true);
-    ObjRender_SetColor(_objPlayer, 0xFFFFFF);
+    ObjRender_SetColor(_objPlayer, COLOR_WHITE);
     SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
     real xPos = GetPlayerX();
     real yPos = GetPlayerY();
@@ -170,7 +170,7 @@ task TMiss() { //Player died
                 loop (2) {
                     ObjParticleList_SetPosition(_particleList, x, y, 1);
                     ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
-                    ObjParticleList_SetColor(_particleList, 0xFFFFFF);
+                    ObjParticleList_SetColor(_particleList, COLOR_WHITE);
                     
                     ObjParticleList_AddInstance(_particleList);
                     yield;
@@ -222,9 +222,9 @@ task TRebirth() { //Player respawn
 
     task TRebirthEffect() {
         loop (55) { //blink red
-            ObjRender_SetColor(_objPlayer, 0xFF0000);
+            ObjRender_SetColor(_objPlayer, COLOR_RED);
             yield;
-            ObjRender_SetColor(_objPlayer, 0xFFFFFF);
+            ObjRender_SetColor(_objPlayer, COLOR_WHITE);
             wait(3);
         }
 
@@ -263,7 +263,7 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
         loop (2) {
             ObjParticleList_SetPosition(_particleList, x_, y_, 1);
             ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
-            ObjParticleList_SetColor(_particleList, 0xEEBBAA);
+            ObjParticleList_SetColor(_particleList, COLOR_TAN);
 
             ObjParticleList_AddInstance(_particleList);
             yield;

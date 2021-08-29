@@ -35,14 +35,14 @@ function<bool> CheckForbidden(int index_, int[] forbidden_) {
 }
 
 //Create Text object with pc9800 font
-function<int> CreateText(int x_, int y_, int priority_, string text_, int color_) { //color_ is an ARGB hex value eg. 0xFFFFFFFF
+function<int> CreateText(int x_, int y_, int priority_, string text_, int color_) { //color_ is an RGB hex value added to 255 alpha (0xFF000000)
     int obj = ObjText_Create();
     Obj_SetRenderPriorityI(obj, priority_);
     ObjRender_SetPosition(obj, x_, y_, 1);
     ObjText_SetText(obj, text_);
     ObjText_SetFontSize(obj, 16);
     ObjText_SetFontType(obj, SYS_FONT);
-    ObjText_SetVertexColor(obj, color_);
+    ObjText_SetVertexColor(obj, 0xFF000000 + color_);
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     return obj;
 }
