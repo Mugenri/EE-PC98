@@ -2,23 +2,23 @@
 
 int _effectParticle = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
 
-function<void> Effect_ContractRing(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int count_, int color_) {
+function<void> Particle_ContractRing(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int count_, int color_) {
     async {
         real initRadius = radius_;
         loop(frames_) {
-            CreateParticleRing(x_, y_, angle_, radius_, count_, color_);
-            angle_ += rotation_/frames_;
-            radius_ -= initRadius/frames_;
+            Particle_CreateRing(x_, y_, angle_, radius_, count_, color_);
+            angle_ += rotation_ / frames_;
+            radius_ -= initRadius / frames_;
             yield;
         }
     }
 }
 
-function<void> CreateParticleRing(real x_, real y_, real angle_, real radius_, int count_, int color_) {
+function<void> Particle_CreateRing(real x_, real y_, real angle_, real radius_, int count_, int color_) {
     loop(count_) {
         ObjParticleList_SetPosition(_effectParticle, x_ + radius_ * cos(angle_), y_ + radius_ * sin(angle_), 1);
         ObjParticleList_SetColor(_effectParticle, color_);
         ObjParticleList_AddInstance(_effectParticle);
-        angle_ += 360/count_;
+        angle_ += 360 / count_;
     }
 }
