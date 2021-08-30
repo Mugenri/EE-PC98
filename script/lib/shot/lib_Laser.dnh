@@ -121,6 +121,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     //Object Creation
     //Hitbox and position/angle
     int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_, 1, delay_);
+    Obj_SetValueI(hitbox, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
     //colored
@@ -140,7 +141,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
 
     //Update loop 
     async {
-        int[] frames = [0.5, 1, 2]; //radius of white part
+        real radius = 0.5; //radius of white part
         loop (max(0, delay_ - 9)) {
             if (Obj_IsDeleted(hitbox)) break;
             UpdatePosition(0);
@@ -150,12 +151,16 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
         Obj_SetVisible(line1, true);
         Obj_SetVisible(circle2, true);
         Obj_SetVisible(line2, true);
-        ascent (i in 0..3) { //expand laser
+        //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is completed
+        real angle = ObjStLaser_GetAngle(hitbox);
+        real len = ObjLaser_GetLength(hitbox);
+        while (radius <= 2) { //expand laser
             loop (3) {
                 if (Obj_IsDeleted(hitbox)) break;
-                UpdatePosition(frames[i]);
+                UpdatePosition(radius);
                 yield;
             }
+            radius *= 2;
         }
         loop (sustain_) {
             if (Obj_IsDeleted(hitbox)) break;
@@ -163,12 +168,13 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
             yield;
         }
         ObjShot_SetIntersectionEnable(hitbox, false);
-        descent (i in 0..3) { //contract laser
+        if (radius > 2) radius = 2;
+        while (radius >= 0.5) { //contract laser
             loop (3) {
-                if (Obj_IsDeleted(hitbox)) break;
-                UpdatePosition(frames[i]);
+                UpdatePosition(radius);
                 yield;
             }
+            radius /= 2;
         }
 
         Obj_Delete(guide1);
@@ -179,44 +185,46 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
         Obj_Delete(line2);
 
         function<void> UpdatePosition(int radius_) {
-            real x = ObjMove_GetX(hitbox);
-            real y = ObjMove_GetY(hitbox);
-            real angle = ObjStLaser_GetAngle(hitbox);
-            real len = ObjLaser_GetLength(hitbox);
+            if (!Obj_IsDeleted(hitbox)) {
+                x_ = ObjMove_GetX(hitbox);
+                y_ = ObjMove_GetY(hitbox);
+                angle = ObjStLaser_GetAngle(hitbox);
+                len = ObjLaser_GetLength(hitbox);
+            }
             //delay laser
             if (!Obj_IsDeleted(guide1)) {
-                ObjPrim_SetVertexPosition(guide1, 0, x, y, 1);
-                ObjPrim_SetVertexPosition(guide1, 1, x + len * cos(angle), y + len * sin(angle), 1);
+                ObjPrim_SetVertexPosition(guide1, 0, x_, y_, 1);
+                ObjPrim_SetVertexPosition(guide1, 1, x_ + len * cos(angle), y_ + len * sin(angle), 1);
             }
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
             //delay laser bulb
-            ObjPrim_SetVertexPosition(guide2, 0, as_int(x), as_int(y), 1);
+            ObjPrim_SetVertexPosition(guide2, 0, as_int(x_), as_int(y_), 1);
             ascent (i in 1..14) {
                 real angleT = 360/12 * i;
-                ObjPrim_SetVertexPosition(guide2, i, as_int(x) + 2 * cos(angleT), as_int(y) + 2 * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(guide2, i, as_int(x_) + 2 * cos(angleT), as_int(y_) + 2 * sin(angleT), 1);
             }
             //circles
-            ObjPrim_SetVertexPosition(circle1, 0, as_int(x), as_int(y), 1); //colored
+            ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
             ascent (i in 1..14) {
                 real angleT = 360/12 * i;
-                ObjPrim_SetVertexPosition(circle1, i, as_int(x) + (radius_ * 2 + 2) * cos(angleT), as_int(y) + (radius_ * 2 + 2) * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + (radius_ * 2 + 2) * cos(angleT), as_int(y_) + (radius_ * 2 + 2) * sin(angleT), 1);
             }
-            ObjPrim_SetVertexPosition(circle2, 0, as_int(x), as_int(y), 1); //white
+            ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
             ascent (i in 1..14) {
                 real angleT = 360/12 * i;
-                ObjPrim_SetVertexPosition(circle2, i, as_int(x) + (radius_ * 2) * cos(angleT), as_int(y) + (radius_ * 2) * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + (radius_ * 2) * cos(angleT), as_int(y_) + (radius_ * 2) * sin(angleT), 1);
             }
             //lines
             //colored
-            ObjPrim_SetVertexPosition(line1, 0, x + (radius_ + 2) * cos(angle + 90), y + (radius_ + 2) * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line1, 1, x + (radius_ + 2) * cos(angle - 90), y + (radius_ + 2) * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line1, 2, x + (radius_ + 2) * cos(angle + 90) + len * cos(angle), y + (radius_ + 2) * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line1, 3, x + (radius_ + 2) * cos(angle - 90) + len * cos(angle), y + (radius_ + 2) * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line1, 0, x_ + (radius_ + 2) * cos(angle + 90), y_ + (radius_ + 2) * sin(angle + 90), 1);
+            ObjPrim_SetVertexPosition(line1, 1, x_ + (radius_ + 2) * cos(angle - 90), y_ + (radius_ + 2) * sin(angle - 90), 1);
+            ObjPrim_SetVertexPosition(line1, 2, x_ + (radius_ + 2) * cos(angle + 90) + len * cos(angle), y_ + (radius_ + 2) * sin(angle + 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line1, 3, x_ + (radius_ + 2) * cos(angle - 90) + len * cos(angle), y_ + (radius_ + 2) * sin(angle - 90) + len * sin(angle), 1);
             //white
-            ObjPrim_SetVertexPosition(line2, 0, x + radius_ * cos(angle + 90), y + radius_ * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line2, 1, x + radius_ * cos(angle - 90), y + radius_ * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line2, 2, x + radius_ * cos(angle + 90) + len * cos(angle), y + radius_ * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line2, 3, x + radius_ * cos(angle - 90) + len * cos(angle), y + radius_ * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line2, 0, x_ + radius_ * cos(angle + 90), y_ + radius_ * sin(angle + 90), 1);
+            ObjPrim_SetVertexPosition(line2, 1, x_ + radius_ * cos(angle - 90), y_ + radius_ * sin(angle - 90), 1);
+            ObjPrim_SetVertexPosition(line2, 2, x_ + radius_ * cos(angle + 90) + len * cos(angle), y_ + radius_ * sin(angle + 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line2, 3, x_ + radius_ * cos(angle - 90) + len * cos(angle), y_ + radius_ * sin(angle - 90) + len * sin(angle), 1);
         }
     }
 
@@ -261,6 +269,7 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
     //Object Creation
     //Hitbox and position/angle
     int controller = CreateStraightLaserA1(x_, y_, angle_, length_, 0, sustain_ + 50, 1, delay_);
+    Obj_SetValueI(controller, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(controller, 0, 0);
     Obj_SetVisible(controller, false);
     ObjShot_Create(OBJ_SHOT);

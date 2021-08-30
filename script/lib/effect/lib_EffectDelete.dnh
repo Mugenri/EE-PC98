@@ -8,6 +8,7 @@ function<void> InitEffectList() {
 }
 
 task TDeleteEffectShot(int obj_) { //Shot cancel effect
+    if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return;
     real x = ObjMove_GetX(obj_);
     real y = ObjMove_GetY(obj_);
     real speed = ObjMove_GetSpeed(obj_);
@@ -28,6 +29,7 @@ task TDeleteEffectShot(int obj_) { //Shot cancel effect
 }
 
 task TDeleteEffectLaser(int obj_) { //Laser cancel effect
+    if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return;
     real x = ObjMove_GetX(obj_);
     real y = ObjMove_GetY(obj_);
     real angle = ObjStLaser_GetAngle(obj_);
