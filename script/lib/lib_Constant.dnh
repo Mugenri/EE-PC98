@@ -86,6 +86,7 @@ const int RP_UI_TEXT     = 10; //Menu/UI text
 const int RP_STG_MIN     = 20; //Min stage render priority
 const int RP_STG_BG      = 22; //Stage backgrounds
 const int RP_STG_EFF_LOW = 25; //Effects that render over the background only
+const int RP_STG_EFF_PLR = 27; //Player effects that render over all other background elements but not enemy sprites (spell effects etc.)
 const int RP_STG_ENEMY   = 30; //Boss/Enemy sprite
 const int RP_STG_PLAYER  = 40; //Player sprite/bullets
 const int RP_STG_EFF_MID = 45; //Effects that render over the player/boss sprites, but below bullets

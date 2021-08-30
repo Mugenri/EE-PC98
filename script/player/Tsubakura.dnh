@@ -291,7 +291,7 @@ task TSpell() {
             ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFF_LOW);
+            Obj_SetRenderPriorityI(circle, RP_STG_EFF_PLR);
             ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 0..34) {
                 ObjPrim_SetVertexColor(circle, i, color_);
