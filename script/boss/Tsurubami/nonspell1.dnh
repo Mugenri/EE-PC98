@@ -2,14 +2,14 @@
 #ScriptVersion[3]
 #Title["nonspell1"]
 #System["./../../system/System.dnh"]
-#Background["./../../system/TestBG.dnh"]
+//#Background["./../../system/TestBG.dnh"]
 
 #include "./../../lib/lib_Boss.dnh"
 #include "./lib_Tsuru.dnh"
 
 int _objBoss;
 int _count = -120;
-int _loopTime = 200;
+int _loopTime = 90;
 
 @Event {
     alternative (GetEventType())
@@ -41,11 +41,18 @@ int _loopTime = 200;
     ObjEnemy_SetIntersectionCircleToPlayer(_objBoss, ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 24);
     if (_count % _loopTime == 0 && _count >= 0) {
         async {
-            Effect_ContractRing(MID_X, MID_Y, 0, 92, 90, 30, 8, COLOR_RED_L);
+            Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 0, 100, 30, 32, COLOR_WHITE, false, RP_STG_EFF_LOW);
             wait(3);
-            Effect_ContractRing(MID_X, MID_Y, 0, 92, 90, 30, 8, COLOR_RED_D);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_D);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_D);
             wait(3);
-            Effect_ContractRing(MID_X, MID_Y, 0, 92, 90, 30, 8, COLOR_RED_D);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
+            wait(3);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
+            Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
+            wait(20);
+            TPatternI();
         }
     }
     _count++;
@@ -59,25 +66,34 @@ task TFinalize() {
     real yPos = ObjMove_GetY(_objBoss);
     Obj_Delete(_objBoss);
 
-    //Need to put in a library, not do this if the spell is timed out
-    //Actual MS bullet cancel score progression
+    //TODO Need to put in a library, not do this if the spell is timed out, and probably condense it
     int score = 10;
     int scoreBonus = 10;
     int numBullets = 0;
     real radius = 100;
+    //decide items
     loop (5) {
         for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
-            Obj_SetValueI(shot, SHOT_SCORE, score);
+            if (ObjMove_GetX(shot) < -10 || ObjMove_GetX(shot) > GetStgFrameWidth() + 10 || ObjMove_GetY(shot) < -10 || ObjMove_GetY(shot) > GetStgFrameHeight() + 10) {
+                continue; //no items spawn off screen
+            }  
             if (numBullets < 40 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 40 bullets drop point items
                 Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
                 numBullets++;
             }
-            score += scoreBonus;
-            scoreBonus += 30;
-            score = min(score, 12800);
         }
-        DeleteShotInCircle(TYPE_SHOT, TYPE_ITEM, xPos, yPos, radius);
         radius += 100;
+    }
+    //decide score
+    for each (shot in GetShotIdInCircleA2(xPos, yPos, 600, TARGET_ENEMY)) {
+        if (ObjMove_GetX(shot) < -10 || ObjMove_GetX(shot) > GetStgFrameWidth() + 10 || ObjMove_GetY(shot) < -10 || ObjMove_GetY(shot) > GetStgFrameHeight() + 10) {
+            Obj_SetValue(shot, SHOT_SCORE, 0); //no points for off screen bullets;
+        } else if (score <= 12800) {
+            Obj_SetValueI(shot, SHOT_SCORE, score);
+            score += scoreBonus;
+            scoreBonus += 10;
+        }
+        //bullets with no value assigned are assumed 12800
     }
     //^^
     DeleteShotAll(TYPE_ALL, TYPE_ITEM);
@@ -196,4 +212,27 @@ task TPatternG() {
 
 task TPatternH() {
     CreateStraightLaserUA1(MID_X - 40, MID_Y, 0, 80, 1000, 0x00FF00, 30);
+}
+
+task TPatternI() {
+    int shot1 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, BLACK_PILL, 0);
+    int shot2 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, BLACK_PILL, 0);
+    ObjShot_SetSpellResist(shot1, true);
+    ObjShot_SetSpellResist(shot2, true);
+    loop (3) {
+        if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+        SpawnShot(shot1);
+        SpawnShot(shot2);
+        wait(12);
+    }
+
+    function SpawnShot(int obj_) {
+        real x = ObjMove_GetX(obj_);
+        real y = ObjMove_GetY(obj_);
+        loop (20) {
+            real speed = rand(0.4, 0.9);
+            real angle = rand(0, 360);
+            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, WHITE_2NEEDLE, 0, A_WHITE_BALL);
+        }
+    }
 }
