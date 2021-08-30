@@ -1,2 +1,4 @@
 //General Effect library
 #include "./effect/lib_EffectParticle.dnh"
+//background screenwipe effects?
+//lib_EffectDelete doesn't need to be included here, only ControlItem.dnh should be using it.

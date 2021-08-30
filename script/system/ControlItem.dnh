@@ -1,7 +1,7 @@
 //Item Script, also handles shot deletion
 #include "./lib/lib_CommonSystem.dnh"
-#include "./lib/lib_DeleteEffect.dnh"
 #include "./lib/lib_AsciiNum.dnh"
+#include "./../lib/effect/lib_EffectDelete.dnh"
 
 @Initialize {
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
