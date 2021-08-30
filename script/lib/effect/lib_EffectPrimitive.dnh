@@ -1,0 +1,63 @@
+//Primitives effect library
+
+function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radius_, int sides_, int color_, bool solid_, int priority_) {
+    int type = solid_ ? PRIMITIVE_TRIANGLEFAN : PRIMITIVE_LINESTRIP;
+    int vertices = type == PRIMITIVE_TRIANGLEFAN ? sides_ + 2 : sides_ + 1;
+    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+
+    int polygon = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(polygon, type);
+    ObjPrim_SetVertexCount(polygon, vertices);
+    Obj_SetRenderPriorityI(polygon, priority_);
+
+    if (startVertex > 0) {
+        ObjPrim_SetVertexPosition(polygon, 0, x_, y_, 1);
+        ObjPrim_SetVertexColor(polygon, 0, color_);
+    }
+    for (int i = startVertex; i < vertices; i++) {
+        ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angle_), y_ + radius_ * sin(angle_), 1);
+        ObjPrim_SetVertexColor(polygon, i, color_);
+        angle_ += 360 / sides_;
+    }
+    return polygon;
+}
+
+function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real rotation_, real maxRadius_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+    int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, 0, sides_, color_, solid_, priority_);
+    int vertices = ObjPrim_GetVertexCount(polygon);
+    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    async {
+        real radius = 0;
+        loop(frames_) {
+            real angleT = angle_;
+            for (int i = startVertex; i < vertices; i++) {
+                ObjPrim_SetVertexPosition(polygon, i, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 1);
+                angleT += 360 / sides_;
+            }
+            angle_ += rotation_ / frames_;
+            radius += maxRadius_ / frames_;
+            yield;
+        }
+        Obj_Delete(polygon);
+    }
+}
+
+function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real rotation_, real radius_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+    int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, radius_, sides_, color_, solid_, priority_);
+    int vertices = ObjPrim_GetVertexCount(polygon);
+    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    async {
+        real initRadius = radius_;
+        loop(frames_) {
+            real angleT = angle_;
+            for (int i = startVertex; i < vertices; i++) {
+                ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angleT), y_ + radius_ * sin(angleT), 1);
+                angleT += 360 / sides_;
+            }
+            angle_ += rotation_ / frames_;
+            radius_ -= initRadius / frames_;
+            yield;
+        }
+        Obj_Delete(polygon);
+    }
+}
