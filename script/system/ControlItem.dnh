@@ -31,7 +31,7 @@
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100);
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 12800); //assume all shots without an assigned score are max value
 
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) { //create item in place of bullet
             NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
