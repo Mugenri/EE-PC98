@@ -1,33 +1,35 @@
 //Creates shot deletion and item collection score numbers
+
+int _asciiList;
+
+function<void> InitAsciiList() {
+    _asciiList = InitParticleList(IMG_SYSTEM_TEXT, RP_STG_TEXT, 73, 337, 81, 345);
+    ParticleListShader(_asciiList, 8/256, 1);
+}
+
 function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
-    int obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-	ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXT);
-    ObjRender_SetColor(obj, color_);
-	ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriorityI(obj, RP_STG_TEXT);
-	ObjRender_SetY(obj, y_);
-
     int[] listNum = DigitToArray(score_);
-
     x_ -= 4 * length(listNum);
 
-    ascent (i in 0..length(listNum)) {
-        int num = listNum[i];
-        ObjRender_SetX(obj, x_ + 8*i);
-        ObjSpriteList2D_SetSourceRect(obj, 73 + num * 8, 337, 73 + (num + 1) * 8, 345);
-        ObjSpriteList2D_SetDestRect(obj, 0, 0, 8, 8);
-        ObjSpriteList2D_AddVertex(obj);
-    }
-    ObjSpriteList2D_CloseVertex(obj);
-
     async {
-        wait(24);
-        loop (16) {
-            ObjRender_SetY(obj, ObjRender_GetY(obj) - 1/2);
+        loop (24) {
+            WriteNum();
             yield;
         }
-
-        Obj_Delete(obj);
+        loop (16) {
+            y_ -= 1/2;
+            WriteNum();
+            yield;
+        }
+        
+        function<void> WriteNum() {
+            for (int i = 0; i < length(listNum); i++) {
+                ObjParticleList_SetPosition(_asciiList, x_ + 8 * i, y_, 1);
+                ObjParticleList_SetExtraData(_asciiList, listNum[i], 0, 0);
+                ObjParticleList_SetColor(_asciiList, color_);
+                ObjParticleList_AddInstance(_asciiList);
+            }
+        }
     }
 }
 

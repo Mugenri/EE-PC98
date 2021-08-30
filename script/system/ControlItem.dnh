@@ -9,6 +9,7 @@
     SetDefaultBonusItemEnable(false);
     LoadItemData(GetCurrentScriptDirectory() ~ "/lib/dat_ItemData.dnh");
     InitEffectList();
+    InitAsciiList();
 }
 
 @MainLoop {yield;}
