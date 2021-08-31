@@ -1,29 +1,5 @@
 //General Effect library
 #include "./effect/lib_EffectParticle.dnh"
 #include "./effect/lib_EffectPrimitive.dnh"
-//background screenwipe effects?
+#include "./effect/lib_EffectTransition.dnh"
 //lib_EffectDelete doesn't need to be included here, only ControlItem.dnh should be using it.
-
-function<void> TestTransition() {
-    int transition = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(transition, DIR_IMG ~ "effect/testTransition.png");
-    ObjSprite2D_SetSourceRect(transition, 0, 0, 24, 23);
-    ObjSprite2D_SetDestRect(transition, 0, 0, 384, 368);
-    Obj_SetRenderPriorityI(transition, RP_STG_EFF_LOW);
-
-    async {
-        int frame = 0;
-        loop (8) {
-            ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
-            frame++;
-            wait(5);
-        }
-        ObjEnemyBossScene_StartSpell(GetEnemyBossSceneObjectID());
-        loop (8) {
-            ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
-            frame++;
-            wait(5);
-        }
-        Obj_Delete(transition);
-    }
-}

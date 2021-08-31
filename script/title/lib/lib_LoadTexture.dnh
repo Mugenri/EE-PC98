@@ -57,7 +57,8 @@ function<string[]> GetImgEffect() { //returns particle/visual effect image paths
     return [
         IMG_EFFECT_GRAZE,
         IMG_EFFECT_DELETE,
-        IMG_EFFECT_PARTICLE
+        IMG_EFFECT_PARTICLE,
+        IMG_EFFECT_TRANSITION
     ];
 }
 
