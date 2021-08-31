@@ -4,12 +4,13 @@
 #System["./../../system/System.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
+#include "./background.dnh"
 
 bool _start = false;
 
 @Initialize {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
-    Background();
+    InitBackground();
     TStage();
 }
 
@@ -45,10 +46,4 @@ task TStage() {
     }
     wait(60);
     CloseStgScene();
-}
-
-function<void> Background() {
-    string path = GetCurrentScriptDirectory() ~ "background.dnh";
-    int ID = LoadScript(path);
-    StartScript(ID);
 }

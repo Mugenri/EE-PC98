@@ -1,23 +1,19 @@
-#include "./../../lib/lib_Common.dnh"
+//Tsurubami background library
 bool _bSpell = false;
 
-@Initialize {
-    SetAutoDeleteObject(true);
+function<void> InitBackground() {
+    TUpdate();
     TBackground();
     TSpellBackground();
 }
 
-@MainLoop {
-    _objScene = GetEnemyBossSceneObjectID(); //TODO probably change this maybe do away with background "scripts" altogether and just use a task prob
-	if (_objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL))
-	{
-		_bSpell = true;
-	}
-	else
-	{
-		_bSpell = false;
-	}
-	yield;
+task TUpdate() {
+    loop {
+        _objScene = GetEnemyBossSceneObjectID();
+	    if (_objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL)) _bSpell = true;
+	    else _bSpell = false;
+	    yield;
+    }
 }
 
 task TBackground() {
