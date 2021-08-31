@@ -8,7 +8,7 @@ bool _bSpell = false;
 }
 
 @MainLoop {
-    _objScene = GetEnemyBossSceneObjectID(); //TODO probably change this
+    _objScene = GetEnemyBossSceneObjectID(); //TODO probably change this maybe do away with background "scripts" altogether and just use a task prob
 	if (_objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL))
 	{
 		_bSpell = true;
@@ -22,14 +22,10 @@ bool _bSpell = false;
 
 task TBackground() {
     //bg
-    string path = IMG_BG_TSURUBAMI;
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(bg, path);
+    ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
-    ObjRender_SetTextureFilterMin(bg, 0);
-    ObjRender_SetTextureFilterMag(bg, 0);
-    ObjRender_SetTextureFilterMip(bg, 0);
     Obj_SetRenderPriorityI(bg, RP_STG_BG);
 
     int count = 30;
@@ -39,11 +35,10 @@ task TBackground() {
     TLineEffect();
 
     loop {
-        if (_bSpell) {
-            //do thing
-        } else if (!_bSpell) {
-            ObjRender_SetColor(bg, color, color, color);
-        }
+        if (_bSpell) Obj_SetVisible(bg, false);
+        else Obj_SetVisible(bg, true);
+
+        ObjRender_SetColor(bg, color, color, color);
 
         if (increment) {
             count++;
@@ -115,6 +110,8 @@ task TBackground() {
 
             //set positions based on grid position and multiplier based on distance from the middle
             loop {
+                if (_bSpell) Obj_SetVisible(line, false);
+                else Obj_SetVisible(line, true);
                 ascent (i in 0..length(positions)) {
                     int xCurr = positions[i][0] - count;
                     int yCurr = positions[i][1];
@@ -129,6 +126,76 @@ task TBackground() {
     }
 }
 
-task TSpellBackground() {
-    //TODO spell bg
+task TSpellBackground() { //TODO very temporary
+    //spell bg
+    int bg = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
+    ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
+    ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
+    Obj_SetRenderPriorityI(bg, RP_STG_BG);
+
+    int count = 30;
+    int color = 0;
+    real angle = 0;
+    bool increment = true;
+
+    TSpellEffect();
+
+    loop {
+        if (!_bSpell) Obj_SetVisible(bg, false);
+        else Obj_SetVisible(bg, true);
+
+        ObjRender_SetColor(bg, color, color, color);
+
+        if (increment) {
+            count++;
+        } else {
+            count--;
+        }
+
+        if (count >= 209) {
+            increment = false;
+        } else if (count < 30) {
+            increment = true;
+        }
+
+        color = truncate(count/60) * 8 + 8;
+        yield;
+    }
+
+    task TSpellEffect() {
+        loop {
+            real y = rand_int(0, 368);
+            real speed = rand(1.1, 2);
+            TCreateLine(y, speed, true);
+            y = rand(0, 368);
+            speed = rand(1.1, 2);
+            TCreateLine(y, speed, false);
+            wait(6);
+        }
+
+        task TCreateLine(int yPos_, real speed_, bool front_) {
+            int color = front_ ? COLOR_GRAY : COLOR_GRAY_D;
+            int priority = front_ ? RP_STG_BG : RP_STG_BG - 1;
+            real xPos = front_ ? -20 : GetStgFrameWidth() + 20;
+            int len = 15;
+            if (!front_) speed_ *= -1; //move other direction if in background
+            int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+            ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
+            ObjPrim_SetVertexCount(line, 2);
+            ascent (i in 0..2) {
+                ObjPrim_SetVertexColor(line, i, color);
+                Obj_SetRenderPriorityI(line, priority);
+            }
+            loop (trunc(368 / absolute(speed_)) + 60) { //rough amount of time it will take the lines to cross the screen
+                if (!_bSpell) Obj_SetVisible(line, false);
+                else Obj_SetVisible(line, true);
+                ObjPrim_SetVertexPosition(line, 0, xPos, yPos_, 1);
+                ObjPrim_SetVertexPosition(line, 1, xPos + len, yPos_, 1);
+                xPos += speed_;
+                yield;
+            }
+            Obj_Delete(line);
+        }
+    }
 }
