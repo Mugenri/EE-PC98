@@ -1,15 +1,84 @@
-//Shot constants
+//Shot spawn animation constants
+//SHOT_COLOR+SHOT_TYPE = SHOT
+//----------------------------------------------------
+//Shot Color Constants--------------------------------
+//----------------------------------------------------
+const int SHOT_RED        = 0;
+const int SHOT_ORANGE     = 1;
+const int SHOT_YELLOW     = 2;
+const int SHOT_GREEN      = 3;
+const int SHOT_BLUE       = 4;
+const int SHOT_PURPLE     = 5;
+const int SHOT_PINK       = 6;
+const int SHOT_GRAY       = 7;
+const int SHOT_WHITE      = 8;
+const int SHOT_RED_INV    = 9;
+const int SHOT_ORANGE_INV = 10;
+const int SHOT_YELLOW_INV = 11;
+const int SHOT_GREEN_INV  = 12;
+const int SHOT_BLUE_INV   = 13;
+const int SHOT_PURPLE_INV = 14;
+const int SHOT_PINK_INV   = 15;
+const int SHOT_GRAY_INV   = 16;
+const int SHOT_BLACK      = 17;
 
-// White Bullets ------------------------------------
-const int WHITE_BALL      = 1;
-const int WHITE_2NEEDLE   = 2;
-const int WHITE_PILL      = 3;
-const int WHITE_CARD      = 4;
-const int WHITE_BALL_M    = 5;
+//----------------------------------------------------
+//Shot Type Constants---------------------------------
+//----------------------------------------------------
 
-// Black Bullets ------------------------------------ 
-const int BLACK_BALL      = 6;
-const int BLACK_2NEEDLE   = 7;
-const int BLACK_PILL      = 8;
-const int BLACK_CARD      = 9;
-const int BLACK_BALL_M    = 10;
+//Static
+//----------------------------------------------------
+//8x8
+const int PELLET      = 0;
+const int CROSS_PELLET= 19;
+//10x10
+const int BALL_SS     = 37;
+const int YINYANG_S   = 55;
+//12x12
+const int BOUNCY_BALL = 73;
+//16x16
+const int BALL_S      = 91;
+const int RING_S      = 109;
+const int PILL_S      = 127;
+const int NEEDLES     = 145;
+const int BULLET      = 163;
+const int KUNAI       = 181;
+const int FIRE_S      = 199;
+const int CRYSTAL_S   = 217;
+const int BEAM        = 235;
+const int SPAZER      = 253;
+const int SPARKLE     = 271;
+const int SCALE       = 289;
+const int STAR_S      = 307;
+const int HEART_S     = 325;
+const int GEM         = 343;
+const int CARD        = 361;
+const int SNOWFLAKE   = 379;
+const int COIN        = 397;
+//32x32
+const int BALL_L      = 415;
+const int STAR_L      = 433;
+const int HEART_L     = 451;
+const int RING_L      = 469;
+const int PILL_L      = 487;
+const int KNIFE       = 505;
+const int SWORD       = 523;
+const int ARROW       = 541;
+const int BUTTERFLY   = 559;
+const int REST        = 577;
+//64x64
+const int BUBBLE      = 595;
+
+//Animated
+//----------------------------------------------------
+//16x16
+const int TALISMAN_A  = 613;
+//32x32
+const int YINYANG_A   = 631;
+const int PILL_A      = 649;
+const int SWORD_A     = 667;
+const int FIRE_A      = 685;
+const int CRYSTAL_A   = 703;
+const int SHURIKEN_A  = 721;
+const int NOTE_A      = 739;
+const int LIGHTNING_A = 757;
