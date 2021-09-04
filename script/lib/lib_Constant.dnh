@@ -121,6 +121,7 @@ const int ITEM_EXTEND   = 7; //Life
 const int SHOT_SCORE        = 0; //How much score the bullet should give
 const int SHOT_DROP_ITEM    = 1; //If the bullet spawns a point item when cancelled
 const int SHOT_CANCEL       = 2; //If the bullet/laser should be given a cancel effect
+const int DELETE_EFFECT     = 3; //Key field for bullet deletion effect
 
 //Color Constants
 const int COLOR_WHITE       = 0xFFFFFF;
@@ -141,16 +142,17 @@ const int COLOR_BLUE        = 0x0000FF;
 const int COLOR_BLUE_L      = 0xAAAAFF;
 const int COLOR_BLUE_D      = 0x111166;
 const int COLOR_TEAL        = 0x00FFFF;
+const int COLOR_SKY         = 0xDDDDFF;
 const int COLOR_INDIGO      = 0x6655BB;
 const int COLOR_INDIGO_L    = 0xBBBBFF;
 const int COLOR_INDIGO_D    = 0x554499;
 const int COLOR_PURPLE      = 0x880088; 
-const int COLOR_PURPLE_L    = 0xCC55CC;
+const int COLOR_PURPLE_L    = 0xDD66DD;
 const int COLOR_PURPLE_D    = 0x660055;
 const int COLOR_MAGENTA     = 0xCC33AA;
 const int COLOR_MAGENTA_L   = 0xFF00FF;
 const int COLOR_MAGENTA_D   = 0x880066;
-const int COLOR_PINK        = 0xFFAABB;
+const int COLOR_PINK        = 0xFFBBCC;
 const int COLOR_TAN         = 0xEEBBAA;
 const int COLOR_BROWN       = 0xAA6622;
 const int COLOR_BROWN_D     = 0x995500;
