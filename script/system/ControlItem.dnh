@@ -65,7 +65,7 @@
         case (ITEM_SCORE) {
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
-                color = COLOR_YELLOW;
+                color = COLOR_YELLOW_L;
             } else {
                 score = 25600 - 25600*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
