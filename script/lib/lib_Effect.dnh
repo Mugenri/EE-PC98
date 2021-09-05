@@ -2,4 +2,4 @@
 #include "./effect/lib_EffectParticle.dnh"
 #include "./effect/lib_EffectPrimitive.dnh"
 #include "./effect/lib_EffectTransition.dnh"
-//lib_EffectDelete doesn't need to be included here, only ControlItem.dnh should be using it.
+//lib_EffectCancel doesn't need to be included here, only ControlItem.dnh should be using it.

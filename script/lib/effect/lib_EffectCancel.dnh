@@ -1,0 +1,118 @@
+//Bullet cancel effect library
+
+int _effectCancel16;
+int _effectCancel32;
+int _effectCancel64;
+
+function<void> InitEffectList() {
+    _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 0, 16, 16);
+    _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 256, 0, 288, 32);
+    _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 288, 64, 352);
+    ParticleListShader(_effectCancel16, 16/512, 16/1024);
+    ParticleListShader(_effectCancel32, 32/512, 32/1024);
+    ParticleListShader(_effectCancel64, 64/512, 64/1024);
+}
+
+function<void> DeleteEffectShot(int obj_) { //Shot cancel effect
+    if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return; //assume shot has a cancel effect
+    real x = ObjMove_GetX(obj_);
+    real y = ObjMove_GetY(obj_);
+    real speed = ObjMove_GetSpeed(obj_);
+    real angle = ObjMove_GetAngle(obj_);
+    int effect = Obj_GetValueDI(obj_, CANCEL_EFFECT, -1);
+    if (effect < 0) WriteLog("Shot cancel effect not set.");
+    //16 = 0-71
+    //32 = 72-89
+    //64 = 90-107
+
+    if (effect < 72) TDelete16();
+    else if (effect < 90) TDelete32();
+    else TDelete64();
+
+    task TDelete16() {
+        int xFrame = trunc(effect / 18) * 4; //effect
+        int yFrame = effect % 18; //color
+        real frame = 0;
+
+        while (frame < 4) {
+            ObjParticleList_SetPosition(_effectCancel16, x, y, 1);
+            ObjParticleList_SetExtraData(_effectCancel16, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_AddInstance(_effectCancel16);
+            frame += 1/4;
+            x += speed * cos(angle);
+            y += speed * sin(angle);
+            yield;
+        }
+    }
+
+    task TDelete32() {
+        effect -= 72; //32x32 effects start from 72
+        int xFrame = trunc(effect / 9) * 4; //inv colors are 4 cells right of normal ones
+        int yFrame = effect > 8 ? effect - 9 : effect; //color
+        real frame = 0;
+
+        while (frame < 4) {
+            ObjParticleList_SetPosition(_effectCancel32, x, y, 1);
+            ObjParticleList_SetExtraData(_effectCancel32, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_AddInstance(_effectCancel32);
+            frame += 1/4;
+            x += speed * cos(angle);
+            y += speed * sin(angle);
+            yield;
+        }
+    }
+
+    task TDelete64() {
+        effect -= 90; //64x64 effects start from 90
+        int xFrame = trunc(effect / 9) * 4; //inv colors are 4 cells right of normal ones
+        int yFrame = effect > 8 ? effect - 9 : effect; //color
+        real frame = 0;
+
+        while (frame < 4) {
+            ObjParticleList_SetPosition(_effectCancel64, x, y, 1);
+            ObjParticleList_SetExtraData(_effectCancel64, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_AddInstance(_effectCancel64);
+            frame += 1/4;
+            x += speed * cos(angle);
+            y += speed * sin(angle);
+            yield;
+        }
+    }
+}
+
+function<void> DeleteEffectLaser(int obj_) { //Laser cancel effect
+    if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return;
+    real x = ObjMove_GetX(obj_);
+    real y = ObjMove_GetY(obj_);
+    real angle = ObjStLaser_GetAngle(obj_);
+    real len = ObjLaser_GetLength(obj_);
+    real speed = 4.5;
+
+    int deleteLine1 = CreateDeleteLine(); //clockwise to laser
+    int deleteLine2 = CreateDeleteLine(); //counterclockwise to laser
+
+    async {
+        real dist = 0; //distance of delete line to the original laser center
+        loop (15) {
+            ObjPrim_SetVertexPosition(deleteLine1, 0, x + dist * cos(angle + 90), y + dist * sin(angle + 90), 1);
+            ObjPrim_SetVertexPosition(deleteLine1, 1, x + dist * cos(angle + 90) + len * cos(angle), y + dist * sin(angle + 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(deleteLine2, 0, x + dist * cos(angle - 90), y + dist * sin(angle - 90), 1);
+            ObjPrim_SetVertexPosition(deleteLine2, 1, x + dist * cos(angle - 90) + len * cos(angle), y + dist * sin(angle - 90) + len * sin(angle), 1);
+
+            x += speed * cos(angle) / 2;
+            y += speed * sin(angle) / 2;
+            dist += 0.5;
+            yield;
+        }
+        Obj_Delete(deleteLine1);
+        Obj_Delete(deleteLine2);
+    }
+
+    function<int> CreateDeleteLine() {
+        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
+        ObjPrim_SetVertexCount(obj, 2);
+        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        return obj;
+    }
+}

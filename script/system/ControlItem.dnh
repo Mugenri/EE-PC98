@@ -1,7 +1,7 @@
 //Item Script, also handles shot deletion
 #include "./lib/lib_CommonSystem.dnh"
 #include "./lib/lib_AsciiNum.dnh"
-#include "./../lib/effect/lib_EffectDelete.dnh"
+#include "./../lib/effect/lib_EffectCancel.dnh"
 
 @Initialize {
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
@@ -23,9 +23,9 @@
 
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            TDeleteEffectShot(obj);
+            DeleteEffectShot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) {
-            TDeleteEffectLaser(obj);
+            DeleteEffectLaser(obj);
         }
         WriteLog("delete");
     }
@@ -35,15 +35,15 @@
         int score = Obj_GetValueDI(obj, SHOT_SCORE, 12800); //assume all shots without an assigned score are max value
 
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) { //create item in place of bullet
-            NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
+            //NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
         }
 
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            AsciiScoreNum(pos[0], pos[1], score);
-            TDeleteEffectShot(obj);
+            //AsciiScoreNum(pos[0], pos[1], score);
+            DeleteEffectShot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) {
-            TDeleteEffectLaser(obj);
+            DeleteEffectLaser(obj);
         }
     }
     case (EV_CREATE_ITEM) {

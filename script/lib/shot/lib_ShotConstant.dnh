@@ -1,6 +1,7 @@
 //Shot Constants
 //SHOT_COLOR+SHOT_TYPE = SHOT
 //SHOT_COLOR+SPAWN_TYPE+SIZE = SPAWN EFFECT
+//SHOT_COLOR+CANCEL_EFFECT = EFFECT
 
 //----------------------------------------------------
 //Shot Color Constants--------------------------------
@@ -99,3 +100,16 @@ const int SPAWN_E       = 18;
 const int SIZE_8        = 2001;
 const int SIZE_16       = 2037;
 const int SIZE_32       = 2073;
+
+//----------------------------------------------------
+//Shot Delete Effect Constants------------------------
+//----------------------------------------------------
+//16x16
+const int CANCEL_BURST1     = 0; //works for x8 x10 x12 bullets
+const int CANCEL_BURST2     = 18;
+const int CANCEL_FADE       = 36;
+const int CANCEL_SPARKLE    = 54;
+//32x32
+const int CANCEL_32         = 72;
+//64x64
+const int CANCEL_64         = 90;

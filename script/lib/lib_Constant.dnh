@@ -121,7 +121,7 @@ const int ITEM_EXTEND   = 7; //Life
 const int SHOT_SCORE        = 0; //How much score the bullet should give
 const int SHOT_DROP_ITEM    = 1; //If the bullet spawns a point item when cancelled
 const int SHOT_CANCEL       = 2; //If the bullet/laser should be given a cancel effect
-const int DELETE_EFFECT     = 3; //Key field for bullet deletion effect
+const int CANCEL_EFFECT     = 3; //Key field for bullet deletion effect
 
 //Color Constants
 const int COLOR_WHITE       = 0xFFFFFF;

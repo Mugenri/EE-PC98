@@ -56,7 +56,7 @@ function<string[]> GetImgTitle() { //returns title image paths (lib_CommonTitle.
 function<string[]> GetImgEffect() { //returns particle/visual effect image paths (lib_File.dnh)
     return [
         IMG_EFFECT_GRAZE,
-        IMG_EFFECT_DELETE,
+        IMG_EFFECT_CANCEL,
         IMG_EFFECT_PARTICLE,
         IMG_EFFECT_TRANSITION
     ];

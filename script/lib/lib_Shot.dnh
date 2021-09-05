@@ -14,8 +14,9 @@ function<void> LoadShotData() {
 }
 
 //CreateShot functions with post-spawn bullet animations
-function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int graphic_, int delay_, int animGraphic_) {
-    int shotID = CreateShotA1(x_, y_, speed_ / 2, angle_, animGraphic_, delay_);
+function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
+    int shotID = CreateShotA1(x_, y_, speed_ / 2, angle_, graphic_, delay_);
+    Obj_SetValueI(shotID, CANCEL_EFFECT, cancelGraphic_);
     ObjShot_SetPositionRounding(shotID, true);
     if (animGraphic_ == 0) return shotID;
     async {
@@ -27,8 +28,11 @@ function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int grap
     }
     return shotID;
 }
+function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int graphic_, int delay_, int cancelGraphic_) {
+    CreateShotUA1(x_, y_, speed_, angle_, graphic_, delay_, 0, cancelGraphic_);
+}
 
-function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real accel_, real maxSpeed_, int graphic_, int delay_, int animGraphic_) {
+function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real accel_, real maxSpeed_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int shotID = CreateShotA2(x_, y_, speed_ / 2, angle_, accel_ / 2, maxSpeed_ / 2, animGraphic_, delay_);
     ObjShot_SetPositionRounding(shotID, true);
     if (animGraphic_ == 0) return shotID;
@@ -47,7 +51,7 @@ function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real acc
     return shotID;
 }
 
-function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int graphic_, int delay_, int animGraphic_) {
+function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int shotID = CreateShotB1(x_, y_, xSpeed_ / 2, ySpeed_ / 2, animGraphic_, delay_);
     ObjShot_SetPositionRounding(shotID, true);
     if (animGraphic_ == 0) return shotID;
@@ -66,7 +70,7 @@ function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int gr
     return shotID;
 }
 
-function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real xAccel_, real yAccel_, real maxSpeedX_, real maxSpeedY_, int graphic_, int delay_, int animGraphic_) {
+function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real xAccel_, real yAccel_, real maxSpeedX_, real maxSpeedY_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int shotID = CreateShotB2(x_, y_, xSpeed_ / 2, ySpeed_ / 2, xAccel_ / 2, yAccel_ / 2 , maxSpeedX_ / 2, maxSpeedY_ / 2, animGraphic_, delay_);
     ObjShot_SetPositionRounding(shotID, true);
     if (animGraphic_ == 0) return shotID;

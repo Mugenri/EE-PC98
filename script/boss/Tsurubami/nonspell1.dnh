@@ -9,12 +9,12 @@
 
 int _objBoss;
 int _count = -120;
-int _loopTime = 600;
+int _loopTime = 3600;
 
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(350);
+        SetScriptResult(100);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(60);
@@ -42,7 +42,8 @@ int _loopTime = 600;
     if (_count % _loopTime == 0 && _count >= 0) {
         async {
             //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
-            TestTransition();
+            //Transition_Tilt(true); //TODO need to find a way to control the background with this
+            TPatternM();
             //TPatternB(1);
         }
     }
@@ -56,7 +57,7 @@ task TFinalize() {
     real xPos = ObjMove_GetX(_objBoss);
     real yPos = ObjMove_GetY(_objBoss);
 
-    //TODO Need to put in a library, not do this if the spell is timed out, and probably condense it
+    //TODO Need to put in a library, not do this if the spell is timed out (or not a spell), and probably condense it
     int score = 10;
     int scoreBonus = 10;
     int numBullets = 0;
@@ -102,14 +103,14 @@ task TPatternA() {
     loop (3) {
         loop (5) {
             real angleT = rand(0, 360);
-            loop (10) {
+            loop (25) {
                 if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
-                int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 4, angleT, WHITE_2NEEDLE, 20, A_WHITE_BALL);
-                angleT += 360/10;
+                int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
+                angleT += 360/25;
             }
-            wait(6);
+            wait(100);
         }
-        wait(6);
+        wait(20);
     }
     wait(10);
     AnimeCharge();
@@ -163,7 +164,7 @@ task TPatternC() {
 
 task TPatternD() {
     loop (40) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, GetAngleToPlayer(_objBoss), WHITE_2NEEDLE, 0, A_WHITE_BALL);
+        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, GetAngleToPlayer(_objBoss), SHOT_WHITE+NEEDLES, 0, 0, 0);
         wait(2);
     }
 }
@@ -175,7 +176,7 @@ task TPatternE() {
     int bSprite = round(rand(0, 1)) * 5;
     loop(32){
         if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
-        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, A_WHITE_BALL);
+        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
         angleT += 360/32;
     }
 }
@@ -186,9 +187,9 @@ task TPatternF(int dir_) {
     
     loop(550) {
         if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ + 10, BLACK_BALL, 0, A_WHITE_BALL);
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_, BLACK_BALL, 0, A_WHITE_BALL);
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ - 10, BLACK_BALL, 0, A_WHITE_BALL);
+        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ + 10, SHOT_BLACK+BALL_S, 0, 0, 0);
+        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_, SHOT_BLACK+BALL_S, 0, 0, 0);
+        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ - 10, SHOT_BLACK+BALL_S, 0, 0, 0);
         increment *= 1.04;
         angleT += increment * dir_;
         wait(2);
@@ -196,11 +197,11 @@ task TPatternF(int dir_) {
 } 
 
 task TPatternG() {
-    CreateShotUA2(MID_X, MID_Y, 2, 90, 0.2, 10, BLACK_BALL, 0, A_WHITE_BALL);
+    CreateShotUA2(MID_X, MID_Y, 2, 90, 0.2, 10, SHOT_BLACK+BALL_S, 0, 0, 0);
     wait(60);
-    CreateShotUB1(MID_X, MID_Y, 1, 2, BLACK_2NEEDLE, 0, A_WHITE_BALL);
+    CreateShotUB1(MID_X, MID_Y, 1, 2, SHOT_BLACK+NEEDLES, 0, 0, 0);
     wait(60);
-    CreateShotUB2(MID_X, MID_Y, 1, 2, 0.2, 0.2, 5, 3, WHITE_CARD, 0, A_WHITE_BALL);
+    CreateShotUB2(MID_X, MID_Y, 1, 2, 0.2, 0.2, 5, 3, SHOT_WHITE+CARD, 0, 0, 0);
 }
 
 task TPatternH() {
@@ -219,8 +220,8 @@ task TPatternI() {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
     wait(20);
-    int shot1 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, BLACK_PILL, 0);
-    int shot2 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, BLACK_PILL, 0);
+    int shot1 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0);
+    int shot2 = CreateShotA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, SHOT_BLACK+PILL_S, 0);
     ObjShot_SetSpellResist(shot1, true);
     ObjShot_SetSpellResist(shot2, true);
     loop (3) {
@@ -236,7 +237,97 @@ task TPatternI() {
         loop (20) {
             real speed = rand(0.4, 0.9);
             real angle = rand(0, 360);
-            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, WHITE_2NEEDLE, 0, A_WHITE_BALL);
+            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, SHOT_WHITE+NEEDLES, 0, 0, 0);
         }
+    }
+}
+
+task TPatternJ() {
+    real angleT = 360 / 36;
+    loop {
+        for (int i = 0; i <= 774; i++) {
+            CreateShotA1(MID_X + 24*cos(angleT), MID_Y + 24*sin(angleT), 1, angleT, i, 0);
+            angleT += 360 / 18;
+            yield;
+        }
+    }
+}
+
+task TPatternK() { //Emerald Megalith
+    real x = rand(35, GetStgFrameWidth() - 35);
+    real y = rand(60, MID_Y - 65);
+    real speed = rand(1.4, 2.8);
+
+    ascent (i in 0..30) {
+        int graphic = rand_int(0, 1) ? SHOT_GREEN+CRYSTAL_S : SHOT_GREEN+GEM;
+        real modif = rand(1, 1.3);
+        CreateShotA1(x, y, speed * modif, rand(0, 360), graphic, 0);
+    }
+
+    ascent (i in 0..3) {
+        CreateShotA1(x, y, speed, 135 - i*45, SHOT_GREEN+CRYSTAL_A, 0);
+    }
+}
+
+task TPatternL() {
+    real angleT = 0;
+    int index = 0;
+    loop {
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+YINYANG_S, 0, i+SPAWN_S+SIZE_8, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+BOUNCY_BALL, 0, i+SPAWN_E+SIZE_8, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+SPARKLE, 0, i+SPAWN_S+SIZE_16, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+GEM, 0, i+SPAWN_E+SIZE_16, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+YINYANG_A, 0, i+SPAWN_S+SIZE_32, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+        for (int i = index; i < 18; i++) {
+            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+FIRE_A, 0, i+SPAWN_E+SIZE_32, 0);
+            angleT += 360 / 18;
+        }
+        angleT += 6;
+        wait(24);
+    }
+}
+
+task TPatternM() { //Delete effects
+    real angleT = 0;
+    int i = 0;
+    loop (72) {
+        CreateShotUA1(MID_X + 72 * cos(angleT), MID_Y + 72 * sin(angleT), 0, angleT, PELLET+(i%18), 0, i);
+        angleT += 360/72;
+        i++;
+    }
+    loop (18) {
+        CreateShotUA1(MID_X + 92 * cos(angleT), MID_Y + 92 * sin(angleT), 0, angleT, BALL_L+(i%18), 0, i);
+        angleT += 360/18;
+        i++;
+    }
+    loop (18) {
+        CreateShotUA1(MID_X + 145 * cos(angleT), MID_Y + 145 * sin(angleT), 0, angleT, BUBBLE+(i%18), 0, i);
+        angleT += 360/18;
+        i++;
     }
 }
