@@ -22,6 +22,7 @@ function<string> GetBGMPath(int bgmID_) {
 //Returns text information for the specified track (for music menu)
 function<string[]> GetBGMText(int bgmID_) {
     //returns array of name, comment
+    //---------------------------------------------------
     string name = "";
     string comment = "";
     alternative (bgmID_)
@@ -31,15 +32,30 @@ function<string[]> GetBGMText(int bgmID_) {
     }
     case (0) { //title
         name = "To the Village that isn't Real ~ Chain Link?";
-        comment = "Test description";
+        comment = "
+The title theme, about what you'd expect.[r]
+It isn't a very long or complex piece of music, but[r]
+it doesn't really have to be. Short enough to be[r]
+arranged in one sitting, but that's not necessarily[r]
+a bad thing.";
     }
     case (1) { //boss 1
         name = "Eternal Dance Engine ~ Shall We Dance!!";
-        comment = "testy 2";
+        comment = "
+Tsurubami's first theme.[r]
+A very powerful and interesting character,[r]
+despite what little is actually known about them.[r]
+This is actually my second arrangement of their[r]
+theme. Tsurubami is my favorite character. ^^)";
     }
     case (2) { //boss 2
         name = "Broken Eternal Dance Engine";
-        comment = "test descrippy 3 my guy";
+        comment = "
+Tsurubami's second theme.[r]
+This is actually part of the same arrangement as[r]
+their first theme. They've been separated in the[r]
+game for obvious reasons, but I wanted to include[r]
+both somehow.";
     }
     others{
         name = "Track number " ~ IntToString(bgmID_ + 1);

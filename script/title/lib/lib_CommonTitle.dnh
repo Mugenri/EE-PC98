@@ -26,6 +26,7 @@ const string IMG_TT_PLAYER1     = DIR_IMG_TITLE ~ "playerSelectYabu.png";
 const string IMG_TT_PLAYER2     = DIR_IMG_TITLE ~ "playerSelectTsuba.png";
 
 //Other Menus
+const string IMG_TT_MUSIC       = DIR_IMG_TITLE ~ "musicRoom.png";
 const string IMG_TT_CURSOR      = DIR_IMG_TITLE ~ "selectCursor.png";
 const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "placeholderRank.png";
 
