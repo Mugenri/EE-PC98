@@ -57,6 +57,7 @@ function<string[]> GetImgEffect() { //returns particle/visual effect image paths
     return [
         IMG_EFFECT_GRAZE,
         IMG_EFFECT_CANCEL,
+        IMG_EFFECT_SPAWN,
         IMG_EFFECT_PARTICLE,
         IMG_EFFECT_TRANSITION
     ];
@@ -69,8 +70,7 @@ function<string[]> GetImgSystem() { //returns system related image paths (lib_Fi
         IMG_SYSTEM_TEXTBOX,
         IMG_SYSTEM_FADE,
         IMG_SYSTEM_ITEM,
-        IMG_SYSTEM_SHOT,
-        IMG_SYSTEM_SHOTANIM
+        IMG_SYSTEM_SHOT
     ];
 }
 
