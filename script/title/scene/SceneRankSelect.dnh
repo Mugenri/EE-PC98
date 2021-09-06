@@ -85,20 +85,10 @@ function<int> SceneRankSelect(int selectedDefault_) {
         ObjSprite2D_SetDestCenter(objText);
         ObjRender_SetPosition(objText, x_, y_, 1);
 
-        int objTextHighlight = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objTextHighlight, RP_UI_IMG);
-        ObjPrim_SetTexture(objTextHighlight, IMG_TT_RANK);
-        ObjSprite2D_SetSourceRect(objTextHighlight, 0, imgIndex_ * 16, 223, (imgIndex_+1) * 16);
-        ObjSprite2D_SetDestCenter(objTextHighlight);
-        ObjRender_SetPosition(objTextHighlight, x_, y_, 1);
-        ObjRender_SetColor(objTextHighlight, COLOR_YELLOW);
-
         while (!exitFlag) {
-            Obj_SetVisible(objTextHighlight, index_ == indexCurrent);
+            ObjRender_SetColor(objText, index_ == indexCurrent ? COLOR_YELLOW : COLOR_WHITE);
             yield;
         }
         Obj_Delete(objText);
-        Obj_Delete(objTextHighlight);
     }
 }
-

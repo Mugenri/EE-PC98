@@ -10,22 +10,18 @@ const int INDEX_SCORE = 5;
 const int INDEX_OPTION = 6;
 const int INDEX_QUIT = 7;
 
-int _indexCurrent;
-
-bool _exitFlag = false; //deletes certain things upon leaving this menu
-
 task TMainMenu(bool playIntro_, int selectedDefault_) {
-    _exitFlag = false;
+    bool exitFlag = false; //deletes certain things upon leaving this menu
     SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE); //write data to save file
 
     int selectMax = INDEX_QUIT;
-    _indexCurrent = selectedDefault_;
+    int indexCurrent = selectedDefault_;
 
     int[] forbidIndex = [INDEX_START, INDEX_PRACTICE]; //Can't select these menu options
 
     //Don't allow menu cursor to start on a forbidden index
-    while (CheckForbidden(_indexCurrent, forbidIndex)) {
-        _indexCurrent = IncrementIndex(_indexCurrent, 1, 0, selectMax, forbidIndex);
+    while (CheckForbidden(indexCurrent, forbidIndex)) {
+        indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
     }
 
     if (playIntro_) {
@@ -56,20 +52,20 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         alternative (userKey)
         case (VK_UP, VK_LEFT) {
             CallSFX(SND_TT_SELECT);
-            _indexCurrent = IncrementIndex(_indexCurrent, -1, 0, selectMax, forbidIndex);
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
         }
         case (VK_DOWN, VK_RIGHT) {
             CallSFX(SND_TT_SELECT);
-            _indexCurrent = IncrementIndex(_indexCurrent, 1, 0, selectMax, forbidIndex);
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case (VK_OK) {
             MenuSelect();
-            int temp = SelectItem(_indexCurrent);
+            int temp = SelectItem(indexCurrent);
             if (temp > 0) break;
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            _indexCurrent = INDEX_QUIT;
+            indexCurrent = INDEX_QUIT;
         }
     }
 
@@ -135,7 +131,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
 
         ObjRender_SetPosition(yabu, 40, 20, 1);
 
-        while (!_exitFlag) yield;
+        while (!exitFlag) yield;
         Obj_Delete(bg);
         Obj_Delete(yabu);
     }
@@ -144,149 +140,148 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         int color = COLOR_WHITE;
         if (CheckForbidden(index_, forbidIndex)) color = COLOR_BLUE_D;
         int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, color);
-        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_YELLOW);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
-        while (!_exitFlag) {
-            Obj_SetVisible(objTextHighlight, index_ == _indexCurrent);
-            Obj_SetVisible(objCursor, index_ == _indexCurrent);
+        while (!exitFlag) {
+            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_YELLOW : color));
+            Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
         Obj_Delete(objText);
-        Obj_Delete(objTextHighlight);
         Obj_Delete(objCursor);
     }
 
     task TCreateMenuInfo(int x_, int y_) {
         int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, COLOR_WHITE);
-        while (!_exitFlag) yield;
+        while (!exitFlag) yield;
         Obj_Delete(objText);
     }
     
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
     }
-}
 
-task TSelectStart() { //UNUSED
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
-    //Declare variables to be set by submenus
-    int selectedRank = D_NORMAL;
-    int selectedPlayer = PLAYER_YABUSAME;
-    //Main Play Mode
-    SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+    task TSelectStart() { //UNUSED
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        //Declare variables to be set by submenus
+        int selectedRank = D_NORMAL;
+        int selectedPlayer = PLAYER_YABUSAME;
+        //Main Play Mode
+        SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
 
-    int tempSelect = 0;
-    loop {
-        //Select Difficulty
-        tempSelect = SceneRankSelect(selectedRank);
-        if (tempSelect < 0) break;
-        selectedRank = tempSelect;
+        int tempSelect = 0;
         loop {
-            //Select Player
-            tempSelect = ScenePlayerSelect(selectedPlayer);
+            //Select Difficulty
+            tempSelect = SceneRankSelect(selectedRank);
             if (tempSelect < 0) break;
-            selectedPlayer = tempSelect;
+            selectedRank = tempSelect;
+            loop {
+                //Select Player
+                tempSelect = ScenePlayerSelect(selectedPlayer);
+                if (tempSelect < 0) break;
+                selectedPlayer = tempSelect;
 
-            //Set CommonData for player selections
-            SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
-            SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
-            SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
+                //Set CommonData for player selections
+                SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+                SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+                SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
-            //Run main stage script
-            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-            int idScript = LoadScript(pathScript);
-            StartScript(idScript);
-            return;
+                //Run main stage script
+                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+                int idScript = LoadScript(pathScript);
+                StartScript(idScript);
+                return;
+            }
         }
+        //Only Runs if the submenu is exited
+        TMainMenu(false, INDEX_START);
     }
-    //Only Runs if the submenu is exited
-    TMainMenu(false, INDEX_START);
-}
 
-task TSelectExtra() {
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
-    //Declare variables to be set by submenus
-    int selectedRank = D_EXTRA;
-    int selectedPlayer = PLAYER_YABUSAME;
-    //Main Play Mode
-    SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+    task TSelectExtra() {
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        //Declare variables to be set by submenus
+        int selectedRank = D_EXTRA;
+        int selectedPlayer = PLAYER_YABUSAME;
+        //Main Play Mode
+        SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
 
-    int tempSelect = 0;
-    loop {
-        //Select Difficulty
-        tempSelect = SceneRankSelect(selectedRank);
-        if (tempSelect < 0) break;
-        selectedRank = tempSelect;
+        int tempSelect = 0;
         loop {
-            //Select Player
-            tempSelect = ScenePlayerSelect(selectedPlayer);
+            //Select Difficulty
+            tempSelect = SceneRankSelect(selectedRank);
             if (tempSelect < 0) break;
-            selectedPlayer = tempSelect;
+            selectedRank = tempSelect;
+            loop {
+                //Select Player
+                tempSelect = ScenePlayerSelect(selectedPlayer);
+                if (tempSelect < 0) break;
+                selectedPlayer = tempSelect;
 
-            //Set CommonData for player selections
-            SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
-            SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
-            SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
+                //Set CommonData for player selections
+                SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+                SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+                SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
-            //Run main stage script
-            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-            int idScript = LoadScript(pathScript);
-            StartScript(idScript);
-            return;
+                //Run main stage script
+                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+                int idScript = LoadScript(pathScript);
+                StartScript(idScript);
+                return;
+            }
         }
+        //Only Runs if the submenu is exited
+        TMainMenu(false, INDEX_EXTRA);
     }
-    //Only Runs if the submenu is exited
-    TMainMenu(false, INDEX_EXTRA);
-}
 
-task TSelectPractice() { //UNUSED
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
+    task TSelectPractice() { //UNUSED
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        //ScenePractice();
 
-    //Only Runs if the submenu is exited
-    TMainMenu(false, INDEX_PRACTICE);
-}
+        //Only Runs if the submenu is exited
+        TMainMenu(false, INDEX_PRACTICE);
+    }
 
-task TSelectReplay() {
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
+    task TSelectReplay() {
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        //SceneReplay();
 
-    //Only Runs if the submenu is exited
-    TMainMenu(false, INDEX_REPLAY);
-}
+        //Only Runs if the submenu is exited
+        TMainMenu(false, INDEX_REPLAY);
+    }
 
-task TSelectMusic() {
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
-    SceneMusicRoom();
+    task TSelectMusic() {
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        SceneMusicRoom();
 
-    //probably reset the bgm track here
+        //Exited music menu
+        StartBGM(0, 60, 15);
+        TMainMenu(false, INDEX_MUSIC);
+    }
 
-    //Exited music menu
-    StartBGM(0, 60, 15);
-    TMainMenu(false, INDEX_MUSIC);
-}
+    task TSelectScore() {
+        ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        wait(10);
+        exitFlag = true;
+        //SceneScore();
 
-task TSelectScore() {
-    ScreenBlackout(10, 5, 10, COLOR_BLACK);
-    wait(10);
-    _exitFlag = true;
+        //Exited player score menu
+        TMainMenu(false, INDEX_SCORE);
+    }
 
-    //Exited player score menu
-    TMainMenu(false, INDEX_SCORE);
-}
+    task TSelectOption() {
+        exitFlag = true;
+        SceneOption();
 
-task TSelectOption() {
-    _exitFlag = true;
-    SceneOption();
-
-    //Exited option menu
-    TMainMenu(false, INDEX_OPTION);
+        //Exited option menu
+        TMainMenu(false, INDEX_OPTION);
+    }
 }

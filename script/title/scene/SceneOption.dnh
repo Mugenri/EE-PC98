@@ -95,11 +95,9 @@ function<void> SceneOption() {
 
     task TCreateMenuItemOption(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
         int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_WHITE);
-        int objTextHighlight = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_YELLOW);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         //Align to middle
         ObjRender_SetX(objText, ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText) / 2);
-        ObjRender_SetX(objTextHighlight, ObjRender_GetX(objTextHighlight) - ObjText_GetTotalWidth(objTextHighlight) / 2);
         ObjRender_SetX(objCursor, ObjRender_GetX(objCursor) - ObjText_GetTotalWidth(objText) / 2);
 
         if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) {
@@ -108,13 +106,12 @@ function<void> SceneOption() {
 
         //Additional options would go here
 
-        while (!exitFlag) { //TODO make color a conditional, remove objTextHighlight
-            Obj_SetVisible(objTextHighlight, index_ == indexCurrent);
+        while (!exitFlag) {
+            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_YELLOW : COLOR_WHITE));
             Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
         Obj_Delete(objText);
-        Obj_Delete(objTextHighlight);
         Obj_Delete(objCursor);
 
         task TCreateOptionSlider(int index_) {
