@@ -21,7 +21,7 @@ function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int grap
     if (animGraphic_ == 0) return shotID;
     async {
         wait(delay_ + 20); //20 frames for animation to play
-        if(!Obj_IsDeleted(shotID)) { //set to normal graphic/speed
+        if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed
             ObjShot_SetGraphic(shotID, graphic_);
             ObjMove_SetSpeed(shotID, speed_);
         }
@@ -39,12 +39,12 @@ function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real acc
     async {
         wait(delay_);
         real frame = 0;
-        while(!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
+        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
             ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
             frame += 1/5;
             yield;
         }
-        if(!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
+        if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
             ObjMove_AddPatternA3(shotID, 0, speed_, NO_CHANGE, accel_, NO_CHANGE, maxSpeed_, graphic_);
         }
     }
@@ -58,12 +58,12 @@ function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int gr
     async {
         wait(delay_);
         real frame = 0;
-        while(!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
+        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
             ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
             frame += 1/5;
             yield;
         }
-        if(!Obj_IsDeleted(shotID)) { //set to normal graphic/speed
+        if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed
             ObjMove_AddPatternB3(shotID, 0, xSpeed_, ySpeed_, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
         }
     }
@@ -77,12 +77,12 @@ function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real x
     async {
         wait(delay_);
         real frame = 0;
-        while(!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
+        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
             ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
             frame += 1/5;
             yield;
         }
-        if(!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
+        if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
             ObjMove_AddPatternB3(shotID, 0, xSpeed_, ySpeed_, xAccel_, yAccel_, maxSpeedX_, maxSpeedY_, graphic_);
         }
     }

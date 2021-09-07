@@ -174,7 +174,7 @@ task TPatternE() {
     real xPos = rand(-15, 15);
     real yPos = rand(-15, 15);
     int bSprite = round(rand(0, 1)) * 5;
-    loop(32){
+    loop (32) {
         if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
         angleT += 360/32;
@@ -185,7 +185,7 @@ task TPatternF(int dir_) {
     real angleT = 90 + 45 * dir_;
     real increment = 0.05;
     
-    loop(550) {
+    loop (550) {
         if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
         CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ + 10, SHOT_BLACK+BALL_S, 0, 0, 0);
         CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_, SHOT_BLACK+BALL_S, 0, 0, 0);

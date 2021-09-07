@@ -6,7 +6,7 @@ function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real rot
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
     async {
         real radius = 0;
-        loop(frames_) {
+        loop (frames_) {
             real angleT = angle_;
             for (int i = startVertex; i < vertices; i++) {
                 ObjPrim_SetVertexPosition(polygon, i, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 1);
@@ -26,7 +26,7 @@ function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real r
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
     async {
         real initRadius = radius_;
-        loop(frames_) {
+        loop (frames_) {
             real angleT = angle_;
             for (int i = startVertex; i < vertices; i++) {
                 ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angleT), y_ + radius_ * sin(angleT), 1);
