@@ -13,8 +13,8 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
     TRender(GetPlayerObjectID());
     LoadPlayerShotData(_pathShot);
 
-    _particleList = InitParticleList(IMG_EFFECT_GRAZE, RP_STG_PLAYER, 0, 0, 7, 7);
-    ParticleListShader(_particleList, 7/64, 1);
+    _particleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, 0, 32, 16, 48);
+    ParticleListShader(_particleList, 16/512, 1);    
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);
