@@ -5,10 +5,10 @@
 
 @Initialize {
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
-    SetItemAutoDeleteClip(32, 64, 32, 64);
+    SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
     LoadItemData(GetCurrentScriptDirectory() ~ "/lib/dat_ItemData.dnh");
-    InitEffectList();
+    InitEffectCancel();
     InitAsciiList();
 }
 
@@ -19,7 +19,7 @@
     case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100);
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100); //TODO this should probably be assumed 0
 
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) DeleteEffectShot(obj);
@@ -35,7 +35,7 @@
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
 
         AddScore(score);
-        if (Obj_GetType(obj) == OBJ_SHOT) {
+        if (Obj_GetType(obj) == OBJ_SHOT) { //TODO add key value field for displaying the score of bullets if the attack is not a nonspell
             AsciiScoreNum(pos[0], pos[1], score);
             DeleteEffectShot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
