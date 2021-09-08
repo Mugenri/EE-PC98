@@ -4,7 +4,8 @@
 string _pathImg; //player sprite passed by player script
 string _pathShot; //player shot data passed by player script
 
-int _particleList;
+int _particleFlake;
+int _particleShot;
 
 function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_) {
     InitCommon();
@@ -13,8 +14,11 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
     TRender(GetPlayerObjectID());
     LoadPlayerShotData(_pathShot);
 
-    _particleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, 0, 32, 16, 48);
-    ParticleListShader(_particleList, 16/512, 1);    
+    _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, 0, 32, 16, 48);
+    ParticleListShader(_particleFlake, 16/512, 1);
+    
+    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, 176, 16, 192, 32);
+    ParticleListShader(_particleShot, 16/256, 16/64);
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);
@@ -36,7 +40,7 @@ function<void> PlayerEvent() {
 		if (spell >= 1) {
 			SetScriptResult(true);
 			SetPlayerSpell(spell - 1);
-			TSpell();
+			TSpell(); //THIS MUST BE DEFINED BY THE PLAYER SCRIPT
 		} else SetScriptResult(false);
 	}
 	case (EV_HIT) {
@@ -73,6 +77,9 @@ function<void> PlayerEvent() {
             num++;
             TGraze(x, y);
         }
+    }
+    case (EV_DELETE_SHOT_PLAYER) {
+        TShotCancel(GetEventArgument(0), GetEventArgument(1)[0], GetEventArgument(1)[1], GetEventArgument(2)); //THIS MUST BE DEFINED BY THE PLAYER SCRIPT
     }
 }
 
@@ -145,23 +152,22 @@ task TMiss() { //Player died
             real x = xPos;
             real y = yPos;
             real angle = rand_int(0, 360);
-            real speed = rand(2, 3.2);
+            real speed = rand(1.2, 2.8);
             real xStep = speed * cos(angle);
             real yStep = speed * sin(angle);
-            int frame = 0;
-            loop (70) {
-                loop (2) {
-                    ObjParticleList_SetPosition(_particleList, x, y, 1);
-                    ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
-                    ObjParticleList_SetColor(_particleList, COLOR_WHITE);
-                    
-                    ObjParticleList_AddInstance(_particleList);
-                    yield;
-                }
-                frame++;
+
+            real frame = 0;
+            loop (140) {
+                ObjParticleList_SetPosition(_particleFlake, x, y, 1);
+                ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+                ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
+                ObjParticleList_AddInstance(_particleFlake);
+
+                frame += 1/2;
                 if (frame >= 7) frame = 0;
                 x += xStep;
                 y += yStep;
+                yield;
             }
         }
     }
@@ -229,7 +235,7 @@ task TRebirth() { //Player respawn
 }
 
 task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
-    real speed = rand(2, 3.2);
+    real speed = rand(1.2, 2.8);
     real angle = rand_int(0, 360);
     real xStep = speed * cos(angle);
     real yStep = speed * sin(angle);
@@ -237,20 +243,40 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     CallSFX(SND_PL_GRAZE);
     AddScore(1000);
 
-    int frame = 0;
+    real frame = 0;
     loop (43) {
-        loop (2) {
-            ObjParticleList_SetPosition(_particleList, x_, y_, 1);
-            ObjParticleList_SetExtraData(_particleList, frame, 0, 0);
-            ObjParticleList_SetColor(_particleList, COLOR_TAN);
+        ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
+        ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+        ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
+        ObjParticleList_AddInstance(_particleFlake);
 
-            ObjParticleList_AddInstance(_particleList);
-            yield;
-        }
-        frame++;
-        if (frame >= 7) frame = 0;
+        frame += 1/2;
+        if (frame >= 8) frame = 0;
         x_ += xStep;
         y_ += yStep;
+        yield;
+    }
+}
+
+task TShotParticle(real x_, real y_) {
+    real speed = rand(4.5, 10);
+    real angle = rand(0, 360);
+    real xStep = speed * cos(angle);
+    real yStep = speed * sin(angle);
+
+    real frame = 0;
+    loop (40) {
+        ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
+        ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+        ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
+        ObjParticleList_AddInstance(_particleFlake);
+
+        frame += 1/2;
+        if (frame >= 8) frame = 0;
+        x_ += xStep;
+        y_ += yStep;
+        yStep += 0.05;
+        yield;
     }
 }
 

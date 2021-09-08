@@ -111,6 +111,30 @@ task TOption(int dir_) {
     }
 }
 
+task TShotCancel(int obj_, real x_, real y_, int graphic_) { //Player shot deletion effect
+    real angle = ObjMove_GetAngle(obj_);
+    real speed = ObjMove_GetSpeed(obj_);
+    x_ -= speed * cos(angle);
+    y_ -= speed * sin(angle);
+    real xStep = cos(angle);
+    real yStep = sin(angle);
+    real angleZ = graphic_ == 1 ? angle + 90 : 0;
+    if (rand_int(1, 8) == 1) TShotParticle(x_, y_);
+    AddScore(10);
+    real frame = 0;
+    while (frame < 4) {
+        ObjParticleList_SetPosition(_particleShot, x_, y_, 1);
+        ObjParticleList_SetAngleZ(_particleShot, angleZ);
+        ObjParticleList_SetExtraData(_particleShot, trunc(frame), graphic_ - 1, 0);
+        ObjParticleList_AddInstance(_particleShot);
+
+        frame += 1/2;
+        x_ += xStep;
+        y_ += yStep;
+        yield;
+    }
+}
+
 task TSpell() {
     int objManage = GetSpellManageObject();
 
