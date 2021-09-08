@@ -5,6 +5,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
     //Hitbox and position/angle
     int time = 550/speed_ + maxLength_/speed_; //rough amount of frames it will take the laser to leave the screen (550px is hypotenuse of stg window)
     int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 12, time, 1, delay_);
+    Obj_SetValueI(hitbox, SHOT_CANCEL, true);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
     //colored
@@ -167,7 +168,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
             UpdatePosition(3);
             yield;
         }
-        ObjShot_SetIntersectionEnable(hitbox, false);
+        if (!Obj_IsDeleted(hitbox)) ObjShot_SetIntersectionEnable(hitbox, false);
         if (radius > 2) radius = 2;
         while (radius >= 0.5) { //contract laser
             loop (3) {
