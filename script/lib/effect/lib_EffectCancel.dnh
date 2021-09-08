@@ -4,7 +4,7 @@ int _effectCancel16;
 int _effectCancel32;
 int _effectCancel64;
 
-function<void> InitEffectList() {
+function<void> InitEffectCancel() {
     _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 0, 16, 16);
     _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 256, 0, 288, 32);
     _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 288, 64, 352);
