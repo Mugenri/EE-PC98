@@ -22,9 +22,7 @@ bool _start = false;
     } 
 }
 
-@MainLoop {
-    yield;
-}
+@MainLoop {yield;}
 
 @Finalize {
 }

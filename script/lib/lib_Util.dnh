@@ -3,20 +3,14 @@
 //Move selection index, wrap between min/max, omit forbidden indices
 function<int> IncrementIndex(int index_, int amount_, int min_, int max_, int[] forbidden_) {
     index_ += amount_;
-    if (index_ < min_) {
-        index_ = max_;
-    } else if (index_ > max_) {
-        index_ = min_;
-    }
+    if (index_ < min_) index_ = max_;
+    else if (index_ > max_) index_ = min_;
 
     //check forbidden
     while (CheckForbidden(index_, forbidden_)) {
         index_ += amount_;
-        if (index_ < min_) {
-            index_ = max_;
-        } else if (index_ > max_) {
-            index_ = min_;
-        }
+        if (index_ < min_) index_ = max_;
+        else if (index_ > max_) index_ = min_;
     }
     return index_;
 }

@@ -39,20 +39,14 @@ function<void> SceneMusicRoom() {
         case (VK_UP) {
             //CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax);
-            if (revealPrompt == true) {
-                CancelReveal();
-            }
+            if (revealPrompt == true) CancelReveal();
         }
         case (VK_DOWN) {
             //CallSFX(SND_TT_SELECT);
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax);
-            if (revealPrompt == true) {
-                CancelReveal();
-            }
+            if (revealPrompt == true) CancelReveal();
         }
-        case (VK_OK) {
-            MenuSelect();
-        }
+        case (VK_OK) MenuSelect();
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
             ScreenBlackout(10, 5, 10, COLOR_BLACK);
@@ -193,11 +187,8 @@ function<void> SceneMusicRoom() {
         string indexNumber = StringFormat("%2.0d%s", "ds", bgmID + 1, ". "); //prepended track number
 
         //Initial list creation
-        if (!CD_GetBGMHeardFlag(bgmID)) {
-            objText = CreateText(x_, y_, indexNumber ~ "???", COLOR_WHITE);
-        } else {
-            objText = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], COLOR_WHITE);
-        }
+        if (!CD_GetBGMHeardFlag(bgmID)) objText = CreateText(x_, y_, indexNumber ~ "???", COLOR_WHITE);
+        else objText = CreateText(x_, y_, indexNumber ~ GetBGMText(bgmID)[0], COLOR_WHITE);
         ObjText_SetMaxWidth(objText, 412);
 
         while (!exitFlag) {

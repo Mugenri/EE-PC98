@@ -37,10 +37,7 @@ function<void> PlayerEvent() {
 			SetScriptResult(true);
 			SetPlayerSpell(spell - 1);
 			TSpell();
-		}
-		else {
-			SetScriptResult(false);
-		}
+		} else SetScriptResult(false);
 	}
 	case (EV_HIT) {
 		THit();
@@ -90,19 +87,11 @@ task TRender(int ParentID_) {
     Obj_SetRenderPriorityI(objHitbox, RP_STG_HITBOX);
 
 	while (!Obj_IsDeleted(ParentID_)) {
-		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) {
-			ObjSprite2D_SetSourceRect(_objPlayer, 48, 0, 96, 48);
-		} else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) {
-			ObjSprite2D_SetSourceRect(_objPlayer, 96, 0, 144, 48);
-		} else {
-			ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 48, 48);
-		}
+		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 48, 0, 96, 48);
+		else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 96, 0, 144, 48);
+		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 48, 48);
 
-        if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive()) {
-            Obj_SetVisible(objHitbox, true);
-        } else {
-            Obj_SetVisible(objHitbox, false);
-        }
+        Obj_SetVisible(objHitbox, GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive());
 
 		ObjSprite2D_SetDestCenter(_objPlayer);
         ObjRender_SetPosition(objHitbox, GetPlayerX(), GetPlayerY(), 1);
@@ -120,18 +109,14 @@ task THit() { //Player deathbomb window
     int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
     ObjPrim_SetVertexCount(circle, 17);
-    ascent (i in 0..17) {
-        ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
-    }
+    ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     loop (14) {
         ascent (i in 0..17) {
             real angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
         }
         radius -= 2;
-        if (IsPlayerSpellActive()) {
-            break;
-        }
+        if (IsPlayerSpellActive()) break;
         yield;
     }
     Obj_Delete(circle);
@@ -152,9 +137,7 @@ task TMiss() { //Player died
     
     task TMissGlass() {
         loop (7) {
-            loop (10) {
-                TGlassMovement();
-            }
+            loop (10) TGlassMovement();
             yield;
         }
 
@@ -189,9 +172,7 @@ task TMiss() { //Player died
         int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
         ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
         ObjPrim_SetVertexCount(circle, 17);
-        ascent (i in 0..17) {
-            ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
-        }
+        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         loop (120) {
             ascent (i in 0..17) {
                 real angleT = 360/16 * i;
@@ -234,9 +215,7 @@ task TRebirth() { //Player respawn
         int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
         ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
         ObjPrim_SetVertexCount(circle, 17);
-        ascent (i in 0..17) {
-            ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
-        }
+        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         loop (20) {
             ascent (i in 0..17) {
                 real angleT = 360/16 * i;
@@ -269,9 +248,7 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
             yield;
         }
         frame++;
-        if (frame >= 7) {
-            frame = 0;
-        }
+        if (frame >= 7) frame = 0;
         x_ += xStep;
         y_ += yStep;
     }

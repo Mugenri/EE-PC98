@@ -11,8 +11,6 @@
     InitLoad();
 }
 
-@MainLoop {
-    yield;   
-}
+@MainLoop {yield;}
 
 @Finalize {}

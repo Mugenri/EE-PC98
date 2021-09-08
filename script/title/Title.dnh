@@ -25,9 +25,7 @@ bool _titleEnd = false;
     }
 }
 
-@MainLoop {
-    yield;
-}
+@MainLoop {yield;}
 
 @Finalize {}
 

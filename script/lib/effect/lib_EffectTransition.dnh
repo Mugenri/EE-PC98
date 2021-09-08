@@ -14,9 +14,7 @@ function<void> Transition_Tilt(bool startSpell_) {
             frame++;
             wait(5);
         }
-        if (startSpell_) {
-            ObjEnemyBossScene_StartSpell(GetEnemyBossSceneObjectID());
-        }
+        if (startSpell_) ObjEnemyBossScene_StartSpell(GetEnemyBossSceneObjectID());
         loop (8) {
             ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
             frame++;

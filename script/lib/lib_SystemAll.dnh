@@ -76,13 +76,9 @@ function<void> WaitKeysFree(int[] keys_) { //Wait for the list of keys passed to
     loop {
         bool keysFree = true;
         ascent (i in 0..keyCount) {
-            if (GetVirtualKeyState(keys_[i]) != KEY_FREE) {
-                keysFree = false;
-            }
+            if (GetVirtualKeyState(keys_[i]) != KEY_FREE) keysFree = false;
         }
-        if (keysFree) {
-            break;
-        }
+        if (keysFree) break;
         yield;
     }
 }

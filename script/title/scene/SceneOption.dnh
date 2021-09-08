@@ -54,9 +54,7 @@ function<void> SceneOption() {
         }
         case (VK_OK) {
             MenuSelect();
-            if (indexCurrent == INDEX_DEFAULT) {
-                LoadConfig(true);
-            }
+            if (indexCurrent == INDEX_DEFAULT) LoadConfig(true);
             if (indexCurrent == INDEX_QUIT) {
                 SaveConfig();
                 break;
@@ -100,9 +98,7 @@ function<void> SceneOption() {
         ObjRender_SetX(objText, ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText) / 2);
         ObjRender_SetX(objCursor, ObjRender_GetX(objCursor) - ObjText_GetTotalWidth(objText) / 2);
 
-        if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) {
-            TCreateOptionSlider(index_);
-        }
+        if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) TCreateOptionSlider(index_);
 
         //Additional options would go here
 

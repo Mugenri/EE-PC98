@@ -20,11 +20,8 @@ int _countShot = 0;
 
 @MainLoop {
     _count++;
-    if (Shooting() && !IsPlayerSpellActive() && Alive()) {
-        _countShot++;
-    } else {
-        _countShot = -1;
-    }
+    if (Shooting() && !IsPlayerSpellActive() && Alive()) _countShot++;
+    else _countShot = -1;
     yield;
 }
 
@@ -37,21 +34,13 @@ int _countShot = 0;
 
 task TShot() {
     TCreateLaser();
-    ascent (i in 0..13) {
-        TCreateLaserEffect(-i*32);
-    }
-
-    ascent (i in 0..6) {
-        TOption(i);
-    }
-
+    ascent (i in 0..13) TCreateLaserEffect(-i*32);
+    ascent (i in 0..6) TOption(i);
     loop {
         if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
             loop (3) {
                 CallSFX(SND_PL_SHOT);
-                loop (3) {
-                    yield;
-                }
+                loop (3) yield;
             }
         }
         yield;
@@ -70,11 +59,7 @@ task TShot() {
 
         while (!Obj_IsDeleted(_objPlayer)) {
             ObjMove_SetPosition(objLaser, GetPlayerX(), GetPlayerY());
-            if (Shooting() && !IsPlayerSpellActive() && Alive()) {
-                ObjShot_SetIntersectionEnable(objLaser, true);
-            } else {
-                ObjShot_SetIntersectionEnable(objLaser, false);
-            }
+            ObjShot_SetIntersectionEnable(objLaser, Shooting() && !IsPlayerSpellActive() && Alive());
             yield;
         }
         Obj_Delete(objLaser);
@@ -93,16 +78,10 @@ task TShot() {
             ObjSprite2D_SetSourceRect(objEffect, 160, frame*4, 176, frame*4+32);
             ObjSprite2D_SetDestCenter(objEffect);
 
-            if (Shooting() && !IsPlayerSpellActive() && Alive()) {
-                Obj_SetVisible(objEffect, true);
-            } else {
-                Obj_SetVisible(objEffect, false);
-            }
+            Obj_SetVisible(objEffect, Shooting() && !IsPlayerSpellActive() && Alive());
 
             frame++;
-            if (frame >= 8) {
-                frame = 0;
-            }
+            if (frame >= 8) frame = 0;
             yield;
         }
         Obj_Delete(objEffect);
@@ -125,26 +104,15 @@ task TOption(int offset_) {
 
     while (!Obj_IsDeleted(_objPlayer)) {
         real rotationX = cos(_count*4 + 360/6*offset_);
-        if (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) {
-            distCurrent = distUnfocus;
-        } else {
-            distCurrent = distFocus;
-        }
+        distCurrent = (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) ? distUnfocus : distFocus;
 
         ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent*rotationX, GetPlayerY() + distCurrent*sin(_count*3 + 360/6*offset_)*0.8, 1);
 
         //Render over player as if rotating around them
-        if (rotationX == 1) {
-            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
-        } else if (rotationX == -1) {
-            Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
-        }
+        if (rotationX == 1) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
+        else if (rotationX == -1) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
 
-        if (!Alive) {
-            Obj_SetVisible(objOption, false);
-        } else {
-            Obj_SetVisible(objOption, true);
-        }
+        Obj_SetVisible(objOption, Alive());
         yield;
     }
 
@@ -154,9 +122,7 @@ task TOption(int offset_) {
                 loop (3) {
                     int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270, 0.5, 1, 1);
                     Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
-                    loop (3) {
-                        yield;
-                    }
+                    loop (3) yield;
                 }
             }
             yield;
@@ -192,9 +158,7 @@ task TSpell() {
     int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
     ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
     ObjPrim_SetVertexCount(circle, 17);
-    ascent (i in 0..17) {
-        ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
-    }
+    ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     loop (20) {
         ascent (i in 0..17) {
             real angleT = 360/16 * i;
@@ -293,9 +257,7 @@ task TSpell() {
             ObjPrim_SetVertexCount(circle, 34);
             Obj_SetRenderPriorityI(circle, RP_STG_EFF_PLR);
             ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
-            ascent (i in 0..34) {
-                ObjPrim_SetVertexColor(circle, i, color_);
-            }
+            ascent (i in 0..34) ObjPrim_SetVertexColor(circle, i, color_);
             ascent (i in 1..34) {
                 real angleT = 360/32 * i;
                 ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
@@ -310,7 +272,6 @@ task TSpell() {
             ObjSprite2D_SetSourceRect(shot1, 144, 0, 160, 16);
             ObjSprite2D_SetDestCenter(shot1);
             Obj_SetRenderPriorityI(shot1, RP_STG_PLAYER - 2i);
-
 
             int shot2 = ObjPrim_Create(OBJ_SPRITE_2D); //white bullet
             ObjPrim_SetTexture(shot2, _pathImg);

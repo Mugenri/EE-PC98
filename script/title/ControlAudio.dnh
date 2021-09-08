@@ -62,9 +62,7 @@ const string[] SOUNDS = [
     }
 }
 
-@MainLoop {
-    yield;
-}
+@MainLoop {yield;}
 
 @Finalize {}
 

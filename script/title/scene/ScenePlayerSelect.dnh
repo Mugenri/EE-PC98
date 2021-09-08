@@ -125,9 +125,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
             Obj_SetVisible(objPlayerFront, index_ == indexCurrent);
             Obj_SetVisible(objPlayerBack, index_ != indexCurrent);
             yield;
-            if (index_ == resultIndex) {
-                ObjSprite2D_SetSourceRect(objPlayerFront, 224, 160, 448, 320);
-            }
+            if (index_ == resultIndex) ObjSprite2D_SetSourceRect(objPlayerFront, 224, 160, 448, 320);
         }
         Obj_Delete(objPlayerFront);
         Obj_Delete(objPlayerBack);

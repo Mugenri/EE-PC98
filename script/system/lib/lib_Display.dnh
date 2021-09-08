@@ -161,9 +161,7 @@ task THighScore() { //TODO make this the actual high score
         //Gradual increase of score counter
         if (scoreRender < score) {
             scoreRender += round((score - scoreRender)/10);
-            if (score - scoreRender <= 10) {
-                scoreRender = score;
-            }
+            if (score - scoreRender <= 10) scoreRender = score;
             scoreRender = min(scoreRender, score);
         }
 		yield;
@@ -209,9 +207,7 @@ task TScore() {
         //Gradual increase of score counter
         if (scoreRender < score) {
             scoreRender += round((score - scoreRender)/10);
-            if (score - scoreRender <= 10) {
-                scoreRender = score;
-            }
+            if (score - scoreRender <= 10) scoreRender = score;
             scoreRender = min(scoreRender, score);
         }
 		yield;
@@ -257,9 +253,7 @@ task TBossLife() {
 	int objScene = ID_INVALID; //TODO replace all getenemybossscene things with the common lib globals
 	loop {
 		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID) {
-			RenderLife();
-		}
+		if (objScene != ID_INVALID) RenderLife();
 		yield;
 	}
 
@@ -278,34 +272,23 @@ task TBossLife() {
 		//Life Display
 		real lifeTotalMax = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
 		real lifeTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
-		real lifeRate = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
+		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 0, 8, 1);
-        ObjPrim_SetVertexPosition(obj, 2, 129 * lifeRate, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 3, 129 * lifeRate, 8, 1);
+        ObjPrim_SetVertexPosition(obj, 2, 129 * lifeRatio, 0, 1);
+        ObjPrim_SetVertexPosition(obj, 3, 129 * lifeRatio, 8, 1);
 
         //Max Text
-        if (lifeRate >= 1) { //if max health
-            Obj_SetVisible(maxText, true);
-        } else {
-            Obj_SetVisible(maxText, false);
-        }
+        Obj_SetVisible(maxText, lifeRatio >= 1);
 
         //Life Color
         int color = COLOR_WHITE;
-        if (lifeRate <= 0.25) {
-            color = COLOR_RED;
-        } else if (lifeRate <= 0.5) {
-            color = COLOR_MAGENTA_L;
-        } else if (lifeRate <= 0.75) {
-            color = COLOR_TEAL;
-        } else if (lifeRate < 1) {
-            color = COLOR_YELLOW;
-        }
+        if (lifeRatio <= 0.25) color = COLOR_RED;
+        else if (lifeRatio <= 0.5) color = COLOR_MAGENTA_L;
+        else if (lifeRatio <= 0.75) color = COLOR_TEAL;
+        else if (lifeRatio < 1) color = COLOR_YELLOW;
 
-        ascent (i in 0..4) {
-            ObjPrim_SetVertexColor(obj, i, color);
-        }
+        ascent (i in 0..4) ObjPrim_SetVertexColor(obj, i, color);
 
         //attempt to increase health render bar until it reaches max
 		lifeRateRender += 0.01;
@@ -332,9 +315,7 @@ task TBossTimer() {
 	int objScene = ID_INVALID;
 	loop {
 		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID) {
-			RenderTimer();
-		}
+		if (objScene != ID_INVALID) RenderTimer();
 		yield;
 	}
 
@@ -342,13 +323,10 @@ task TBossTimer() {
 		real timer = ObjEnemyBossScene_GetInfo(objScene, INFO_TIMERF);
         real timerTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ORGTIMERF);
 
-        if (ObjEnemyBossScene_GetInfo(objScene, INFO_CURRENT_LIFE) <= 0) {
-            timer = 0;
-        }
+        if (ObjEnemyBossScene_GetInfo(objScene, INFO_CURRENT_LIFE) <= 0) timer = 0;
 
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 129 * (timer/timerTotal) , 0, 1);
-
         ObjPrim_SetVertexColor(obj, 0, COLOR_WHITE);
         ObjPrim_SetVertexColor(obj, 1, COLOR_WHITE);
 

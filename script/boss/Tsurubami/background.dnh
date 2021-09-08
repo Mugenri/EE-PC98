@@ -10,8 +10,7 @@ function<void> InitBackground() {
 task TUpdate() {
     loop {
         _objScene = GetEnemyBossSceneObjectID();
-	    if (_objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL)) _bSpell = true;
-	    else _bSpell = false;
+        _bSpell = _objScene != ID_INVALID && ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
 	    yield;
     }
 }
@@ -31,22 +30,15 @@ task TBackground() {
     TLineEffect();
 
     loop {
-        if (_bSpell) Obj_SetVisible(bg, false);
-        else Obj_SetVisible(bg, true);
+        Obj_SetVisible(bg, !_bSpell);
 
         ObjRender_SetColor(bg, color, color, color);
 
-        if (increment) {
-            count++;
-        } else {
-            count--;
-        }
+        if (increment) count++;
+        else count--;
 
-        if (count >= 209) {
-            increment = false;
-        } else if (count < 30) {
-            increment = true;
-        }
+        if (count >= 209) increment = false;
+        else if (count < 30) increment = true;
 
         color = truncate(count/60) * 8 + 8;
         yield;
@@ -80,9 +72,7 @@ task TBackground() {
 
         //Movement
         loop {
-            if (count >= 140) {
-                count = 0;
-            }
+            if (count >= 140) count = 0;
             count++;
             yield;
         }
@@ -106,8 +96,7 @@ task TBackground() {
 
             //set positions based on grid position and multiplier based on distance from the middle
             loop {
-                if (_bSpell) Obj_SetVisible(line, false);
-                else Obj_SetVisible(line, true);
+                Obj_SetVisible(line, !_bSpell);
                 ascent (i in 0..length(positions)) {
                     int xCurr = positions[i][0] - count;
                     int yCurr = positions[i][1];
@@ -138,22 +127,15 @@ task TSpellBackground() { //TODO very temporary
     TSpellEffect();
 
     loop {
-        if (!_bSpell) Obj_SetVisible(bg, false);
-        else Obj_SetVisible(bg, true);
+        Obj_SetVisible(bg, _bSpell);
 
         ObjRender_SetColor(bg, color, color, color);
 
-        if (increment) {
-            count++;
-        } else {
-            count--;
-        }
+        if (increment) count++;
+        else count--;
 
-        if (count >= 209) {
-            increment = false;
-        } else if (count < 30) {
-            increment = true;
-        }
+        if (count >= 209) increment = false;
+        else if (count < 30) increment = true;
 
         color = truncate(count/60) * 8 + 8;
         yield;
@@ -184,8 +166,7 @@ task TSpellBackground() { //TODO very temporary
                 Obj_SetRenderPriorityI(line, priority);
             }
             loop (trunc(368 / absolute(speed_)) + 60) { //rough amount of time it will take the lines to cross the screen
-                if (!_bSpell) Obj_SetVisible(line, false);
-                else Obj_SetVisible(line, true);
+                Obj_SetVisible(line, _bSpell);
                 ObjPrim_SetVertexPosition(line, 0, xPos, yPos_, 1);
                 ObjPrim_SetVertexPosition(line, 1, xPos + len, yPos_, 1);
                 xPos += speed_;

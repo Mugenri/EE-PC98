@@ -50,12 +50,12 @@ function<void> Dialogue() {
         //-----------------------------
         alternative (line_)
         case (0) {
-            SetPortrait(playerCutin, 2);
+            SetPortrait(playerCutin, 1);
             SetText(false, "Isn't it cool how the text/can scroll now?");
         }
         case (1) {
             SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, GetStgFrameWidth()/2, 60);
-            SetPortrait(playerCutin, 4);
+            SetPortrait(playerCutin, 3);
             SetText(false, "Nobody asked you, nerd./This text is going on for/a very long time innit.");
         }
         case (2) {

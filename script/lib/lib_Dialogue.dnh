@@ -42,9 +42,7 @@ task TCreateTextBoxes() {
     ChangeFrame(playerBox, 2, false);
     ChangeFrame(enemyBox, 2, true);
 
-    while (!_endDialogue) {
-        yield;
-    }
+    while (!_endDialogue) yield;
     //maybe fade out animation here?
     Obj_Delete(playerBox);
     Obj_Delete(enemyBox);
@@ -54,11 +52,8 @@ task TCreateTextBoxes() {
         ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXTBOX);
         Obj_SetRenderPriorityI(obj, RP_UI_IMG);
         ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
-        if (isBoss_) {
-            ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
-        } else {
-            ObjRender_SetPosition(obj, playerBoxPos[0], playerBoxPos[1], 1);
-        }
+        if (isBoss_) ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
+        else ObjRender_SetPosition(obj, playerBoxPos[0], playerBoxPos[1], 1);
         return obj;
     }
 
@@ -72,17 +67,8 @@ task TCreateTextBoxes() {
 //Character Portraits
 //----------------------------------------------------
 function<int> CreateDialoguePortrait(string characterID_, bool isBoss_) { //creates a portrait in the player or boss position with the given characterID
-    int xPos;
-    int yPos;
-
-    //assign object reference;
-    if (isBoss_) {
-        xPos = 288;
-        yPos = 112;
-    } else {
-        xPos = 32;
-        yPos = 240;
-    }
+    int xPos = isBoss_ ? 288 : 32;
+    int yPos = isBoss_ ? 112 : 240;
 
     int obj = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(obj, RP_UI_IMG);
@@ -93,57 +79,8 @@ function<int> CreateDialoguePortrait(string characterID_, bool isBoss_) { //crea
 }
 
 function<void> SetPortrait(int obj_, int frame_) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
-    int top = 0;
-    int left = 0;
-    alternative (frame_) //select portrait frame
-    case (1) {
-        top = 0;
-        left = 0;
-    }
-    case (2) {
-        top = 0;
-        left = 128;
-    }
-    case (3) {
-        top = 0;
-        left = 256;
-    }
-    case (4) {
-        top = 0;
-        left = 384;
-    }
-    case (5) {
-        top = 128;
-        left = 0;
-    }
-    case (6) {
-        top = 128;
-        left = 128;
-    }
-    case (7) {
-        top = 128;
-        left = 256;
-    }
-    case (8) {
-        top = 128;
-        left = 384;
-    }
-    case (9) {
-        top = 256;
-        left = 0;
-    }
-    case (10) {
-        top = 256;
-        left = 128;
-    }
-    case (11) {
-        top = 256;
-        left = 256;
-    }
-    case (12) {
-        top = 256;
-        left = 384;
-    }
+    int top = 128 * trunc(frame_ / 4);
+    int left = 128 * (frame_ % 4);
     //change portrait frame
     ObjSprite2D_SetSourceRect(obj_, left, top, left+128, top+128);
     ObjSprite2D_SetDestRect(obj_, 0, 0, 128, 128); //position controlled by objrender_setposition();
@@ -153,16 +90,8 @@ function<void> SetPortrait(int obj_, int frame_) { //assumes character portraits
 //Text Control
 //----------------------------------------------------
 function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text object
-    int xPos;
-    int yPos;
-
-    if (isBoss_) {
-        xPos = 49;
-        yPos = 191;
-    } else {
-        xPos = 161;
-        yPos = 319;
-    }
+    int xPos = isBoss_ ? 49 : 161;
+    int yPos = isBoss_ ? 191 : 319;
 
     int obj = ObjText_Create();
     ObjText_SetFontType(obj, SYS_FONT);
@@ -215,9 +144,7 @@ task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text b
         }
         tempString = tempString ~ ['[','r',']']; //append a newline after each substring
     }
-    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents the keystate from carrying over to the reading check in WaitForInput()
-        SetVirtualKeyState(VK_OK, KEY_FREE);
-    }
+    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) SetVirtualKeyState(VK_OK, KEY_FREE); //Prevents the keystate from carrying over to the reading check in WaitForInput()
     _reading = false;
 }
 
@@ -245,9 +172,7 @@ function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
         _skip = true;
         flag_ = 0;
     }
-    if (GetVirtualKeyState(VK_OK) != KEY_HOLD) {
-        _skip = false;
-    }
+    if (GetVirtualKeyState(VK_OK) != KEY_HOLD) _skip = false;
 }
 
 function<void> SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID_, int xPos_, int yPos_) { //Screen whiteout that places the boss sprite 

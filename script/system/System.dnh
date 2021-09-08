@@ -48,11 +48,8 @@ task TInitDisplay() {
     TPlayerLife();
     TPlayerSpell();
     TGraze();
-    if (!IsReplay()) {
-        TFPS();
-    } else {
-        TReplayFPS();
-    }
+    if (!IsReplay()) TFPS();
+    else TReplayFPS();
 }
 
 //----------------------------------------------------
