@@ -28,14 +28,14 @@ string _dialoguePath = "";
 
 task TStageScene(int stageMode_) { //TODO serious refactoring
     int playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
-    int _GetPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
-    int _GetRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-    string _ReplayPath  = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
+    int getPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+    int getRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
+    string replayPath  = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
     string pathPlayer   = SCRIPT_PLAYERS[playerType];
 
     InitializeStageScene();
 
-    if (length(_ReplayPath) > 0) SetStageReplayFile(_ReplayPath);
+    if (length(replayPath) > 0) SetStageReplayFile(replayPath);
 
     string stageScript = playerType == PLAYER_YABUSAME ? STAGE_YABUSAME : STAGE_YABUSAME; //TODO Change to tsubakura stage
 
