@@ -247,7 +247,7 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     loop (43) {
         ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
         ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
-        ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
+        ObjParticleList_SetColor(_particleFlake, COLOR_TAN);
         ObjParticleList_AddInstance(_particleFlake);
 
         frame += 1/2;
@@ -268,7 +268,7 @@ task TShotParticle(real x_, real y_) {
     loop (40) {
         ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
         ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
-        ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
+        ObjParticleList_SetColor(_particleFlake, COLOR_GRAY);
         ObjParticleList_AddInstance(_particleFlake);
 
         frame += 1/2;
