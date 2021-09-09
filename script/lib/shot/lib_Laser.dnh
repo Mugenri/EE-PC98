@@ -260,8 +260,26 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     }
 }
 
-function<int> CreateCurveLaserUA1() {
-    //TODO cheeto lasers
+function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, int length_, int graphic_, int delay_) {
+    int hitbox = CreateCurveLaserA1(x_, y_, speed_, angle_, length_, 24, 1, delay_);
+    Obj_SetValueI(hitbox, SHOT_CANCEL, false);
+    ObjLaser_SetInvalidLength(hitbox, 0, 0);
+    Obj_SetVisible(hitbox, false);
+
+    async {
+        wait(delay_);
+        while (!Obj_IsDeleted(hitbox)) {
+            int[] nodes = ObjCrLaser_GetNodePointerList(hitbox);
+            for each (node in nodes) {
+                real[] pos = ObjCrLaser_GetNodePosition(hitbox, node);
+                ObjParticleList_SetPosition(_effectParticle, pos[0], pos[1], 1);
+                ObjParticleList_SetExtraData(_effectParticle, graphic_, 3, 0);
+                ObjParticleList_AddInstance(_effectParticle);
+            }
+            yield;
+        }
+    }
+    return hitbox;
 }
 
 function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxWidth_, real sustain_, int colorOut_, int colorIn_, int delay_) {
@@ -273,7 +291,6 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
     Obj_SetValueI(controller, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(controller, 0, 0);
     Obj_SetVisible(controller, false);
-    ObjShot_Create(OBJ_SHOT);
     //colorOut
     int circle1 = CreateCircle(colorOut_);
     int line1 = CreateLine(colorOut_);

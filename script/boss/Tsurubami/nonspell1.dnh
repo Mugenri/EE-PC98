@@ -2,19 +2,18 @@
 #ScriptVersion[3]
 #Title["nonspell1"]
 #System["./../../system/System.dnh"]
-//#Background["./../../system/TestBG.dnh"]
 
 #include "./../../lib/lib_Boss.dnh"
 #include "./lib_Tsuru.dnh"
 
 int _objBoss;
 int _count = -120;
-int _loopTime = 3600;
+int _loopTime = 25;
 
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(100);
+        SetScriptResult(2500);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(60);
@@ -43,7 +42,7 @@ int _loopTime = 3600;
         async {
             //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
             //Transition_Tilt(true); //TODO need to find a way to control the background with this
-            TPatternM();
+            TPatternO();
             //TPatternB(1);
         }
     }
@@ -58,6 +57,7 @@ task TFinalize() {
     real yPos = ObjMove_GetY(_objBoss);
 
     //TODO Need to put in a library, not do this if the spell is timed out (or not a spell), and probably condense it
+    //TODO spell capture bonus displayed as yellow numbers around the boss?
     int score = 10;
     int scoreBonus = 10;
     int numBullets = 0;
@@ -88,7 +88,7 @@ task TFinalize() {
     }
     //^^
     DeleteShotAll(TYPE_ALL, TYPE_ITEM);
-    //TRANSITION IF SPELL CARD GOES HERE
+    //TRANSITION IF SPELL CARD GOES HERE?
     wait(30);
     Obj_Delete(_objBoss);
     SetAutoDeleteObject(true);
@@ -237,7 +237,7 @@ task TPatternI() {
         loop (20) {
             real speed = rand(0.4, 0.9);
             real angle = rand(0, 360);
-            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, SHOT_WHITE+NEEDLES, 0, 0, 0);
+            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, SHOT_WHITE+NEEDLES, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_SPARKLE);
         }
     }
 }
@@ -330,4 +330,30 @@ task TPatternM() { //Delete effects
         angleT += 360/18;
         i++;
     }
+}
+
+task TPatternN() {
+    loop (14) {
+        ascent (i in 0..8) {
+            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) + 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
+            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) - 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
+        }
+        wait(4);
+    }
+}
+
+task TPatternO() {
+    int laser = CreateCurveLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 6, 180 - rand_int(0, 2) * 90, 16, SHOT_YELLOW, 0);
+    ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, NO_CHANGE, 0);
+    ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, NO_CHANGE, 7.5);
+    
+    loop (240) {
+        if(Obj_IsDeleted(laser)) break;
+        real angleL = ObjMove_GetAngle(laser);
+        real angleP = GetAngleToPlayer(laser);
+        real wvel = AngularDistance(angleL, angleP) > 0 ? 2.3 : -2.3;
+        ObjMove_SetAngularVelocity(laser, wvel);
+        yield;
+    }
+    ObjMove_SetAngularVelocity(laser, 0);
 }
