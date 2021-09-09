@@ -36,16 +36,11 @@ function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int grap
 function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real accel_, real maxSpeed_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int tempGraphic = animGraphic_ != 0 ? animGraphic_ : graphic_;
     int shotID = CreateShotA2(x_, y_, speed_ / 2, angle_, accel_ / 2, maxSpeed_ / 2, tempGraphic, delay_);
+    Obj_SetValueI(shotID, CANCEL_EFFECT, cancelGraphic_);
     ObjShot_SetPositionRounding(shotID, true);
     if (tempGraphic == graphic_) return shotID;
     async {
-        wait(delay_);
-        real frame = 0;
-        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
-            ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
-            frame += 1/5;
-            yield;
-        }
+        wait(delay_ + 20); //20 frames for animation to play
         if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
             ObjMove_AddPatternA3(shotID, 0, speed_, NO_CHANGE, accel_, NO_CHANGE, maxSpeed_, graphic_);
         }
@@ -56,16 +51,11 @@ function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real acc
 function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int tempGraphic = animGraphic_ != 0 ? animGraphic_ : graphic_;
     int shotID = CreateShotB1(x_, y_, xSpeed_ / 2, ySpeed_ / 2, tempGraphic, delay_);
+    Obj_SetValueI(shotID, CANCEL_EFFECT, cancelGraphic_);
     ObjShot_SetPositionRounding(shotID, true);
     if (tempGraphic == graphic_) return shotID;
     async {
-        wait(delay_);
-        real frame = 0;
-        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
-            ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
-            frame += 1/5;
-            yield;
-        }
+        wait(delay_ + 20); //20 frames for animation to play
         if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed
             ObjMove_AddPatternB3(shotID, 0, xSpeed_, ySpeed_, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
         }
@@ -76,16 +66,11 @@ function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int gr
 function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real xAccel_, real yAccel_, real maxSpeedX_, real maxSpeedY_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int tempGraphic = animGraphic_ != 0 ? animGraphic_ : graphic_;
     int shotID = CreateShotB2(x_, y_, xSpeed_ / 2, ySpeed_ / 2, xAccel_ / 2, yAccel_ / 2 , maxSpeedX_ / 2, maxSpeedY_ / 2, tempGraphic, delay_);
+    Obj_SetValueI(shotID, CANCEL_EFFECT, cancelGraphic_);
     ObjShot_SetPositionRounding(shotID, true);
     if (tempGraphic == graphic_) return shotID;
     async {
-        wait(delay_);
-        real frame = 0;
-        while (!Obj_IsDeleted(shotID) && frame < 4) { //shot animations are 4 sprites lasting for 5 frames each
-            ObjShot_SetGraphic(shotID, animGraphic_ + trunc(frame));
-            frame += 1/5;
-            yield;
-        }
+        wait(delay_ + 20); //20 frames for animation to play
         if (!Obj_IsDeleted(shotID)) { //set to normal graphic/speed/acceleration
             ObjMove_AddPatternB3(shotID, 0, xSpeed_, ySpeed_, xAccel_, yAccel_, maxSpeedX_, maxSpeedY_, graphic_);
         }
