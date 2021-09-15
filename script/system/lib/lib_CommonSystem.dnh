@@ -1,6 +1,6 @@
 //System scripts common library
 #include "./../../lib/lib_Common.dnh"
 
-task TSystemInit() {
+function<void> SystemInit() {
     InitCommon();
 }

@@ -3,7 +3,7 @@
 #include "./lib/lib_Display.dnh"
 
 @Initialize {
-	InitFrame();
+    InitFrame();
     InitSystemCommonData();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
@@ -26,8 +26,8 @@
 		TGainSpell(score);
 	}
     case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
-        TSystemInit();
-        TInitDisplay();
+        SystemInit();
+        InitDisplay();
     }
 }
 
@@ -38,8 +38,8 @@
 //----------------------------------------------------
 //STG Window Frame
 //----------------------------------------------------
-task TInitDisplay() {
-    TIntro();
+function<void> InitDisplay() {
+    TIntro();   
     Difficulty();
     THighScore();
     TScore();
