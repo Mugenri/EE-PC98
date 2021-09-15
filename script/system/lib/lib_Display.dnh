@@ -214,7 +214,6 @@ task TScore() {
 	}
 }
 
-//TODO move the boss display things to lib_Boss.dnh
 //----------------------------------------------------
 //Bosss Life Display
 //----------------------------------------------------
@@ -228,6 +227,7 @@ task TBossLife() {
     ObjRender_SetColor(objText, COLOR_YELLOW);
     Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 488, 129, 1);
+    Obj_SetVisible(objText, false);
 
     //Lifebar
 	int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
@@ -250,10 +250,9 @@ task TBossLife() {
 	int lastRemStep = -1;
 	real lifeRateRender = 0;
 
-	int objScene = ID_INVALID; //TODO replace all getenemybossscene things with the common lib globals
 	loop {
-		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID) RenderLife();
+		_objScene = GetEnemyBossSceneObjectID();
+		if (_objScene != ID_INVALID) RenderLife();
 		yield;
 	}
 
@@ -263,15 +262,15 @@ task TBossLife() {
         if (length(bossID) == 0) return;
 
 		//Remaining Steps
-		int countRemStep = ObjEnemyBossScene_GetInfo(objScene, INFO_REMAIN_STEP_COUNT);
+		int countRemStep = ObjEnemyBossScene_GetInfo(_objScene, INFO_REMAIN_STEP_COUNT);
 		if (lastRemStep != countRemStep) {
 			//Step Change, refill boss bar
 			lifeRateRender = 0;
 		}
 
 		//Life Display
-		real lifeTotalMax = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
-		real lifeTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
+		real lifeTotalMax = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
+		real lifeTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
 		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 0, 8, 1);
@@ -296,8 +295,7 @@ task TBossLife() {
 		lastRemStep = countRemStep;
 
         //if no boss present, hide Enemy!! text
-        //TODO fix minor visibility stutter upon new spells activating
-        Obj_SetVisible(objText, lifeTotal > 0);
+        Obj_SetVisible(objText, lifeTotal > 0 || countRemStep != 0);
 	}
 }
 
@@ -312,18 +310,17 @@ task TBossTimer() {
     ObjPrim_SetVertexCount(obj, 2);
     ObjRender_SetPosition(obj, 448, 159, 1);
 
-	int objScene = ID_INVALID;
 	loop {
-		objScene = GetEnemyBossSceneObjectID();
-		if (objScene != ID_INVALID) RenderTimer();
+		_objScene = GetEnemyBossSceneObjectID();
+		if (_objScene != ID_INVALID) RenderTimer();
 		yield;
 	}
 
 	function<void> RenderTimer() {
-		real timer = ObjEnemyBossScene_GetInfo(objScene, INFO_TIMERF);
-        real timerTotal = ObjEnemyBossScene_GetInfo(objScene, INFO_ORGTIMERF);
+		real timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
+        real timerTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ORGTIMERF);
 
-        if (ObjEnemyBossScene_GetInfo(objScene, INFO_CURRENT_LIFE) <= 0) timer = 0;
+        if (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) <= 0) timer = 0;
 
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 129 * (timer/timerTotal) , 0, 1);
