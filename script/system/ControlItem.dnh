@@ -4,6 +4,7 @@
 #include "./../lib/effect/lib_EffectCancel.dnh"
 
 @Initialize {
+    SystemInit();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
     SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
@@ -33,10 +34,10 @@
 
         //create item in place of bullet
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
-
         AddScore(score);
-        if (Obj_GetType(obj) == OBJ_SHOT) { //TODO add key value field for displaying the score of bullets if the attack is not a nonspell
-            AsciiScoreNum(pos[0], pos[1], score);
+        if (Obj_GetType(obj) == OBJ_SHOT) {
+            _objScene = GetEnemyBossSceneObjectID();
+            if (ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL)) AsciiScoreNum(pos[0], pos[1], score);
             DeleteEffectShot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
     }
