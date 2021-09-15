@@ -4,8 +4,6 @@
 #include "./lib_Effect.dnh"
 
 #include "./bosslib/lib_Character.dnh"
-//file path constants for character portraits
-#include "./loadlib/file_character.dnh"
 
 function<void> InitBoss() {
     InitCommon();

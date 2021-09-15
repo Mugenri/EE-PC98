@@ -4,7 +4,6 @@
 #include "./lib_SystemAll.dnh" //Boss ID constants
 #include "./lib_File.dnh" //file directory constants
 #include "./bosslib/lib_Character.dnh" //boss sprites/portrait retrieval
-#include "./loadlib/file_character.dnh" //boss sprites/portraits file paths
 
 bool _endDialogue = false; //flag for end of dialogue sequence
 bool _skip = false; //flag for skipping dialogue

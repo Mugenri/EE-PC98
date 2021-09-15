@@ -1,5 +1,20 @@
 //Character sprite library
 //Returns sprite sheets based on character ID found in lib_SystemAll.dnh
+
+//arrays containing different images for each character
+const string[] IMG_CHARA_YABUSAME = [
+    IMG_PORTRAIT_YABUSAME //dialogue portrait
+    ]; 
+
+const string[] IMG_CHARA_TSUBAKURA = [
+    IMG_PORTRAIT_TSUBAKURA //dialogue portrait
+    ]; 
+
+const string[] IMG_CHARA_TSURUBAMI = [
+    IMG_PORTRAIT_TSUBAKURA, //TODO CHANGE TO TSURUBAMI LATER dialogue portrait
+    IMG_STG_TSURUBAMI //boss sprite
+    ]; 
+
 function<string> GetBossSprite(string bossID_) { //Returns boss stg sprite sheet
     alternative (bossID_)
     case (BOSS_ID_TSURUBAMI) return IMG_CHARA_TSURUBAMI[1];
