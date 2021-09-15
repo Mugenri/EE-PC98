@@ -226,16 +226,16 @@ task TBossLife() {
     ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
     ObjRender_SetColor(objText, COLOR_YELLOW);
     Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
-    ObjRender_SetPosition(objText, 488, 129, 1);
+    ObjRender_SetPosition(objText, 456, 129, 1);
     Obj_SetVisible(objText, false);
 
     //Lifebar
-	int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
-    ObjRender_SetBlendType(obj, BLEND_ALPHA);
-	Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
-    ObjPrim_SetVertexCount(obj, 4);
-    ObjRender_SetPosition(obj, 448, 148, 1);
+	int objLife = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(objLife, PRIMITIVE_TRIANGLESTRIP);
+    ObjRender_SetBlendType(objLife, BLEND_ALPHA);
+	Obj_SetRenderPriorityI(objLife, RP_UI_TEXT);
+    ObjPrim_SetVertexCount(objLife, 4);
+    ObjRender_SetPosition(objLife, 448, 148, 1);
 
     //Max Text
     int maxText = ObjPrim_Create(OBJ_SPRITE_2D);
@@ -246,6 +246,13 @@ task TBossLife() {
     Obj_SetRenderPriorityI(maxText, RP_UI_TEXT);
     ObjRender_SetPosition(maxText, 529, 145, 1);
     Obj_SetVisible(maxText, false);
+
+    //Boss Step Counter
+    int objStep = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+	ObjPrim_SetTexture(objStep, IMG_SYSTEM_TEXT);
+	ObjRender_SetBlendType(objStep, BLEND_ALPHA);
+	Obj_SetRenderPriorityI(objStep, RP_UI_TEXT);
+	ObjRender_SetY(objStep, 128);
 
 	int lastRemStep = -1;
 	real lifeRateRender = 0;
@@ -268,14 +275,42 @@ task TBossLife() {
 			lifeRateRender = 0;
 		}
 
+        //Remaining Step Display
+		ObjSpriteList2D_ClearVertexCount(objStep);
+        if (countRemStep > 4) { //display remaining steps
+            //icon
+            ObjRender_SetX(objStep, 496 + 1 * 16);
+            ObjSpriteList2D_SetSourceRect(objStep, 160, 272, 176, 288);
+            ObjSpriteList2D_SetDestRect(objStep, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(objStep);
+            //x
+            ObjRender_SetX(objStep, 496 + 2 * 16);
+            ObjSpriteList2D_SetSourceRect(objStep, 160, 0, 176, 16);
+            ObjSpriteList2D_SetDestRect(objStep, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(objStep);
+            //num
+            int tempStep = clamp(countRemStep, 0, 9);
+            ObjRender_SetX(objStep, 496 + 4 * 16);
+            ObjSpriteList2D_SetSourceRect(objStep, countRemStep * 16, 16, (countRemStep + 1) * 16, 32);
+            ObjSpriteList2D_SetDestRect(objStep, 0, 0, 16, 16);
+            ObjSpriteList2D_AddVertex(objStep);
+        } else {
+            ascent (i in 0..countRemStep) {
+                ObjRender_SetX(objStep, 496 + 4 * 16 - i * 16);
+                ObjSpriteList2D_SetSourceRect(objStep, 160, 272, 176, 288);
+                ObjSpriteList2D_SetDestRect(objStep, 0, 0, 16, 16);
+                ObjSpriteList2D_AddVertex(objStep);
+            }
+        }
+
 		//Life Display
 		real lifeTotalMax = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
 		real lifeTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
 		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
-		ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 1, 0, 8, 1);
-        ObjPrim_SetVertexPosition(obj, 2, 129 * lifeRatio, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 3, 129 * lifeRatio, 8, 1);
+		ObjPrim_SetVertexPosition(objLife, 0, 0, 0, 1);
+        ObjPrim_SetVertexPosition(objLife, 1, 0, 8, 1);
+        ObjPrim_SetVertexPosition(objLife, 2, 129 * lifeRatio, 0, 1);
+        ObjPrim_SetVertexPosition(objLife, 3, 129 * lifeRatio, 8, 1);
 
         //Max Text
         Obj_SetVisible(maxText, lifeRatio >= 1);
@@ -287,7 +322,7 @@ task TBossLife() {
         else if (lifeRatio <= 0.75) color = COLOR_TEAL;
         else if (lifeRatio < 1) color = COLOR_YELLOW;
 
-        ascent (i in 0..4) ObjPrim_SetVertexColor(obj, i, color);
+        ascent (i in 0..4) ObjPrim_SetVertexColor(objLife, i, color);
 
         //attempt to increase health render bar until it reaches max
 		lifeRateRender += 0.01;
@@ -353,8 +388,7 @@ task TPlayerLife() {
 
 	while (true) {
 		int lives = GetPlayerLife();
-		lives = min(lives, 9);
-		lives = max(lives, 0);
+        lives = clamp(lives, 0, 9);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
         if (lives > 5) { //lives x num
@@ -403,8 +437,7 @@ task TPlayerSpell() {
 
 	while (true) {
 		int spell = GetPlayerSpell();
-		spell = min(spell, 9);
-		spell = max(spell, 0);
+        spell  = clamp(spell, 0, 9);
 
 		ObjSpriteList2D_ClearVertexCount(obj);
         if (spell > 5) { //spell x num
