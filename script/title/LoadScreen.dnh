@@ -1,4 +1,4 @@
-#include "./lib/lib_CommonTitle.dnh"
+#include "./lib/lib_TitleCommon.dnh"
 #include "./lib/lib_LoadTexture.dnh"
 
 function<void> InitLoad() {

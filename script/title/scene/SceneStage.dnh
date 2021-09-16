@@ -1,6 +1,6 @@
 //Stage Control Script
-#include "./../lib/lib_CommonTitle.dnh"
-#include "./../lib/lib_Util.dnh"
+#include "./../lib/lib_TitleCommon.dnh"
+#include "./../lib/lib_TitleUtil.dnh"
 
 bool _pauseEnable = false;
 bool _dialogueRunning = false;

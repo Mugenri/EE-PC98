@@ -1,5 +1,5 @@
 //System Script
-#include "./lib/lib_CommonSystem.dnh"
+#include "./lib/lib_SystemCommon.dnh"
 #include "./lib/lib_Display.dnh"
 
 @Initialize {

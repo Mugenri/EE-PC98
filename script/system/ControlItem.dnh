@@ -1,5 +1,5 @@
 //Item Script, also handles shot deletion
-#include "./lib/lib_CommonSystem.dnh"
+#include "./lib/lib_SystemCommon.dnh"
 #include "./lib/lib_AsciiNum.dnh"
 #include "./../lib/effect/lib_EffectCancel.dnh"
 

@@ -42,7 +42,7 @@ function<void> InitTexture() {
 
 }
 
-function<string[]> GetImgTitle() { //returns title image paths (lib_CommonTitle.dnh)
+function<string[]> GetImgTitle() { //returns title image paths (lib_TitleCommon.dnh)
     return [
         IMG_TT_BG,
         IMG_TT_YABU,

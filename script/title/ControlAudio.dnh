@@ -1,6 +1,6 @@
 // Music Manager
 #include "./lib/BGMData.dnh"
-#include "./lib/lib_CommonTitle.dnh"
+#include "./lib/lib_TitleCommon.dnh"
 
 //BGM globals
 int _objBGM = -1; //used to hold the current playing BGM ID. this is not the actual sound object
