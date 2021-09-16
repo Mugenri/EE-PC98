@@ -31,8 +31,6 @@ const int EV_STOP_SFX           = EV_USER_PACKAGE + 10;//Stop currently playing 
 
 //Boss Name Constants
 const string BOSS_ID_TSURUBAMI = "Tsurubami";
-
-//Player Name Constants
 const string BOSS_ID_YABUSAME  = "Yabusame";
 const string BOSS_ID_TSUBAKURA = "Tsubakura";
 
@@ -117,11 +115,12 @@ const int ITEM_POW_FULL = 5; //Full Power
 const int ITEM_BOMB     = 6; //Bomb
 const int ITEM_EXTEND   = 7; //Life
 
-//Bullet Cancel Key Field Constants (these are not the values)
+//Key/Value field constants
+//Shot
 const int SHOT_SCORE        = 0; //How much score the bullet should give
 const int SHOT_DROP_ITEM    = 1; //If the bullet spawns a point item when cancelled
 const int SHOT_CANCEL       = 2; //If the bullet/laser should be given a cancel effect
-const int CANCEL_EFFECT     = 3; //Key field for bullet deletion effect
+const int SHOT_EFFECT       = 3; //Key field for bullet deletion effect
 
 //Color Constants
 const int COLOR_WHITE       = 0xFFFFFF;

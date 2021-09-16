@@ -19,7 +19,7 @@ function<void> DeleteEffectShot(int obj_) { //Shot cancel effect
     real y = ObjMove_GetY(obj_);
     real speed = ObjMove_GetSpeed(obj_);
     real angle = ObjMove_GetAngle(obj_);
-    int effect = Obj_GetValueDI(obj_, CANCEL_EFFECT, -1);
+    int effect = Obj_GetValueDI(obj_, SHOT_EFFECT, -1);
     if (effect < 0) WriteLog("Shot cancel effect not set.");
     //16 = 0-71
     //32 = 72-89
