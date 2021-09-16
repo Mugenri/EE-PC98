@@ -118,20 +118,20 @@ function<void> SceneMusicRoom() {
         function<int> CreateLinesH() {
             int lines = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(lines, PRIMITIVE_LINELIST);
-            ObjPrim_SetVertexCount(lines, 32);
+            ObjPrim_SetVertexCount(lines, 36);
             Obj_SetRenderPriorityI(lines, RP_UI_BG);
 
             int i = 0;
             real dist = 90;
-            loop (8) {
+            loop (9) {
                 ObjPrim_SetVertexPosition(lines, i, 0, 200 + dist, 1);
                 ObjPrim_SetVertexPosition(lines, i + 1, 740, 200, 1);
-                ObjPrim_SetVertexPosition(lines, 31 - i, 0, 200 - dist, 1);
-                ObjPrim_SetVertexPosition(lines, 30 - i, 740, 200, 1);
+                ObjPrim_SetVertexPosition(lines, 35 - i, 0, 200 - dist, 1);
+                ObjPrim_SetVertexPosition(lines, 34 - i, 740, 200, 1);
                 ObjPrim_SetVertexColor(lines, i, COLOR_GREEN_D);
                 ObjPrim_SetVertexColor(lines, i + 1, COLOR_GREEN_D);
-                ObjPrim_SetVertexColor(lines, 31 - i, COLOR_GREEN_D);
-                ObjPrim_SetVertexColor(lines, 30 - i, COLOR_GREEN_D);
+                ObjPrim_SetVertexColor(lines, 35 - i, COLOR_GREEN_D);
+                ObjPrim_SetVertexColor(lines, 34 - i, COLOR_GREEN_D);
                 i += 2;
                 dist += 160;
             }
