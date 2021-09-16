@@ -1,0 +1,68 @@
+//Boss utility function library
+//Assigns boss ID string to boss object
+function<void> Boss_SetID(int obj_, string ID_) {
+    Obj_SetValue(obj_, BOSS_ID, ID_);
+}
+//Returns boss ID string attached to boss object.
+function<string> Boss_GetID(int obj_) {
+    return Obj_GetValueD(obj_, BOSS_ID, "INVALID");
+}
+//Moves the boss object associated with bossID_ to the position it was located at the end of the last single.
+function<void> Boss_InitPosition(int obj_) {
+    real[] pos = GetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [0, 0]);
+    ObjMove_SetPosition(obj_, pos[0], pos[1]);
+}
+//Sets the last position of the boss object associated with bossID OR uses bossID directly to be used in the next single.
+function<void> Boss_SetInitPosition(var obj_, real x_, real y_) {
+    if (typeof(obj_) == VAR_STRING) SetAreaCommonData(AREA_STAGE, "POS_" ~ obj_, [x_, y_]);
+    else SetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [x_, y_]);
+}
+//Sets the boss object intersection for 1 frame
+function<void> Boss_Intersection(int obj_, int toShot_, int toPlayer_) {
+    ObjEnemy_SetIntersectionCircleToShot(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
+    ObjEnemy_SetIntersectionCircleToPlayer(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
+}
+//Check if boss has health
+function<bool> Boss_CheckAlive(int obj_) {
+    return ObjEnemy_GetInfo(obj_, INFO_LIFE) > 0;
+}
+//Call at the end of a single
+task Boss_Finalize(int obj_) {
+    real xPos = ObjMove_GetX(obj_);
+    real yPos = ObjMove_GetY(obj_);
+
+    //TODO explosion effects
+    //yield here or something while final explosion is happening
+
+    //Items and Bullet Cancel score values
+    //TODO spell capture bonus displayed as yellow ascii numbers around the boss
+    int score = 10;
+    int scoreBonus = 10;
+    int numBullets = 0;
+    real radius = 200;
+    loop (5) {
+        for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
+            if (ObjMove_GetX(shot) < -16 || ObjMove_GetX(shot) > GetStgFrameWidth() + 16 || ObjMove_GetY(shot) < -16 || ObjMove_GetY(shot) > GetStgFrameHeight() + 16) {
+                Obj_SetValue(shot, SHOT_SCORE, 0); //no points for off screen bullets;
+                continue; //no items spawn off screen
+            } else if (score <= 12800 && radius == 600) { //only runs on final loop
+                Obj_SetValueI(shot, SHOT_SCORE, score);
+                score += scoreBonus;
+                scoreBonus += 10;
+            }
+            if (numBullets < 40 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 40 bullets drop point items
+                Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
+                numBullets++;
+            }
+        }
+        radius += 100;
+    }
+    DeleteShotAll(TYPE_ALL, TYPE_ITEM);
+    wait(120);
+    xPos = ObjMove_GetX(obj_);
+    yPos = ObjMove_GetY(obj_);
+    Boss_SetInitPosition(obj_, xPos, yPos);
+    Obj_Delete(obj_);
+    SetAutoDeleteObject(true);
+    CloseScript(GetOwnScriptID());
+}

@@ -5,9 +5,24 @@
 #include "./lib_Item.dnh"
 
 #include "./bosslib/lib_Character.dnh"
+#include "./bosslib/lib_BossUtil.dnh"
+
+bool _bossAlive = true;
+
+int intersectionShot = 32;
+int intersectionPlayer = 24;
 
 function<void> InitBoss() {
     InitCommon();
     //if spell practice, set variables
     LoadShotData();
+}
+
+function<int> CreateBoss(string bossID_) {
+    int objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
+    Boss_SetID(objBoss, bossID_);
+    Boss_InitPosition(objBoss);
+    ObjEnemy_SetDamageRate(objBoss, 0, 0); //Must set damage rate manually after transition effects.
+    ObjEnemy_Regist(objBoss);
+    return objBoss;
 }
