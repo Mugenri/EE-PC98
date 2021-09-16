@@ -2,6 +2,7 @@
 #include "./lib_Common.dnh"
 #include "./lib_Shot.dnh"
 #include "./lib_Effect.dnh"
+#include "./lib_Item.dnh"
 
 #include "./bosslib/lib_Character.dnh"
 

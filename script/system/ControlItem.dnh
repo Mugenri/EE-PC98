@@ -80,14 +80,16 @@
             //PLAY SFX
         }
         case (ITEM_BOMB) {
-            int score = 1000;
+            score = 1000;
             SetPlayerSpell(GetPlayerSpell() + 1);
             //PLAY SFX
+            //TODO spell extend text
         }
         case (ITEM_EXTEND) {
-            int score = 1000;
+            score = 1000;
             SetPlayerLife(GetPlayerLife() + 1);
             //PLAY SFX
+            //TODO extend text
         }
         AddScore(score);
         AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
