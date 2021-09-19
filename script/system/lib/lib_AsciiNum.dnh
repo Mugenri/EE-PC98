@@ -36,17 +36,3 @@ function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
 function<void> AsciiScoreNum(real x_, real y_, int score_) { //if no color is provided, default to white
     AsciiScoreNum(x_, y_, score_, COLOR_WHITE);
 }
-
-function<int[]> DigitToArray(int digit_) {
-	int[] res = [];
-	digit_ = truncate(digit_);
-
-	loop {
-		int tnum = truncate(digit_ % 10);
-		digit_ /= 10;
-		res = [tnum] ~ res;
-		if (truncate(digit_) == 0) break;
-	}
-
-	return res;
-}

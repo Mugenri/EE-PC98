@@ -15,20 +15,3 @@ function<void> InitCommon() {
 	_idPlayer = GetPlayerScriptID();
 	_objScene = GetEnemyBossSceneObjectID();
 }
-
-function<int[]> DigitToArray(int digit_, int count_) {
-	int[] res = [];
-
-	loop {
-		int tnum = truncate(digit_ % 10);
-		digit_ /= 10;
-		res = [tnum] ~ res;
-		if (truncate(digit_) == 0) break;
-	}
-
-	loop (max(0, count_ - length(res))) {
-		res = [0] ~ res;
-	}
-
-	return res;
-}

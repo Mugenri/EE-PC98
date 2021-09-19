@@ -1,5 +1,32 @@
 //General utility function library
 
+//Takes an integer, returns an array containing each digit, pads with 0's
+function<int[]> DigitToArray(int digit_, int count_) {
+	int[] res = [];
+	loop {
+		int tnum = truncate(digit_ % 10);
+		digit_ /= 10;
+		res = [tnum] ~ res;
+		if (truncate(digit_) == 0) break;
+	}
+	loop (max(0, count_ - length(res))) {
+		res = [0] ~ res;
+	}
+	return res;
+}
+//Doesn't pad with 0's
+function<int[]> DigitToArray(int digit_) {
+	int[] res = [];
+	digit_ = truncate(digit_);
+	loop {
+		int tnum = truncate(digit_ % 10);
+		digit_ /= 10;
+		res = [tnum] ~ res;
+		if (truncate(digit_) == 0) break;
+	}
+	return res;
+}
+
 //Move selection index, wrap between min/max, omit forbidden indices
 function<int> IncrementIndex(int index_, int amount_, int min_, int max_, int[] forbidden_) {
     index_ += amount_;
