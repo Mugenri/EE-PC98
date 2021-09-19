@@ -589,7 +589,7 @@ task TCancelBonus(int score_) {
         numLength++;
     }
     int[] numList = [];
-    if (numLength > 0) numList = DigitToArray(score_, min(numLength, 9));
+    if (numLength >= 0) numList = DigitToArray(score_, min(numLength, 9));
 
     //move text
     for (int i = 39; i >= 0; i--) { 
