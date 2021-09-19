@@ -36,9 +36,7 @@ task TStage() {
     
     string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
-    yield; //TODO TEMPORARY until i think of something better
     StartScript(ID);
-    StartBGM(1, 0, 0);
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
         yield;
     }
