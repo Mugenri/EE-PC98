@@ -46,7 +46,7 @@ const string[] SOUNDS = [
     case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         _flagStop = GetEventArgument(0);
     }
-    case (EV_GET_BGM_TEXT) {
+    case (EV_GET_BGM_NAME) {
         string info = GetBGMText(GetEventArgument(0));
         SetScriptResult(info[0]);
     }

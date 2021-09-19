@@ -27,7 +27,7 @@ const int EV_PLAY_SFX           = EV_USER_PACKAGE + 5; //Play sfx from audio scr
 const int EV_TITLE_END          = EV_USER_PACKAGE + 6; //End title screen script
 const int EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7; //Triggered when the player script is finished initializing
 const int EV_DIALOGUE_START     = EV_USER_PACKAGE + 8; //Called to start a dialogue sequence. pass (scriptPath)
-const int EV_GET_BGM_TEXT       = EV_USER_PACKAGE + 9; //returns an array of [name, comment]. pass (bgmID)
+const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 9; //returns an array of [name, comment]. pass (bgmID)
 const int EV_STOP_SFX           = EV_USER_PACKAGE + 10;//Stop currently playing sfx
 
 //Boss Name Constants
