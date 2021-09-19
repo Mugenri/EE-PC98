@@ -1,10 +1,12 @@
 //System Script
 #include "./lib/lib_SystemCommon.dnh"
+#include "./lib/lib_AsciiNum.dnh"
 #include "./lib/lib_Display.dnh"
 
 @Initialize {
     InitFrame();
     InitSystemCommonData();
+    InitAsciiList();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
@@ -18,39 +20,24 @@
 @Event {
 	alternative (GetEventType())
 	case (EV_START_BOSS_SPELL) {
-		//TODO magic circle
+		//TODO magic circle?
 	}
-	case (EV_GAIN_SPELL) {
-		_objScene = GetEnemyBossSceneObjectID();
-		int score = ObjEnemyBossScene_GetInfo(_objScene, INFO_SPELL_SCORE);
-		TGainSpell(score);
+	case (EV_GAIN_SPELL) { //This returns the value set in the single, not affected by time.
+        int score = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
+        score -= score % 10; //round to nearest 10
+		TSpellBonus(score);
 	}
+    case (EV_CANCEL_BONUS) {
+        int score = GetEventArgument(0);
+        TCancelBonus(score);
+    }
     case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
         SystemInit();
         InitDisplay();
     }
 }
 
-@MainLoop {
-	yield;
-}
-
-//----------------------------------------------------
-//STG Window Frame
-//----------------------------------------------------
-function<void> InitDisplay() {
-    TIntro();   
-    Difficulty();
-    THighScore();
-    TScore();
-    TBossLife();
-    TBossTimer();
-    TPlayerLife();
-    TPlayerSpell();
-    TGraze();
-    if (!IsReplay()) TFPS();
-    else TReplayFPS();
-}
+@MainLoop {yield;}
 
 //----------------------------------------------------
 //Common Data

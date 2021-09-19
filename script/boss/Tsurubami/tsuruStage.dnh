@@ -16,7 +16,7 @@ bool _start = false;
 
 @Event {
     alternative (GetEventType())
-    case (EV_START_STAGE) _start = true;
+    case (EV_STAGE_START) _start = true;
     case (EV_STAGE_INTRO_START) {
         SetPauseEnable(true);
     } 

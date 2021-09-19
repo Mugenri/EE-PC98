@@ -11,11 +11,12 @@ const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/
 //Event Constants
 
 //Stage Constants
+const int EV_STAGE_START        = EV_USER_STAGE + 1; //Starts the dialogue/plural scripts after the stage intro animation completes
+const int EV_STAGE_INTRO_START  = EV_USER_STAGE + 2; //Stage intro fade begins and player can move/shoot/pause the game
 
 //System Constants
 const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1; //Create Item, pass (x, y, TYPE_CONSTANT)
-const int EV_START_STAGE        = EV_USER_SYSTEM + 2; //Starts the dialogue/plural scripts after the stage intro animation completes
-const int EV_STAGE_INTRO_START  = EV_USER_SYSTEM + 3; //Stage intro fade begins and player can move/shoot/pause the game
+const int EV_CANCEL_BONUS       = EV_USER_SYSTEM + 2; //Bullet cancel score bonus text, pass (score)
 
 //Package Constants
 const int EV_PLAY_BGM           = EV_USER_PACKAGE + 1; //Stops current track, plays new track. pass (trackID, fade, delay)
