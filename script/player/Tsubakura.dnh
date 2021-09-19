@@ -49,17 +49,16 @@ task TShot() {
     task TCreateLaser() { //Hitbox
         int objLaser = ObjShot_Create(OBJ_STRAIGHT_LASER);
         ObjShot_SetGraphic(objLaser, 1);
-        ObjShot_SetDamage(objLaser, 4);
-        ObjLaser_SetIntersectionWidth(objLaser, 2);
-        ObjLaser_SetLength(objLaser, 600);
+        ObjShot_SetDamage(objLaser, 3);
+        Obj_SetVisible(objLaser, false);
         ObjShot_SetAutoDelete(objLaser, false);
-        ObjLaser_SetInvalidLength(objLaser, 0, 0);
-        ObjStLaser_SetAngle(objLaser, 270);
         ObjShot_Regist(objLaser);
+        
 
         while (!Obj_IsDeleted(_objPlayer)) {
             ObjMove_SetPosition(objLaser, GetPlayerX(), GetPlayerY());
             ObjShot_SetIntersectionEnable(objLaser, Shooting() && !IsPlayerSpellActive() && Alive());
+            ObjShot_SetIntersectionLine(objLaser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - 600, 2);
             yield;
         }
         Obj_Delete(objLaser);
