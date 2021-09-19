@@ -272,10 +272,10 @@ function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, in
             int[] nodes = ObjCrLaser_GetNodePointerList(hitbox);
             for each (node in nodes) {
                 real[] pos = ObjCrLaser_GetNodePosition(hitbox, node);
-                ObjParticleList_SetPosition(_effectParticle, pos[0], pos[1], 1);
-                ObjParticleList_SetColor(_effectParticle, color_);
-                ObjParticleList_SetExtraData(_effectParticle, 0, 3, 0);
-                ObjParticleList_AddInstance(_effectParticle);
+                ObjParticleList_SetPosition(_effectParticle16, pos[0], pos[1], 1);
+                ObjParticleList_SetColor(_effectParticle16, color_);
+                ObjParticleList_SetExtraData(_effectParticle16, 0, 3, 0);
+                ObjParticleList_AddInstance(_effectParticle16);
             }
             yield;
         }
