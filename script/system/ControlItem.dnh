@@ -20,8 +20,9 @@
     case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, SHOT_SCORE, 100); //TODO this should probably be assumed 0
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 0);
 
+        //Delete effects
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) DeleteEffectShot(obj);
         else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
@@ -30,14 +31,14 @@
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, SHOT_SCORE, 12800); //assume all shots without an assigned score are max value
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 0); //assume all shots without an assigned score are no score
 
         //create item in place of bullet
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
+        //Text and delete effects
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            _objScene = GetEnemyBossSceneObjectID();
-            if (ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL)) AsciiScoreNum(pos[0], pos[1], score);
+            if (score != 0) AsciiScoreNum(pos[0], pos[1], score);
             DeleteEffectShot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
     }
@@ -58,6 +59,7 @@
             WriteLog("No Power System");
         }
         case (ITEM_SCORE) {
+            AddPoint(1);
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
                 color = COLOR_YELLOW_L;
