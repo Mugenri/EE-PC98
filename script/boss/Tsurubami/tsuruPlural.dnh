@@ -29,8 +29,6 @@ task TPlural() {
     ObjEnemyBossScene_LoadInThread(obj);
     ObjEnemyBossScene_Regist(obj);
 
-    StartBGM(1, 0, 0);
-
     while (!Obj_IsDeleted(obj)) {
         yield;
     }

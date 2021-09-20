@@ -36,10 +36,16 @@ task TStage() {
     
     string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
+    yield; //this is fine
     StartScript(ID);
+    StartBGM(1, 0, 0);
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
         yield;
     }
     wait(60);
+    //after stage dialogue
+    wait(60);
+    //end score?
+    //maybe wait for input or something
     CloseStgScene();
 }
