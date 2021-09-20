@@ -582,7 +582,7 @@ task TCancelBonus(int score_) {
     }
     
     //get length of score number
-    int numLength = 0;
+    int numLength = score_ == -1 ? 0 : 1;
     int tempScore = score_;
     while (tempScore >= 10) {
         tempScore /= 10;
@@ -593,7 +593,7 @@ task TCancelBonus(int score_) {
 
     //move text
     for (int i = 39; i >= 0; i--) { 
-        ObjRender_SetX(objText, 97 + i * 8); //align with cancel bonus text
+        ObjRender_SetX(objText, 97 + i * 8);
         yield;
     }
     //hold position
