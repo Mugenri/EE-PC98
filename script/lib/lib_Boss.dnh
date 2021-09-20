@@ -15,6 +15,7 @@ int intersectionPlayer = 24;
 function<void> InitBoss() {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
     InitCommon();
+    InitEffectParticle();
     //if spell practice, set variables
     LoadShotData();
 }

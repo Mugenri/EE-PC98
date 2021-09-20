@@ -1,7 +1,14 @@
 //Particle Effect library
 
-int _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
-ParticleListShader(_effectParticle16, 16/512, 16/512);
+int _effectParticle16;
+int _effectParticle32;
+
+function<void> InitEffectParticle() {
+    _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
+    ParticleListShader(_effectParticle16, 16/512, 16/512);
+    _effectParticle32 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 32, 32);
+    ParticleListShader(_effectParticle32, 32/512, 32/512);
+}
 
 function<void> Particle_ContractRing(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int count_, int color_) {
     async {
@@ -23,4 +30,45 @@ function<void> Particle_CreateRing(real x_, real y_, real angle_, real radius_, 
         ObjParticleList_AddInstance(_effectParticle16);
         angle_ += 360 / count_;
     }
+}
+
+function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real radiusH_, real angle_, int count_) {
+    real angleT = 0;
+    real frame = 0;
+    real xStep = radiusW_;
+    real yStep = radiusH_;
+    async {
+        while (frame < 8) {
+            loop (count_) {
+                real[] pos = Rotate2D(radiusW_ * cos(angleT), radiusH_ * sin(angleT), angle_);
+                ObjParticleList_SetPosition(_effectParticle16, x_ + pos[0], y_ + pos[1], 0);
+                ObjParticleList_SetExtraData(_effectParticle16, trunc(frame), 1, 0);
+                ObjParticleList_AddInstance(_effectParticle16);
+
+                angleT += 360/count_;
+            }
+            radiusW_ += xStep;
+            radiusH_ += yStep;
+            frame += 1/5;
+            yield;
+        }
+    }
+}
+
+function<void> Particle_ExplosionBig() {
+
+}
+
+function<void> Particle_RandomExplosionSmall() {
+    int type = rand_int(0, 1);
+    alternative(type)
+    case (0) Particle_ExplosionSmall(MID_X, 60, 7.5, 7.5, 0, 64); //circle
+    case (1) { //ellipse
+        real angleT = rand_int(0, 3) * 45;
+        Particle_ExplosionSmall(MID_X, 60, 10, 5, angleT, 64);
+    }
+}
+
+function<void> Particle_RandomExplosionBig() {
+
 }
