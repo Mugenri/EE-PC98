@@ -1,13 +1,13 @@
 //Particle Effect library
 
 int _effectParticle16;
-int _effectParticle32;
+int _effectParticle64;
 
 function<void> InitEffectParticle() {
     _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
     ParticleListShader(_effectParticle16, 16/512, 16/512);
-    _effectParticle32 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 32, 32);
-    ParticleListShader(_effectParticle32, 32/512, 32/512);
+    _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 64, 64);
+    ParticleListShader(_effectParticle64, 64/512, 64/512);
 }
 
 function<void> Particle_ContractRing(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int count_, int color_) {
@@ -55,20 +55,55 @@ function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real rad
     }
 }
 
-function<void> Particle_ExplosionBig() {
+function<void> Particle_ExplosionBig(real x_, real y_) {
+    real angleT = 0;
+    real frame = 0;
+    real step = 10;
+    real radius = 0;
+    async {
+        while (frame < 16) {
+            loop (16) { //explosion ring
+                ObjParticleList_SetPosition(_effectParticle64, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 0);
+                ObjParticleList_SetExtraData(_effectParticle64, trunc(frame % 4), 4, 0);
+                ObjParticleList_AddInstance(_effectParticle64);
 
-}
+                angleT += 360 / 16;
+            }
+            //flame ball on boss location
+            ObjParticleList_SetPosition(_effectParticle64, x_, y_, 0);
+            ObjParticleList_SetExtraData(_effectParticle64, trunc(frame / 2), 5, 0); //half frame rate
+            ObjParticleList_AddInstance(_effectParticle64);
 
-function<void> Particle_RandomExplosionSmall() {
-    int type = rand_int(0, 1);
-    alternative(type)
-    case (0) Particle_ExplosionSmall(MID_X, 60, 7.5, 7.5, 0, 64); //circle
-    case (1) { //ellipse
-        real angleT = rand_int(0, 3) * 45;
-        Particle_ExplosionSmall(MID_X, 60, 10, 5, angleT, 64);
+            radius += step;
+            frame += 1/4;
+            yield;
+        }
     }
 }
 
-function<void> Particle_RandomExplosionBig() {
+function<void> Particle_RandomExplosionSmall(real x_, real y_) {
+    int type = rand_int(0, 1);
+    alternative(type)
+    case (0) Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64); //circle
+    case (1) { //random ellipse
+        real angleT = rand_int(0, 3) * 45;
+        Particle_ExplosionSmall(x_, y_, 10, 5, angleT, 64);
+    }
+}
 
+function<void> Particle_RandomExplosionBig(real x_, real y_) {
+    int type = 0;
+    alternative(type)
+    case (0) { //circle & vertical ellipses
+        Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
+        //TODO sfx
+        wait(20);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
+        wait(20);
+        Particle_ExplosionBig(x_, y_);
+    }
+    //TODO add more effects
+
+    Primitive_ScreenFlashFinal();
 }

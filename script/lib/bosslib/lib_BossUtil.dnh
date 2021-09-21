@@ -35,14 +35,13 @@ task Boss_Finalize(int obj_, bool isFinal_) {
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
     bool isCapture = ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) > 0 ? false : true;
 
-    //TODO explosion effects
-    //yield here or something while final explosion is happening
-    //make sure the player can't fuckin die while its happening
     if (isFinal_) {
-        Particle_RandomExplosionBig();
-        //this should be blocking
+        SetPlayerInvincibilityFrame(60);
+        Particle_RandomExplosionBig(xPos, yPos); //this function is blocking
+        Obj_SetVisible(obj_, false);
+        StartSlow(TARGET_ALL, 30);
     } else {
-        Particle_RandomExplosionSmall();
+        Particle_RandomExplosionSmall(xPos, yPos);
     }
 
     //Items and Bullet Cancel score values (only for spell cards)
@@ -75,7 +74,9 @@ task Boss_Finalize(int obj_, bool isFinal_) {
     }
     DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
     if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
-    wait(120);
+    wait(60);
+    StopSlow(TARGET_ALL);
+    wait(60);
     //Setup boss init position for next single
     xPos = ObjMove_GetX(obj_);
     yPos = ObjMove_GetY(obj_);

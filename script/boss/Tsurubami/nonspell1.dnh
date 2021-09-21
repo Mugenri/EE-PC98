@@ -8,7 +8,7 @@
 
 int _objBoss;
 int _count = -240; //Give time for transitions and everything to play
-int _loopTime = 90;
+int _loopTime = 60;
 
 //TODO support for survival spells and spell timeouts
 @Event {
@@ -35,20 +35,20 @@ int _loopTime = 90;
 
 @MainLoop {
     _bossAlive = Boss_CheckAlive(_objBoss);
-    Boss_Intersection(_objBoss, intersectionShot, intersectionPlayer);
-    //set another boss intersection here for 2 hitboxes?
-    if (_count % _loopTime == 0 && _count >= 0) {
-        async {
-            //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
-            //Transition_Tilt(true); //TODO need to find a way to control the background with this
-            TPatternI();
-            //ObjMove_SetDestAtFrame(_objBoss, rand(30, 180), rand(30, 90), 60);
-            //TPatternB(1);
-            //CreateItem(MID_X, 90, ITEM_BOMB);
+    if (_bossAlive) {
+        Boss_Intersection(_objBoss, intersectionShot, intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
+                //Transition_Tilt(true); //TODO need to find a way to control the background with this
+                TPatternO();
+                //ObjMove_SetDestAtFrame(_objBoss, rand(30, 180), rand(30, 90), 60);
+                //TPatternB(1);
+                //CreateItem(MID_X, 90, ITEM_BOMB);
+            }
         }
+        _count++;
     }
-    _count++;
-
     yield;
 }
 
@@ -61,7 +61,8 @@ task TInitialize() {
 
 task TFinalize() {
     while (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) > 0) yield;
-    Boss_Finalize(_objBoss);
+    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    Boss_Finalize(_objBoss, true);
 }
 
 task TPatternA() {
@@ -188,6 +189,7 @@ task TPatternI() {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
     wait(20);
+    if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
     int shot1 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
     int shot2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
     ObjShot_SetSpellResist(shot1, true);

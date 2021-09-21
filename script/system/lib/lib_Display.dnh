@@ -3,6 +3,7 @@
 
 int _displayList; //UI display numbers/icons
 int _scoreBonusList; //Spell bonus/cancel bonus numbers
+bool _bonusIsReady = false; //used to sync the appearance of the spell bonus/cancel bonus effects
 
 //----------------------------------------------------
 //Initialize Display
@@ -508,6 +509,8 @@ task TPointItem() {
 //Spell Bonus Display
 //----------------------------------------------------
 task TSpellBonus(int score_) {
+    while (!_bonusIsReady) yield;
+    _bonusIsReady = false;
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
@@ -568,6 +571,7 @@ task TSpellBonus(int score_) {
 //Bullet Cancel Score Total Display
 //----------------------------------------------------
 task TCancelBonus(int score_) {
+    _bonusIsReady = true;
     //Bonus!! Text
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objText, IMG_SYSTEM_TEXT);

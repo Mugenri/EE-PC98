@@ -61,3 +61,53 @@ function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radi
     }
     return polygon;
 }
+
+function<void> Primitive_ScreenFlashFinal() {
+    int mask = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(mask, PRIMITIVE_TRIANGLESTRIP);
+    ObjPrim_SetVertexCount(mask, 4);
+    Obj_SetRenderPriorityI(mask, RP_STG_MAX);
+
+    ObjPrim_SetVertexPosition(mask, 0, 0, 0, 1);
+    ObjPrim_SetVertexPosition(mask, 1, MAX_X, 0, 1);
+    ObjPrim_SetVertexPosition(mask, 2, 0, MAX_Y, 1);
+    ObjPrim_SetVertexPosition(mask, 3, MAX_X, MAX_Y, 1);
+
+    for (int i = 0; i < 4; i++) {
+        ObjPrim_SetVertexColor(mask, i, COLOR_WHITE);
+    }
+
+    async { //camera shake
+        loop (15) {
+            Set2DCameraFocusX(MID_X + (rand_int(0, 1) == 0 ? 1 : -1) * 8);
+            Set2DCameraFocusY(MID_Y + (rand_int(0, 1) == 0 ? 1 : -1) * 8);
+            yield;
+        }
+        Set2DCameraFocusX(MID_X);
+        Set2DCameraFocusY(MID_Y);
+    }
+
+    async { //screen flash
+        loop (4) {
+            for (int i = 0; i < 4; i++) {
+                ObjPrim_SetVertexAlpha(mask, i, 0);
+            }
+            yield;
+            for (int i = 0; i < 4; i++) {
+                ObjPrim_SetVertexAlpha(mask, i, 255 * 0.5);
+            }
+            yield;
+        }
+        real alpha = (255 * 0.5);
+        int frames = 5;
+        loop (frames) {
+            alpha -= 255 * 0.5 / frames;
+            ObjPrim_SetVertexAlpha(mask, 0, alpha);
+            ObjPrim_SetVertexAlpha(mask, 1, alpha);
+            ObjPrim_SetVertexAlpha(mask, 2, alpha);
+            ObjPrim_SetVertexAlpha(mask, 3, alpha);
+            wait(2);
+        }
+        Obj_Delete(mask);
+    }
+}
