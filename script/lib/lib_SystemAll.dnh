@@ -18,13 +18,16 @@ function<void> StartDialogueScript(string path_) { NotifyEvent(GetPackageStageSc
 function<int> GetAudioScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", -1)); }
 // --- BGM Functions --- //
 //Play track
-function<void> StartBGM(int trackID_, int fade_, int delay_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [trackID_, fade_, delay_]); }
+function<void> StartBGM(int trackID_, int fade_, int delay_) {
+    NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, trackID_, fade_, delay_);
+    NotifyEvent(GetStageScriptID(), EV_PLAY_BGM, trackID_, delay_);
+    }
 //Pause track
 function<void> StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
 function<void> RestartBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
 //Reset track
-function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, [-1, 0, 0]); }
+function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, -1, 0, 0); }
 
 function<int> GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
 

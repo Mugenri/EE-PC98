@@ -38,10 +38,10 @@ const string[] SOUNDS = [
     alternative (GetEventType())
     //BGM events
     case (EV_PLAY_BGM) { //Set common data for TMain to use
-        _currentBGM = GetEventArgument(0)[0];
-        SetAreaCommonData(AREA_TITLE, "BGM_ID", GetEventArgument(0)[0]); //track ID in BGMData.dnh
-        SetAreaCommonData(AREA_TITLE, "BGM_Fade", GetEventArgument(0)[1]); //fade out time in frames
-        SetAreaCommonData(AREA_TITLE, "BGM_Delay", GetEventArgument(0)[2]); //delay track start time in frames
+        _currentBGM = GetEventArgument(0);
+        SetAreaCommonData(AREA_TITLE, "BGM_ID", _currentBGM); //track ID in BGMData.dnh
+        SetAreaCommonData(AREA_TITLE, "BGM_Fade", GetEventArgument(1)); //fade out time in frames
+        SetAreaCommonData(AREA_TITLE, "BGM_Delay", GetEventArgument(2)); //delay track start time in frames
     }
     case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         _flagStop = GetEventArgument(0);
