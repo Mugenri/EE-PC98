@@ -18,13 +18,14 @@ function<void> StartDialogue() { //call to start dialogue sequence
     TCreateTextBoxes(); //player and enemy text boxes
     _playerText = CreateDialogueText(false);
     _bossText = CreateDialogueText(true);
-    wait(48);
+    wait(48); //animation time
 }
 
 function<void> EndDialogue() { //call to end dialogue sequence
     Obj_Delete(_playerText);
     Obj_Delete(_bossText);
     _endDialogue = true;
+    wait(48); //animation time
 }
 
 task TCreateTextBoxes() {
@@ -42,7 +43,15 @@ task TCreateTextBoxes() {
     ChangeFrame(enemyBox, 2, true);
 
     while (!_endDialogue) yield;
-    //maybe fade out animation here?
+    //fade out animation
+    wait(12);
+    ChangeFrame(playerBox, 1, false);
+    ChangeFrame(enemyBox, 1, true);
+    wait(12);
+    ChangeFrame(playerBox, 0, false);
+    ChangeFrame(enemyBox, 0, true);
+    wait(12);
+
     Obj_Delete(playerBox);
     Obj_Delete(enemyBox);
 

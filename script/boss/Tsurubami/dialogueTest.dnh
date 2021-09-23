@@ -45,6 +45,9 @@ function<void> Dialogue() {
         line++;
         WaitForInput();
     }
+    //Dialogue end
+    Obj_Delete(playerCutin);
+    Obj_Delete(bossCutin);
 
     function<bool> DialogueLine(int line_) {
         //-----------------------------
