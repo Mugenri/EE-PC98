@@ -243,14 +243,33 @@ task TBossLife() {
     ObjPrim_SetVertexCount(objLife, 4);
     ObjRender_SetPosition(objLife, 448, 148, 1);
 
-    //Max Text
-    int maxText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(maxText, IMG_SYSTEM_TEXT);
-    ObjSprite2D_SetSourceRect(maxText, 16, 337, 64, 348);
-    ObjSprite2D_SetDestRect(maxText, 0, 0, 48, 11);
-    Obj_SetRenderPriorityI(maxText, RP_UI_TEXT);
-    ObjRender_SetPosition(maxText, 529, 145, 1);
-    Obj_SetVisible(maxText, false);
+    //Lifebar underline
+    int objLine = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(objLine, PRIMITIVE_LINESTRIP);
+    Obj_SetRenderPriorityI(objLine, RP_UI_TEXT);
+    ObjPrim_SetVertexCount(objLine, 2);
+    ObjRender_SetPosition(objLine, 448, 156, 1);
+    ObjPrim_SetVertexPosition(objLine, 0, 0, 0, 1);
+    ObjPrim_SetVertexPosition(objLine, 1, 128, 0, 1);
+    Obj_SetVisible(objLine, false);
+
+    //lifebar heart icon
+    int objIcon = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objIcon, IMG_SYSTEM_TEXT);
+    ObjSprite2D_SetSourceRect(objIcon, 52, 339, 62, 348);
+    ObjSprite2D_SetDestRect(objIcon, 0, 0, 10, 9);
+    Obj_SetRenderPriorityI(objIcon, RP_UI_TEXT);
+    ObjRender_SetPosition(objIcon, 567, 147, 1);
+    Obj_SetVisible(objIcon, false);
+
+    //Max Life Text
+    int objMax = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objMax, IMG_SYSTEM_TEXT);
+    ObjSprite2D_SetSourceRect(objMax, 0, 336, 52, 349);
+    ObjSprite2D_SetDestRect(objMax, 0, 0, 52, 13);
+    Obj_SetRenderPriorityI(objMax, RP_UI_TEXT);
+    ObjRender_SetPosition(objMax, 526, 144, 1);
+    Obj_SetVisible(objMax, false);
 
 	int lastRemStep = -1;
 	real lifeRateRender = 0;
@@ -302,11 +321,11 @@ task TBossLife() {
 		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(objLife, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(objLife, 1, 0, 8, 1);
-        ObjPrim_SetVertexPosition(objLife, 2, 129 * lifeRatio, 0, 1);
-        ObjPrim_SetVertexPosition(objLife, 3, 129 * lifeRatio, 8, 1);
+        ObjPrim_SetVertexPosition(objLife, 2, 128 * lifeRatio, 0, 1);
+        ObjPrim_SetVertexPosition(objLife, 3, 128 * lifeRatio, 8, 1);
 
         //Max Text
-        Obj_SetVisible(maxText, lifeRatio >= 1);
+        Obj_SetVisible(objMax, lifeRatio >= 1);
 
         //Life Color
         int color = COLOR_WHITE;
@@ -316,14 +335,19 @@ task TBossLife() {
         else if (lifeRatio < 1) color = COLOR_YELLOW;
 
         ascent (i in 0..4) ObjPrim_SetVertexColor(objLife, i, color);
+        ascent (i in 0..2) ObjPrim_SetVertexColor(objLine, i, color);
+        ObjRender_SetColor(objIcon, color);
 
         //attempt to increase health render bar until it reaches max
 		lifeRateRender += 0.01;
 		lifeRateRender = min(lifeRateRender, 1);
 		lastRemStep = countRemStep;
 
-        //if no boss present, hide Enemy!! text
-        Obj_SetVisible(objText, lifeTotal > 0 || countRemStep != 0);
+        //if no boss present, hide Enemy!! text and life underline
+        bool visible = lifeTotal > 0 || countRemStep != 0;
+        Obj_SetVisible(objText, visible);
+        Obj_SetVisible(objLine, visible);
+        Obj_SetVisible(objIcon, visible);
 	}
 }
 
@@ -350,7 +374,7 @@ task TBossTimer() {
         if (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) <= 0) timer = 0;
 
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 1, 129 * (timer/timerTotal) , 0, 1);
+        ObjPrim_SetVertexPosition(obj, 1, 128 * (timer/timerTotal) , 0, 1);
         ObjPrim_SetVertexColor(obj, 0, COLOR_WHITE);
         ObjPrim_SetVertexColor(obj, 1, COLOR_WHITE);
 
