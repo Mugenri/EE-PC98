@@ -145,8 +145,8 @@ function<void> Difficulty() {
 	ObjText_SetVertexColor(objText, 0xFF000000 + colors[diff]);
 	ObjText_SetFontBorderType(objText, BORDER_NONE);
 	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
-	ObjRender_SetPosition(objText, 420, 20, 1);
-    ObjText_SetMaxWidth(objText, 186);
+	ObjRender_SetPosition(objText, 448, 20, 1);
+    ObjText_SetMaxWidth(objText, 128);
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
 }
 
@@ -161,7 +161,7 @@ task THighScore() { //TODO make this the actual high score
     ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
-    ObjRender_SetPosition(objScore, 480, 48, 1);
+    ObjRender_SetPosition(objScore, 486, 48, 1);
 
 	// Digits
 	int count = 8;
@@ -197,7 +197,7 @@ task TScore() { //TODO add support for scores > 100_000_000
     ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
 	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
-    ObjRender_SetPosition(objScore, 488, 80, 1);
+    ObjRender_SetPosition(objScore, 493, 80, 1);
 
 	// Digits
 	int count = 8;
