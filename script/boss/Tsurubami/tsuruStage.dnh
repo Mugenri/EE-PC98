@@ -4,6 +4,7 @@
 #System["./../../system/System.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Stage.dnh"
 #include "./background.dnh"
 
 bool _start = false;
@@ -14,18 +15,20 @@ bool _start = false;
     TStage();
 }
 
-@Event {
+@Event { //TODO consider putting event block into a stage library
     alternative (GetEventType())
+    case (EV_STAGE_INTRO_START) SetPauseEnable(true);
     case (EV_STAGE_START) _start = true;
-    case (EV_STAGE_INTRO_START) {
-        SetPauseEnable(true);
-    } 
+    case (EV_PLAY_BGM) {
+        wait(GetEventArgument(1));
+        Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
+    }
+    //event here sets generic value for switching between backgrounds
 }
 
 @MainLoop {yield;}
 
-@Finalize {
-}
+@Finalize {}
 
 task TStage() {
     string csd = GetCurrentScriptDirectory();

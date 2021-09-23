@@ -31,6 +31,8 @@ function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, -1, 0, 
 
 function<int> GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
 
+function<string> GetBGMName(int trackID_) { return(NotifyEvent(GetAudioScriptID(), EV_GET_BGM_NAME, trackID_)); }
+
 // --- SFX Functions --- //
 function<void> CallSFX(int soundID_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID_); }
 

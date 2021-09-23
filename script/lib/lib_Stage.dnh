@@ -1,0 +1,69 @@
+//Stage function library
+
+function<void> Stage_SetBGMText(string text_) {
+    int objText = CreateText(0, MAX_Y - 17, RP_STG_MAX, text_, COLOR_WHITE);
+    ObjText_SetMaxWidth(objText, MAX_X - 1);
+    ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+    Obj_SetVisible(objText, false);
+
+    real width = ObjText_GetTotalWidth(objText);
+    int steps = (round(width / 16)); //number of particles to spawn
+    int notePos = (MAX_X - width - 24); //x position of note graphic
+
+    //music note
+    int note = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(note, IMG_SYSTEM_TEXT);
+    ObjSprite2D_SetSourceRect(note, 0, 224, 16, 240);
+    ObjSprite2D_SetDestRect(note, 0, 0, 16, 16);
+    ObjRender_SetColor(note, COLOR_YELLOW);
+    ObjRender_SetPosition(note, notePos, MAX_Y - 17, 1);
+    Obj_SetVisible(note, false);
+
+    int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, 0, 192, 32, 224);
+    ParticleListShader(particles, 32/512, 32/512);
+
+    real frame = 0;
+    async {
+        yield; //stops if stage script is paused
+        while (frame < 6) { //particles in
+            UpdateParticle(0);
+            frame += 1/4;
+            WriteLog(frame);
+            yield;
+        }
+        //show text/note icon
+        Obj_SetVisible(objText, true);
+        Obj_SetVisible(note, true);
+
+        while (frame < 12) { //rest of animation
+            UpdateParticle(0);
+            frame += 1/4;
+            yield;
+        }
+
+        wait(128);
+        Obj_Delete(objText);
+        Obj_Delete(note);
+
+        frame = 0;
+        while (frame < 12) { //particles out
+            UpdateParticle(1);
+            frame += 1/4;
+            yield;
+        }
+
+        function<void> UpdateParticle(bool isOut_) { //bool value used as 0 or 1
+            for (int i = 0; i < steps; i++) {
+                ObjParticleList_SetPosition(particles, MAX_X - 9 - 16 * i, MAX_Y - 9, 1);
+                ObjParticleList_SetExtraData(particles, trunc(frame), isOut_, 0);
+                ObjParticleList_SetColor(particles, COLOR_WHITE);
+                ObjParticleList_AddInstance(particles);
+            }
+            //particle for music note
+            ObjParticleList_SetPosition(particles, notePos + 9, MAX_Y - 9, 1);
+            ObjParticleList_SetExtraData(particles, trunc(frame), isOut_, 0);
+            ObjParticleList_SetColor(particles, COLOR_YELLOW);
+            ObjParticleList_AddInstance(particles);
+        }
+    }
+}

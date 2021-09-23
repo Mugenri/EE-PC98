@@ -47,7 +47,7 @@ const string[] SOUNDS = [
         _flagStop = GetEventArgument(0);
     }
     case (EV_GET_BGM_NAME) {
-        string info = GetBGMText(GetEventArgument(0));
+        string[] info = GetBGMText(GetEventArgument(0));
         SetScriptResult(info[0]);
     }
     //SFX events
