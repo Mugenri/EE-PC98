@@ -29,8 +29,7 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
 
     SetPlayerSpeed(speed_, focusSpeed_);
 
-    NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_PLAYER_LOADED, 0);
-    //Starts the stage intro
+    NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_PLAYER_LOADED, 0); //Starts the stage intro
 }
 
 function<void> PlayerEvent() {
@@ -43,15 +42,9 @@ function<void> PlayerEvent() {
 			TSpell(); //THIS MUST BE DEFINED BY THE PLAYER SCRIPT
 		} else SetScriptResult(false);
 	}
-	case (EV_HIT) {
-		THit();
-	}
-    case (EV_PLAYER_SHOOTDOWN) {
-        TMiss();
-    }
-	case (EV_PLAYER_REBIRTH) {
-        TRebirth();
-	}
+	case (EV_HIT) THit();
+    case (EV_PLAYER_SHOOTDOWN) TMiss();
+	case (EV_PLAYER_REBIRTH) TRebirth();
     case (EV_GRAZE) {
         int[] objList = GetEventArgument(1); //list of bullets grazed in last frame
         

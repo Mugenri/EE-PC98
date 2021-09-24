@@ -27,9 +27,7 @@ int _countShot = 0;
     yield;
 }
 
-@Event {
-    PlayerEvent();
-}
+@Event { PlayerEvent(); }
 
 @Finalize {}
 
