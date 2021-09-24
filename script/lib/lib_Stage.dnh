@@ -1,5 +1,16 @@
 //Stage function library
 
+function<void> StageEvent() {
+    alternative (GetEventType())
+    case (EV_STAGE_INTRO_START) SetPauseEnable(true);
+    case (EV_STAGE_START) _start = true;
+    case (EV_PLAY_BGM) {
+        wait(GetEventArgument(1));
+        Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
+    }
+    //event here sets generic value for switching between backgrounds
+}
+
 function<void> Stage_SetBGMText(string text_) {
     int objText = CreateText(0, MAX_Y - 17, RP_STG_MAX, text_, COLOR_WHITE);
     ObjText_SetMaxWidth(objText, MAX_X - 1);
