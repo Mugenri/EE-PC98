@@ -74,7 +74,7 @@ task Boss_Finalize(int obj_, bool isFinal_) {
     }
     DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
     if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
-    wait(60);
+    wait(64); //explosion time
     StopSlow(TARGET_ALL);
     wait(60);
     //Setup boss init position for next single
