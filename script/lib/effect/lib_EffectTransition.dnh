@@ -1,6 +1,10 @@
 //Spell/background transition library
 
-function<void> Transition_Tilt(bool startSpell_) {
+function<void> Transition_BG(int index_) { //change background to selected index
+    NotifyEvent(GetStageScriptID(), EV_CHANGE_BG, index_);
+}
+
+function<void> Transition_Tilt(int index_, bool startSpell_) {
     int transition = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(transition, IMG_EFFECT_TRANSITION);
     ObjSprite2D_SetSourceRect(transition, 0, 0, 24, 23);
@@ -15,6 +19,7 @@ function<void> Transition_Tilt(bool startSpell_) {
             wait(5);
         }
         if (startSpell_) ObjEnemyBossScene_StartSpell(GetEnemyBossSceneObjectID());
+        Transition_BG(index_);
         loop (8) {
             ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
             frame++;

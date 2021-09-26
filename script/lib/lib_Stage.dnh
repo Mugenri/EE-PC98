@@ -1,6 +1,6 @@
 //Stage function library
 
-function<void> StageEvent() {
+function<void> Stage_Event() {
     alternative (GetEventType())
     case (EV_STAGE_INTRO_START) SetPauseEnable(true);
     case (EV_STAGE_START) _start = true;
@@ -8,7 +8,7 @@ function<void> StageEvent() {
         wait(GetEventArgument(1));
         Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
     }
-    //event here sets generic value for switching between backgrounds
+    case(EV_CHANGE_BG) { UpdateBackground(GetEventArgument(0)); }
 }
 
 function<void> Stage_SetBGMText(string text_) {

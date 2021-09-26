@@ -40,7 +40,6 @@ int _loopTime = 60;
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
-                //Transition_Tilt(true); //TODO need to find a way to control the background with this
                 TPatternO();
                 //ObjMove_SetDestAtFrame(_objBoss, rand(30, 180), rand(30, 90), 60);
                 //TPatternB(1);
@@ -54,15 +53,15 @@ int _loopTime = 60;
 
 task TInitialize() {
     wait(60);
-    Transition_Tilt(true);
+    Transition_Tilt(1, true);
     wait(120);
     ObjEnemy_SetDamageRate(_objBoss, 100, 100);
 }
 
 task TFinalize() {
     while (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) > 0) yield;
-    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
-    Boss_Finalize(_objBoss, true);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    Boss_Finalize(_objBoss, false);
 }
 
 task TPatternA() {

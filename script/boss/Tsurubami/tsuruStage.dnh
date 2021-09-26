@@ -15,7 +15,7 @@ bool _start = false;
     TStage();
 }
 
-@Event { StageEvent(); }
+@Event { Stage_Event(); }
 
 @MainLoop {yield;}
 
