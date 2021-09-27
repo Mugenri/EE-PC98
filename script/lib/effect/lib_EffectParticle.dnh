@@ -89,6 +89,7 @@ function<void> Particle_RandomExplosionSmall(real x_, real y_) {
         real angleT = rand_int(0, 3) * 45;
         Particle_ExplosionSmall(x_, y_, 10, 5, angleT, 64);
     }
+    CallSFX(SND_EXPLOSION1);
 }
 
 function<void> Particle_RandomExplosionBig(real x_, real y_) {
@@ -97,11 +98,13 @@ function<void> Particle_RandomExplosionBig(real x_, real y_) {
     case (0) { //circle & vertical ellipses
         Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64);
         Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
-        //TODO sfx
+        CallSFX(SND_EXPLOSION1);
         wait(20);
         Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
+        CallSFX(SND_EXPLOSION1);
         wait(20);
         Particle_ExplosionBig(x_, y_);
+        CallSFX(SND_EXPLOSION3);
     }
     //TODO add more effects
 

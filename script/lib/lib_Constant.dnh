@@ -61,22 +61,36 @@ const int MODE_CONTINUE = 2; //After using a continue
 
 //Sound Constants
 //Title
-const int SND_TT_SELECT = 0;
-const int SND_TT_DECIDE = 1;
-const int SND_TT_CANCEL = 2;
+const int SND_TT_SELECT = 12;
+const int SND_TT_DECIDE = 11;
+const int SND_TT_CANCEL = 10;
 //Player
-const int SND_PL_SHOT       = 3;
-const int SND_PL_GRAZE      = 4;
-const int SND_PL_HIT        = 5;
-const int SND_PL_MISS       = 6;
-const int SND_PL_VULNERABLE = 7;
-const int SND_PL_Y_SPELL1   = 8;
-const int SND_PL_Y_SPELL2   = 9;
-const int SND_PL_T_SPELL1   = 10;
-const int SND_PL_T_SPELL2   = 11;
-const int SND_PL_T_SPELL3   = 12;
-const int SND_PL_T_SPELL4   = 13;
+const int SND_PL_SHOT       = 16;
+const int SND_PL_GRAZE      = 13;
+const int SND_PL_HIT        = 14;
+const int SND_PL_MISS       = 15;
+const int SND_PL_VULNERABLE = 17;
+const int SND_PL_Y_SPELL1   = 25;
+const int SND_PL_Y_SPELL2   = 26;
+const int SND_PL_T_SPELL1   = 21;
+const int SND_PL_T_SPELL2   = 22;
+const int SND_PL_T_SPELL3   = 23;
+const int SND_PL_T_SPELL4   = 24;
 //Stage
+const int SND_SHOT1         = 18;
+const int SND_SHOT2         = 19;
+const int SND_SHOT3         = 20;
+const int SND_CHARGE        = 2;
+const int SND_LASER1        = 8;
+const int SND_LASER2        = 9;
+const int SND_EXPLOSION1    = 3;
+const int SND_EXPLOSION2    = 4;
+const int SND_EXPLOSION3    = 5;
+const int SND_BANG1         = 0;
+const int SND_BANG2         = 1;
+const int SND_ITEM          = 7;
+const int SND_INVINCIBLE    = 6;
+const int SND_TRANSITION    = 27;
 
 //Render Priority Constants
 const int RP_UI_MIN      = 0;  //Min render priority

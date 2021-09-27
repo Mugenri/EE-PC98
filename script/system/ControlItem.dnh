@@ -57,6 +57,7 @@
         alternative (type)
         case (ITEM_POW) {
             WriteLog("No Power System");
+            CallSFX(SND_ITEM);
         }
         case (ITEM_SCORE) {
             AddPoint(1);
@@ -67,7 +68,7 @@
                 score = 25600 - 25600*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
             }
-            //PLAY SFX
+            CallSFX(SND_ITEM);
         }
         case (ITEM_DREAM) {
             WriteLog("No Dream Bonus System");
@@ -75,22 +76,22 @@
         }
         case (ITEM_POW_L) {
             WriteLog("No Power System");
-            //PLAY SFX
+            CallSFX(SND_ITEM);
         }
         case (ITEM_POW_FULL) {
             WriteLog("No Power System");
-            //PLAY SFX
+            CallSFX(SND_ITEM);
         }
         case (ITEM_BOMB) {
             score = 1000;
             SetPlayerSpell(GetPlayerSpell() + 1);
-            //PLAY SFX
+            //PLAY SFX extend
             //TODO spell extend text
         }
         case (ITEM_EXTEND) {
             score = 1000;
             SetPlayerLife(GetPlayerLife() + 1);
-            //PLAY SFX
+            //PLAY SFX extend
             //TODO extend text
         }
         AddScore(score);

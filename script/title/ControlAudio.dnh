@@ -10,21 +10,34 @@ bool _flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
 //SFX globals
 int _objSFX = ObjSound_Create();
 const string[] SOUNDS = [
-    //Title
-    /*00*/ DIR_SE ~ "seMenuSelect.wav",
-    /*01*/ DIR_SE ~ "seMenuDecide.wav",
-    /*02*/ DIR_SE ~ "seMenuCancel.wav",
-    /*03*/ DIR_SE ~ "seShot.wav", 
-    /*04*/ DIR_SE ~ "seGraze.wav",
-    /*05*/ DIR_SE ~ "seHit.wav",
-    /*06*/ DIR_SE ~ "seMiss.wav",
-    /*07*/ DIR_SE ~ "seVulnerable.wav",
-    /*08*/ DIR_SE ~ "seSpellYabu1.wav",
-    /*09*/ DIR_SE ~ "seSpellYabu2.wav",
-    /*10*/ DIR_SE ~ "seSpellTsuba1.wav",
-    /*11*/ DIR_SE ~ "seSpellTsuba2.wav",
-    /*12*/ DIR_SE ~ "seSpellTsuba3.wav",
-    /*13*/ DIR_SE ~ "seSpellTsuba4.wav"
+    DIR_SE ~ "seBang1.wav",         //0
+    DIR_SE ~ "seBang2.wav",
+    DIR_SE ~ "seCharge.wav",
+    DIR_SE ~ "seExplosion1.wav",
+    DIR_SE ~ "seExplosion2.wav",
+    DIR_SE ~ "seExplosion3.wav",
+    DIR_SE ~ "seInvincible.wav",
+    DIR_SE ~ "seItem.wav",
+    DIR_SE ~ "seLaser1.wav",        
+    DIR_SE ~ "seLaser2.wav",
+    DIR_SE ~ "seMenuCancel.wav",    //10
+    DIR_SE ~ "seMenuDecide.wav",
+    DIR_SE ~ "seMenuSelect.wav",
+    DIR_SE ~ "sePlayerGraze.wav",
+    DIR_SE ~ "sePlayerHit.wav",
+    DIR_SE ~ "sePlayerMiss.wav",
+    DIR_SE ~ "sePlayerShot.wav",
+    DIR_SE ~ "sePlayerVulnerable.wav",
+    DIR_SE ~ "seShot1.wav",              
+    DIR_SE ~ "seShot2.wav",
+    DIR_SE ~ "seShot3.wav",         //20
+    DIR_SE ~ "seSpellTsuba1.wav",
+    DIR_SE ~ "seSpellTsuba2.wav",
+    DIR_SE ~ "seSpellTsuba3.wav",
+    DIR_SE ~ "seSpellTsuba4.wav",
+    DIR_SE ~ "seSpellYabu1.wav",
+    DIR_SE ~ "seSpellYabu2.wav",
+    DIR_SE ~ "seTransition.wav"
 ];
 
 @Initialize {
@@ -74,7 +87,6 @@ task TMain {
             BGMID = _currentBGM;
             int fade = GetAreaCommonData(AREA_TITLE, "BGM_Fade", -1);
             int delay = GetAreaCommonData(AREA_TITLE, "BGM_Delay", -1);
-
             TChangeBGM(BGMID, fade, delay);
         }
         yield;
