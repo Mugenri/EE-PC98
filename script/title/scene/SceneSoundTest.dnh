@@ -1,0 +1,57 @@
+//Sound test room
+
+function<void> SceneSoundTest() {
+    bool exitFlag = false;
+
+    int listSize = 27; //0 indexed
+    int indexCurrent = 0;
+
+    TCreateMenuGraphicsSound();
+
+    TMenuItem();
+
+    //no fade from previous menu, so no wait time
+    WaitKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+    loop { //Wait for input loop
+        int userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case (VK_UP, VK_LEFT) {
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, listSize);
+        }
+        case (VK_DOWN, VK_RIGHT) {
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, listSize);
+        }
+        case (VK_OK) {
+            MenuSelect();
+        }
+        case (VK_CANCEL, VK_PAUSE) {
+            break;
+        }
+    }
+    exitFlag = true;
+
+    function<void> MenuSelect() {
+        CallSFX(indexCurrent);
+    }
+
+    task TCreateMenuGraphicsSound() {
+        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
+        ObjPrim_SetTexture(bg, IMG_TT_BG);
+        Obj_SetRenderPriorityI(bg, RP_UI_BG);
+        ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
+        ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
+
+        while (!exitFlag) yield;
+        Obj_Delete(bg);
+    }
+
+    task TMenuItem() {
+        int text = CreateText(200, 200, ToString(indexCurrent), COLOR_WHITE);
+
+        while (!exitFlag) {
+            ObjText_SetText(text, ToString(indexCurrent));
+            yield;
+        }
+        Obj_Delete(text);
+    }
+}

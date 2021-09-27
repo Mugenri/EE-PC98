@@ -1,14 +1,14 @@
 //Title Screen
 
 //Menu Indices
-const int INDEX_START = 0;
-const int INDEX_EXTRA = 1;
-const int INDEX_PRACTICE = 2;
-const int INDEX_REPLAY = 3;
-const int INDEX_MUSIC = 4;
-const int INDEX_SCORE = 5;
-const int INDEX_OPTION = 6;
-const int INDEX_QUIT = 7;
+const int INDEX_EXTRA   = 0;
+const int INDEX_PRACTICE= 1;
+const int INDEX_REPLAY  = 2;
+const int INDEX_SCORE   = 3;
+const int INDEX_MUSIC   = 4;
+const int INDEX_SOUND   = 5;
+const int INDEX_OPTION  = 6;
+const int INDEX_QUIT    = 7;
 
 task TMainMenu(bool playIntro_, int selectedDefault_) {
     bool exitFlag = false; //deletes certain things upon leaving this menu
@@ -17,7 +17,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     int selectMax = INDEX_QUIT;
     int indexCurrent = selectedDefault_;
 
-    int[] forbidIndex = [INDEX_START, INDEX_PRACTICE]; //Can't select these menu options
+    int[] forbidIndex = []; //Can't select these menu options
 
     //Don't allow menu cursor to start on a forbidden index
     while (CheckForbidden(indexCurrent, forbidIndex)) {
@@ -35,9 +35,9 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     {
         int menuX = 400;
         int menuY = 244;
-        int[] xOffset = [0, 110, -30, 90, -50, 80, -20, 100];
+        int[] xOffset = [-15, 110, -30, 90, -50, 75, -20, 100];
         int yOffset = 15;
-        string[] texts = ["Start", "Extra Start", "Practice", "Replays", "Music Room", "Result", "Options", "Quit"];
+        string[] texts = ["Extra Start", "Practice", "Replays", "Result", "Music Room", "Sound Test", "Options", "Quit"];
         ascent (i in 0..selectMax + 1) {
             TCreateMenuItemMain(i, menuX, menuY, xOffset[i], yOffset, texts[i]);
             menuY += yOffset;
@@ -59,9 +59,8 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case (VK_OK) {
-            MenuSelect();
-            int temp = SelectItem(indexCurrent);
-            if (temp > 0) break;
+            SelectItem(indexCurrent);
+            break;
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
@@ -70,41 +69,39 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     function<int> SelectItem(int index_) {
+        CallSFX(SND_TT_DECIDE);
         alternative (index_)
-        case (INDEX_START) {
-            //Game Start
-            TSelectStart();
-            return 1;
-        }
+        // case (INDEX_START) {
+        //     //Game Start
+        //     TSelectStart();
+        // }
         case (INDEX_EXTRA) {
             //Extra Start
             TSelectExtra();
-            return 1;
         }
         case (INDEX_PRACTICE) {
             //Stage Practice
             TSelectPractice();
-            return 1;
         }
         case (INDEX_REPLAY) {
             //Replays
             TSelectReplay();
-            return 1;
-        }
-        case (INDEX_MUSIC) {
-            //Music Room
-            TSelectMusic();
-            return 1;
         }
         case (INDEX_SCORE) {
             //Result
             TSelectScore();
-            return 1;
+        }
+        case (INDEX_MUSIC) {
+            //Music Room
+            TSelectMusic();
+        }
+        case (INDEX_SOUND) {
+            //Sound Test
+            TSelectSound();
         }
         case (INDEX_OPTION) {
             //Options
             TSelectOption();
-            return 1;
         }
         case (INDEX_QUIT) {
             //Exit Game
@@ -112,7 +109,6 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
             ScreenBlackout(60, 200, 0, COLOR_BLACK);
             wait(80);
             ClosePackage();
-            return 1;
         }
     }
 
@@ -155,10 +151,6 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         while (!exitFlag) yield;
         Obj_Delete(objText);
     }
-    
-    function<void> MenuSelect() {
-        CallSFX(SND_TT_DECIDE);
-    }
 
     task TSelectStart() { //UNUSED
         ScreenBlackout(10, 5, 10, COLOR_BLACK);
@@ -195,7 +187,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
             }
         }
         //Only Runs if the submenu is exited
-        TMainMenu(false, INDEX_START);
+        TMainMenu(false, INDEX_EXTRA);
     }
 
     task TSelectExtra() {
@@ -265,6 +257,14 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         //Exited music menu
         StartBGM(0, 60, 15);
         TMainMenu(false, INDEX_MUSIC);
+    }
+
+    task TSelectSound() {
+        exitFlag = true;
+        SceneSoundTest();
+
+        //Exited sound test menu
+        TMainMenu(false, INDEX_PRACTICE);
     }
 
     task TSelectScore() {
