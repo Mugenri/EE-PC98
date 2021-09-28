@@ -93,27 +93,39 @@ const int SND_INVINCIBLE    = 6;
 const int SND_TRANSITION    = 27;
 
 //Render Priority Constants
-const int RP_UI_MIN      = 0;  //Min render priority
-const int RP_UI_BG       = 2;  //Menu backgrounds
-const int RP_UI_IMG      = 5;  //Menu/UI images
-const int RP_UI_TEXT     = 10; //Menu/UI text
-const int RP_STG_MIN     = 20; //Min stage render priority
-const int RP_STG_BG      = 22; //Stage backgrounds
-const int RP_STG_EFF_LOW = 24; //Effects that render over the background only
-const int RP_STG_EFF_PLR = 27; //Player effects that render over all other background elements but not enemy sprites (spell effects etc.)
-const int RP_STG_ENEMY   = 30; //Boss/Enemy sprite
-const int RP_STG_EFF_MID = 35; //Effects that render over the boss sprites, but below the player
-const int RP_STG_PLAYER  = 40; //Player sprite/bullets
-const int RP_STG_EFF_HI  = 45; //Effects that render over the player, but below bullets
-const int RP_STG_ITEM    = 50; //Items
-const int RP_STG_LASER   = 56; //Enemy Lasers
-const int RP_STG_SHOT    = 60; //Bullets
-const int RP_STG_EFF_MAX = 65; //Effects that render over bullets
-const int RP_STG_HITBOX  = 70; //Player hitbox
-const int RP_STG_TEXT    = 75; //Item pickup text
-const int RP_STG_END     = 78; //End of stage screen
-const int RP_STG_MAX     = 80; //Max stage render priority
-const int RP_UI_MAX      = 100;//Max render priority
+const int RP_UI_MIN         = 0;  //Min render priority
+const int RP_UI_BG          = 2;  //Menu backgrounds
+const int RP_UI_IMG         = 5;  //Menu/UI images
+const int RP_UI_TEXT        = 10; //Menu/UI text
+const int RP_STG_MIN        = 20; //Min stage render priority
+const int RP_STG_BG         = 21; //Background render layer
+const int RP_STG_BG1        = 22; //Background layer 1 (invalid)
+const int RP_STG_EFF_BG1    = 23; //Background layer 1 effects (invalid)
+const int RP_STG_BG2        = 24; //Background layer 2 (invalid)
+const int RP_STG_EFF_BG2    = 25; //Background layer 2 effects (invalid)
+const int RP_STG_TRANSITION = 26; //Background transition effect (invalid)
+const int RP_STG_EFF_LO     = 27; //Effects that render over the background only (particles mainly)
+const int RP_STG_EFF_SPELL  = 28; //Player spell effects that render over backgrounds
+const int RP_STG_ENEMY      = 30; //Boss/Enemy sprite
+const int RP_STG_EFF_MID    = 35; //Effects that render over the boss sprites, but below the player
+const int RP_STG_EFF_PLR_LO = 39; //Player effects that render below the player
+const int RP_STG_PLAYER     = 40; //Player sprite/bullets
+const int RP_STG_EFF_PLR_HI = 41; //Player effects that render above the player, but below other effects
+const int RP_STG_EFF_HI     = 45; //Effects that render over the player, but below bullets
+const int RP_STG_ITEM       = 50; //Items
+const int RP_STG_LASER      = 56; //Enemy Lasers
+const int RP_STG_SHOT       = 60; //Bullets
+const int RP_STG_EFF_MAX    = 65; //Effects that render over bullets
+const int RP_STG_HITBOX     = 70; //Player hitbox
+const int RP_STG_TEXT       = 75; //Item pickup text
+const int RP_STG_END        = 78; //End of stage screen
+const int RP_STG_MAX        = 80; //Max stage render priority
+const int RP_UI_MAX         = 100;//Max render priority
+
+//Render Target Constants
+const string RT_BG1     = GetReservedRenderTargetName(0); //background layer 1 (22-23)
+const string RT_BG2     = GetReservedRenderTargetName(1); //background layer 2 (24-25)
+const string RT_TRANS   = GetReservedRenderTargetName(3); //transition layer (26)
 
 //Position Constants
 const real MIN_X = 0;

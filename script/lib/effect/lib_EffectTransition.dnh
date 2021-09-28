@@ -9,7 +9,7 @@ function<void> Transition_Tilt(int index_, bool startSpell_) {
     ObjPrim_SetTexture(transition, IMG_EFFECT_TRANSITION);
     ObjSprite2D_SetSourceRect(transition, 0, 0, 24, 23);
     ObjSprite2D_SetDestRect(transition, 0, 0, 384, 368);
-    Obj_SetRenderPriorityI(transition, RP_STG_EFF_LOW);
+    Obj_SetRenderPriorityI(transition, RP_STG_TRANSITION);
 
     async {
         int frame = 0;

@@ -105,8 +105,8 @@ task TOption(int offset_) {
         ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent*rotationX, GetPlayerY() + distCurrent*sin(_count*3 + 360/6*offset_)*0.8, 1);
 
         //Render over player as if rotating around them
-        if (rotationX == 1) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
-        else if (rotationX == -1) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
+        if (rotationX == 1) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_LO);
+        else if (rotationX == -1) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_HI);
 
         Obj_SetVisible(objOption, Alive());
         yield;
@@ -270,7 +270,7 @@ task TSpell() {
             ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFF_PLR);
+            Obj_SetRenderPriorityI(circle, RP_STG_EFF_SPELL);
             ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 0..34) ObjPrim_SetVertexColor(circle, i, color_);
             ascent (i in 1..34) {

@@ -82,8 +82,8 @@ task TOption(int dir_) {
         ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent*dir_*rotationX, GetPlayerY() + distCurrent*dir_*sin(_count*5), 1);
 
         //Render over player as if rotating around them
-        if (rotationX == dir_) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
-        else if (rotationX == -dir_) Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER);
+        if (rotationX == dir_) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_LO);
+        else if (rotationX == -dir_) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_HI);
 
         Obj_SetVisible(objOption, Alive());
         yield;
@@ -216,7 +216,7 @@ task TSpell() {
             int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
             ObjPrim_SetVertexCount(line, 2);
-            Obj_SetRenderPriorityI(line, RP_STG_EFF_PLR);
+            Obj_SetRenderPriorityI(line, RP_STG_EFF_SPELL);
             ObjPrim_SetVertexPosition(line, 0, xPos_, yPos_, 1);
             ObjPrim_SetVertexPosition(line, 1, xPos_, yPos_, 1);
             ObjPrim_SetVertexColor(line, 0, 0, 0, 0);
@@ -230,7 +230,7 @@ task TSpell() {
             ObjSpell_SetDamage(circle, 5);
             ObjSpell_SetEraseShot(circle, false);
             ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFF_PLR);
+            Obj_SetRenderPriorityI(circle, RP_STG_EFF_SPELL);
             ObjPrim_SetVertexPosition(circle, 0, xPos_, yPos_, 1);
             ascent (i in 0..34) ObjPrim_SetVertexColor(circle, i, COLOR_YELLOW_D);
             ObjSpell_Regist(circle);
