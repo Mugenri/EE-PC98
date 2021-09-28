@@ -93,7 +93,7 @@ function<void> Particle_RandomExplosionSmall(real x_, real y_) {
 }
 
 function<void> Particle_RandomExplosionBig(real x_, real y_) {
-    int type = 0;
+    int type = rand_int(0, 2);
     alternative(type)
     case (0) { //circle & vertical ellipses
         Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64);
@@ -106,7 +106,31 @@ function<void> Particle_RandomExplosionBig(real x_, real y_) {
         Particle_ExplosionBig(x_, y_);
         CallSFX(SND_EXPLOSION3);
     }
-    //TODO add more effects
+    case (1) { //crosses
+        Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 0, 64);
+        CallSFX(SND_EXPLOSION1);
+        wait(20);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 45, 64);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 135, 64);
+        CallSFX(SND_EXPLOSION1);
+        wait(20);
+        Particle_ExplosionBig(x_, y_);
+        CallSFX(SND_EXPLOSION3);
+    }
+    case (2) {
+        Particle_ExplosionSmall(x_, y_, 10, 5, 45, 64);
+        CallSFX(SND_EXPLOSION1);
+        wait(10);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 135, 64);
+        CallSFX(SND_EXPLOSION1);
+        wait(10);
+        Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
+        CallSFX(SND_EXPLOSION1);
+        wait(20);
+        Particle_ExplosionBig(x_, y_);
+        CallSFX(SND_EXPLOSION3);
+    }
 
     Primitive_ScreenFlashFinal();
 }
