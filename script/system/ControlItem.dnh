@@ -4,7 +4,7 @@
 #include "./../lib/effect/lib_EffectCancel.dnh"
 
 @Initialize {
-    SystemInit();
+    InitSystem();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
     SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
