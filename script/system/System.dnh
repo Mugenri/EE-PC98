@@ -32,7 +32,7 @@
         TCancelBonus(score);
     }
     case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
-        SystemInit();
+        InitSystem();
         InitDisplay();
     }
 }

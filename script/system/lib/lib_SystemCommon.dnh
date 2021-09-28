@@ -1,6 +1,6 @@
 //System scripts common library
 #include "./../../lib/lib_Common.dnh"
 
-function<void> SystemInit() {
+function<void> InitSystem() {
     InitCommon();
 }
