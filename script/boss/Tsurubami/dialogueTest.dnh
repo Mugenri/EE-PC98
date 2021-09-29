@@ -15,9 +15,8 @@
 @Finalize {}
 
 task TBackground() {
-	string target = GetTransitionRenderTargetName();
 	int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(obj, target);
+	ObjPrim_SetTexture(obj, RT_SCREENSHOT);
     ObjRender_SetBlendType(obj, BLEND_ALPHA);
     ObjSprite2D_SetSourceRect(obj, 0, 0, 640, 400);
     ObjSprite2D_SetDestRect(obj, 0, 0, 640, 400);

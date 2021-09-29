@@ -13,7 +13,7 @@ const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/
 //Stage Constants
 const int EV_STAGE_START        = EV_USER_STAGE + 1; //Starts the dialogue/plural scripts after the stage intro animation completes
 const int EV_STAGE_INTRO_START  = EV_USER_STAGE + 2; //Stage intro fade begins and player can move/shoot/pause the game
-const int EV_CHANGE_BG          = EV_USER_STAGE + 3; //Change background index number, pass (index)
+const int EV_CHANGE_BG          = EV_USER_STAGE + 3; //Change background index number, pass (index, transitionTime)
 
 //System Constants
 const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1; //Create Item, pass (x, y, TYPE_CONSTANT)
@@ -99,13 +99,14 @@ const int RP_UI_IMG         = 5;  //Menu/UI images
 const int RP_UI_TEXT        = 10; //Menu/UI text
 const int RP_STG_MIN        = 20; //Min stage render priority
 const int RP_STG_BG         = 21; //Background render layer
-const int RP_STG_BG1        = 22; //Background layer 1 (invalid)
-const int RP_STG_EFF_BG1    = 23; //Background layer 1 effects (invalid)
-const int RP_STG_BG2        = 24; //Background layer 2 (invalid)
-const int RP_STG_EFF_BG2    = 25; //Background layer 2 effects (invalid)
-const int RP_STG_TRANSITION = 26; //Background transition effect (invalid)
-const int RP_STG_EFF_LO     = 27; //Effects that render over the background only (particles mainly)
-const int RP_STG_EFF_SPELL  = 28; //Player spell effects that render over backgrounds
+const int RP_STG_BG1        = 22; //Background layer 1          (INVALID)
+const int RP_STG_EFF_BG1    = 23; //Background layer 1 effects  (INVALID)
+const int RP_STG_BG2        = 24; //Background layer 2          (INVALID)
+const int RP_STG_EFF_BG2    = 25; //Background layer 2 effects  (INVALID)
+const int RP_STG_TRANSITION1= 26; //Background transition effect(INVALID)
+const int RP_STG_TRANSITION2= 27; //Background transition effect(no shader)
+const int RP_STG_EFF_LO     = 28; //Effects that render over the background only (particles mainly)
+const int RP_STG_EFF_SPELL  = 29; //Player spell effects that render over backgrounds
 const int RP_STG_ENEMY      = 30; //Boss/Enemy sprite
 const int RP_STG_EFF_MID    = 35; //Effects that render over the boss sprites, but below the player
 const int RP_STG_EFF_PLR_LO = 39; //Player effects that render below the player
@@ -123,9 +124,10 @@ const int RP_STG_MAX        = 80; //Max stage render priority
 const int RP_UI_MAX         = 100;//Max render priority
 
 //Render Target Constants
-const string RT_BG1     = GetReservedRenderTargetName(0); //background layer 1 (22-23)
-const string RT_BG2     = GetReservedRenderTargetName(1); //background layer 2 (24-25)
-const string RT_TRANS   = GetReservedRenderTargetName(3); //transition layer (26)
+const string RT_BG1         = GetReservedRenderTargetName(0); //background layer 1 (22-23)
+const string RT_BG2         = GetReservedRenderTargetName(1); //background layer 2 (24-25)
+const string RT_TRANSITION  = GetReservedRenderTargetName(2); //transition layer (26)
+const string RT_SCREENSHOT  = "RT_SCREENSHOT"; //layers 0-21, 27-100
 
 //Position Constants
 const real MIN_X = 0;

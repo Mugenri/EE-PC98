@@ -10,6 +10,7 @@
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
+    SetInvalidRenderPriorityA1(22, 26);
 
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     SetReplaySaveSceneScriptPath(GetCurrentScriptDirectory() ~ "ReplaySaveScene.dnh");

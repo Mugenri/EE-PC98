@@ -1,23 +1,38 @@
 //Tsurubami background library
-int _bIndex = 0; //MUST BE INCLUDED
-//do i really need to? just have the boss be impervious to damage while the spell transition is playing.
+#include "./../../lib/lib_Background.dnh"
 
-function<void> InitBackground() {
-    TBackground(0);
-    TSpellBackground(1);
-}
+function<void> UpdateBackground(int index_, int time_) {
+    _transitionTime = time_; //also serves as transition time for closing current background task
+    _priority = _priority == RP_STG_BG1 ? RP_STG_BG2 : RP_STG_BG1; //switch to unused background render priority ranges
+    assert(index_ != _bIndex, "Attempted to transition to the same index background.");
 
-function<void> UpdateBackground(int index_) {
+    //change to index (starts shutdown for current bg)
     _bIndex = index_;
+    alternative (index_)
+    case (0) { TBackground(0, _priority); }
+    case (1) { TSpellBackground(1, _priority); }
+    others { assert(false, "Invalid background index."); }
+
+    //bakcground draw object
+    int canvas = GetCanvas(time_ != 0);
+
+    async {
+        wait(time_); //time that transition graphic is on screen (for shader)
+        ObjShader_ResetShader(canvas); //remove shader from canvas object
+        while (index_ == _bIndex) yield;
+        wait(_transitionTime); //hold old canvas object while new transition is playing
+        Obj_Delete(canvas);
+    }
 }
 
-task TBackground(int index_) {
+task TBackground(int index_, int priority_) {
+    bool exitFlag = false;
     //bg
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
-    Obj_SetRenderPriorityI(bg, RP_STG_BG);
+    Obj_SetRenderPriorityI(bg, priority_);
 
     int count = 30;
     int color = 0;
@@ -25,9 +40,11 @@ task TBackground(int index_) {
 
     TLineEffect();
 
-    loop {
-        Obj_SetVisible(bg, _bIndex == index_);
-
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            TExit();
+            index_ = _bIndex;
+        }
         ObjRender_SetColor(bg, color, color, color);
 
         if (increment) count++;
@@ -39,6 +56,8 @@ task TBackground(int index_) {
         color = truncate(count/60) * 8 + 8;
         yield;
     }
+
+    Obj_Delete(bg);
 
     task TLineEffect() {
         //Used for movement
@@ -67,7 +86,7 @@ task TBackground(int index_) {
         }
 
         //Movement
-        loop {
+        while (!exitFlag) {
             if (count >= 140) count = 0;
             count++;
             yield;
@@ -78,7 +97,7 @@ task TBackground(int index_) {
 
             int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
             ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
-            Obj_SetRenderPriorityI(line, RP_STG_BG);
+            Obj_SetRenderPriorityI(line, priority_);
             ObjPrim_SetVertexCount(line, points_);
             ascent (i in 0..points_) {
                 ObjPrim_SetVertexColor(line, i, 78, 78, 78);
@@ -91,8 +110,7 @@ task TBackground(int index_) {
             }
 
             //set positions based on grid position and multiplier based on distance from the middle
-            loop {
-                Obj_SetVisible(line, _bIndex == index_);
+            while (!exitFlag) {
                 ascent (i in 0..length(positions)) {
                     int xCurr = positions[i][0] - count;
                     int yCurr = positions[i][1];
@@ -103,17 +121,28 @@ task TBackground(int index_) {
                 }
                 yield;
             }
+            Obj_Delete(line);
         }
+    }
+
+    task TExit () { //exit background task
+        int timer = _transitionTime;
+        while (timer > 0) {
+            timer--;
+            yield;
+        }
+        exitFlag = true;
     }
 }
 
-task TSpellBackground(int index_) { //TODO very temporary
+task TSpellBackground(int index_, int priority_) { //TODO very temporary
+    bool exitFlag = false;
     //spell bg
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
-    Obj_SetRenderPriorityI(bg, RP_STG_BG);
+    Obj_SetRenderPriorityI(bg, priority_);
 
     int count = 30;
     int color = 0;
@@ -122,9 +151,11 @@ task TSpellBackground(int index_) { //TODO very temporary
 
     TSpellEffect();
 
-    loop {
-        Obj_SetVisible(bg, _bIndex == index_);
-
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            TExit();
+            index_ = _bIndex;
+        }
         ObjRender_SetColor(bg, color, color, color);
 
         if (increment) count++;
@@ -137,8 +168,10 @@ task TSpellBackground(int index_) { //TODO very temporary
         yield;
     }
 
+    Obj_Delete(bg);
+
     task TSpellEffect() {
-        loop {
+        while (!exitFlag) {
             real y = rand_int(0, 368);
             real speed = rand(1.1, 2);
             TCreateLine(y, speed, true);
@@ -150,7 +183,7 @@ task TSpellBackground(int index_) { //TODO very temporary
 
         task TCreateLine(int yPos_, real speed_, bool front_) {
             int color = front_ ? COLOR_GRAY : COLOR_GRAY_D;
-            int priority = front_ ? RP_STG_BG : RP_STG_BG - 1;
+            int priority = front_ ? priority_ + 1 : priority_;
             real xPos = front_ ? -20 : GetStgFrameWidth() + 20;
             int len = 15;
             if (!front_) speed_ *= -1; //move other direction if in background
@@ -162,7 +195,7 @@ task TSpellBackground(int index_) { //TODO very temporary
                 Obj_SetRenderPriorityI(line, priority);
             }
             loop (trunc(368 / absolute(speed_)) + 60) { //rough amount of time it will take the lines to cross the screen
-                Obj_SetVisible(line, _bIndex == index_);
+                if (exitFlag) break;
                 ObjPrim_SetVertexPosition(line, 0, xPos, yPos_, 1);
                 ObjPrim_SetVertexPosition(line, 1, xPos + len, yPos_, 1);
                 xPos += speed_;
@@ -170,5 +203,14 @@ task TSpellBackground(int index_) { //TODO very temporary
             }
             Obj_Delete(line);
         }
+    }
+
+    task TExit () { //exit background task
+        int timer = _transitionTime;
+        while (timer > 0) {
+            timer--;
+            yield;
+        }
+        exitFlag = true;
     }
 }

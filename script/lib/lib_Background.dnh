@@ -1,0 +1,35 @@
+//Background functions library
+int _bIndex = -1; //Used by event in stage script
+int _priority = RP_STG_BG2; //switches to BG1 on first call
+int _transitionTime = 0; //used for timing removal of background transition shaders and exiting of background tasks
+int _objShader; //background transition shader
+
+function<void> InitBackground(int index_) {
+    TUpdateRenderTargets();
+    //Initialize shader object.
+    _objShader = ObjShader_Create();
+    ObjShader_SetShaderF(_objShader, HLSL_TRANSITION); //texture mask shader
+    ObjShader_SetTexture(_objShader, "textureMask_", RT_TRANSITION); //set texture to the transition render target
+    ObjShader_SetTechnique(_objShader, "TecMask");
+    //Required function by including library. Cuts to index_ background on startup
+    UpdateBackground(index_, 0);
+}
+
+task TUpdateRenderTargets() { //assigns render priority ranges to render targets
+    loop {
+        RenderToTextureA1(RT_BG1, RP_STG_BG1, RP_STG_EFF_BG1, true);
+        RenderToTextureA1(RT_BG2, RP_STG_BG2, RP_STG_EFF_BG2, true);
+        RenderToTextureA1(RT_TRANSITION, RP_STG_TRANSITION1, RP_STG_TRANSITION1, true);
+        yield;
+    }
+}
+
+function<int> GetCanvas(bool useShader_) { //return a canvas with the correct render target as its texture
+    int canvas = ObjPrim_Create(OBJ_SPRITE_2D);
+    if (useShader_) ObjShader_SetShaderO(canvas, _objShader); //apply shader if not cut transition
+    ObjPrim_SetTexture(canvas, _priority == RP_STG_BG1 ? RT_BG1 : RT_BG2); //set texture to current priority range render target
+    Obj_SetRenderPriorityI(canvas, RP_STG_BG); //render to background draw layer
+    ObjSprite2D_SetSourceRect(canvas, 32, 16, 416, 384);
+    ObjSprite2D_SetDestRect(canvas, 0, 0, 384, 368);
+    return canvas;
+}

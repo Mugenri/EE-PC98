@@ -1,30 +1,64 @@
 //Spell/background transition library
 
-function<void> Transition_BG(int index_) { //change background to selected index
-    NotifyEvent(GetStageScriptID(), EV_CHANGE_BG, index_);
+//----------------------------------------------------
+//Utility
+//----------------------------------------------------
+function<void> Transition_ChangeBG(int index_, int transitionTime_) { //change background to selected index with transition graphic time
+    NotifyEvent(GetStageScriptID(), EV_CHANGE_BG, index_, transitionTime_);
 }
 
-function<void> Transition_Tilt(int index_, bool startSpell_) {
+function<int> GetTransitionObject(bool useShader_) { //get a transition effect sprite object
     int transition = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(transition, IMG_EFFECT_TRANSITION);
-    ObjSprite2D_SetSourceRect(transition, 0, 0, 24, 23);
-    ObjSprite2D_SetDestRect(transition, 0, 0, 384, 368);
-    Obj_SetRenderPriorityI(transition, RP_STG_TRANSITION);
+    Obj_SetRenderPriorityI(transition, useShader_ ? RP_STG_TRANSITION1 : RP_STG_TRANSITION2);
+    return transition;
+}
 
-    async {
-        int frame = 0;
-        loop (8) {
-            ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
-            frame++;
-            wait(5);
-        }
-        if (startSpell_) ObjEnemyBossScene_StartSpell(GetEnemyBossSceneObjectID());
-        Transition_BG(index_);
-        loop (8) {
-            ObjSprite2D_SetSourceRect(transition, 0 + frame * 24, 0, 24 + frame * 24, 23);
-            frame++;
-            wait(5);
-        }
-        Obj_Delete(transition);
+task TTransitionAnimation(int obj_, int animFrames_, int l_, int t_) { //with shader
+    ObjSprite2D_SetDestRect(obj_, 0, 0, 384, 368);
+    int frame = 0;
+    loop (animFrames_) {
+        ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);
+        frame++;
+        wait(5);
     }
+    Obj_Delete(obj_);
+}
+
+task TTransitionAnimation(int obj_, int index_, int animFrames_, int cutFrames_, int l_, int t_) { //no shader
+    ObjSprite2D_SetDestRect(obj_, 0, 0, 384, 368);
+    int frame = 0;
+    loop (cutFrames_) { //cut bg after cutFrames_ amount of frames
+        ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);
+        frame++;
+        wait(5);
+    }
+    Transition_ChangeBG(index_, 0); //cut
+    loop (animFrames_ - cutFrames_) { //rest of animation
+        ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);
+        frame++;
+        wait(5);
+    }
+    Obj_Delete(obj_);
+}
+
+//----------------------------------------------------
+//Effects With Shaders
+//----------------------------------------------------
+function<void> Transition_Rise(int index_, int delay_) {
+    int transition = GetTransitionObject(true);
+    Transition_ChangeBG(index_, 60 + delay_);
+    wait(delay_);
+    TTransitionAnimation(transition, 12, 0, 256);
+}
+
+//TODO more transition effects
+
+//----------------------------------------------------
+//Effects Without Shaders
+//----------------------------------------------------
+function<void> Transition_Tilt(int index_, int delay_) {
+    int transition = GetTransitionObject(false);
+    wait(delay_);
+    TTransitionAnimation(transition, index_, 16, 8, 0, 0);
 }

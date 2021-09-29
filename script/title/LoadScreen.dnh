@@ -8,6 +8,9 @@ function<void> InitLoad() {
 
 task TLoadScene() { //loading screen
 
+    //initialize user render targets
+    CreateRenderTarget(RT_SCREENSHOT);
+
     { //load audio manager
         string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
         int id = LoadScript(path);

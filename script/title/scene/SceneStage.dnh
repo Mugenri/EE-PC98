@@ -2,9 +2,9 @@
 #include "./../lib/lib_TitleCommon.dnh"
 #include "./../lib/lib_TitleUtil.dnh"
 
-bool _pauseEnable = false;
-bool _dialogueRunning = false;
-string _dialoguePath = "";
+bool _pauseEnable;
+bool _dialogueRunning;
+string _dialoguePath;
 
 @Initialize {
     SetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", GetOwnScriptID());
@@ -32,6 +32,10 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
     int getRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
     string replayPath  = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
     string pathPlayer   = SCRIPT_PLAYERS[playerType];
+
+    _pauseEnable = false;
+    _dialogueRunning = false;
+    _dialoguePath = "";
 
     InitializeStageScene();
 
@@ -139,8 +143,8 @@ function<void> RunDialogue(string path_) {
 }
 
 function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
-	string textureName = GetTransitionRenderTargetName();
-	RenderToTextureA1(textureName, RP_UI_MIN, RP_UI_MAX, true);
+	RenderToTextureA1(RT_SCREENSHOT, RP_UI_MIN, RP_STG_BG, false);
+    RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
 }
 
 task TDefault() { //Reset Common Data
