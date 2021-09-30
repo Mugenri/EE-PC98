@@ -38,7 +38,7 @@ function<void> InitFrame() {
 	Obj_SetRenderPriorityI(obj, RP_UI_BG);
 	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
 	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
-    SetStgFrame(32, 16, 416, 384, 20, 80);
+    SetStgFrame(32, 16, 416, 384, RP_STG_MIN, RP_STG_MAX);
 }
 
 //----------------------------------------------------
@@ -46,8 +46,8 @@ function<void> InitFrame() {
 //----------------------------------------------------
 task TIntro() {
     int objBG = ObjPrim_Create(OBJ_SPRITE_2D); //black rectangle so the particle list doesn't have to be processed before it's animating
-    ObjSprite2D_SetSourceRect(objBG, 0, 0, 384, 368);
-    ObjSprite2D_SetDestRect(objBG, 0, 0, 384, 368);
+    ObjSprite2D_SetSourceRect(objBG, 0, 0, MAX_X, MAX_Y);
+    ObjSprite2D_SetDestRect(objBG, 0, 0, MAX_X, MAX_Y);
     Obj_SetRenderPriorityI(objBG, RP_STG_MAX);
     ObjRender_SetColor(objBG, COLOR_BLACK);
 
@@ -98,7 +98,7 @@ task TIntro() {
     //delete black rectangle
     Obj_Delete(objBG);
 
-    //intro animation
+    //intro animation (90 frames)
     int frame = 0;
     loop (frames) {
         ObjSprite2D_SetSourceRect(objFade, 0 + (frame * 16), 16, 16 + (frame * 16), 32);

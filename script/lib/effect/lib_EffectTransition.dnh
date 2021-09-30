@@ -15,7 +15,7 @@ function<int> GetTransitionObject(bool useShader_) { //get a transition effect s
 }
 
 task TTransitionAnimation(int obj_, int animFrames_, int l_, int t_) { //with shader
-    ObjSprite2D_SetDestRect(obj_, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(obj_, 0, 0, MAX_X, MAX_Y);
     int frame = 0;
     loop (animFrames_) {
         ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);
@@ -26,7 +26,7 @@ task TTransitionAnimation(int obj_, int animFrames_, int l_, int t_) { //with sh
 }
 
 task TTransitionAnimation(int obj_, int index_, int animFrames_, int cutFrames_, int l_, int t_) { //no shader
-    ObjSprite2D_SetDestRect(obj_, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(obj_, 0, 0, MAX_X, MAX_Y);
     int frame = 0;
     loop (cutFrames_) { //cut bg after cutFrames_ amount of frames
         ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);

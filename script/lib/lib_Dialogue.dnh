@@ -192,8 +192,8 @@ function<void> SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID
     //screen whiteout
     int whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(whiteout, RP_UI_MAX);
-    ObjSprite2D_SetSourceRect(whiteout, 0, 0, 384, 368);
-    ObjSprite2D_SetDestRect(whiteout, 0, 0, 384, 368);
+    ObjSprite2D_SetSourceRect(whiteout, 0, 0, MAX_X, MAX_Y);
+    ObjSprite2D_SetDestRect(whiteout, 0, 0, MAX_X, MAX_Y);
     ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
     ObjRender_SetColor(whiteout, COLOR_WHITE);
 

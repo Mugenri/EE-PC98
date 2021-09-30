@@ -116,8 +116,8 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         int bg = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(bg, IMG_TT_BG);
         Obj_SetRenderPriorityI(bg, RP_UI_BG);
-        ObjSprite2D_SetSourceRect(bg, 0, 0, 640, 400);
-        ObjSprite2D_SetDestRect(bg, 0, 0, 640, 400);
+        ObjSprite2D_SetSourceRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ObjSprite2D_SetDestRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         int yabu = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(yabu, IMG_TT_YABU);

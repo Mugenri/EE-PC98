@@ -35,8 +35,8 @@ bool _titleEnd = false;
 task TTitleScene() {
     int testBG = ObjPrim_Create(OBJ_SPRITE_2D); //If this is ever visible something is wrong
     Obj_SetRenderPriorityI(testBG, RP_UI_MIN);
-    ObjSprite2D_SetSourceRect(testBG, 0, 0, 640, 400);
-    ObjSprite2D_SetDestRect(testBG, 0, 0, 640, 400);
+    ObjSprite2D_SetSourceRect(testBG, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+    ObjSprite2D_SetDestRect(testBG, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
     ObjRender_SetColor(testBG, COLOR_RED); //its a bigass red rectangle
 
     StartBGM(0, 60, 30);

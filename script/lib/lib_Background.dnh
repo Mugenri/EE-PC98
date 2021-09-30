@@ -30,6 +30,6 @@ function<int> GetCanvas(bool useShader_) { //return a canvas with the correct re
     ObjPrim_SetTexture(canvas, _priority == RP_STG_BG1 ? RT_BG1 : RT_BG2); //set texture to current priority range render target
     Obj_SetRenderPriorityI(canvas, RP_STG_BG); //render to background draw layer
     ObjSprite2D_SetSourceRect(canvas, 32, 16, 416, 384);
-    ObjSprite2D_SetDestRect(canvas, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(canvas, 0, 0, MAX_X, MAX_Y);
     return canvas;
 }

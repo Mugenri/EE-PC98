@@ -31,7 +31,7 @@ task TBackground(int index_, int priority_) {
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
-    ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
     Obj_SetRenderPriorityI(bg, priority_);
 
     int count = 30;
@@ -141,7 +141,7 @@ task TSpellBackground(int index_, int priority_) { //TODO very temporary
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
     ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
-    ObjSprite2D_SetDestRect(bg, 0, 0, 384, 368);
+    ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
     Obj_SetRenderPriorityI(bg, priority_);
 
     int count = 30;
