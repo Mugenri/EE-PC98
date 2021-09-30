@@ -10,12 +10,12 @@ const string AREA_SPELL     = "Spell"; //Spell History
 const string AREA_HIGHSCORE = "HighScore"; //High Score Values
 const string AREA_RESULT    = "Result"; //Player Score Records
 
-//Data File Directory
+//Data File Directories
 const string DIR_SAVE = GetCurrentScriptDirectory() ~ "../data/";
-const string SAVE_COMMON_SAVE   = DIR_SAVE ~ "./../data/save.dat";
-const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "./../data/config.dat";
-const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "./../data/score.dat";
-const string SAVE_COMMON_RESULT = DIR_SAVE ~ "./../data/result.dat";
+const string SAVE_COMMON_SAVE   = DIR_SAVE ~ "save.dat";
+const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "config.dat";
+const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "score.dat";
+const string SAVE_COMMON_RESULT = DIR_SAVE ~ "result.dat";
 
 function<void> InitCommonData() { //creates common data areas, loads data from files
     //Create Common Data Areas
