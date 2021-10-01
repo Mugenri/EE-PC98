@@ -27,6 +27,9 @@ task TStage() {
     int ID = LoadScriptInThread(path);
 
     while (!_start) yield;
+
+    Stage_SetIntroText("GOD FUCKING DAMNIT KRIS", "Where The Fuck Are We???");
+    wait(228);
     
     string dialoguePath = csd ~ "dialogueTest.dnh";
     StartDialogueScript(dialoguePath);
