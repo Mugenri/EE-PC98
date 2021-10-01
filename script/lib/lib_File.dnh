@@ -20,7 +20,6 @@ const string IMG_EFFECT_TRANSITION  = DIR_IMG ~ "effect/testTransition.png";
 const string IMG_SYSTEM_FRAME       = DIR_IMG ~ "system/systemFrame.png";
 const string IMG_SYSTEM_TEXT        = DIR_IMG ~ "system/systemText.png";
 const string IMG_SYSTEM_TEXTBOX     = DIR_IMG ~ "system/textbox.png";
-const string IMG_SYSTEM_FADE        = DIR_IMG ~ "system/testFade.png";
 const string IMG_SYSTEM_ITEM        = DIR_IMG ~ "system/item.png";
 const string IMG_SYSTEM_SHOT        = DIR_IMG ~ "system/mugenriShot.png";
 

@@ -52,10 +52,10 @@ task TIntro() {
     ObjRender_SetColor(objBG, COLOR_BLACK);
 
     //Fade square particle list
-    int objFade = InitParticleList(IMG_SYSTEM_FADE, RP_STG_MAX, 0, 16, 16, 32);
+    int objFade = InitParticleList(IMG_SYSTEM_TEXT, RP_STG_MAX, 0, 256, 16, 272);
     ObjParticleList_SetColor(objFade, COLOR_BLACK);
 
-    int frames = 9; //number of animation frames
+    int frames = 8; //number of animation frames
 
     //TODO Game logo when i get it
     int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
@@ -98,10 +98,10 @@ task TIntro() {
     //delete black rectangle
     Obj_Delete(objBG);
 
-    //intro animation (90 frames)
+    //intro animation (80 frames)
     int frame = 0;
     loop (frames) {
-        ObjSprite2D_SetSourceRect(objFade, 0 + (frame * 16), 16, 16 + (frame * 16), 32);
+        ObjSprite2D_SetSourceRect(objFade, 112 - (frame * 16), 256, 128 - (frame * 16), 272); //animation is drawn right to left in the file
         ObjSprite2D_SetDestRect(objFade, 0, 0, 16, 16);
         loop (10) { //number of frames to hold each animation frame
             AddParticles();
@@ -111,8 +111,6 @@ task TIntro() {
     }
     
     Obj_Delete(objFade);
-
-    wait(30);
 
     NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE"), EV_STAGE_START, 0); //used by stage script to start plurals/dialogue
 

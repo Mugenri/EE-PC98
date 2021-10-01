@@ -68,7 +68,6 @@ function<string[]> GetImgSystem() { //returns system related image paths (lib_Fi
         IMG_SYSTEM_FRAME,
         IMG_SYSTEM_TEXT,
         IMG_SYSTEM_TEXTBOX,
-        IMG_SYSTEM_FADE,
         IMG_SYSTEM_ITEM,
         IMG_SYSTEM_SHOT
     ];

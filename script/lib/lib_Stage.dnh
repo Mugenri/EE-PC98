@@ -4,7 +4,7 @@ bool _introPlaying = true; //assume screen is fading from black
 function<void> Stage_Event() { //Generic stage events (can create another event block in the stage script for specialized events)
     alternative (GetEventType())
     case (EV_STAGE_INTRO_START) { //immediately as intro fade begins
-        TIntroTimer(90);
+        TIntroTimer(80); //if bgm starts here, delay bgm text for 80 frames
         SetPauseEnable(true);
     }
     case (EV_STAGE_START) _start = true; //immediately after intro fade ends
