@@ -8,7 +8,7 @@ function<string> Boss_GetID(int obj_) {
     return Obj_GetValueD(obj_, BOSS_ID, "INVALID");
 }
 //Moves the boss object associated with bossID_ to the position it was located at the end of the last single.
-function<void> Boss_InitPosition(int obj_) {
+function<void> Boss_GetInitPosition(int obj_) {
     real[] pos = GetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [0, 0]);
     ObjMove_SetPosition(obj_, pos[0], pos[1]);
 }
@@ -18,13 +18,13 @@ function<void> Boss_SetInitPosition(var obj_, real x_, real y_) {
     else SetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [x_, y_]);
 }
 //Sets the boss object intersection for 1 frame
-function<void> Boss_Intersection(int obj_, int toShot_, int toPlayer_) {
+function<void> Boss_SetIntersection(int obj_, int toShot_, int toPlayer_) {
     ObjEnemy_SetIntersectionCircleToShot(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
     ObjEnemy_SetIntersectionCircleToPlayer(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
 }
-//Check if boss has health
-function<bool> Boss_CheckAlive(int obj_) {
-    return ObjEnemy_GetInfo(obj_, INFO_LIFE) > 0;
+function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
+    if (isVulnerable_) ObjEnemy_SetDamageRate(obj_, 100, 100);
+    else ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001);
 }
 //Call at the end of a single
 task Boss_Finalize(int obj_, bool isFinal_) {

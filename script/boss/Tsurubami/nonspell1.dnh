@@ -35,13 +35,13 @@ int _loopTime = 60;
 }
 
 @MainLoop {
-    _bossAlive = Boss_CheckAlive(_objBoss);
+    UpdateBoss(_objBoss);
     if (_bossAlive) {
-        Boss_Intersection(_objBoss, intersectionShot, intersectionPlayer);
+        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
-                TPatternO();
+                //TPatternO();
                 //ObjMove_SetDestAtFrame(_objBoss, rand(30, 180), rand(30, 90), 60);
                 //TPatternB(1);
                 //CreateItem(MID_X, 90, ITEM_BOMB);
@@ -56,7 +56,7 @@ task TInitialize() {
     Transition_Rise(1, 60);
     CallSFX(SND_TRANSITION);
     wait(120);
-    ObjEnemy_SetDamageRate(_objBoss, 100, 100);
+    Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {

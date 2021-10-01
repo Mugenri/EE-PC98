@@ -18,7 +18,7 @@ const string[] SOUNDS = [
     DIR_SE ~ "seExplosion3.wav",
     DIR_SE ~ "seInvincible.wav",
     DIR_SE ~ "seItem.wav",
-    DIR_SE ~ "seLaser1.wav",        
+    DIR_SE ~ "seLaser1.wav",
     DIR_SE ~ "seLaser2.wav",
     DIR_SE ~ "seMenuCancel.wav",    //10
     DIR_SE ~ "seMenuDecide.wav",
@@ -28,7 +28,7 @@ const string[] SOUNDS = [
     DIR_SE ~ "sePlayerMiss.wav",
     DIR_SE ~ "sePlayerShot.wav",
     DIR_SE ~ "sePlayerVulnerable.wav",
-    DIR_SE ~ "seShot1.wav",              
+    DIR_SE ~ "seShot1.wav",
     DIR_SE ~ "seShot2.wav",
     DIR_SE ~ "seShot3.wav",         //20
     DIR_SE ~ "seSpellTsuba1.wav",
@@ -37,7 +37,8 @@ const string[] SOUNDS = [
     DIR_SE ~ "seSpellTsuba4.wav",
     DIR_SE ~ "seSpellYabu1.wav",
     DIR_SE ~ "seSpellYabu2.wav",
-    DIR_SE ~ "seTransition.wav"
+    DIR_SE ~ "seTransition.wav",
+    DIR_SE ~ "seDamage.wav"
 ];
 
 @Initialize {

@@ -315,7 +315,7 @@ task TBossLife() {
 
 		//Life Display
 		real lifeTotalMax = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
-		real lifeTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE); //step current health
+		real lifeTotal = round(ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE)); //step current health (rounded because of how invincibility is handled)
 		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(objLife, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(objLife, 1, 0, 8, 1);

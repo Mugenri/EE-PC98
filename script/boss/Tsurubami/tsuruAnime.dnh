@@ -15,9 +15,8 @@ task TDrawBoss(int objBoss_) {
 
     int frame_ = 0;
     int frameCharge_ = 0;
-    int bossHealth = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 
-    bool flash = false;
+    bool isFlashing = false;
 
     while (!Obj_IsDeleted(objBoss_)) {
          if (_monochrome || ObjMove_GetSpeed(objBoss_) > 0) { //_monochrome frame
@@ -35,8 +34,8 @@ task TDrawBoss(int objBoss_) {
         if (!_charge && _frameCountCharge > 0) _frameCountCharge--;
 
         //flash on hit
-        if (flash == false && ObjEnemy_GetInfo(objBoss_, INFO_LIFE) < bossHealth) { //TODO its possible for this to stay white if the single ends and the player stops shooting
-            flash = true;
+        if (isFlashing == false && _isDamaged) { //TODO its possible for this to stay white if the single ends and the player stops shooting
+            isFlashing = true;
             async {
                 loop (3) {
                     ObjShader_SetFloat(objBoss_, "enable_", 1);
@@ -44,10 +43,9 @@ task TDrawBoss(int objBoss_) {
                     ObjShader_SetFloat(objBoss_, "enable_", 0);
                     wait(3);
                 }
-                flash = false;
+                isFlashing = false;
             }
         }
-        bossHealth = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
         yield;
     }
 }

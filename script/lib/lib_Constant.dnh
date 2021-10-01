@@ -89,6 +89,7 @@ const int SND_EXPLOSION3    = 5;
 const int SND_BANG1         = 0;
 const int SND_BANG2         = 1;
 const int SND_ITEM          = 7;
+const int SND_DAMAGE        = 28;
 const int SND_INVINCIBLE    = 6;
 const int SND_TRANSITION    = 27;
 
