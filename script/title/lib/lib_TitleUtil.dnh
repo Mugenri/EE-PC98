@@ -1,5 +1,4 @@
 //Title Screen utility library
-//TODO change name of this library
 #include "./../../lib/lib_Util.dnh"
 
 //Create Menu Cursor
