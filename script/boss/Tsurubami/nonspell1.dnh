@@ -61,8 +61,8 @@ task TInitialize() {
 
 task TFinalize() {
     while (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) > 0) yield;
-    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
-    Boss_Finalize(_objBoss, true);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    Boss_Finalize(_objBoss, false);
 }
 
 task TPatternA() {
@@ -319,7 +319,7 @@ task TPatternO() {
     ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, NO_CHANGE, 7.5);
     
     loop (240) {
-        if(Obj_IsDeleted(laser)) break;
+        if (Obj_IsDeleted(laser)) break;
         real angleL = ObjMove_GetAngle(laser);
         real angleP = GetAngleToPlayer(laser);
         real wvel = AngularDistance(angleL, angleP) > 0 ? 2.3 : -2.3;

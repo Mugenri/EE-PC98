@@ -48,7 +48,7 @@ function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainlo
         }
     }
 
-    if (_bossLife < 0) _bossAlive = false; //health check
+    if (_bossLife <= 0) _bossAlive = false; //health check
 
     _previousLife = _bossLife;
 }
