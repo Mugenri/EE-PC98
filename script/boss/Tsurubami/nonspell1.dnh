@@ -53,7 +53,7 @@ int _loopTime = 60;
 }
 
 task TInitialize() {
-    Transition_Rise(1, 60);
+    Transition_Circle(1, 60);
     CallSFX(SND_TRANSITION);
     wait(120);
     Boss_SetVulnerable(_objBoss, true);

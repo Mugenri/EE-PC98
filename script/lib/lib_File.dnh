@@ -14,7 +14,7 @@ const string DIR_SE     = GetCurrentScriptDirectory() ~ "../se/";
 const string IMG_EFFECT_CANCEL      = DIR_IMG ~ "effect/shotCancelEffect.png";
 const string IMG_EFFECT_SPAWN       = DIR_IMG ~ "effect/shotSpawnEffect.png";
 const string IMG_EFFECT_PARTICLE    = DIR_IMG ~ "effect/particleEffect.png";
-const string IMG_EFFECT_TRANSITION  = DIR_IMG ~ "effect/testTransition.png";
+const string IMG_EFFECT_TRANSITION  = DIR_IMG ~ "effect/transitionEffect.png";
 
 //System images
 const string IMG_SYSTEM_FRAME       = DIR_IMG ~ "system/systemFrame.png";

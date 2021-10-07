@@ -25,8 +25,9 @@ task TTransitionAnimation(int obj_, int animFrames_, int l_, int t_) { //with sh
     Obj_Delete(obj_);
 }
 
-task TTransitionAnimation(int obj_, int index_, int animFrames_, int cutFrames_, int l_, int t_) { //no shader
+task TTransitionAnimation(int obj_, int index_, int color_, int animFrames_, int cutFrames_, int l_, int t_) { //no shader
     ObjSprite2D_SetDestRect(obj_, 0, 0, MAX_X, MAX_Y);
+    ObjRender_SetColor(obj_, color_);
     int frame = 0;
     loop (cutFrames_) { //cut bg after cutFrames_ amount of frames
         ObjSprite2D_SetSourceRect(obj_, l_ + frame * 24, t_, l_ + 24 + frame * 24, t_ + 23);
@@ -45,6 +46,13 @@ task TTransitionAnimation(int obj_, int index_, int animFrames_, int cutFrames_,
 //----------------------------------------------------
 //Effects With Shaders
 //----------------------------------------------------
+function<void> Transition_Circle(int index_, int delay_) {
+    int transition = GetTransitionObject(true);
+    Transition_ChangeBG(index_, 85 + delay_);
+    wait(delay_);
+    TTransitionAnimation(transition, 17, 0, 280);
+}
+
 function<void> Transition_Rise(int index_, int delay_) {
     int transition = GetTransitionObject(true);
     Transition_ChangeBG(index_, 60 + delay_);
@@ -52,13 +60,23 @@ function<void> Transition_Rise(int index_, int delay_) {
     TTransitionAnimation(transition, 12, 0, 256);
 }
 
-//TODO more transition effects
-
 //----------------------------------------------------
 //Effects Without Shaders
 //----------------------------------------------------
-function<void> Transition_Tilt(int index_, int delay_) {
+function<void> Transition_Swirl(int index_, int delay_, int color_) {
     int transition = GetTransitionObject(false);
     wait(delay_);
-    TTransitionAnimation(transition, index_, 16, 8, 0, 0);
+    TTransitionAnimation(transition, index_, color_, 15, 8, 0, 24);
+}
+
+function<void> Transition_Tilt(int index_, int delay_, int color_) {
+    int transition = GetTransitionObject(false);
+    wait(delay_);
+    TTransitionAnimation(transition, index_, color_, 16, 8, 0, 0);
+}
+
+function<void> Transition_Zoom(int index_, int delay_, int color_) {
+    int transition = GetTransitionObject(false);
+    wait(delay_);
+    TTransitionAnimation(transition, index_, color_, 15, 8, 0, 48);
 }
