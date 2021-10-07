@@ -409,8 +409,10 @@ task TPlayerLife() {
             //icons
             for (int i = 0; i < lives; i++) {
                 ObjParticleList_SetPosition(_displayList, 495 + i * 16, 177, 1);
-                ObjParticleList_SetExtraData(_displayList, 6, 17, 0);
+                ObjParticleList_SetExtraData(_displayList, 8, 17, 0);
+                ObjParticleList_SetColor(_displayList, COLOR_RED_L);
                 ObjParticleList_AddInstance(_displayList);
+                ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             }
         }
         yield;
@@ -436,19 +438,21 @@ task TPlayerSpell() {
 
         if (spell > 5) {
             //x
-            ObjParticleList_SetPosition(_displayList, 528, 210, 1);
+            ObjParticleList_SetPosition(_displayList, 528, 209, 1);
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
             ObjParticleList_AddInstance(_displayList);
             //num
-            ObjParticleList_SetPosition(_displayList, 560, 210, 1);
+            ObjParticleList_SetPosition(_displayList, 560, 209, 1);
             ObjParticleList_SetExtraData(_displayList, spell, 1, 0);
             ObjParticleList_AddInstance(_displayList);
         } else {
             //icons
             for (int i = 0; i < spell; i++) {
-                ObjParticleList_SetPosition(_displayList, 495 + i * 16, 210, 1);
-                ObjParticleList_SetExtraData(_displayList, 5, 17, 0);
+                ObjParticleList_SetPosition(_displayList, 495 + i * 16, 209, 1);
+                ObjParticleList_SetExtraData(_displayList, 7, 17, 0);
+                ObjParticleList_SetColor(_displayList, COLOR_GREEN);
                 ObjParticleList_AddInstance(_displayList);
+                ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             }
         }
         yield;
