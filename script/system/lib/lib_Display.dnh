@@ -227,8 +227,8 @@ task TBossLife() {
     //Enemy!! text
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objText, IMG_SYSTEM_TEXT);
-    ObjSprite2D_SetSourceRect(objText, 0, 289, 46, 305);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 46, 16);
+    ObjSprite2D_SetSourceRect(objText, 0, 288, 48, 304);
+    ObjSprite2D_SetDestRect(objText, 0, 0, 48, 16);
     ObjRender_SetColor(objText, COLOR_YELLOW);
     Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 129, 1);
@@ -294,8 +294,10 @@ task TBossLife() {
         if (countRemStep > 4) {
             //icon
             ObjParticleList_SetPosition(_displayList, 512, 128, 1);
-            ObjParticleList_SetExtraData(_displayList, 10, 17, 0);
+            ObjParticleList_SetExtraData(_displayList, 9, 17, 0);
+            ObjParticleList_SetColor(_displayList, COLOR_INDIGO_L);
             ObjParticleList_AddInstance(_displayList);
+            ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             //x
             ObjParticleList_SetPosition(_displayList, 528, 128, 1);
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
@@ -308,8 +310,10 @@ task TBossLife() {
         } else {
             for (int i = 0; i < countRemStep; i++) {
                 ObjParticleList_SetPosition(_displayList, 496 + 4 * 16 - i * 16, 128, 1);
-                ObjParticleList_SetExtraData(_displayList, 10, 17, 0);
+                ObjParticleList_SetExtraData(_displayList, 9, 17, 0);
+                ObjParticleList_SetColor(_displayList, COLOR_INDIGO_L);
                 ObjParticleList_AddInstance(_displayList);
+                ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             }
         }
 
@@ -397,6 +401,12 @@ task TPlayerLife() {
         lives = clamp(lives, 0, 9);
 
         if (lives > 5) {
+            //icon
+            ObjParticleList_SetPosition(_displayList, 512, 177, 1);
+            ObjParticleList_SetExtraData(_displayList, 8, 17, 0);
+            ObjParticleList_SetColor(_displayList, COLOR_RED_L);
+            ObjParticleList_AddInstance(_displayList);
+            ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             //x
             ObjParticleList_SetPosition(_displayList, 528, 177, 1);
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
@@ -408,7 +418,7 @@ task TPlayerLife() {
         } else {
             //icons
             for (int i = 0; i < lives; i++) {
-                ObjParticleList_SetPosition(_displayList, 495 + i * 16, 177, 1);
+                ObjParticleList_SetPosition(_displayList, 496 + i * 16, 177, 1);
                 ObjParticleList_SetExtraData(_displayList, 8, 17, 0);
                 ObjParticleList_SetColor(_displayList, COLOR_RED_L);
                 ObjParticleList_AddInstance(_displayList);
@@ -437,6 +447,12 @@ task TPlayerSpell() {
         spell = clamp(spell, 0, 9);
 
         if (spell > 5) {
+            //icon
+            ObjParticleList_SetPosition(_displayList, 512, 209, 1);
+            ObjParticleList_SetExtraData(_displayList, 7, 17, 0);
+            ObjParticleList_SetColor(_displayList, COLOR_GREEN);
+            ObjParticleList_AddInstance(_displayList);
+            ObjParticleList_SetColor(_displayList, COLOR_WHITE);
             //x
             ObjParticleList_SetPosition(_displayList, 528, 209, 1);
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
@@ -448,7 +464,7 @@ task TPlayerSpell() {
         } else {
             //icons
             for (int i = 0; i < spell; i++) {
-                ObjParticleList_SetPosition(_displayList, 495 + i * 16, 209, 1);
+                ObjParticleList_SetPosition(_displayList, 496 + i * 16, 209, 1);
                 ObjParticleList_SetExtraData(_displayList, 7, 17, 0);
                 ObjParticleList_SetColor(_displayList, COLOR_GREEN);
                 ObjParticleList_AddInstance(_displayList);
@@ -607,7 +623,7 @@ task TCancelBonus(int score_) {
     ObjRender_SetY(objText, 16);
     //Bonus fail text & no score
     if (score_ == -1) {
-        ObjSprite2D_SetSourceRect(objText, 0, 385, 127, 401);
+        ObjSprite2D_SetSourceRect(objText, 0, 384, 127, 400);
         ObjSprite2D_SetDestRect(objText, 0, 0, 127, 16);
     }
     
