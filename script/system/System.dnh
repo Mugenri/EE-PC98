@@ -13,15 +13,13 @@
     SetInvalidRenderPriorityA1(22, 26);
 
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
-    SetReplaySaveSceneScriptPath(GetCurrentScriptDirectory() ~ "ReplaySaveScene.dnh");
-    SetEndSceneScriptPath(GetCurrentScriptDirectory() ~ "EndScene.dnh");
     StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
 }
 
 @Event {
 	alternative (GetEventType())
 	case (EV_START_BOSS_SPELL) {
-		//TODO magic circle?
+		//get spell name or something
 	}
 	case (EV_GAIN_SPELL) { //This returns the value set in the single, not affected by time.
         int score = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
