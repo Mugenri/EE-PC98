@@ -122,6 +122,7 @@ const int RP_STG_HITBOX     = 70; //Player hitbox
 const int RP_STG_TEXT       = 75; //Item pickup text
 const int RP_STG_END        = 78; //End of stage screen
 const int RP_STG_MAX        = 80; //Max stage render priority
+const int RP_UI_OVERLAY     = 90; //Renders above the game window and stg frame
 const int RP_UI_MAX         = 100;//Max render priority
 
 //Render Target Constants

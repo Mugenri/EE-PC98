@@ -29,6 +29,7 @@ function<int> CreateBoss(string bossID_) {
     Boss_SetID(objBoss, bossID_);
     Boss_GetInitPosition(objBoss);
     Boss_SetVulnerable(objBoss, false); //Must set damage rate manually after transition effects
+    Boss_SetIndicator(objBoss);
     ObjEnemy_Regist(objBoss);
     return objBoss;
 }

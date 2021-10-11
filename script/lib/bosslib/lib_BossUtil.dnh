@@ -26,6 +26,23 @@ function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
     if (isVulnerable_) ObjEnemy_SetDamageRate(obj_, 100, 100);
     else ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001);
 }
+//Sets boss position indicator at bottom of screen
+function<void> Boss_SetIndicator(int parent_) {
+    int indicator = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(indicator, IMG_SYSTEM_TEXT);
+    Obj_SetRenderPriorityI(indicator, RP_UI_OVERLAY);
+    ObjSprite2D_SetSourceRect(indicator, 0, 464, 48, 480);
+    ObjSprite2D_SetDestCenter(indicator);
+
+    async {
+        while (!Obj_IsDeleted(parent_)) {
+            ObjRender_SetPosition(indicator, clamp(ObjMove_GetX(parent_), MIN_X + 24, MAX_X - 24) + 32, MAX_Y + 16, 1); //account for difference in coordinate systems
+            Obj_SetVisible(indicator, Obj_IsVisible(parent_));
+            yield;
+        }
+        Obj_Delete(indicator);
+    }
+}
 //Call at the end of a single
 task Boss_Finalize(int obj_, bool isFinal_) {
     real xPos = ObjMove_GetX(obj_);
