@@ -32,7 +32,7 @@ function<void> Stage_SetBGMText(string text_) { //newly playing bgm text (228 fr
 
     //music note
     int note = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(note, IMG_SYSTEM_TEXT);
+    ObjPrim_SetTexture(note, IMG_SYSTEM_UI);
     ObjSprite2D_SetSourceRect(note, 0, 224, 16, 240);
     ObjSprite2D_SetDestRect(note, 0, 0, 16, 16);
     ObjRender_SetColor(note, COLOR_YELLOW);

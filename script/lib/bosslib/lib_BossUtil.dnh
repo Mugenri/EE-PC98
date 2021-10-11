@@ -29,7 +29,7 @@ function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
 //Sets boss position indicator at bottom of screen
 function<void> Boss_SetIndicator(int parent_) {
     int indicator = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(indicator, IMG_SYSTEM_TEXT);
+    ObjPrim_SetTexture(indicator, IMG_SYSTEM_UI);
     Obj_SetRenderPriorityI(indicator, RP_UI_OVERLAY);
     ObjSprite2D_SetSourceRect(indicator, 0, 464, 48, 480);
     ObjSprite2D_SetDestCenter(indicator);
