@@ -31,6 +31,7 @@ const string IMG_PLR_TSUBAKURA      = DIR_IMG ~ "character/tsubakura/tsubaSTG.pn
 //Character Portraits
 const string IMG_PORTRAIT_YABUSAME  = DIR_IMG ~ "character/yabusame/yabuPortrait.png";
 const string IMG_PORTRAIT_TSUBAKURA = DIR_IMG ~ "character/tsubakura/tsubaPortrait.png";
+const string IMG_PORTRAIT_TSURUBAMI = DIR_IMG ~ "character/tsubakura/tsubaPortrait.png"; //TODO change to tsurubami when available
 //Boss Sprites
 const string IMG_STG_TSURUBAMI      = DIR_IMG ~ "character/tsurubami/tsuruSTG.png";
 //Backgrounds

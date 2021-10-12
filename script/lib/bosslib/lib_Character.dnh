@@ -11,7 +11,7 @@ const string[] IMG_CHARA_TSUBAKURA = [
     ]; 
 
 const string[] IMG_CHARA_TSURUBAMI = [
-    IMG_PORTRAIT_TSUBAKURA, //TODO CHANGE TO TSURUBAMI LATER dialogue portrait
+    IMG_PORTRAIT_TSURUBAMI, //dialogue portrait
     IMG_STG_TSURUBAMI //boss sprite
     ]; 
 
