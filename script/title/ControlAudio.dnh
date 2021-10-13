@@ -38,7 +38,8 @@ const string[] SOUNDS = [
     DIR_SE ~ "seSpellYabu1.wav",
     DIR_SE ~ "seSpellYabu2.wav",
     DIR_SE ~ "seTransition.wav",
-    DIR_SE ~ "seDamage.wav"
+    DIR_SE ~ "seDamage.wav",
+    DIR_SE ~ "seExtend.wav"
 ];
 
 @Initialize {
