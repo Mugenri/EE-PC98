@@ -59,9 +59,11 @@ task TIntro() {
 
     //TODO Game logo when i get it
     int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(objLogo, IMG_SYSTEM_LOGO);
+    ObjSprite2D_SetSourceRect(objLogo, 0, 0, 323, 108);
+    ObjSprite2D_SetDestCenter(objLogo);
     Obj_SetRenderPriorityI(objLogo, RP_STG_MAX);
-    ObjSprite2D_SetDestRect(objLogo, -40, -40, 40, 40);
-    ObjRender_SetPosition(objLogo, MID_X, MID_Y - 40, 1);
+    ObjRender_SetPosition(objLogo, 192, 184, 1); //MID_Y constant doesnt work here for some reason, don't care enough to figure out why
     ObjRender_SetAlpha(objLogo, 0);
 
     //Stop player movement while screen is black

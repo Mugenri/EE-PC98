@@ -66,6 +66,7 @@ function<string[]> GetImgEffect() { //returns particle/visual effect image paths
 function<string[]> GetImgSystem() { //returns system related image paths (lib_File.dnh)
     return [
         IMG_SYSTEM_FRAME,
+        IMG_SYSTEM_LOGO,
         IMG_SYSTEM_UI,
         IMG_SYSTEM_TEXTBOX,
         IMG_SYSTEM_ITEM,
@@ -85,6 +86,7 @@ function<string[]> GetImgStage() { //returns stage/boss sprite related image pat
         //Character Portraits
         IMG_PORTRAIT_YABUSAME,
         IMG_PORTRAIT_TSUBAKURA,
+        IMG_PORTRAIT_TSURUBAMI,
         //Boss Sprites
         IMG_STG_TSURUBAMI,
         //Backgrounds
