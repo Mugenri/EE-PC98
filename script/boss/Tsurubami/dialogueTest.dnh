@@ -34,7 +34,7 @@ task TMain() {
 function<void> Dialogue() {
     //create player/enemy portraits and text fields
     int playerCutin = CreateDialoguePortrait(BOSS_ID_YABUSAME, false);
-    int bossCutin = CreateDialoguePortrait(BOSS_ID_TSUBAKURA, true);
+    int bossCutin = CreateDialoguePortrait(BOSS_ID_TSURUBAMI, true);
 
     //dialogue line position
     int line = 0;
@@ -61,9 +61,11 @@ function<void> Dialogue() {
             SetText(false, "Nobody asked you, nerd./This text is going on for/a very long time innit.");
         }
         case (2) {
+            SetPortrait(bossCutin, 0);
             SetBossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
         }
         case (3) {
+            SetPortrait(bossCutin, 6);
             SetText(true, "I just wanted to be involved/:(");
         }
         others{
