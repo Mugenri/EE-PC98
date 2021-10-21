@@ -1,13 +1,15 @@
 #include "./tsuruAnime.dnh"
 
-task TBombBarrier(int objBoss_) {
-    while (ObjEnemy_GetInfo(objBoss_, INFO_LIFE) > 0 && !Obj_IsDeleted(objBoss_)) {
+task TBombBarrier(int objBoss_) { //TODO accomodate survival cards and edge cases for damage rates
+    while (_bossAlive) {
         if (IsPlayerSpellActive()) {
-            AnimeMonochrome();
-            ObjEnemy_SetDamageRate(objBoss_, 0, 0);
-            while (IsPlayerSpellActive()) yield;
+            Anime_Barrier(true);
+            while (IsPlayerSpellActive()) {
+                ObjEnemy_SetDamageRate(objBoss_, 0, 0);
+                yield;
+            }
             wait(15);
-            AnimeMonochrome();
+            Anime_Barrier(false);
             ObjEnemy_SetDamageRate(objBoss_, 100, 100);
         }
         yield;

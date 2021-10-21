@@ -1,8 +1,6 @@
-//TODO this whole fuckin thing needs work
-bool _charge = false;
-bool _monochrome = false;
-int _frameCount = 0;
-int _frameCountCharge = 0;
+//TODO this whole fuckin thing needs work still but less so now
+bool _charge = false; //charge animation
+bool _barrier = false; //bomb invincibility
 
 task TDrawBoss(int objBoss_) {
     ObjPrim_SetTexture(objBoss_, IMG_STG_TSURUBAMI);
@@ -13,30 +11,42 @@ task TDrawBoss(int objBoss_) {
     ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
     ObjShader_SetTechnique(objBoss_, "TecWhite");
 
-    int frame_ = 0;
-    int frameCharge_ = 0;
-
+    real chargeFrame = 0;
     bool isFlashing = false;
-
+    
     while (!Obj_IsDeleted(objBoss_)) {
-         if (_monochrome || ObjMove_GetSpeed(objBoss_) > 0) { //_monochrome frame
-            ObjSprite2D_SetSourceRect(objBoss_, 64 * 5, 0, 64 * 6, 64);
-        } else if (_frameCountCharge == 0) { //idle animation
-            frame_ = floor(_frameCount / 30);
-            ObjSprite2D_SetSourceRect(objBoss_, (64 * frame_), 0, 64 * (frame_ + 1), 64);
-        } else if ((_charge || _frameCountCharge > 0)) { //_charge anim
-            frameCharge_ = floor(_frameCountCharge / 8);
-            ObjSprite2D_SetSourceRect(objBoss_, 64 * frameCharge_, 0, 64 * (frameCharge_ + 1), 64);
+        //in order of precedence
+        if (_barrier) { //bomb barrier
+            if (ObjMove_GetSpeed(objBoss_) == 0 || absolute(cos(ObjMove_GetAngle(objBoss_))) < 0.1) { //idle
+                ObjSprite2D_SetSourceRect(objBoss_, 192, 0, 256, 64);
+            } else { //moving
+                if (cos(ObjMove_GetAngle(objBoss_)) < 0) { //left
+                    ObjSprite2D_SetSourceRect(objBoss_, 320, 0, 384, 64);
+                } else {
+                    ObjSprite2D_SetSourceRect(objBoss_, 256, 0, 320, 64);
+                }
+                WriteLog(ObjMove_GetAngle(objBoss_));
+            }
+        } else if (_charge) { //charge animation
+            ObjSprite2D_SetSourceRect(objBoss_, 384 + floor(chargeFrame) * 64, 0, 448 + floor(chargeFrame) * 64, 64);
+            chargeFrame += 1/6;
+        } else { //not charge/bomb invuln
+            if (ObjMove_GetSpeed(objBoss_) == 0 || absolute(cos(ObjMove_GetAngle(objBoss_))) < 0.1) { //idle/moving vertically
+                ObjSprite2D_SetSourceRect(objBoss_, 0, 0, 64, 64);
+            } else { //moving
+                if (cos(ObjMove_GetAngle(objBoss_)) < 0) { //left
+                    ObjSprite2D_SetSourceRect(objBoss_, 128, 0, 192, 64);
+                } else { //right
+                    ObjSprite2D_SetSourceRect(objBoss_, 64, 0, 128, 64);
+                }
+            }
         }
-        _frameCount++;
-        if (_frameCount >= 60 || _frameCountCharge > 0 || _monochrome) _frameCount = 0;
-        if (_charge && _frameCountCharge < 32) _frameCountCharge++;
-        if (!_charge && _frameCountCharge > 0) _frameCountCharge--;
-
+        ObjSprite2D_SetDestCenter(objBoss_);
+        
         //flash on hit
-        if (isFlashing == false && _isDamaged) { //TODO its possible for this to stay white if the single ends and the player stops shooting
+        if (isFlashing == false && _isDamaged) {
             isFlashing = true;
-            async {
+            async { //TODO consider making generic damage function somewhere (probably generic anim library)
                 loop (3) {
                     ObjShader_SetFloat(objBoss_, "enable_", 1);
                     yield;
@@ -46,14 +56,18 @@ task TDrawBoss(int objBoss_) {
                 isFlashing = false;
             }
         }
+
+        //variable resets
+        if (chargeFrame > 0 && (chargeFrame >= 4 || !_charge)) chargeFrame = 0;
         yield;
     }
+    ObjShader_SetFloat(objBoss_, "enable_", 0); //turn off white shader
 }
 
-function<void> AnimeCharge() {
-    _charge = !_charge;
+function<void> Anime_Charge(bool active_) {
+    _charge = active_;
 }
 
-function<void> AnimeMonochrome() {
-    _monochrome = !_monochrome;
+function<void> Anime_Barrier(bool active_) {
+    _barrier = active_;
 }
