@@ -11,7 +11,7 @@ bool _start = false;
 
 @Initialize {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
-    InitBackground(0);
+    InitBackground(2);
     TStage();
 }
 
