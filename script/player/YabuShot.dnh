@@ -1,9 +1,9 @@
-shot_image = "./../img/character/yabusame/yabuStg.png"
+shot_image = "./../img/character/yabusame/yabuSTG.png"
 
 ShotData {
     id = 1
     render = ALPHA
-    rect = ( 144, 0, 160, 16 )
+    rect = ( 0, 48, 16, 64 )
     alpha = 255;
     collision = 2;
 }
@@ -11,7 +11,7 @@ ShotData {
 ShotData {
     id = 2
     render = ALPHA
-    rect = ( 160, 0, 176, 16 )
+    rect = ( 32, 48, 48, 64 )
     alpha = 255;
     collision = 2;
 }

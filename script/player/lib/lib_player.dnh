@@ -17,7 +17,7 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
     _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, 0, 32, 16, 48);
     ParticleListShader(_particleFlake, 16/512, 1);
     
-    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, 176, 16, 192, 32);
+    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, 0, 0, 16, 16);
     ParticleListShader(_particleShot, 16/256, 16/64);
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
@@ -77,24 +77,26 @@ function<void> PlayerEvent() {
 }
 
 task TRender(int ParentID_) {
+    //player
 	ObjPrim_SetTexture(_objPlayer, _pathImg);
+    ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
+    ObjSprite2D_SetDestCenter(_objPlayer);
     Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
-
+    //hitbox
     int objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objHitbox, _pathImg);
-    ObjSprite2D_SetSourceRect(objHitbox, 198, 6, 202, 10);
+    ObjPrim_SetTexture(objHitbox, IMG_PLR_HITBOX);
+    ObjSprite2D_SetSourceRect(objHitbox, 0, 0, 4, 4);
     ObjSprite2D_SetDestCenter(objHitbox);
     Obj_SetRenderPriorityI(objHitbox, RP_STG_HITBOX);
 
 	while (!Obj_IsDeleted(ParentID_)) {
-		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 48, 0, 96, 48);
-		else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 96, 0, 144, 48);
-		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 48, 48);
+		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);
+		else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 32, 0, 64, 48);
+		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
 
         Obj_SetVisible(objHitbox, GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive());
-
-		ObjSprite2D_SetDestCenter(_objPlayer);
         ObjRender_SetPosition(objHitbox, GetPlayerX(), GetPlayerY(), 1);
+
 		yield;
 	}
 }
@@ -251,7 +253,7 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     }
 }
 
-task TShotParticle(real x_, real y_) {
+task TShotParticle(real x_, real y_) { //shot hit something, spawn shot flake particle
     real speed = rand(4.5, 10);
     real angle = rand(0, 360);
     real xStep = speed * cos(angle);

@@ -77,7 +77,8 @@ function<string[]> GetImgSystem() { //returns system related image paths (lib_Fi
 function<string[]> GetImgPlayer() { //returns player related image paths (lib_File.dnh)
     return [
         IMG_PLR_YABUSAME,
-        IMG_PLR_TSUBAKURA
+        IMG_PLR_TSUBAKURA,
+        IMG_PLR_HITBOX
     ];
 }
 

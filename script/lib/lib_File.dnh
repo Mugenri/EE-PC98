@@ -27,6 +27,7 @@ const string IMG_SYSTEM_SHOT        = DIR_IMG ~ "system/mugenriShot.png";
 //Player Images
 const string IMG_PLR_YABUSAME       = DIR_IMG ~ "character/yabusame/yabuSTG.png";
 const string IMG_PLR_TSUBAKURA      = DIR_IMG ~ "character/tsubakura/tsubaSTG.png";
+const string IMG_PLR_HITBOX         = DIR_IMG ~ "character/hitbox.png";
 
 //Stage Images
 //Character Portraits
