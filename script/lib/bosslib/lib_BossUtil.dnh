@@ -22,9 +22,15 @@ function<void> Boss_SetIntersection(int obj_, int toShot_, int toPlayer_) {
     ObjEnemy_SetIntersectionCircleToShot(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
     ObjEnemy_SetIntersectionCircleToPlayer(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
 }
+//Sets another hitbox for target_ at obj_'s location for 1 frame
+function<void> Boss_SetIntersection(int obj_, int target_, int toShot_, int toPlayer_) {
+    ObjEnemy_SetIntersectionCircleToShot(target_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
+    ObjEnemy_SetIntersectionCircleToPlayer(target_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
+}
+//sets invulnerability of the given boss object
 function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
     if (isVulnerable_) ObjEnemy_SetDamageRate(obj_, 100, 100);
-    else ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001);
+    else ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001); //relates to how invuln sounds are handled, no actual damage is dealt.
 }
 //Sets boss position indicator at bottom of screen
 function<void> Boss_SetIndicator(int parent_) {
