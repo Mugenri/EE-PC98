@@ -108,9 +108,7 @@ task THit() { //Player deathbomb window
     
     //Closing circle
     real radius = 28;
-    int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
-    ObjPrim_SetVertexCount(circle, 17);
+    int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_PLR_HI);
     ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
     loop (14) {
         ascent (i in 0..17) {
@@ -170,9 +168,7 @@ task TMiss() { //Player died
     task TMissCircle() {
         real radius = 0;
         real decayRate = 3.5;
-        int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
-        ObjPrim_SetVertexCount(circle, 17);
+        int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_PLR_HI);
         ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         loop (120) {
             ascent (i in 0..17) {
@@ -213,9 +209,7 @@ task TRebirth() { //Player respawn
         //blue circle indicating vulnerability
         CallSFX(SND_PL_VULNERABLE);
         real radius = 28;
-        int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
-        ObjPrim_SetVertexCount(circle, 17);
+        int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_PLR_HI);
         ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
         loop (20) {
             ascent (i in 0..17) {

@@ -88,8 +88,8 @@ function<void> DeleteEffectLaser(int obj_) { //Laser cancel effect
     real len = ObjLaser_GetLength(obj_);
     real speed = 4.5;
 
-    int deleteLine1 = CreateDeleteLine(); //clockwise to laser
-    int deleteLine2 = CreateDeleteLine(); //counterclockwise to laser
+    int deleteLine1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //clockwise to laser
+    int deleteLine2 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //counterclockwise to laser
 
     async {
         real dist = 0; //distance of delete line to the original laser center
@@ -106,13 +106,5 @@ function<void> DeleteEffectLaser(int obj_) { //Laser cancel effect
         }
         Obj_Delete(deleteLine1);
         Obj_Delete(deleteLine2);
-    }
-
-    function<int> CreateDeleteLine() {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_LINESTRIP);
-        ObjPrim_SetVertexCount(obj, 2);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
-        return obj;
     }
 }

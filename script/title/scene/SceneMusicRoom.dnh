@@ -116,10 +116,7 @@ function<void> SceneMusicRoom() {
         Obj_Delete(linesV);
 
         function<int> CreateLinesH() {
-            int lines = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-            ObjPrim_SetPrimitiveType(lines, PRIMITIVE_LINELIST);
-            ObjPrim_SetVertexCount(lines, 36);
-            Obj_SetRenderPriorityI(lines, RP_UI_BG);
+            int lines = InitPrim2D(PRIMITIVE_LINELIST, 36, RP_UI_BG);
 
             int i = 0;
             real dist = 90;
@@ -139,10 +136,7 @@ function<void> SceneMusicRoom() {
         }
 
         function<int> CreateLinesV() {
-            int lines = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-            ObjPrim_SetPrimitiveType(lines, PRIMITIVE_LINELIST);
-            ObjPrim_SetVertexCount(lines, 24);
-            Obj_SetRenderPriorityI(lines, RP_UI_BG);
+            int lines = InitPrim2D(PRIMITIVE_LINELIST, 24, RP_UI_BG);
             
             int i = 0;
             async {

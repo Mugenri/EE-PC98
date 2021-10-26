@@ -45,10 +45,7 @@ function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radi
     int vertices = type == PRIMITIVE_TRIANGLEFAN ? sides_ + 2 : sides_ + 1;
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
 
-    int polygon = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(polygon, type);
-    ObjPrim_SetVertexCount(polygon, vertices);
-    Obj_SetRenderPriorityI(polygon, priority_);
+    int polygon = InitPrim2D(type, vertices, priority_);
 
     if (startVertex > 0) {
         ObjPrim_SetVertexPosition(polygon, 0, x_, y_, 1);
@@ -63,10 +60,7 @@ function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radi
 }
 
 function<void> Primitive_ScreenFlashFinal() {
-    int mask = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(mask, PRIMITIVE_TRIANGLESTRIP);
-    ObjPrim_SetVertexCount(mask, 4);
-    Obj_SetRenderPriorityI(mask, RP_STG_MAX);
+    int mask = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_MAX);
 
     ObjPrim_SetVertexPosition(mask, 0, 0, 0, 1);
     ObjPrim_SetVertexPosition(mask, 1, MAX_X, 0, 1);

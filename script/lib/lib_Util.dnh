@@ -26,7 +26,6 @@ function<int[]> DigitToArray(int digit_) {
 	}
 	return res;
 }
-
 //Move selection index, wrap between min/max, omit forbidden indices
 function<int> IncrementIndex(int index_, int amount_, int min_, int max_, int[] forbidden_) {
     index_ += amount_;
@@ -54,7 +53,6 @@ function<bool> CheckForbidden(int index_, int[] forbidden_) {
     }
     return false;
 }
-
 //Create Text object with pc9800 font
 function<int> CreateText(int x_, int y_, int priority_, string text_, int color_) { //color_ is an RGB hex value added to 255 alpha (0xFF000000)
     int obj = ObjText_Create();
@@ -71,7 +69,6 @@ function<int> CreateText(int x_, int y_, int priority_, string text_, int color_
 function<int> CreateText(int x_, int y_, string text_, int color_) {
     return CreateText(x_, y_, RP_UI_TEXT, text_, color_);
 }
-
 //Initializes a 2D particle list
 function<int> InitParticleList(string path_, int priority_, int l_, int t_, int r_, int b_) {
     int obj = ObjParticleList_Create(OBJ_PARTICLE_LIST_2D);
@@ -81,6 +78,14 @@ function<int> InitParticleList(string path_, int priority_, int l_, int t_, int 
 	ObjSprite2D_SetSourceRect(obj, l_, t_, r_, b_);
 	ObjSprite2D_SetDestCenter(obj);
 	ObjPrim_SetVertexIndex(obj, [0, 1, 2, 3]);
+    return obj;
+}
+//Initializes a 2D primitive object
+function<int> InitPrim2D(int primType_, int vertices_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(obj, primType_);
+    ObjPrim_SetVertexCount(obj, vertices_);
+    Obj_SetRenderPriorityI(obj, priority_);
     return obj;
 }
 //Allows for asynchronous sprite animation frames of particles

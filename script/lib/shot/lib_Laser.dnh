@@ -92,10 +92,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
     return hitbox;
 
     function<int> CreateCircle(bool colored_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLEFAN);
-        ObjPrim_SetVertexCount(obj, 14);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -106,10 +103,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
     }
 
     function<int> CreateLine(bool colored_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
-        ObjPrim_SetVertexCount(obj, 4);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -134,10 +128,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     int circle2 = CreateCircle(false);
     int line2 = CreateLine(false);
     //delay laser
-    int guide1 = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(guide1, PRIMITIVE_LINESTRIP);
-    ObjPrim_SetVertexCount(guide1, 2);
-    Obj_SetRenderPriorityI(guide1, RP_STG_LASER);
+    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
     //delay laser origin
     int guide2 = CreateCircle(false);
     Obj_SetVisible(guide2, true);
@@ -234,10 +225,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     return hitbox;
 
     function<int> CreateCircle(bool colored_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLEFAN);
-        ObjPrim_SetVertexCount(obj, 14);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -248,10 +236,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     }
 
     function<int> CreateLine(bool colored_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
-        ObjPrim_SetVertexCount(obj, 4);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -304,10 +289,7 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
     int line3 = CreateLine(COLOR_WHITE);
 
     //delay laser
-    int guide1 = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(guide1, PRIMITIVE_LINESTRIP);
-    ObjPrim_SetVertexCount(guide1, 2);
-    Obj_SetRenderPriorityI(guide1, RP_STG_LASER);
+    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
 
     //Update loop 
     async {
@@ -415,10 +397,7 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
     return controller;
 
     function<int> CreateCircle(int color_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLEFAN);
-        ObjPrim_SetVertexCount(obj, 34);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 34, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         ascent (i in 0..34) {
@@ -428,10 +407,7 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
     }
 
     function<int> CreateLine(int color_) {
-        int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(obj, PRIMITIVE_TRIANGLESTRIP);
-        ObjPrim_SetVertexCount(obj, 4);
-        Obj_SetRenderPriorityI(obj, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
         Obj_SetVisible(obj, false);
         //set color
         ascent (i in 0..4) {

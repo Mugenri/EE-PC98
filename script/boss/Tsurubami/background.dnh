@@ -42,10 +42,7 @@ task TBackgroundStage(int index_, int priority_) {
     Obj_Delete(black);
 
     task TCircle() {
-        int circle = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-        ObjPrim_SetPrimitiveType(circle, PRIMITIVE_LINESTRIP);
-        ObjPrim_SetVertexCount(circle, 33);
-        Obj_SetRenderPriorityI(circle, priority_);
+        int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, priority_);
         ascent (i in 0..33) ObjPrim_SetVertexColor(circle, i, COLOR_GRAY_D);
 
         for (real i = 1; i < 300; i *= 1.05) {
@@ -139,10 +136,7 @@ task TBackground(int index_, int priority_) {
         task TCreateLine(int xStart_, int yStart_, int step_, int points_, bool vertical_) {
             int[][] positions = [];
 
-            int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-            ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINESTRIP);
-            Obj_SetRenderPriorityI(line, priority_);
-            ObjPrim_SetVertexCount(line, points_);
+            int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
             ascent (i in 0..points_) {
                 ObjPrim_SetVertexColor(line, i, 78, 78, 78);
             }
@@ -231,10 +225,7 @@ task TSpellBackground(int index_, int priority_) { //TODO very temporary
             real xPos = front_ ? -20 : GetStgFrameWidth() + 20;
             int len = 15;
             if (!front_) speed_ *= -1; //move other direction if in background
-            int line = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-            ObjPrim_SetPrimitiveType(line, PRIMITIVE_LINELIST);
-            ObjPrim_SetVertexCount(line, 2);
-            Obj_SetRenderPriorityI(line, priority);
+            int line = InitPrim2D(PRIMITIVE_LINELIST, 2, priority);
             ascent (i in 0..2) {
                 ObjPrim_SetVertexColor(line, i, color);
             }
