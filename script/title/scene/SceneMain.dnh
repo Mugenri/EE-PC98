@@ -264,7 +264,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         SceneSoundTest();
 
         //Exited sound test menu
-        TMainMenu(false, INDEX_PRACTICE);
+        TMainMenu(false, INDEX_SOUND);
     }
 
     task TSelectScore() {
