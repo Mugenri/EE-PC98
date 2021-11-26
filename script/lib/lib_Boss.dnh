@@ -9,7 +9,8 @@
 
 bool _bossAlive = true; //boss health > 0
 bool _isDamaged = false; //used for damage animation
-//TODO bomb invincibility bool
+bool _isSpellVulnerable = true; //is vulnerable to bomb damage
+bool _spellBarrier = false; //is spell barrier active
 
 bool _isSurvival = false; //survival spell
 
@@ -19,14 +20,18 @@ real _previousLife = 0; //life of previous frame
 real intersectionShot = 32; //default intersection to shot
 real intersectionPlayer = 24; //default intersection to player
 
-function<void> InitBoss() { //Initialize a boss scene
+function<void> InitBoss(bool isVulnerable_) { //Initialize a boss scene
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
     InitCommon();
     InitEffectParticle();
 
+    _isSpellVulnerable = isVulnerable_;
+
     //if spell practice, set variables (drop no items)
     //else ?
     _isSurvival = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_DURABLE_SPELL);
+
+    if (_isSurvival) _isSpellVulnerable = false; //just in case
 
     LoadShotData();
 }
@@ -45,7 +50,7 @@ function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainlo
     _isDamaged = false;
     _bossLife = ObjEnemy_GetInfo(mainBoss_, INFO_LIFE);
 
-    if (_bossLife < _previousLife) {
+    if (_bossLife < _previousLife) { //damage check
         if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
             CallSFX(SND_DAMAGE);
             _isDamaged = true;
@@ -58,5 +63,18 @@ function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainlo
 
     if (_bossLife <= 0) _bossAlive = false; //health check
 
+    if (!_isSpellVulnerable && !_isSurvival && _spellBarrier == false && IsPlayerSpellActive() && _bossAlive) TSpellBarrier(mainBoss_); //bomb invulnerability check
+
     _previousLife = _bossLife;
+}
+
+task TSpellBarrier(int mainBoss_) {
+    _spellBarrier = true;
+    while (IsPlayerSpellActive() && _bossAlive) { //_bossAlive just in case
+        Boss_SetVulnerable(mainBoss_, false);
+        yield;
+    }
+    wait(15);
+    Boss_SetVulnerable(mainBoss_, true);
+    _spellBarrier = false;
 }

@@ -1,17 +1,1 @@
 #include "./tsuruAnime.dnh"
-
-task TBombBarrier(int objBoss_) { //TODO accomodate survival cards and edge cases for damage rates
-    while (_bossAlive) {
-        if (IsPlayerSpellActive()) {
-            Anime_Barrier(true);
-            while (IsPlayerSpellActive()) {
-                ObjEnemy_SetDamageRate(objBoss_, 0, 0);
-                yield;
-            }
-            wait(15);
-            Anime_Barrier(false);
-            ObjEnemy_SetDamageRate(objBoss_, 100, 100);
-        }
-        yield;
-    }
-}

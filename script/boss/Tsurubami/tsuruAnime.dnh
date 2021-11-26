@@ -1,6 +1,5 @@
 //TODO this whole fuckin thing needs work still but less so now
 bool _charge = false; //charge animation
-bool _barrier = false; //bomb invincibility
 
 task TDrawBoss(int objBoss_) {
     ObjPrim_SetTexture(objBoss_, IMG_STG_TSURUBAMI);
@@ -16,7 +15,7 @@ task TDrawBoss(int objBoss_) {
     
     while (!Obj_IsDeleted(objBoss_)) {
         //in order of precedence
-        if (_barrier || _isSurvival) { //bomb barrier/survival
+        if (_spellBarrier || _isSurvival) { //bomb barrier/survival
             if (ObjMove_GetSpeed(objBoss_) == 0 || absolute(cos(ObjMove_GetAngle(objBoss_))) < 0.1) { //idle
                 ObjSprite2D_SetSourceRect(objBoss_, 192, 0, 256, 64);
             } else { //moving
@@ -66,8 +65,4 @@ task TDrawBoss(int objBoss_) {
 
 function<void> Anime_Charge(bool active_) {
     _charge = active_;
-}
-
-function<void> Anime_Barrier(bool active_) {
-    _barrier = active_;
 }

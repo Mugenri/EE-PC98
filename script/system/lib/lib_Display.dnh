@@ -57,7 +57,6 @@ task TIntro() {
 
     int frames = 8; //number of animation frames
 
-    //TODO Game logo when i get it
     int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objLogo, IMG_SYSTEM_LOGO);
     ObjSprite2D_SetSourceRect(objLogo, 0, 0, 323, 108);
