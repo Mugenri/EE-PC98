@@ -544,8 +544,8 @@ task TPointItem() {
 //Spell Bonus Display
 //----------------------------------------------------
 task TSpellBonus(int score_) {
-    while (!_bonusIsReady) yield;
-    _bonusIsReady = false;
+    while (!_bonusIsReady) yield; //has to yield until bonusReady for multiple things (ascii score text position esp.)
+    _bonusIsReady = false; 
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
@@ -607,6 +607,7 @@ task TSpellBonus(int score_) {
 //----------------------------------------------------
 task TCancelBonus(int score_) {
     _bonusIsReady = true;
+    if (ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_DURABLE_SPELL) && score_ != -1) return; //no shot cancel bonus on survival spells (still need bonus fail text)
     //Bonus!! Text
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);

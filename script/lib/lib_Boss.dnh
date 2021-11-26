@@ -7,24 +7,31 @@
 #include "./bosslib/lib_Character.dnh"
 #include "./bosslib/lib_BossUtil.dnh"
 
-bool _bossAlive = true;
-bool _isDamaged = false;
+bool _bossAlive = true; //boss health > 0
+bool _isDamaged = false; //used for damage animation
+//TODO bomb invincibility bool
 
-real _bossLife;
-real _previousLife = 0;
+bool _isSurvival = false; //survival spell
 
-real intersectionShot = 32;
-real intersectionPlayer = 24;
+real _bossLife; //current life
+real _previousLife = 0; //life of previous frame
 
-function<void> InitBoss() {
+real intersectionShot = 32; //default intersection to shot
+real intersectionPlayer = 24; //default intersection to player
+
+function<void> InitBoss() { //Initialize a boss scene
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
     InitCommon();
     InitEffectParticle();
+
     //if spell practice, set variables (drop no items)
+    //else ?
+    _isSurvival = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_DURABLE_SPELL);
+
     LoadShotData();
 }
 
-function<int> CreateBoss(string bossID_) {
+function<int> CreateBoss(string bossID_) { //Initialize a boss object
     int objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
     Boss_SetID(objBoss, bossID_);
     Boss_GetInitPosition(objBoss);
@@ -39,7 +46,7 @@ function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainlo
     _bossLife = ObjEnemy_GetInfo(mainBoss_, INFO_LIFE);
 
     if (_bossLife < _previousLife) {
-        if (_previousLife - _bossLife > 0.01) { //if the boss has lost more than a hundredth of a point of health from the last frame
+        if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
             CallSFX(SND_DAMAGE);
             _isDamaged = true;
             AddScore(10 * (round (_previousLife - _bossLife))); //~10 points per point of boss health

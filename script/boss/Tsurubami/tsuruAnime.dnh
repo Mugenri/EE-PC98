@@ -16,7 +16,7 @@ task TDrawBoss(int objBoss_) {
     
     while (!Obj_IsDeleted(objBoss_)) {
         //in order of precedence
-        if (_barrier) { //bomb barrier
+        if (_barrier || _isSurvival) { //bomb barrier/survival
             if (ObjMove_GetSpeed(objBoss_) == 0 || absolute(cos(ObjMove_GetAngle(objBoss_))) < 0.1) { //idle
                 ObjSprite2D_SetSourceRect(objBoss_, 192, 0, 256, 64);
             } else { //moving

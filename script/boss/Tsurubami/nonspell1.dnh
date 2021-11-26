@@ -17,10 +17,13 @@ int _loopTime = 90;
         SetScriptResult(300);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60);
+        SetScriptResult(10);
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
+    }
+    case (EV_REQUEST_IS_DURABLE_SPELL) {
+        SetScriptResult(true);
     }
 }
 
@@ -30,6 +33,7 @@ int _loopTime = 90;
     _objBoss = CreateBoss(BOSS_ID_TSURUBAMI);
     TDrawBoss(_objBoss);
     //startspell go here
+    ObjEnemyBossScene_StartSpell(_objScene);
     TBombBarrier(_objBoss);
     TInitialize();
     TFinalize();
@@ -58,26 +62,26 @@ task TInitialize() {
     Transition_Circle(0, 60);
     CallSFX(SND_TRANSITION);
     wait(120);
-    if (!IsPlayerSpellActive()) Boss_SetVulnerable(_objBoss, true); //TODO needs some indicator if bomb invuln is true
+    //if (!IsPlayerSpellActive()) Boss_SetVulnerable(_objBoss, true); //TODO needs some indicator if bomb invuln is true
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Anime_Charge(false);
     Anime_Barrier(false);
-    Boss_Finalize(_objBoss, false);
+    Boss_Finalize(_objBoss);
 }
 
 task TPatternA() {
     Anime_Charge(true);
     wait(20);
-    if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+    if (!_bossAlive) return;
     loop (3) {
         loop (5) {
             real angleT = rand(0, 360);
             loop (25) {
-                if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+                if (!_bossAlive) return;
                 int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
                 angleT += 360/25;
             }
@@ -119,7 +123,7 @@ task TPatternB(int dir_) {
 task TPatternC() {
     real angle = 180;
     loop (11) {
-        if (!ObjEnemy_GetInfo(_objBoss, INFO_LIFE) > 0) return;
+        if (!_bossAlive) return;
         int dist = 25;
         int obj = CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle -= 18;
@@ -127,7 +131,7 @@ task TPatternC() {
     }
     angle = 0;
     loop (11) {
-        if (!ObjEnemy_GetInfo(_objBoss, INFO_LIFE) > 0) return;
+        if (!_bossAlive) return;
         int dist = 15;
         CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle += 18;
@@ -148,7 +152,7 @@ task TPatternE() {
     real yPos = rand(-15, 15);
     int bSprite = round(rand(0, 1)) * 5;
     loop (32) {
-        if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+        if (!_bossAlive) return;
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
         angleT += 360/32;
     }
@@ -159,7 +163,7 @@ task TPatternF(int dir_) {
     real increment = 0.05;
     
     loop (550) {
-        if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+        if (!_bossAlive) return;
         CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ + 10, SHOT_BLACK+BALL_S, 0, 0, 0);
         CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_, SHOT_BLACK+BALL_S, 0, 0, 0);
         CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ - 10, SHOT_BLACK+BALL_S, 0, 0, 0);
@@ -193,13 +197,13 @@ task TPatternI() {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
     wait(20);
-    if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+    if (!_bossAlive) return;
     int shot1 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
     int shot2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
     ObjShot_SetSpellResist(shot1, true);
     ObjShot_SetSpellResist(shot2, true);
     loop (3) {
-        if (ObjEnemy_GetInfo(_objBoss, INFO_LIFE) <= 0) return;
+        if (!_bossAlive) return;
         SpawnShot(shot1);
         SpawnShot(shot2);
         wait(12);
