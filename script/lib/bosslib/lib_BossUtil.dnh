@@ -9,13 +9,13 @@ function<string> Boss_GetID(int obj_) {
 }
 //Moves the boss object associated with bossID_ to the position it was located at the end of the last single.
 function<void> Boss_GetInitPosition(int obj_) {
-    real[] pos = GetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [0, 0]);
+    real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [0, 0]);
     ObjMove_SetPosition(obj_, pos[0], pos[1]);
 }
 //Sets the last position of the boss object associated with bossID OR uses bossID directly to be used in the next single.
 function<void> Boss_SetInitPosition(var obj_, real x_, real y_) {
-    if (typeof(obj_) == VAR_STRING) SetAreaCommonData(AREA_STAGE, "POS_" ~ obj_, [x_, y_]);
-    else SetAreaCommonData(AREA_STAGE, "POS_" ~ Boss_GetID(obj_), [x_, y_]);
+    if (typeof(obj_) == VAR_STRING) SetAreaCommonData(AREA_STAGE, "Pos_" ~ obj_, [x_, y_]);
+    else SetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [x_, y_]);
 }
 //Sets the boss object intersection for 1 frame
 function<void> Boss_SetIntersection(int obj_, int toShot_, int toPlayer_) {
@@ -53,7 +53,7 @@ function<void> Boss_SetIndicator(int parent_) {
 task Boss_Finalize(int obj_, bool isFinal_) {
     real xPos = ObjMove_GetX(obj_);
     real yPos = ObjMove_GetY(obj_);
-    SetAreaCommonData(AREA_STAGE, "POS_BONUS", [xPos, yPos]); //Spell bonus yellow ascii text position
+    SetAreaCommonData(AREA_STAGE, "Pos_Bonus", [xPos, yPos]); //Spell bonus yellow ascii text position
     _objScene = GetEnemyBossSceneObjectID();
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
     bool isCapture = ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) > 0 ? false : true;

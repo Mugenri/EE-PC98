@@ -60,15 +60,15 @@ function<void> LoadConfig(bool loadDefault_) { //load config settings from file,
 }
 //Unlock extra stage
 function<void> CD_SetExtraStageFlag(int player_) {
-    SetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player_), true);
+    SetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), true);
 }
 function<bool> CD_GetExtraStageFlag(int player_) {
-    return(GetAreaCommonData(AREA_SAVE, "EXTRA_" ~ IntToString(player_), false));
+    return(GetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), false));
 }
 //Music room track unlocks
 function<void> CD_SetBGMHeardFlag(int trackID_) {
-    SetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID_), true);
+    SetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), true);
 }
 function<bool> CD_GetBGMHeardFlag(int trackID_) {
-    return(GetAreaCommonData(AREA_SAVE, "MUSIC_" ~ IntToString(trackID_), false));
+    return(GetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), false));
 }

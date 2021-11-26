@@ -549,7 +549,7 @@ task TSpellBonus(int score_) {
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
-    real[] pos = GetAreaCommonData(AREA_STAGE, "POS_BONUS", [0, 0]);
+    real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
     while (tempScore > 10000) {
         AsciiScoreNum(pos[0] + rand_int(-64, 64), pos[1] + rand_int(-64, 64), 10000, COLOR_YELLOW);
         tempScore -= 10000;
