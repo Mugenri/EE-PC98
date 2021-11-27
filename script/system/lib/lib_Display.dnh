@@ -353,7 +353,15 @@ task TBossLife() {
 //----------------------------------------------------
 task TBossTimer() {
     int obj = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT);
-    ObjRender_SetPosition(obj, 448, 159, 1);
+    ObjRender_SetPosition(obj, 448, 162, 1);
+
+    int icon = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(icon, IMG_SYSTEM_UI);
+    ObjSprite2D_SetSourceRect(icon, 192, 336, 199, 343);
+    ObjSprite2D_SetDestRect(icon, 0, 0, 7, 7);
+    ObjRender_SetPosition(icon, 572, 158, 0);
+    Obj_SetRenderPriorityI(icon, RP_UI_TEXT);
+    Obj_SetVisible(icon, false);
 
 	loop {
 		_objScene = GetEnemyBossSceneObjectID();
@@ -372,6 +380,11 @@ task TBossTimer() {
         ObjPrim_SetVertexColor(obj, 0, COLOR_WHITE);
         ObjPrim_SetVertexColor(obj, 1, COLOR_WHITE);
 
+        //icon stuff
+        ObjRender_SetPosition(icon, 445 + 128 * (timer/timerTotal), 158, 0);
+        real lifeTotal = round(ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE));
+        int countRemStep = ObjEnemyBossScene_GetInfo(_objScene, INFO_REMAIN_STEP_COUNT);
+        Obj_SetVisible(icon, lifeTotal > 0 || countRemStep != 0 && timer > 0);
 	}
 }
 
