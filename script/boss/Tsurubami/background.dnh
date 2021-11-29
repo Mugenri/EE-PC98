@@ -7,14 +7,13 @@ function<void> ChangeIndex(int index_, int priority_) {
     alternative (index_)
     case (0) { TBackground(0, priority_); }
     case (1) { TSpellBackground(1, priority_); }
-    case (2) { TBackgroundStage(2, priority_); }
     others { assert(false, "Invalid background index."); }
 }
 
-task TBackgroundStage(int index_, int priority_) {
+task TBackground(int index_, int priority_) {
     bool exitFlag = false;
     //black bg
-    int black = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    int black = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjSprite2D_SetSourceRect(black, 0, 0, MAX_X, MAX_Y);
     ObjSprite2D_SetDestRect(black, 0, 0, MAX_X, MAX_Y);
     ObjRender_SetColor(black, COLOR_BLACK);
@@ -22,7 +21,7 @@ task TBackgroundStage(int index_, int priority_) {
     //bg
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
-    ObjSprite2D_SetSourceRect(bg, 0, 368, 384, 736);
+    ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
     Obj_SetRenderPriorityI(bg, priority_ + 1); //render over prims
 
@@ -56,7 +55,7 @@ task TBackgroundStage(int index_, int priority_) {
         Obj_Delete(circle);
     }
 
-    task TExit () { //exit background task
+    task TExit () { //TODO find a way to make this reusable instead of copy pasting it? exit background task
         int timer = _transitionTime;
         while (timer > 0) {
             timer--;
@@ -66,14 +65,20 @@ task TBackgroundStage(int index_, int priority_) {
     }
 }
 
-task TBackground(int index_, int priority_) {
+task TSpellBackground(int index_, int priority_) {
     bool exitFlag = false;
-    //bg
+    //black bg
+    int black = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjSprite2D_SetSourceRect(black, 0, 0, MAX_X, MAX_Y);
+    ObjSprite2D_SetDestRect(black, 0, 0, MAX_X, MAX_Y);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    Obj_SetRenderPriorityI(black, priority_);
+    //torii & kanji
     int bg = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
-    ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
+    ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
     ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
-    Obj_SetRenderPriorityI(bg, priority_);
+    Obj_SetRenderPriorityI(bg, priority_ + 1); //render over background lines
 
     int count = 30;
     int color = 0;
@@ -86,7 +91,7 @@ task TBackground(int index_, int priority_) {
             TExit();
             index_ = _bIndex;
         }
-        ObjRender_SetColor(bg, color, color, color);
+        ObjRender_SetColor(black, color, color, color);
 
         if (increment) count++;
         else count--;
@@ -94,10 +99,11 @@ task TBackground(int index_, int priority_) {
         if (count >= 209) increment = false;
         else if (count < 30) increment = true;
 
-        color = truncate(count/60) * 8 + 8;
+        color = truncate(count/60) * 6;
         yield;
     }
 
+    Obj_Delete(black);
     Obj_Delete(bg);
 
     task TLineEffect() {
@@ -157,83 +163,6 @@ task TBackground(int index_, int priority_) {
 
                     ObjPrim_SetVertexPosition(line, i, xCurr, yCurr, 1);
                 }
-                yield;
-            }
-            Obj_Delete(line);
-        }
-    }
-
-    task TExit () { //exit background task
-        int timer = _transitionTime;
-        while (timer > 0) {
-            timer--;
-            yield;
-        }
-        exitFlag = true;
-    }
-}
-
-task TSpellBackground(int index_, int priority_) { //TODO very temporary
-    bool exitFlag = false;
-    //spell bg
-    int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
-    ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
-    ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
-    Obj_SetRenderPriorityI(bg, priority_);
-
-    int count = 30;
-    int color = 0;
-    real angle = 0;
-    bool increment = true;
-
-    TSpellEffect();
-
-    while (!exitFlag) {
-        if (index_ != _bIndex) {
-            TExit();
-            index_ = _bIndex;
-        }
-        ObjRender_SetColor(bg, color, color, color);
-
-        if (increment) count++;
-        else count--;
-
-        if (count >= 209) increment = false;
-        else if (count < 30) increment = true;
-
-        color = truncate(count/60) * 8 + 8;
-        yield;
-    }
-
-    Obj_Delete(bg);
-
-    task TSpellEffect() {
-        while (!exitFlag) {
-            real y = rand_int(0, 368);
-            real speed = rand(1.1, 2);
-            TCreateLine(y, speed, true);
-            y = rand(0, 368);
-            speed = rand(1.1, 2);
-            TCreateLine(y, speed, false);
-            wait(6);
-        }
-
-        task TCreateLine(int yPos_, real speed_, bool front_) {
-            int color = front_ ? COLOR_GRAY : COLOR_GRAY_D;
-            int priority = front_ ? priority_ + 1 : priority_;
-            real xPos = front_ ? -20 : GetStgFrameWidth() + 20;
-            int len = 15;
-            if (!front_) speed_ *= -1; //move other direction if in background
-            int line = InitPrim2D(PRIMITIVE_LINELIST, 2, priority);
-            ascent (i in 0..2) {
-                ObjPrim_SetVertexColor(line, i, color);
-            }
-            loop (trunc(368 / absolute(speed_)) + 60) { //rough amount of time it will take the lines to cross the screen
-                if (exitFlag) break;
-                ObjPrim_SetVertexPosition(line, 0, xPos, yPos_, 1);
-                ObjPrim_SetVertexPosition(line, 1, xPos + len, yPos_, 1);
-                xPos += speed_;
                 yield;
             }
             Obj_Delete(line);
