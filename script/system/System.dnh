@@ -2,6 +2,7 @@
 #include "./lib/lib_SystemCommon.dnh"
 #include "./lib/lib_AsciiNum.dnh"
 #include "./lib/lib_Display.dnh"
+#include "./../lib/lib_Spell.dnh"
 
 @Initialize {
     InitFrame();
@@ -20,8 +21,14 @@
 	alternative (GetEventType())
 	case (EV_START_BOSS_SPELL) {
 		//get spell name or something
+        int currentSpell = Spell_GetCurrent();
+        string spellname = Spell_GetName(currentSpell);
+        Spell_Seen(currentSpell);
+        WriteLog(spellname);
 	}
-	case (EV_GAIN_SPELL) { //This returns the value set in the single, not affected by time.
+	case (EV_GAIN_SPELL) { //This returns the score value set in the single, not affected by time.
+        int currentSpell = Spell_GetCurrent();
+        Spell_Captured(currentSpell);
         int score = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
         score -= score % 10; //round to nearest 10
 		TSpellBonus(score);

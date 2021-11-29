@@ -1,0 +1,36 @@
+//spell name & history library
+function<string> Spell_GetName(int spellID_) { //retrieve spell name from file
+    assert(spellID_ != 0, "Invalid Spell ID");
+    int file = ObjFile_Create(OBJ_FILE_TEXT);
+    ObjFile_Open(file, FILE_SPELL);
+    return ObjFileT_GetLineText(file, spellID_);
+}
+
+//TODO function to get file paths for spell ids
+
+//Spell history
+function<void> Spell_Seen(int spellID_) {
+    if (IsReplay()) return;
+    int[] history = Spell_GetHistory(spellID_);
+    SetAreaCommonData(AREA_SAVE, "SpellSeen_" ~ IntToString(spellID_), history[0] + 1);
+}
+function<void> Spell_Captured(int spellID_) {
+    if (IsReplay()) return;
+    int[] history = Spell_GetHistory(spellID_);
+    SetAreaCommonData(AREA_SAVE, "SpellCaptured_" ~ IntToString(spellID_), history[1] + 1);
+}
+function<int[]> Spell_GetHistory(int spellID_) {
+    assert(spellID_ != 0, "Invalid Spell ID");
+    int[] history = [];
+    history = history ~ [GetAreaCommonData(AREA_SAVE, "SpellSeen_" ~ IntToString(spellID_), 0)];
+    history = history ~ [GetAreaCommonData(AREA_SAVE, "SpellCaptured_" ~ IntToString(spellID_), 0)];
+    return history;
+}
+
+//Stage functions
+function<void> Spell_SetCurrent(int spellID_) {
+    SetAreaCommonData(AREA_STAGE, "Current_SpellID", spellID_);
+}
+function<int> Spell_GetCurrent() {
+    return GetAreaCommonData(AREA_STAGE, "Current_SpellID", 0);
+}

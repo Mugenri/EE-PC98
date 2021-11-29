@@ -36,6 +36,10 @@ function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
         ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001); //relates to how invuln sounds are handled, no actual damage is dealt.
     }
 }
+//checks if player has died/bombed during the current boss scene
+function<bool> Boss_IsSpellCaptured() {
+    return ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) == 0;
+}
 //Sets boss position indicator at bottom of screen
 function<void> Boss_SetIndicator(int parent_) {
     int indicator = ObjPrim_Create(OBJ_SPRITE_2D);
@@ -52,65 +56,4 @@ function<void> Boss_SetIndicator(int parent_) {
         }
         Obj_Delete(indicator);
     }
-}
-//Call at the end of a single
-task Boss_Finalize(int obj_) {
-    real xPos = ObjMove_GetX(obj_);
-    real yPos = ObjMove_GetY(obj_);
-    SetAreaCommonData(AREA_STAGE, "Pos_Bonus", [xPos, yPos]); //Spell bonus yellow ascii text position
-
-    bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
-    bool isFinal = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_LAST_STEP);
-    bool isCapture = ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) > 0 ? false : true;
-
-    if (isFinal) {
-        SetPlayerInvincibilityFrame(60);
-        Particle_RandomExplosionBig(xPos, yPos); //this function is blocking
-        Obj_SetVisible(obj_, false);
-        StartSlow(TARGET_ALL, 30);
-    } else {
-        Particle_RandomExplosionSmall(xPos, yPos);
-    }
-
-    //Items and Bullet Cancel score values (only for spell cards)
-    int scoreTotal = 0;
-    if (isCapture && isSpell && !_isSurvival) { //spell capture on non-survival spells
-        int score = 10;
-        int scoreBonus = 10;
-        int numBullets = 0;
-        real radius = 200;
-        loop (5) {
-            for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
-                if (ObjMove_GetX(shot) < -16 || ObjMove_GetX(shot) > GetStgFrameWidth() + 16 || ObjMove_GetY(shot) < -16 || ObjMove_GetY(shot) > GetStgFrameHeight() + 16) {
-                    continue; //no items spawn off screen
-                } else if (radius == 600) { //assign shot score bonus, only runs on final loop
-                    Obj_SetValueI(shot, SHOT_SCORE, score);
-                    scoreTotal += score;
-                    score += scoreBonus;
-                    scoreBonus += 10;
-                    score = clamp(score, 0, 12800);
-                }
-                if (numBullets < 40 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 40 bullets drop point items
-                    Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
-                    numBullets++;
-                }
-            }
-            radius += 100;
-        }
-    } else if (!isCapture && isSpell) { //if capture is failed on any type of spell
-        scoreTotal = -1;
-    } //scoreTotal remains 0 otherwise
-    DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
-    if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
-    wait(64); //explosion time
-    StopSlow(TARGET_ALL); //if slow is active
-    wait(60); //grace period
-    //Setup boss init position for next single
-    xPos = ObjMove_GetX(obj_);
-    yPos = ObjMove_GetY(obj_);
-    Boss_SetInitPosition(obj_, xPos, yPos);
-    Obj_Delete(obj_);
-    //Close script
-    SetAutoDeleteObject(true);
-    CloseScript(GetOwnScriptID());
 }

@@ -38,7 +38,7 @@ function<void> InitCommonData() { //creates common data areas, loads data from f
     //load high scores from file
     //LoadCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
 
-    //load in result
+    //load in result (player score list)
     //LoadCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
 
     //Unlock Extra for Yabusame. This is specific to this game only. Delete this for other projects.

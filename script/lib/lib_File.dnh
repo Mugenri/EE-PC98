@@ -43,3 +43,6 @@ const string IMG_BG_TSURUBAMI       = DIR_IMG ~ "stg/tsurubamiBG.png";
 const string HLSL_PARTICLE          = DIR_HLSL ~ "TexParticle.hlsl";
 const string HLSL_WHITE             = DIR_HLSL ~ "TexWhite.hlsl";
 const string HLSL_TRANSITION        = DIR_HLSL ~ "TexTransition.hlsl";
+
+//Text files
+const string FILE_SPELL             = GetCurrentScriptDirectory() ~ "spellName.txt";

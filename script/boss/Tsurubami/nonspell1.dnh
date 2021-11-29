@@ -9,6 +9,7 @@
 int _objBoss;
 int _count = -240; //Give time for transitions and everything to play
 int _loopTime = 90;
+int _spellID = 1;
 
 @Event {
     alternative (GetEventType())
@@ -16,7 +17,7 @@ int _loopTime = 90;
         SetScriptResult(300);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(10);
+        SetScriptResult(60);
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
@@ -28,10 +29,11 @@ int _loopTime = 90;
 
 @Initialize {
     InitBoss(false);
-    Boss_SetInitPosition(BOSS_ID_TSURUBAMI, MID_X, 60); //TODO only in first spell maybe put in plural?
+    Boss_SetInitPosition(BOSS_ID_TSURUBAMI, MID_X, 60); //TODO only in first spell, kinda weird?
     _objBoss = CreateBoss(BOSS_ID_TSURUBAMI);
     TDrawBoss(_objBoss);
     //startspell go here
+    Spell_SetCurrent(_spellID);
     ObjEnemyBossScene_StartSpell(_objScene);
     TInitialize();
     TFinalize();
@@ -47,7 +49,7 @@ int _loopTime = 90;
                 //TPatternA();
                 //ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
                 //TPatternB(1);
-                //TPatternI();
+                TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
             }
         }
@@ -57,7 +59,7 @@ int _loopTime = 90;
 }
 
 task TInitialize() {
-    Transition_Circle(0, 60);
+    Transition_Circle(1, 60);
     CallSFX(SND_TRANSITION);
     wait(120);
     if (!_spellBarrier && !_isSurvival) Boss_SetVulnerable(_objBoss, true); //if boss has no spell barrier (or currently active spell barrier) and spell is not survival
@@ -68,6 +70,8 @@ task TFinalize() {
     //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Anime_Charge(false);
     Boss_Finalize(_objBoss);
+    //TODO spell practice needs to do something about the finalize block or does it actually
+    Transition_ChangeBG(0, 0);
 }
 
 task TPatternA() {
