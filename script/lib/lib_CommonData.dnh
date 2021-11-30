@@ -6,7 +6,6 @@ const string AREA_SAVE      = "SaveData"; //Save Data
 const string AREA_SYSTEM    = "System"; //STG System
 const string AREA_STAGE     = "Stage"; //Stage Script
 const string AREA_REPLAY    = "Replay"; //Replay Values
-const string AREA_SPELL     = "Spell"; //Spell History
 const string AREA_HIGHSCORE = "HighScore"; //High Score Values
 const string AREA_RESULT    = "Result"; //Player Score Records
 
@@ -25,7 +24,6 @@ function<void> InitCommonData() { //creates common data areas, loads data from f
     CreateCommonDataArea(AREA_SYSTEM);
     CreateCommonDataArea(AREA_STAGE);
     CreateCommonDataArea(AREA_REPLAY);
-    CreateCommonDataArea(AREA_SPELL);
     CreateCommonDataArea(AREA_HIGHSCORE);
 	CreateCommonDataArea(AREA_RESULT);
 
