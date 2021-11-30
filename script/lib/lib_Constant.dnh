@@ -164,8 +164,9 @@ const int BOSS_ID           = 4; //Boss ID string constant
 
 //Color Constants
 const int COLOR_WHITE       = 0xFFFFFF;
-const int COLOR_GRAY        = 0x999999;
-const int COLOR_GRAY_D      = 0x666666;
+const int COLOR_GRAY_L      = 0x999999;
+const int COLOR_GRAY        = 0x666666;
+const int COLOR_GRAY_D      = 0x555555;
 const int COLOR_BLACK       = 0x000000;
 const int COLOR_RED         = 0xFF0000;
 const int COLOR_RED_L       = 0xFF4444; 

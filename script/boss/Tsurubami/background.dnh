@@ -144,7 +144,7 @@ task TSpellBackground(int index_, int priority_) {
 
             int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
             ascent (i in 0..points_) {
-                ObjPrim_SetVertexColor(line, i, 78, 78, 78);
+                ObjPrim_SetVertexColor(line, i, COLOR_GRAY_D);
             }
             ascent (i in 0..points_) {
                 ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);

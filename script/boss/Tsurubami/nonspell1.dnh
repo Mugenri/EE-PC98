@@ -189,14 +189,14 @@ task TPatternH() {
 task TPatternI() {
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 0, 100, 30, 32, COLOR_WHITE, false, RP_STG_EFF_LO);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_D);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_D);
-    wait(3);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
     wait(20);
     if (!_bossAlive) return;
     int shot1 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);

@@ -257,7 +257,7 @@ task TShotParticle(real x_, real y_) { //shot hit something, spawn shot flake pa
     loop (40) {
         ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
         ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
-        ObjParticleList_SetColor(_particleFlake, COLOR_GRAY);
+        ObjParticleList_SetColor(_particleFlake, COLOR_GRAY_L);
         ObjParticleList_AddInstance(_particleFlake);
 
         frame += 1/2;
