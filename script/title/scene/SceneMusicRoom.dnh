@@ -178,7 +178,7 @@ function<void> SceneMusicRoom() {
     task TCreateMenuItemMusic(int index_, int x_, int y_) {
         int objText;
         int bgmID = indexListTop + index_; //actual track number = index at top of list + position in the list
-        string indexNumber = StringFormat("%2.0d%s", "ds", bgmID + 1, ". "); //prepended track number
+        string indexNumber = StringFormat("%2.0d. ", "d", bgmID + 1); //prepended track number
 
         //Initial list creation
         if (!CD_GetBGMHeardFlag(bgmID)) objText = CreateText(x_, y_, indexNumber ~ "???", COLOR_WHITE);
@@ -188,7 +188,7 @@ function<void> SceneMusicRoom() {
         while (!exitFlag) {
             if (indexListTop + index_ != bgmID) { //update list if it scrolls beyond the current boundaries
                 bgmID = indexListTop + index_;
-                indexNumber = StringFormat("%2.0d%s", "ds", bgmID + 1, ". ");
+                indexNumber = StringFormat("%2.0d. ", "d", bgmID + 1);
                 if (!CD_GetBGMHeardFlag(bgmID)) ObjText_SetText(objText, indexNumber ~ "???");
                 else ObjText_SetText(objText, indexNumber ~ GetBGMText(bgmID)[0]);
             }
