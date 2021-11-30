@@ -268,7 +268,6 @@ task TBossLife() {
 	real lifeRateRender = 0;
 
 	loop {
-		_objScene = GetEnemyBossSceneObjectID();
 		if (_objScene != ID_INVALID) RenderLife();
 		yield;
 	}
@@ -364,7 +363,6 @@ task TBossTimer() {
     Obj_SetVisible(icon, false);
 
 	loop {
-		_objScene = GetEnemyBossSceneObjectID();
 		if (_objScene != ID_INVALID) RenderTimer();
 		yield;
 	}
@@ -549,6 +547,125 @@ task TPointItem() {
             ObjParticleList_AddInstance(_displayList);
         }
         yield;
+    }
+}
+
+//----------------------------------------------------
+//Active Spell Banner and Spell History Display
+//----------------------------------------------------
+task TSpellDisplay(int spellID_) {
+    int[] history = Spell_GetHistory(spellID_);
+    string name = Spell_GetName(spellID_);
+    int seen = history[0];
+    int captured = history[1];
+    int bonus = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
+    
+    bool spellFailed = false;
+    bool visible = true;
+
+    int banner = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+    ObjPrim_SetTexture(banner, IMG_SYSTEM_UI);
+    Obj_SetRenderPriorityI(banner, RP_STG_SPELL);
+    //graphic
+    ObjRender_SetPosition(banner, 0, 0, 1);
+    ObjSpriteList2D_SetSourceRect(banner, 0, 480, 208, 512);
+    ObjSpriteList2D_SetDestRect(banner, 0, 0, 208, 32);
+    ObjSpriteList2D_AddVertex(banner);
+    //bonus text
+    ObjRender_SetPosition(banner, 24, 19, 1);
+    ObjSpriteList2D_SetSourceRect(banner, 160, 344, 192, 352);
+    ObjSpriteList2D_SetDestRect(banner, 0, 0, 32, 8);
+    ObjSpriteList2D_AddVertex(banner);
+    //history text
+    ObjRender_SetPosition(banner, 128, 19, 1);
+    ObjSpriteList2D_SetSourceRect(banner, 160, 352, 192, 360);
+    ObjSpriteList2D_SetDestRect(banner, 0, 0, 32, 8);
+    ObjSpriteList2D_AddVertex(banner);
+
+    if (captured < 100) { //not mastered
+        ObjRender_SetPosition(banner, 176, 19, 1);
+        ObjSpriteList2D_SetSourceRect(banner, 152, 336, 160, 344);
+        ObjSpriteList2D_SetDestRect(banner, 0, 0, 8, 8);
+        ObjSpriteList2D_AddVertex(banner);
+
+        if (seen > 99) { //99+
+            ObjRender_SetPosition(banner, 200, 19, 1);
+            ObjSpriteList2D_SetSourceRect(banner, 64, 336, 72, 344);
+            ObjSpriteList2D_SetDestRect(banner, 0, 0, 8, 8);
+            ObjSpriteList2D_AddVertex(banner);
+        }
+    } else { //MASTER text
+        ObjRender_SetPosition(banner, 160, 19, 1);
+        ObjSpriteList2D_SetSourceRect(banner, 160, 360, 208, 368);
+        ObjSpriteList2D_SetDestRect(banner, 0, 0, 48, 8);
+        ObjSpriteList2D_AddVertex(banner);
+    }
+
+    ObjSpriteList2D_CloseVertex(banner);
+
+    int nameText = CreateText(0, 0, RP_STG_SPELL, name, COLOR_WHITE); //spawn off screen just in case of weirdness
+    ObjText_SetHorizontalAlignment(nameText, ALIGNMENT_RIGHT);
+    ObjText_SetMaxWidth(nameText, 384);
+
+    int failText = ObjPrim_Create(OBJ_SPRITE_2D); //bonus failed text
+    ObjPrim_SetTexture(failText, IMG_SYSTEM_UI);
+    ObjSprite2D_SetSourceRect(failText, 160, 336, 192, 344);
+    ObjSprite2D_SetDestRect(failText, 0, 0, 32, 8);
+    Obj_SetRenderPriorityI(failText, RP_STG_SPELL);
+    Obj_SetVisible(failText, false);
+
+    int yPos = -32; //starting position of banner and other objects
+
+    _objScene = GetEnemyBossSceneObjectID(); //update manually, executes same frame as single script
+
+    async { //checks if spell has been failed
+        while(ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
+            if (ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) > 0) {
+                Obj_SetVisible(failText, visible);
+                spellFailed = true;
+                break;
+            }
+            yield;
+        }
+    }
+
+    for (int i = 0; i <= 60; i++) { //entry animation
+        yPos = Interpolate_Overshoot(-32, 0, 2, i/60);
+        ObjRender_SetPosition(banner, 176, yPos, 1);
+        ObjRender_SetPosition(nameText, 0, yPos, 1);
+        ObjRender_SetPosition(failText, 232, yPos + 19, 1);
+        UpdateAsciiNum(yPos);
+        yield;
+    }
+    while(ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
+        visible = GetPlayerY() > 64;
+        Obj_SetVisible(banner, visible);
+        Obj_SetVisible(nameText, visible);
+        Obj_SetVisible(failText, spellFailed && visible);
+        if (visible) UpdateAsciiNum(yPos);
+        yield;
+    }
+    for (int i = 0; i <= 60; i++) { //exit animation
+        yPos = Interpolate_Accelerate(0, -32, i/60);
+        ObjRender_SetPosition(banner, 176, yPos, 1);
+        ObjRender_SetPosition(nameText, 0, yPos, 1);
+        ObjRender_SetPosition(failText, 232, yPos + 19, 1);
+        if (visible) UpdateAsciiNum(yPos);
+        yield;
+    }
+
+    Obj_Delete(banner);
+    Obj_Delete(nameText);
+    Obj_Delete(failText);
+
+    function<void> UpdateAsciiNum(real yPos_) {
+        if (!spellFailed) AsciiSpellNum(232, yPos_ + 19, bonus); //Bonus number
+        //captured
+        if (captured < 100) {
+            AsciiSpellNum(336, yPos_ + 19, captured);
+            //seen
+            AsciiSpellNum(360, yPos_ + 19, min(seen, 99)); //cap to 99
+        } //else spell has been mastered, render no numbers
     }
 }
 

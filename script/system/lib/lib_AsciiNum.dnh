@@ -1,10 +1,16 @@
 //Creates shot deletion and item collection score numbers
 
-int _asciiList;
+int _asciiList; //item collect and boss spell bonus numbers
+int _spellList; //spell bonus and history numbers
 
 function<void> InitAsciiList() {
-    _asciiList = InitParticleList(IMG_SYSTEM_UI, RP_STG_TEXT, 73, 337, 81, 345);
+    _asciiList = InitParticleList(IMG_SYSTEM_UI, RP_STG_TEXT, 72, 336, 80, 344);
     ParticleListShader(_asciiList, 8/256, 1);
+}
+function<void> InitAsciiSpellList() {
+    _spellList = InitParticleList(IMG_SYSTEM_UI, RP_STG_SPELLNUM, 72, 336, 80, 344);
+    ParticleListShader(_spellList, 8/256, 1);
+    ObjSprite2D_SetDestRect(_spellList, 0, 0, 8, 8);
 }
 
 function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
@@ -35,4 +41,14 @@ function<void> AsciiScoreNum(real x_, real y_, int score_, int color_) {
 
 function<void> AsciiScoreNum(real x_, real y_, int score_) { //if no color is provided, default to white
     AsciiScoreNum(x_, y_, score_, COLOR_WHITE);
+}
+
+function<void> AsciiSpellNum(real x_, real y_, int num_) {
+    int[] listNum = DigitToArray(num_);
+    for (int i = 0; i < length(listNum); i++) {
+        ObjParticleList_SetPosition(_spellList, x_ + 8 * i, y_, 1);
+        ObjParticleList_SetExtraData(_spellList, listNum[i], 0, 0);
+        ObjParticleList_SetColor(_spellList, COLOR_WHITE);
+        ObjParticleList_AddInstance(_spellList);
+    }
 }

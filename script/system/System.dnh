@@ -8,6 +8,7 @@
     InitFrame();
     InitSystemCommonData();
     InitAsciiList();
+    InitAsciiSpellList();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
@@ -19,12 +20,10 @@
 
 @Event {
 	alternative (GetEventType())
-	case (EV_START_BOSS_SPELL) {
-		//get spell name or something
-        int currentSpell = Spell_GetCurrent();
-        string spellname = Spell_GetName(currentSpell);
-        Spell_Seen(currentSpell);
-        WriteLog(spellname);
+	case (EV_START_BOSS_SPELL) { //Spell_SetCurrent() should be used in the single before declaring a spell
+        int currentSpell = Spell_GetCurrent(); //current spell ID
+        Spell_Seen(currentSpell); //increment spell seen counter
+        TSpellDisplay(currentSpell); //spell display
 	}
 	case (EV_GAIN_SPELL) { //This returns the score value set in the single, not affected by time.
         int currentSpell = Spell_GetCurrent();
@@ -43,7 +42,10 @@
     }
 }
 
-@MainLoop {yield;}
+@MainLoop {
+        _objScene = GetEnemyBossSceneObjectID();
+        yield;
+    }
 
 //----------------------------------------------------
 //Common Data
