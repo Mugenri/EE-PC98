@@ -563,10 +563,10 @@ task TSpellBonus(int score_) {
     int tempScore = score_;
     real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
     while (tempScore > 10000) {
-        AsciiScoreNum(pos[0] + rand_int(-64, 64), pos[1] + rand_int(-64, 64), 10000, COLOR_YELLOW);
+        AsciiScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), 10000, COLOR_YELLOW);
         tempScore -= 10000;
     }
-    if (tempScore > 0) AsciiScoreNum(pos[0] + rand_int(-64, 64), pos[1] + rand_int(-64, 64), tempScore, COLOR_YELLOW);
+    if (tempScore > 0) AsciiScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
 
     //Spell Bonus Text
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);

@@ -73,8 +73,8 @@ function<void> Primitive_ScreenFlashFinal() {
 
     async { //camera shake
         loop (15) {
-            Set2DCameraFocusX(MID_X + (rand_int(0, 1) == 0 ? 1 : -1) * 8);
-            Set2DCameraFocusY(MID_Y + (rand_int(0, 1) == 0 ? 1 : -1) * 8);
+            Set2DCameraFocusX(MID_X + (prand_int(0, 1) == 0 ? 1 : -1) * 8);
+            Set2DCameraFocusY(MID_Y + (prand_int(0, 1) == 0 ? 1 : -1) * 8);
             yield;
         }
         Set2DCameraFocusX(MID_X);
