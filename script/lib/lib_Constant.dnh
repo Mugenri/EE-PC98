@@ -4,9 +4,9 @@ const string GAME_VERSION = "0.1";
 
 //Font constants/paths
 const string SYS_FONT = "PC-9800";
-const string SYS_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/PC-9800.ttf";
+const string SYS_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/font/PC-9800.ttf";
 const string HEADER_FONT = "Magic Decimal Sharp";
-const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../system/font/MagicDecimalSharp.ttf";
+const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/font/MagicDecimalSharp.ttf";
 
 //Event Constants
 
