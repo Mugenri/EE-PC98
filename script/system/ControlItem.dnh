@@ -4,13 +4,13 @@
 #include "./../lib/effect/lib_EffectCancel.dnh"
 
 @Initialize {
-    InitSystem();
+    System_Init();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
     SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
     LoadItemData(GetCurrentScriptDirectory() ~ "/lib/dat_ItemData.dnh");
-    InitEffectCancel();
-    InitAsciiList();
+    Cancel_Init();
+    Ascii_Init();
 }
 
 @MainLoop {yield;}
@@ -24,8 +24,8 @@
 
         //Delete effects
         AddScore(score);
-        if (Obj_GetType(obj) == OBJ_SHOT) DeleteEffectShot(obj);
-        else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
+        if (Obj_GetType(obj) == OBJ_SHOT) Cancel_Shot(obj);
+        else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
         WriteLog("delete");
     }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
@@ -38,9 +38,9 @@
         //Text and delete effects
         AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            if (score != 0) AsciiScoreNum(pos[0], pos[1], score);
-            DeleteEffectShot(obj);
-        } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) DeleteEffectLaser(obj);
+            if (score != 0) Ascii_ScoreNum(pos[0], pos[1], score);
+            Cancel_Shot(obj);
+        } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
     }
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
@@ -95,7 +95,7 @@
             ScrollText(true);
         }
         AddScore(score);
-        AsciiScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
+        Ascii_ScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
     }
 }
 

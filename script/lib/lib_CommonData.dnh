@@ -16,7 +16,7 @@ const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "config.dat";
 const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "score.dat";
 const string SAVE_COMMON_RESULT = DIR_SAVE ~ "result.dat";
 
-function<void> InitCommonData() { //creates common data areas, loads data from files
+function<void> CD_Init() { //creates common data areas, loads data from files
     //Create Common Data Areas
     CreateCommonDataArea(AREA_TITLE);
     CreateCommonDataArea(AREA_CONFIG);
@@ -31,7 +31,7 @@ function<void> InitCommonData() { //creates common data areas, loads data from f
     LoadCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
 
     //Load player config from file
-    LoadConfig(false);
+    CD_LoadConfig(false);
 
     //load high scores from file
     //LoadCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
@@ -43,7 +43,7 @@ function<void> InitCommonData() { //creates common data areas, loads data from f
     CD_SetExtraStageFlag(PLAYER_YABUSAME);
 }
 
-function<void> LoadConfig(bool loadDefault_) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault_
+function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault_
     bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
     if (IsCommonDataAreaExists(AREA_CONFIG)) ClearAreaCommonData(AREA_CONFIG);
     if (loadDefault_) saveFile = false;
@@ -64,9 +64,9 @@ function<bool> CD_GetExtraStageFlag(int player_) {
     return(GetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), false));
 }
 //Music room track unlocks
-function<void> CD_SetBGMHeardFlag(int trackID_) {
+function<void> CD_SetBGMHeard(int trackID_) {
     SetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), true);
 }
-function<bool> CD_GetBGMHeardFlag(int trackID_) {
+function<bool> CD_GetBGMHeard(int trackID_) {
     return(GetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), false));
 }

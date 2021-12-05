@@ -14,14 +14,14 @@ bool _firstLine = true; //flag to prevent accidental skipping upon loading the f
 int _playerText;
 int _bossText;
 
-function<void> StartDialogue() { //call to start dialogue sequence
+function<void> Dialogue_Start() { //call to start dialogue sequence
     TCreateTextBoxes(); //player and enemy text boxes
     _playerText = CreateDialogueText(false);
     _bossText = CreateDialogueText(true);
     wait(48); //animation time
 }
 
-function<void> EndDialogue() { //call to end dialogue sequence
+function<void> Dialogue_End() { //call to end dialogue sequence
     Obj_Delete(_playerText);
     Obj_Delete(_bossText);
     _endDialogue = true;
@@ -74,7 +74,7 @@ task TCreateTextBoxes() {
 //----------------------------------------------------
 //Character Portraits
 //----------------------------------------------------
-function<int> CreateDialoguePortrait(string characterID_, bool isBoss_) { //creates a portrait in the player or boss position with the given characterID
+function<int> Dialogue_CreatePortrait(string characterID_, bool isBoss_) { //creates a portrait in the player or boss position with the given characterID
     int xPos = isBoss_ ? 288 : 32;
     int yPos = isBoss_ ? 112 : 240;
 
@@ -86,7 +86,7 @@ function<int> CreateDialoguePortrait(string characterID_, bool isBoss_) { //crea
     return obj;
 }
 
-function<void> SetPortrait(int obj_, int frame_) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
+function<void> Dialogue_SetPortrait(int obj_, int frame_) { //assumes character portraits are in a 4x3 grid of 128x128 images. frames advance from top left to bottom right
     int top = 128 * trunc(frame_ / 4);
     int left = 128 * (frame_ % 4);
     //change portrait frame
@@ -113,7 +113,7 @@ function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text obj
     return obj;
 }
 
-function<void> SetText(bool isBoss_, string text_) { //Sets selected text field to desired new text. Colors blue if left unchanged for a line
+function<void> Dialogue_SetText(bool isBoss_, string text_) { //Sets selected text field to desired new text. Colors blue if left unchanged for a line
     //29 characters per line max, font is unispaced
     //-----------------------------   <-- this long
     if (isBoss_) {
@@ -128,7 +128,7 @@ function<void> SetText(bool isBoss_, string text_) { //Sets selected text field 
     }
 }
 
-function<void> SetBossTitle(string text_) { //Centers text for use in boss titles/names
+function<void> Dialogue_BossTitle(string text_) { //Centers text for use in boss titles/names
     ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_CENTER);
     ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
     ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
@@ -159,7 +159,7 @@ task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text b
 //----------------------------------------------------
 //Utility
 //----------------------------------------------------
-function<void> WaitForInput() { //waits for player input to advance text
+function<void> Dialogue_Wait() { //waits for player input to advance text
     if (_firstLine) {
 		_firstLine = false;
 		while (GetVirtualKeyState(VK_OK) != KEY_FREE) yield;
@@ -183,7 +183,7 @@ function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
     if (GetVirtualKeyState(VK_OK) != KEY_HOLD) _skip = false;
 }
 
-function<void> SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID_, int xPos_, int yPos_) { //Screen whiteout that places the boss sprite 
+function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID_, int xPos_, int yPos_) { //Screen whiteout that places the boss sprite 
     //boss sprite to be placed, autodeletes upon script closure
     int bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
     Obj_SetRenderPriorityI(bossSprite, RP_UI_IMG);

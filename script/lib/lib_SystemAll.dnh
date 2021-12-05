@@ -46,7 +46,7 @@ function<int> GetSFXVolume() { return(GetAreaCommonData(AREA_CONFIG, "SFX_Volume
 function<int> CheckKeyPressed(int[] keys_) { //waits and returns the first key to be pressed in the passed list of keys
     int keyCount = length(keys_);
     int keyValue = GetCommonData("key", -1); //last held key
-    int holdKey = GetCommonData("hold", 0);
+    int holdKey = GetCommonData("hold", 0); //held key time
 
     loop {
         while (holdKey > 0) {

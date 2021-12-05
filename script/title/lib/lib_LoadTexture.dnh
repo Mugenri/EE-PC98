@@ -1,5 +1,5 @@
 //Texture preload library
-function<void> InitTexture() {
+function<void> Texture_Init() {
     //Title Images
     {
         string[] pathList = GetImgTitle();

@@ -7,7 +7,7 @@ const string pathShotData = GetCurrentScriptDirectory() ~ "shot/dat_Shot.dnh";
 const string pathShotAnim = GetCurrentScriptDirectory() ~ "shot/dat_ShotAnim.dnh";
 const string pathShotSpawn = GetCurrentScriptDirectory() ~ "shot/dat_ShotSpawn.dnh";
 
-function<void> LoadShotData() {
+function<void> Shot_Init() {
     LoadEnemyShotData(pathShotData);
     LoadEnemyShotData(pathShotAnim);
     LoadEnemyShotData(pathShotSpawn);

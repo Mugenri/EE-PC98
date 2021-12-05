@@ -6,9 +6,9 @@
 
 @Initialize {
     InitFrame();
-    InitSystemCommonData();
-    InitAsciiList();
-    InitAsciiSpellList();
+    System_InitCommonData();
+    Ascii_Init();
+    Ascii_InitSpell();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
 	SetShotRenderPriorityI(RP_STG_SHOT);
@@ -37,8 +37,8 @@
         TCancelBonus(score);
     }
     case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
-        InitSystem();
-        InitDisplay();
+        System_Init();
+        Display_Init();
     }
 }
 
@@ -50,7 +50,7 @@
 //----------------------------------------------------
 //Common Data
 //----------------------------------------------------
-function<void> InitSystemCommonData() {
+function<void> System_InitCommonData() {
 	if (IsReplay()) {
 		LoadCommonDataAreaFromReplayFile(AREA_STAGE);
 		LoadCommonDataAreaFromReplayFile(AREA_SYSTEM);

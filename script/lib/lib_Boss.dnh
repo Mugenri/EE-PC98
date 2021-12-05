@@ -23,8 +23,8 @@ real intersectionPlayer = 24; //default intersection to player
 
 function<void> Boss_Init(bool isVulnerable_) { //Initialize a boss scene
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
-    InitCommon();
-    InitEffectParticle();
+    Common_Init();
+    Particle_Init();
 
     _isSpellVulnerable = isVulnerable_;
 
@@ -34,7 +34,7 @@ function<void> Boss_Init(bool isVulnerable_) { //Initialize a boss scene
 
     if (_isSurvival) _isSpellVulnerable = false; //just in case
 
-    LoadShotData();
+    Shot_Init();
 }
 
 function<int> Boss_Create(string bossID_) { //Initialize a boss object
@@ -84,7 +84,7 @@ function<void> Boss_Update(int mainBoss_) { //update function to be run in mainl
 }
 
 //Call at the end of a single
-task Boss_Finalize(int obj_) {
+function<void> Boss_Finalize(int obj_) {
     real xPos = ObjMove_GetX(obj_);
     real yPos = ObjMove_GetY(obj_);
     SetAreaCommonData(AREA_STAGE, "Pos_Bonus", [xPos, yPos]); //Spell bonus yellow ascii text position
@@ -134,17 +134,20 @@ task Boss_Finalize(int obj_) {
     DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
 
     if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
-    wait(64); //explosion time
-    StopSlow(TARGET_ALL); //if slow is active
-    wait(60); //grace period
 
-    //Setup boss init position for next single
-    xPos = ObjMove_GetX(obj_);
-    yPos = ObjMove_GetY(obj_);
-    Boss_SetInitPosition(obj_, xPos, yPos);
-    Obj_Delete(obj_);
-    
-    //Close script
-    SetAutoDeleteObject(true);
-    CloseScript(GetOwnScriptID());
+    async {
+        wait(64); //explosion time
+        StopSlow(TARGET_ALL); //if slow is active
+        wait(60); //grace period
+
+        //Setup boss init position for next single
+        xPos = ObjMove_GetX(obj_);
+        yPos = ObjMove_GetY(obj_);
+        Boss_SetInitPosition(obj_, xPos, yPos);
+        Obj_Delete(obj_);
+
+        //Close script
+        SetAutoDeleteObject(true);
+        CloseScript(GetOwnScriptID());
+    }
 }

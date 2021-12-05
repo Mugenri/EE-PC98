@@ -54,7 +54,7 @@ function<void> SceneOption() {
         }
         case (VK_OK) {
             MenuSelect();
-            if (indexCurrent == INDEX_DEFAULT) LoadConfig(true);
+            if (indexCurrent == INDEX_DEFAULT) CD_LoadConfig(true);
             if (indexCurrent == INDEX_QUIT) {
                 SaveConfig();
                 break;

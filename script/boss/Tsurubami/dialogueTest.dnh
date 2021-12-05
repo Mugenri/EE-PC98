@@ -25,16 +25,16 @@ task TBackground() {
 
 //dialogue function
 task TMain() {
-    StartDialogue(); //pause game, create text boxes
+    Dialogue_Start(); //pause game, create text boxes
     Dialogue(); //main dialogue function
-    EndDialogue(); //remove text boxes
+    Dialogue_End(); //remove text boxes
     CloseScript(GetOwnScriptID());
 }
 
 function<void> Dialogue() {
     //create player/enemy portraits and text fields
-    int playerCutin = CreateDialoguePortrait(BOSS_ID_YABUSAME, false);
-    int bossCutin = CreateDialoguePortrait(BOSS_ID_TSURUBAMI, true);
+    int playerCutin = Dialogue_CreatePortrait(BOSS_ID_YABUSAME, false);
+    int bossCutin = Dialogue_CreatePortrait(BOSS_ID_TSURUBAMI, true);
 
     //dialogue line position
     int line = 0;
@@ -42,7 +42,7 @@ function<void> Dialogue() {
         bool end = DialogueLine(line);
         if (end) break;
         line++;
-        WaitForInput();
+        Dialogue_Wait();
     }
     //Dialogue end
     Obj_Delete(playerCutin);
@@ -52,21 +52,21 @@ function<void> Dialogue() {
         //-----------------------------
         alternative (line_)
         case (0) {
-            SetPortrait(playerCutin, 1);
-            SetText(false, "Isn't it cool how the text/can scroll now?");
+            Dialogue_SetPortrait(playerCutin, 1);
+            Dialogue_SetText(false, "Isn't it cool how the text/can scroll now?");
         }
         case (1) {
-            SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, GetStgFrameWidth()/2, 60);
-            SetPortrait(playerCutin, 3);
-            SetText(false, "Nobody asked you, nerd./This text is going on for/a very long time innit.");
+            Dialogue_SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, GetStgFrameWidth()/2, 60);
+            Dialogue_SetPortrait(playerCutin, 3);
+            Dialogue_SetText(false, "Nobody asked you, nerd./This text is going on for/a very long time innit.");
         }
         case (2) {
-            SetPortrait(bossCutin, 0);
-            SetBossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_BossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
         }
         case (3) {
-            SetPortrait(bossCutin, 6);
-            SetText(true, "I just wanted to be involved/:(");
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "I just wanted to be involved/:(");
         }
         others{
             return true;

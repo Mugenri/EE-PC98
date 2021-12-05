@@ -8,7 +8,7 @@
 
 @Initialize {
     //TODO add an image archive file here
-    InitLoad();
+    Load_Init();
 }
 
 @MainLoop {yield;}

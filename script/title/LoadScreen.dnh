@@ -1,8 +1,8 @@
 #include "./lib/lib_TitleCommon.dnh"
 #include "./lib/lib_LoadTexture.dnh"
 
-function<void> InitLoad() {
-    InitCommonData();
+function<void> Load_Init() {
+    CD_Init();
     TLoadScene();
 }
 
@@ -25,7 +25,7 @@ task TLoadScene() { //loading screen
     //init high score
 
     //Preload textures
-    InitTexture();
+    Texture_Init();
 
     wait(60); //Give loading screen time to run
 

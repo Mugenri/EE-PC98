@@ -12,7 +12,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
         wait(GetEventArgument(1));
         Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
     }
-    case (EV_CHANGE_BG) { UpdateBackground(GetEventArgument(0), GetEventArgument(1)); }
+    case (EV_CHANGE_BG) { BG_Update(GetEventArgument(0), GetEventArgument(1)); }
 }
 
 task TIntroTimer(int time_) { //time the intro fade takes to play

@@ -4,7 +4,7 @@ int _priority = RP_STG_BG2; //switches to BG1 on first call
 int _transitionTime = 0; //used for timing removal of background transition shaders and exiting of background tasks
 int _objShader; //background transition shader
 
-function<void> InitBackground(int index_) {
+function<void> BG_Init(int index_) {
     TUpdateRenderTargets();
     //Initialize shader object.
     _objShader = ObjShader_Create();
@@ -12,10 +12,10 @@ function<void> InitBackground(int index_) {
     ObjShader_SetTexture(_objShader, "textureMask_", RT_TRANSITION); //set texture to the transition render target
     ObjShader_SetTechnique(_objShader, "TecMask");
     //Required function by including library. Cuts to index_ background on startup
-    UpdateBackground(index_, 0);
+    BG_Update(index_, 0);
 }
 
-function<void> UpdateBackground(int index_, int time_) {
+function<void> BG_Update(int index_, int time_) {
     _transitionTime = time_; //also serves as transition time for closing running background task
     _priority = _priority == RP_STG_BG1 ? RP_STG_BG2 : RP_STG_BG1; //switch to unused background render priority ranges
     assert(index_ != _bIndex, "Attempted to transition to the same index background.");

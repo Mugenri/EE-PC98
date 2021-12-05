@@ -8,7 +8,7 @@ int _particleFlake;
 int _particleShot;
 
 function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_) {
-    InitCommon();
+    Common_Init();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
     TRender(GetPlayerObjectID());

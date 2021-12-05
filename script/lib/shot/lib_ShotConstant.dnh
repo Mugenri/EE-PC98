@@ -1,7 +1,7 @@
 //Shot Constants
 //SHOT_COLOR+SHOT_TYPE = SHOT
 //SHOT_COLOR+SPAWN_TYPE+SIZE = SPAWN EFFECT
-//SHOT_COLOR+CANCEL_EFFECT = EFFECT
+//SHOT_COLOR+CANCEL_EFFECT = CANCEL EFFECT
 
 //----------------------------------------------------
 //Shot Color Constants--------------------------------

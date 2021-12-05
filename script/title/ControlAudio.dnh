@@ -64,7 +64,7 @@ const string[] SOUNDS = [
         _flagStop = GetEventArgument(0);
     }
     case (EV_GET_BGM_NAME) {
-        string[] info = GetBGMText(GetEventArgument(0));
+        string[] info = BGM_GetText(GetEventArgument(0));
         SetScriptResult(info[0]);
     }
     //SFX events
@@ -106,7 +106,7 @@ task TChangeBGM(int trackID_, int fade_, int delay_) {
     if (trackID_ >= 0) {
         _flagStop = false;
         TPlayBGM(trackID_, fade_, delay_);
-        CD_SetBGMHeardFlag(trackID_);
+        CD_SetBGMHeard(trackID_);
     }
 }
 
@@ -117,8 +117,8 @@ task TClearBGM(int obj_) {
 
 task TPlayBGM(int trackID_, int fade_, int delay_) {
     int ID = ObjSound_Create();
-    string path = GetBGMPath(trackID_);
-    int[] sample = GetBGMSample(trackID_);
+    string path = BGM_GetPath(trackID_);
+    int[] sample = BGM_GetSample(trackID_);
 
     ObjSound_Load(ID, path);
     ObjSound_SetSoundDivision(ID, SOUND_BGM);
@@ -165,7 +165,7 @@ function<void> InitAudio() { //preload all audio files to prevent weird stutteri
     int tempID = 0;
     string tempPath = "";
     loop {
-        tempPath = GetBGMPath(tempID);
+        tempPath = BGM_GetPath(tempID);
         if (tempPath == "") break;
         LoadSound(tempPath);
         tempID++;

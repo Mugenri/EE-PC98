@@ -59,7 +59,7 @@ function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radi
     return polygon;
 }
 
-function<void> Primitive_ScreenFlashFinal() {
+function<void> Primitive_ScreenFlashFinal() { //boss explosion screen flash
     int mask = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_MAX);
 
     ObjPrim_SetVertexPosition(mask, 0, 0, 0, 1);

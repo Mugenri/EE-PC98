@@ -3,7 +3,7 @@
 int _effectParticle16;
 int _effectParticle64;
 
-function<void> InitEffectParticle() {
+function<void> Particle_Init() {
     _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
     ParticleListShader(_effectParticle16, 16/512, 16/512);
     _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 64, 64);
@@ -92,7 +92,7 @@ function<void> Particle_RandomExplosionSmall(real x_, real y_) {
     CallSFX(SND_EXPLOSION1);
 }
 
-function<void> Particle_RandomExplosionBig(real x_, real y_) {
+function<void> Particle_RandomExplosionBig(real x_, real y_) { //each of these should take 40 frames before last explosion
     int type = prand_int(0, 2);
     alternative(type)
     case (0) { //circle & vertical ellipses
@@ -118,7 +118,7 @@ function<void> Particle_RandomExplosionBig(real x_, real y_) {
         Particle_ExplosionBig(x_, y_);
         CallSFX(SND_EXPLOSION3);
     }
-    case (2) {
+    case (2) { //fast triple
         Particle_ExplosionSmall(x_, y_, 10, 5, 45, 64);
         CallSFX(SND_EXPLOSION1);
         wait(10);

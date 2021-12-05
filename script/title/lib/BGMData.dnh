@@ -1,7 +1,7 @@
 //Music Data library
 
 //Returns loop times for the specified track
-function<int[]> GetBGMSample(int bgmID_) {
+function<int[]> BGM_GetSample(int bgmID_) {
     alternative (bgmID_)
     case (0) return[0, 4871328]; //Title Track
     case (1) return [352969, 7842912]; //Eternal Dance Engine
@@ -10,7 +10,7 @@ function<int[]> GetBGMSample(int bgmID_) {
 }
 
 //Returns path to specified track
-function<string> GetBGMPath(int bgmID_) {
+function<string> BGM_GetPath(int bgmID_) {
     string musicDir = GetCurrentScriptDirectory() ~ "./../../bgm/";
     alternative (bgmID_)
     case (0) return (musicDir ~ "title.ogg"); //To the Village that isn't Real ~ Chain Link?
@@ -20,9 +20,9 @@ function<string> GetBGMPath(int bgmID_) {
 }
 
 //Returns text information for the specified track (for music menu)
-function<string[]> GetBGMText(int bgmID_) {
+function<string[]> BGM_GetText(int bgmID_) {
     //returns array of name, comment
-    //---------------------------------------------------
+//-------------------------------------------------  <- max line length
     string name = "";
     string comment = "";
     alternative (bgmID_)

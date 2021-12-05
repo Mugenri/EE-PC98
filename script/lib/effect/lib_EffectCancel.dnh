@@ -4,7 +4,7 @@ int _effectCancel16;
 int _effectCancel32;
 int _effectCancel64;
 
-function<void> InitEffectCancel() {
+function<void> Cancel_Init() {
     _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 0, 16, 16);
     _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 256, 0, 288, 32);
     _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 288, 64, 352);
@@ -13,7 +13,7 @@ function<void> InitEffectCancel() {
     ParticleListShader(_effectCancel64, 64/512, 64/1024);
 }
 
-function<void> DeleteEffectShot(int obj_) { //Shot cancel effect
+function<void> Cancel_Shot(int obj_) { //Shot cancel effect
     if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return; //assume shot has a cancel effect
     real x = ObjMove_GetX(obj_);
     real y = ObjMove_GetY(obj_);
@@ -80,7 +80,7 @@ function<void> DeleteEffectShot(int obj_) { //Shot cancel effect
     }
 }
 
-function<void> DeleteEffectLaser(int obj_) { //Laser cancel effect
+function<void> Cancel_Laser(int obj_) { //Laser cancel effect
     if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return;
     real x = ObjMove_GetX(obj_);
     real y = ObjMove_GetY(obj_);

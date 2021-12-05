@@ -8,7 +8,7 @@ bool _bonusIsReady = false; //used to sync the appearance of the spell bonus/can
 //----------------------------------------------------
 //Initialize Display
 //----------------------------------------------------
-function<void> InitDisplay() {
+function<void> Display_Init() {
     _displayList = InitParticleList(IMG_SYSTEM_UI, RP_UI_TEXT, 0, 0, 16, 16);
     ParticleListShader(_displayList, 16/256, 16/512);
     ObjSprite2D_SetDestRect(_displayList, 0, 0, 16, 16);
@@ -666,12 +666,12 @@ task TSpellDisplay(int spellID_) {
     Obj_Delete(failText);
 
     function<void> UpdateAsciiNum(real yPos_) {
-        if (!spellFailed) AsciiSpellNum(232, yPos_ + 19, bonus); //Bonus number
+        if (!spellFailed) Ascii_SpellNum(232, yPos_ + 19, bonus); //Bonus number
         //captured
         if (captured < 100) {
-            AsciiSpellNum(336, yPos_ + 19, captured);
+            Ascii_SpellNum(336, yPos_ + 19, captured);
             //seen
-            AsciiSpellNum(360, yPos_ + 19, min(seen, 99)); //cap to 99
+            Ascii_SpellNum(360, yPos_ + 19, min(seen, 99)); //cap to 99
         } //else spell has been mastered, render no numbers
     }
 }
@@ -687,10 +687,10 @@ task TSpellBonus(int score_) {
     int tempScore = score_;
     real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
     while (tempScore > 10000) {
-        AsciiScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), 10000, COLOR_YELLOW);
+        Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), 10000, COLOR_YELLOW);
         tempScore -= 10000;
     }
-    if (tempScore > 0) AsciiScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
+    if (tempScore > 0) Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
 
     //Spell Bonus Text
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);
