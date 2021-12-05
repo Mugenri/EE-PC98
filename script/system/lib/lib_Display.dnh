@@ -351,10 +351,10 @@ task TBossLife() {
 //Timer Display
 //----------------------------------------------------
 task TBossTimer() {
-    int obj = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT);
+    int obj = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT); //timer line
     ObjRender_SetPosition(obj, 448, 162, 1);
 
-    int icon = ObjPrim_Create(OBJ_SPRITE_2D);
+    int icon = ObjPrim_Create(OBJ_SPRITE_2D); //clock icon
     ObjPrim_SetTexture(icon, IMG_SYSTEM_UI);
     ObjSprite2D_SetSourceRect(icon, 192, 336, 199, 343);
     ObjSprite2D_SetDestRect(icon, 0, 0, 7, 7);
@@ -370,19 +370,26 @@ task TBossTimer() {
 	function<void> RenderTimer() {
 		real timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
         real timerTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ORGTIMERF);
+        int bossLife = ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE);
 
-        if (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) <= 0) timer = 0;
+        int timerColor = timer <= 600 ? COLOR_RED : COLOR_WHITE;
+
+        if (bossLife <= 0) timer = 0;
 
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(obj, 1, 128 * (timer/timerTotal) , 0, 1);
-        ObjPrim_SetVertexColor(obj, 0, COLOR_WHITE);
-        ObjPrim_SetVertexColor(obj, 1, COLOR_WHITE);
+        ObjPrim_SetVertexColor(obj, 0, timerColor);
+        ObjPrim_SetVertexColor(obj, 1, timerColor);
 
         //icon stuff
         ObjRender_SetPosition(icon, 445 + 128 * (timer/timerTotal), 158, 0);
-        real lifeTotal = round(ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE));
-        int countRemStep = ObjEnemyBossScene_GetInfo(_objScene, INFO_REMAIN_STEP_COUNT);
-        Obj_SetVisible(icon, lifeTotal > 0 || countRemStep != 0 && timer > 0);
+        Obj_SetVisible(icon, timer > 0);
+        ObjRender_SetColor(icon, timerColor);
+
+        //sound
+        if (timerColor == COLOR_RED && timer % 60 == 0 && bossLife > 0) { //timer <= 10 seconds every second if boss alive
+            CallSFX(SND_TIMER);
+        }
 	}
 }
 

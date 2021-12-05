@@ -39,11 +39,13 @@ const string[] SOUNDS = [
     DIR_SE ~ "seSpellYabu2.wav",
     DIR_SE ~ "seTransition.wav",
     DIR_SE ~ "seDamage.wav",
-    DIR_SE ~ "seExtend.wav"
+    DIR_SE ~ "seExtend.wav",
+    DIR_SE ~ "seTimer.wav"          //30
 ];
 
 @Initialize {
     SetAreaCommonData(AREA_TITLE, "SCRIPT_AUDIO", GetOwnScriptID());
+    SetAreaCommonData(AREA_TITLE, "SFX_NUM", length(SOUNDS) - 1);
     SetAutoDeleteObject(true);
     InitAudio();
     TMain();

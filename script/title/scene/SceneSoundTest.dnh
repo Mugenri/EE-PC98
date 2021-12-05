@@ -3,7 +3,7 @@
 function<void> SceneSoundTest() {
     bool exitFlag = false;
 
-    int listSize = 27; //0 indexed
+    int listSize = GetAreaCommonData(AREA_TITLE, "SFX_NUM", 0); //0 indexed
     int indexCurrent = 0;
 
     TCreateMenuGraphicsSound();

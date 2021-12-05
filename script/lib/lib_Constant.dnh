@@ -93,6 +93,7 @@ const int SND_DAMAGE        = 28;
 const int SND_INVINCIBLE    = 6;
 const int SND_TRANSITION    = 27;
 const int SND_EXTEND        = 29;
+const int SND_TIMER         = 30;
 
 //Render Priority Constants
 const int RP_UI_MIN         = 0;  //Min render priority
