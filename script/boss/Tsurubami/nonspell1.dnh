@@ -17,7 +17,7 @@ int _spellID = 1;
         SetScriptResult(300);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60);
+        SetScriptResult(20);
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
@@ -28,9 +28,9 @@ int _spellID = 1;
 }
 
 @Initialize {
-    InitBoss(false);
+    Boss_Init(false);
     Boss_SetInitPosition(BOSS_ID_TSURUBAMI, MID_X, 60); //TODO only in first spell, kinda weird?
-    _objBoss = CreateBoss(BOSS_ID_TSURUBAMI);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     TDrawBoss(_objBoss);
     //startspell go here
     Spell_SetCurrent(_spellID);
@@ -40,7 +40,7 @@ int _spellID = 1;
 }
 
 @MainLoop {
-    UpdateBoss(_objBoss);
+    Boss_Update(_objBoss);
     if (_bossAlive) {
         Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {

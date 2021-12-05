@@ -21,7 +21,7 @@ real _previousLife = 0; //life of previous frame
 real intersectionShot = 32; //default intersection to shot
 real intersectionPlayer = 24; //default intersection to player
 
-function<void> InitBoss(bool isVulnerable_) { //Initialize a boss scene
+function<void> Boss_Init(bool isVulnerable_) { //Initialize a boss scene
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
     InitCommon();
     InitEffectParticle();
@@ -37,7 +37,7 @@ function<void> InitBoss(bool isVulnerable_) { //Initialize a boss scene
     LoadShotData();
 }
 
-function<int> CreateBoss(string bossID_) { //Initialize a boss object
+function<int> Boss_Create(string bossID_) { //Initialize a boss object
     int objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
     Boss_SetID(objBoss, bossID_);
     Boss_GetInitPosition(objBoss);
@@ -47,9 +47,14 @@ function<int> CreateBoss(string bossID_) { //Initialize a boss object
     return objBoss;
 }
 
-function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainloop of single (mainBoss_ is the primary boss object for multiple boss fights)
+function<void> Boss_Update(int mainBoss_) { //update function to be run in mainloop of single (mainBoss_ is the primary boss object for multiple boss fights)
     _isDamaged = false;
     _bossLife = ObjEnemy_GetInfo(mainBoss_, INFO_LIFE);
+
+    if (_bossLife <= 0) {
+        _bossAlive = false; //health check
+        return;
+    }
 
     if (_bossLife < _previousLife) { //damage check
         if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
@@ -61,8 +66,6 @@ function<void> UpdateBoss(int mainBoss_) { //update function to be run in mainlo
             ObjEnemy_SetLife(mainBoss_, ceil(_bossLife)); //accounts for how invincibility is handled
         }
     }
-
-    if (_bossLife <= 0) _bossAlive = false; //health check
 
     if (!_isSpellVulnerable && !_isSurvival && _spellBarrier == false && IsPlayerSpellActive() && _bossAlive) TSpellBarrier(mainBoss_); //bomb invulnerability check
 
@@ -127,16 +130,20 @@ task Boss_Finalize(int obj_) {
     } else if (!isCapture && isSpell) { //if capture is failed on any type of spell
         scoreTotal = -1;
     } //scoreTotal remains 0 otherwise
+
     DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
+
     if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
     wait(64); //explosion time
     StopSlow(TARGET_ALL); //if slow is active
     wait(60); //grace period
+
     //Setup boss init position for next single
     xPos = ObjMove_GetX(obj_);
     yPos = ObjMove_GetY(obj_);
     Boss_SetInitPosition(obj_, xPos, yPos);
     Obj_Delete(obj_);
+    
     //Close script
     SetAutoDeleteObject(true);
     CloseScript(GetOwnScriptID());

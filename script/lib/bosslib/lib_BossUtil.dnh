@@ -38,7 +38,10 @@ function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
 }
 //checks if player has died/bombed during the current boss scene
 function<bool> Boss_IsSpellCaptured() {
-    return ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) == 0;
+    int timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
+    return (ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) == 0
+        && ((!_isSurvival && timer > 0) || _isSurvival));
+    //return ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) == 0;
 }
 //Sets boss position indicator at bottom of screen
 function<void> Boss_SetIndicator(int parent_) {
