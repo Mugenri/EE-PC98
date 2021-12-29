@@ -29,7 +29,6 @@ function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int grap
         }
     }
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
-    ObjShot_SetPositionRounding(shotID, true);
     return shotID;
 }
 function<int> CreateShotUA1(real x_, real y_, real speed_, real angle_, int graphic_, int delay_, int cancelGraphic_) {
@@ -50,7 +49,6 @@ function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real acc
         }
     }
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
-    ObjShot_SetPositionRounding(shotID, true);
     return shotID;
 }
 function<int> CreateShotUA2(real x_, real y_, real speed_, real angle_, real accel_, real maxSpeed_, int graphic_, int delay_, int cancelGraphic_) {
@@ -71,7 +69,6 @@ function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int gr
         }
     }
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
-    ObjShot_SetPositionRounding(shotID, true);
     return shotID;
 }
 function<int> CreateShotUB1(real x_, real y_, real xSpeed_, real ySpeed_, int graphic_, int delay_, int cancelGraphic_) {
@@ -92,7 +89,6 @@ function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real x
         }
     }
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
-    ObjShot_SetPositionRounding(shotID, true);
     return shotID;
 }
 function<int> CreateShotUB2(real x_, real y_, real xSpeed_, real ySpeed_, real xAccel_, real yAccel_, real maxSpeedX_, real maxSpeedY_, int graphic_, int delay_, int cancelGraphic_) {
