@@ -8,6 +8,7 @@
 #Top level folders that aren't the script
 /REFERENCE IMAGES/
 /resource/
+/tools/
 
 #Directories to ignore
 script/data
