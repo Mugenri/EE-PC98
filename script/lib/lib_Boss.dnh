@@ -102,6 +102,11 @@ function<void> Boss_Finalize(int obj_) {
         Particle_RandomExplosionSmall(xPos, yPos);
     }
 
+    //Boss drops 5 point items on non-final spell
+    if (!isFinal) {
+        loop (5) CreateItem(xPos + rand(-32, 32), yPos + rand(-32, 32), ITEM_SCORE);
+    }
+
     //Items and Bullet Cancel score values (only for spell cards)
     int scoreTotal = 0;
     if (isCapture && isSpell && !_isSurvival) { //spell capture on non-survival spells
@@ -120,7 +125,7 @@ function<void> Boss_Finalize(int obj_) {
                     scoreBonus += 10;
                     score = clamp(score, 0, 12800);
                 }
-                if (numBullets < 40 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 40 bullets drop point items
+                if (!isFinal && numBullets < 35 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 35 bullets drop point items on non-final spell
                     Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
                     numBullets++;
                 }
