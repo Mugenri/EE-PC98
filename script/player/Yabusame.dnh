@@ -67,11 +67,8 @@ task TOption(int dir_) {
     int distFocus = 20;
     int distCurrent = distUnfocus;
 
-    int objOption = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objOption, _pathImg);
-    ObjSprite2D_SetSourceRect(objOption, 64, 48, 80, 64);
+    int objOption = InitSprite2D(64, 48, 80, 64, _pathImg, RP_STG_PLAYER-1i);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
 
     TOptionShot();
 

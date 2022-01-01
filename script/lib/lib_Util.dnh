@@ -57,6 +57,31 @@ function<bool> CheckForbidden(int index_, int[] forbidden_) {
     }
     return false;
 }
+//Initializes a 2D primitive object
+function<int> InitPrim2D(int primType_, int vertices_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjPrim_SetPrimitiveType(obj, primType_);
+    ObjPrim_SetVertexCount(obj, vertices_);
+    Obj_SetRenderPriorityI(obj, priority_);
+    return obj;
+}
+//Initializes a 2D sprite object
+function<int> InitSprite2D(int l_, int t_, int r_, int b_, string texPath_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(obj, texPath_);
+    ObjSprite2D_SetSourceRect(obj, l_, t_, r_, b_);
+    ObjSprite2D_SetDestRect(obj, 0, 0, r_ - l_, b_ - t_);
+    Obj_SetRenderPriorityI(obj, priority_);
+    return obj;
+}
+//Initializes a 2D sprite object without a texture
+function<int> InitSprite2D(int l_, int t_, int r_, int b_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjSprite2D_SetSourceRect(obj, l_, t_, r_, b_);
+    ObjSprite2D_SetDestRect(obj, 0, 0, r_ - l_, b_ - t_);
+    Obj_SetRenderPriorityI(obj, priority_);
+    return obj;
+}
 //Create Text object with pc9800 font
 function<int> CreateText(int x_, int y_, int priority_, string text_, int color_) { //color_ is an RGB hex value added to 255 alpha (0xFF000000)
     int obj = ObjText_Create();
@@ -82,14 +107,6 @@ function<int> InitParticleList(string path_, int priority_, int l_, int t_, int 
 	ObjSprite2D_SetSourceRect(obj, l_, t_, r_, b_);
 	ObjSprite2D_SetDestCenter(obj);
 	ObjPrim_SetVertexIndex(obj, [0, 1, 2, 3]);
-    return obj;
-}
-//Initializes a 2D primitive object
-function<int> InitPrim2D(int primType_, int vertices_, int priority_) {
-    int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
-    ObjPrim_SetPrimitiveType(obj, primType_);
-    ObjPrim_SetVertexCount(obj, vertices_);
-    Obj_SetRenderPriorityI(obj, priority_);
     return obj;
 }
 //Allows for asynchronous sprite animation frames of particles

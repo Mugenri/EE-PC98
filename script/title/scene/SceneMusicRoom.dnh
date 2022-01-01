@@ -87,24 +87,14 @@ function<void> SceneMusicRoom() {
     }
 
     task TCreateMenuGraphicsMusic() {
-        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
-        Obj_SetRenderPriorityI(bg, RP_UI_BG);
-        ObjSprite2D_SetSourceRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ObjSprite2D_SetDestRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-        int header = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(header, IMG_TT_MUSIC);
-        ObjSprite2D_SetSourceRect(header, 0, 0, 333, 44);
-        ObjSprite2D_SetDestRect(header, 25, 0, 358, 44);
-        Obj_SetRenderPriorityI(header, RP_UI_IMG);
+        int header = InitSprite2D(0, 0, 333, 44, IMG_TT_MUSIC, RP_UI_IMG);
+        ObjRender_SetPosition(header, 25, 0, 1);
 
-        int graphic = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(graphic, IMG_TT_MUSIC);
-        ObjSprite2D_SetSourceRect(graphic, 0, 44, 427, 357);
-        ObjSprite2D_SetDestRect(graphic, 25, 43, 452, 356);
-        Obj_SetRenderPriorityI(graphic, RP_UI_IMG);
-
+        int graphic = InitSprite2D(0, 44, 427, 357, IMG_TT_MUSIC, RP_UI_IMG);
+        ObjRender_SetPosition(graphic, 25, 43, 1);
         int linesH = CreateLinesH();
         int linesV = CreateLinesV();
 

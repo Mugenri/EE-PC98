@@ -93,11 +93,8 @@ task TRender(int ParentID_) {
     ObjSprite2D_SetDestCenter(_objPlayer);
     Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
     //hitbox
-    int objHitbox = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objHitbox, IMG_PLR_HITBOX);
-    ObjSprite2D_SetSourceRect(objHitbox, 0, 0, 4, 4);
+    int objHitbox = InitSprite2D(0, 0, 4, 4, IMG_PLR_HITBOX, RP_STG_HITBOX);
     ObjSprite2D_SetDestCenter(objHitbox);
-    Obj_SetRenderPriorityI(objHitbox, RP_STG_HITBOX);
 
 	while (!Obj_IsDeleted(ParentID_)) {
 		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);

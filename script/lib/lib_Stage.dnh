@@ -31,10 +31,7 @@ function<void> Stage_SetBGMText(string text_) { //newly playing bgm text (228 fr
     int notePos = (MAX_X - width - 24); //x position of note graphic
 
     //music note
-    int note = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(note, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(note, 0, 224, 16, 240);
-    ObjSprite2D_SetDestRect(note, 0, 0, 16, 16);
+    int note = InitSprite2D(0, 224, 16, 240, IMG_SYSTEM_UI, RP_STG_MAX);
     ObjRender_SetColor(note, COLOR_YELLOW);
     ObjRender_SetPosition(note, notePos, MAX_Y - 17, 1);
     Obj_SetVisible(note, false);
@@ -195,19 +192,12 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
 
     //TEXT SETUP --------------------------------------
     //Screen dim
-    int objBlack = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjSprite2D_SetSourceRect(objBlack, 0, 0, MAX_X, MAX_Y);
-    ObjSprite2D_SetDestRect(objBlack, 0, 0, MAX_X, MAX_Y);
+    int objBlack = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_STG_END);
     ObjRender_SetColor(objBlack, COLOR_BLACK);
-    Obj_SetRenderPriorityI(objBlack, RP_STG_END);
     ObjRender_SetAlpha(objBlack, 92);
     //Clear Bonus!! text
-    int headerText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(headerText, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(headerText, 0, 352, 128, 368);
-    ObjSprite2D_SetDestRect(headerText, 0, 0, 128, 16);
+    int headerText = InitSprite2D(0, 352, 128, 368, IMG_SYSTEM_UI, RP_STG_END);
     ObjRender_SetPosition(headerText, 128, 48, 1);
-    Obj_SetRenderPriorityI(headerText, RP_STG_END);
     //score bonuses
     int stageText = CreateText(16, 112, RP_STG_END, "All Clear:", COLOR_WHITE);
     int grazeText = CreateText(16, 144, RP_STG_END, "Graze Count x 50:", COLOR_WHITE);

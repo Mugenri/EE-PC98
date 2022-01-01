@@ -67,21 +67,14 @@ function<int> SceneRankSelect(int selectedDefault_) {
     }
 
     task TCreateMenuGraphicsRank() {
-        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriorityI(bg, RP_UI_BG);
-        ObjSprite2D_SetSourceRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ObjSprite2D_SetDestRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
     }
 
     task TCreateMenuItemRank(int index_, int x_, int y_, int imgIndex_) {
-        int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objText, RP_UI_IMG);
-        ObjPrim_SetTexture(objText, IMG_TT_RANK);
-        ObjSprite2D_SetSourceRect(objText, 0, imgIndex_ * 16, 223, (imgIndex_+1) * 16);
+        int objText = InitSprite2D(0, imgIndex_ * 16, 223, (imgIndex_ + 1) * 16, IMG_TT_RANK, RP_UI_IMG);
         ObjSprite2D_SetDestCenter(objText);
         ObjRender_SetPosition(objText, x_, y_, 1);
 

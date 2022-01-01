@@ -15,12 +15,7 @@
 @Finalize {}
 
 task TBackground() {
-	int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(obj, RT_SCREENSHOT);
-    ObjRender_SetBlendType(obj, BLEND_ALPHA);
-    ObjSprite2D_SetSourceRect(obj, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-    ObjSprite2D_SetDestRect(obj, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-	Obj_SetRenderPriorityI(obj, RP_UI_MIN);
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_MIN);
 }
 
 //dialogue function

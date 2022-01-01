@@ -90,11 +90,8 @@ task TOption(int offset_) {
     int distFocus = 18;
     int distCurrent = distUnfocus;
 
-    int objOption = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objOption, _pathImg);
-    ObjSprite2D_SetSourceRect(objOption, 179, 3, 189, 13);
+    int objOption = InitSprite2D(179, 3, 189, 13, _pathImg, RP_STG_PLAYER - 1i);
     ObjSprite2D_SetDestCenter(objOption);
-    Obj_SetRenderPriorityI(objOption, RP_STG_PLAYER - 1i);
 
     TOptionShot();
 
@@ -280,17 +277,11 @@ task TSpell() {
         }
 
         task TCreateLaserEffect(int direction_) {
-            int shot1 = ObjPrim_Create(OBJ_SPRITE_2D); //black bullet
-            ObjPrim_SetTexture(shot1, _pathImg);
-            ObjSprite2D_SetSourceRect(shot1, 144, 0, 160, 16);
+            int shot1 = InitSprite2D(144, 0, 160, 16, _pathImg, RP_STG_PLAYER - 2i);
             ObjSprite2D_SetDestCenter(shot1);
-            Obj_SetRenderPriorityI(shot1, RP_STG_PLAYER - 2i);
 
-            int shot2 = ObjPrim_Create(OBJ_SPRITE_2D); //white bullet
-            ObjPrim_SetTexture(shot2, _pathImg);
-            ObjSprite2D_SetSourceRect(shot2, 144, 16, 160, 32);
+            int shot2 = InitSprite2D(144, 16, 160, 32, _pathImg, RP_STG_PLAYER - 2i);
             ObjSprite2D_SetDestCenter(shot2);
-            Obj_SetRenderPriorityI(shot2, RP_STG_PLAYER - 2i);
 
             ObjRender_SetPosition(shot1, GetPlayerX() + 20*direction_*cos(modifier), GetPlayerY() + direction_*4, 1);
             ObjRender_SetPosition(shot2, GetPlayerX() + 15*direction_*cos(modifier + 90), GetPlayerY() + direction_*8, 1);

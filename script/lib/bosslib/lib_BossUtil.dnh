@@ -44,10 +44,7 @@ function<bool> Boss_IsSpellCaptured() {
 }
 //Sets boss position indicator at bottom of screen
 function<void> Boss_SetIndicator(int parent_) {
-    int indicator = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(indicator, IMG_SYSTEM_UI);
-    Obj_SetRenderPriorityI(indicator, RP_UI_OVERLAY);
-    ObjSprite2D_SetSourceRect(indicator, 0, 464, 48, 480);
+    int indicator = InitSprite2D(0, 464, 48, 480, IMG_SYSTEM_UI, RP_UI_OVERLAY);
     ObjSprite2D_SetDestCenter(indicator);
 
     async {

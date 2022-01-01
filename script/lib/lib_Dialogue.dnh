@@ -3,6 +3,7 @@
 //therefore, stage-only libraries like lib_Common.dnh cannot be included
 #include "./lib_SystemAll.dnh" //Boss ID constants
 #include "./lib_File.dnh" //file directory constants
+#include "./lib_Util.dnh" //utility functions
 #include "./bosslib/lib_Character.dnh" //boss sprites/portrait retrieval
 
 bool _endDialogue = false; //flag for end of dialogue sequence
@@ -31,8 +32,10 @@ function<void> Dialogue_End() { //call to end dialogue sequence
 task TCreateTextBoxes() {
     int[] playerBoxPos = [80, 320];
     int[] enemyBoxPos = [48, 192];
-    int playerBox = CreateTextBox(false);
-    int enemyBox = CreateTextBox(true);
+    int playerBox = InitSprite2D(0, 0, 320, 48, IMG_SYSTEM_TEXTBOX, RP_UI_IMG);
+    ObjRender_SetPosition(playerBox, 80, 320, 1);
+    int enemyBox = InitSprite2D(0, 0, 320, 48, IMG_SYSTEM_TEXTBOX, RP_UI_IMG);
+    ObjRender_SetPosition(enemyBox, 48, 192, 1);
     
     //fade in animation
     wait(12);
@@ -54,16 +57,6 @@ task TCreateTextBoxes() {
 
     Obj_Delete(playerBox);
     Obj_Delete(enemyBox);
-
-    function<int> CreateTextBox(bool isBoss_) {
-        int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(obj, IMG_SYSTEM_TEXTBOX);
-        Obj_SetRenderPriorityI(obj, RP_UI_IMG);
-        ObjSprite2D_SetSourceRect(obj, 0, 0, 320, 48); //first frame
-        if (isBoss_) ObjRender_SetPosition(obj, enemyBoxPos[0], enemyBoxPos[1], 1);
-        else ObjRender_SetPosition(obj, playerBoxPos[0], playerBoxPos[1], 1);
-        return obj;
-    }
 
     function<void> ChangeFrame(int obj_, int frame_, bool isBoss_) {
         ObjSprite2D_SetSourceRect(obj_, 0, 0 + 48*frame_, 320, 48 + 48*frame_);
@@ -190,12 +183,9 @@ function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, stri
     ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID_));
 
     //screen whiteout
-    int whiteout = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(whiteout, RP_UI_MAX);
-    ObjSprite2D_SetSourceRect(whiteout, 0, 0, MAX_X, MAX_Y);
-    ObjSprite2D_SetDestRect(whiteout, 0, 0, MAX_X, MAX_Y);
-    ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
+    int whiteout = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_UI_MAX);
     ObjRender_SetColor(whiteout, COLOR_WHITE);
+    ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
 
     //animation
     descent (i in 0..fadeIn_) {

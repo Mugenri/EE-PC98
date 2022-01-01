@@ -33,11 +33,7 @@ function<void> Display_Init() {
 //STG Frame Display
 //----------------------------------------------------
 function<void> InitFrame() {
-	int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(obj, IMG_SYSTEM_FRAME);
-	Obj_SetRenderPriorityI(obj, RP_UI_BG);
-	ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
-	ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
+    int obj = InitSprite2D(0, 0, GetScreenWidth(), GetScreenHeight(), IMG_SYSTEM_FRAME, RP_UI_BG);
     SetStgFrame(32, 16, 416, 384, RP_STG_MIN, RP_STG_MAX);
 }
 
@@ -45,10 +41,7 @@ function<void> InitFrame() {
 //Stage Fade in
 //----------------------------------------------------
 task TIntro() {
-    int objBG = ObjPrim_Create(OBJ_SPRITE_2D); //black rectangle so the particle list doesn't have to be processed before it's animating
-    ObjSprite2D_SetSourceRect(objBG, 0, 0, MAX_X, MAX_Y);
-    ObjSprite2D_SetDestRect(objBG, 0, 0, MAX_X, MAX_Y);
-    Obj_SetRenderPriorityI(objBG, RP_STG_MAX);
+    int objBG = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_STG_MAX); //black rectangle so the particle list doesn't have to be processed before it's animating
     ObjRender_SetColor(objBG, COLOR_BLACK);
 
     //Fade square particle list
@@ -57,11 +50,8 @@ task TIntro() {
 
     int frames = 8; //number of animation frames
 
-    int objLogo = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objLogo, IMG_SYSTEM_LOGO);
-    ObjSprite2D_SetSourceRect(objLogo, 0, 0, 323, 108);
+    int objLogo = InitSprite2D(0, 0, 323, 108, IMG_SYSTEM_LOGO, RP_STG_MAX);
     ObjSprite2D_SetDestCenter(objLogo);
-    Obj_SetRenderPriorityI(objLogo, RP_STG_MAX);
     ObjRender_SetPosition(objLogo, 192, 184, 1); //MID_Y constant doesnt work here for some reason, don't care enough to figure out why
     ObjRender_SetAlpha(objLogo, 0);
 
@@ -154,12 +144,8 @@ function<void> Difficulty() {
 //----------------------------------------------------
 task THighScore() { //TODO make this the actual high score
 	//High Score Text
-	int objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, IMG_SYSTEM_UI);
-	ObjSprite2D_SetSourceRect(objScore, 0, 272, 53, 288);
-    ObjSprite2D_SetDestRect(objScore, 0, 0, 53, 16);
+    int objScore = InitSprite2D(0, 272, 53, 288, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
-	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
     ObjRender_SetPosition(objScore, 486, 48, 1);
 
 	// Digits
@@ -190,12 +176,8 @@ task THighScore() { //TODO make this the actual high score
 //----------------------------------------------------
 task TScore() { //TODO add support for scores > 100_000_000
 	//Score Text
-	int objScore = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objScore, IMG_SYSTEM_UI);
-	ObjSprite2D_SetSourceRect(objScore, 16, 272, 53, 288);
-    ObjSprite2D_SetDestRect(objScore, 0, 0, 37, 16);
+    int objScore = InitSprite2D(16, 272, 53, 288, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
-	Obj_SetRenderPriorityI(objScore, RP_UI_TEXT);
     ObjRender_SetPosition(objScore, 493, 80, 1);
 
 	// Digits
@@ -226,12 +208,8 @@ task TScore() { //TODO add support for scores > 100_000_000
 //----------------------------------------------------
 task TBossLife() {
     //Enemy!! text
-    int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(objText, 0, 288, 48, 304);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 48, 16);
+    int objText = InitSprite2D(0, 288, 48, 304, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objText, COLOR_YELLOW);
-    Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 129, 1);
     Obj_SetVisible(objText, false);
 
@@ -247,20 +225,12 @@ task TBossLife() {
     Obj_SetVisible(objLine, false);
 
     //lifebar heart icon
-    int objIcon = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objIcon, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(objIcon, 52, 339, 62, 348);
-    ObjSprite2D_SetDestRect(objIcon, 0, 0, 10, 9);
-    Obj_SetRenderPriorityI(objIcon, RP_UI_TEXT);
+    int objIcon = InitSprite2D(52, 339, 62, 348, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetPosition(objIcon, 567, 147, 1);
     Obj_SetVisible(objIcon, false);
 
     //Max Life Text
-    int objMax = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objMax, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(objMax, 0, 336, 52, 349);
-    ObjSprite2D_SetDestRect(objMax, 0, 0, 52, 13);
-    Obj_SetRenderPriorityI(objMax, RP_UI_TEXT);
+    int objMax = InitSprite2D(0, 336, 52, 349, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetPosition(objMax, 526, 144, 1);
     Obj_SetVisible(objMax, false);
 
@@ -354,12 +324,8 @@ task TBossTimer() {
     int obj = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT); //timer line
     ObjRender_SetPosition(obj, 448, 162, 1);
 
-    int icon = ObjPrim_Create(OBJ_SPRITE_2D); //clock icon
-    ObjPrim_SetTexture(icon, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(icon, 192, 336, 199, 343);
-    ObjSprite2D_SetDestRect(icon, 0, 0, 7, 7);
+    int icon = InitSprite2D(192, 336, 199, 343, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetPosition(icon, 572, 158, 0);
-    Obj_SetRenderPriorityI(icon, RP_UI_TEXT);
     Obj_SetVisible(icon, false);
 
 	loop {
@@ -398,12 +364,8 @@ task TBossTimer() {
 //----------------------------------------------------
 task TPlayerLife() {
 	//life Text
-	int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-	ObjSprite2D_SetSourceRect(objText, 0, 306, 32, 320);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 32, 14);
+    int objText = InitSprite2D(0, 306, 32, 320, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objText, COLOR_YELLOW);
-	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 178, 1);
 
     loop {
@@ -444,12 +406,8 @@ task TPlayerLife() {
 //----------------------------------------------------
 task TPlayerSpell() {
 	//Spell Text
-	int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-	ObjSprite2D_SetSourceRect(objText, 0, 322, 31, 335);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 31, 13);
+    int objText = InitSprite2D(0, 322, 31, 335, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objText, COLOR_YELLOW);
-	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
     ObjRender_SetPosition(objText, 456, 210, 1);
 
 	loop {
@@ -490,12 +448,8 @@ task TPlayerSpell() {
 //----------------------------------------------------
 task TGraze() {
 	//Graze Text
-	int objGraze = ObjPrim_Create(OBJ_SPRITE_2D);
-	ObjPrim_SetTexture(objGraze, IMG_SYSTEM_UI);
-	ObjSprite2D_SetSourceRect(objGraze, 64, 289, 96, 304);
-    ObjSprite2D_SetDestRect(objGraze, 0, 0, 32, 15);
+    int objGraze = InitSprite2D(64, 289, 96, 304, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objGraze, COLOR_YELLOW);
-	Obj_SetRenderPriorityI(objGraze, RP_UI_TEXT);
     ObjRender_SetPosition(objGraze, 456, 242, 1);
 
 	//Digits
@@ -604,11 +558,7 @@ task TSpellDisplay(int spellID_) {
     ObjText_SetHorizontalAlignment(nameText, ALIGNMENT_RIGHT);
     ObjText_SetMaxWidth(nameText, 384);
 
-    int failText = ObjPrim_Create(OBJ_SPRITE_2D); //bonus failed text
-    ObjPrim_SetTexture(failText, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(failText, 160, 336, 192, 344);
-    ObjSprite2D_SetDestRect(failText, 0, 0, 32, 8);
-    Obj_SetRenderPriorityI(failText, RP_STG_SPELL);
+    int failText = InitSprite2D(160, 336, 192, 344, IMG_SYSTEM_UI, RP_STG_SPELL); //bonus failed text
     Obj_SetVisible(failText, false);
 
     int yPos = -32; //starting position of banner and other objects
@@ -683,11 +633,7 @@ task TSpellBonus(int score_) {
     if (tempScore > 0) Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
 
     //Spell Bonus Text
-    int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(objText, 39, 368, 148, 384);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 109, 16);
-    Obj_SetRenderPriorityI(objText, RP_STG_MAX);
+    int objText = InitSprite2D(39, 368, 148, 384, IMG_SYSTEM_UI, RP_STG_MAX);
     ObjRender_SetY(objText, 32);
 
     //get length of score number
@@ -730,11 +676,7 @@ task TCancelBonus(int score_) {
     _bonusIsReady = true;
     if (ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_DURABLE_SPELL) && score_ != -1) return; //no shot cancel bonus on survival spells (still need bonus fail text)
     //Bonus!! Text
-    int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-    ObjSprite2D_SetSourceRect(objText, 65, 352, 127, 368);
-    ObjSprite2D_SetDestRect(objText, 0, 0, 62, 16);
-    Obj_SetRenderPriorityI(objText, RP_STG_MAX);
+    int objText = InitSprite2D(65, 352, 127, 368, IMG_SYSTEM_UI, RP_STG_MAX);
     ObjRender_SetY(objText, 16);
     //Bonus fail text & no score
     if (score_ == -1) {

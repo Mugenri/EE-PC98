@@ -13,17 +13,10 @@ function<void> ChangeIndex(int index_, int priority_) {
 task TBackground(int index_, int priority_) {
     bool exitFlag = false;
     //black bg
-    int black = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjSprite2D_SetSourceRect(black, 0, 0, MAX_X, MAX_Y);
-    ObjSprite2D_SetDestRect(black, 0, 0, MAX_X, MAX_Y);
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
-    Obj_SetRenderPriorityI(black, priority_);
     //bg
-    int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
-    ObjSprite2D_SetSourceRect(bg, 0, 0, 384, 368);
-    ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
-    Obj_SetRenderPriorityI(bg, priority_ + 1); //render over prims
+    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI, priority_ + 1);
 
     int count = 0;
 
@@ -68,17 +61,10 @@ task TBackground(int index_, int priority_) {
 task TSpellBackground(int index_, int priority_) {
     bool exitFlag = false;
     //black bg
-    int black = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjSprite2D_SetSourceRect(black, 0, 0, MAX_X, MAX_Y);
-    ObjSprite2D_SetDestRect(black, 0, 0, MAX_X, MAX_Y);
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
-    Obj_SetRenderPriorityI(black, priority_);
     //torii & kanji
-    int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(bg, IMG_BG_TSURUBAMI);
-    ObjSprite2D_SetSourceRect(bg, 384, 0, 768, 368);
-    ObjSprite2D_SetDestRect(bg, 0, 0, MAX_X, MAX_Y);
-    Obj_SetRenderPriorityI(bg, priority_ + 1); //render over background lines
+    int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI, priority_ + 1);
 
     int count = 30;
     int color = 0;

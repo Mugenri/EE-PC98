@@ -89,35 +89,22 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     }
 
     task TCreateMenuGraphicsPlayer() {
-        int bg = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(bg, IMG_TT_BG);
-        Obj_SetRenderPriorityI(bg, RP_UI_BG);
-        ObjSprite2D_SetSourceRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ObjSprite2D_SetDestRect(bg, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
     }
 
     task TCreateMenuItemPlayer(int index_, int x_, int y_) {
-        int objPlayerShadow = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerShadow, RP_UI_IMG);
-        ObjPrim_SetTexture(objPlayerShadow, imgPlayerPortrait[index_]);
-        ObjSprite2D_SetSourceRect(objPlayerShadow, 0, 160, 224, 320);
+        int objPlayerShadow = InitSprite2D(0, 160, 224, 320, imgPlayerPortrait[index_], RP_UI_IMG);
         ObjSprite2D_SetDestCenter(objPlayerShadow);
         ObjRender_SetPosition(objPlayerShadow, x_, y_, 1);
 
-        int objPlayerBack = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerBack, RP_UI_IMG);
-        ObjPrim_SetTexture(objPlayerBack, imgPlayerPortrait[index_]);
-        ObjSprite2D_SetSourceRect(objPlayerBack, 224, 0, 448, 160);
+        int objPlayerBack = InitSprite2D(224, 0, 448, 160, imgPlayerPortrait[index_], RP_UI_IMG);
         ObjSprite2D_SetDestCenter(objPlayerBack);
         ObjRender_SetPosition(objPlayerBack, x_, y_, 1);
 
-        int objPlayerFront = ObjPrim_Create(OBJ_SPRITE_2D);
-        Obj_SetRenderPriorityI(objPlayerFront, RP_UI_IMG);
-        ObjPrim_SetTexture(objPlayerFront, imgPlayerPortrait[index_]);
-        ObjSprite2D_SetSourceRect(objPlayerFront, 0, 0, 224, 160);
+        int objPlayerFront = InitSprite2D(0, 0, 224, 160, imgPlayerPortrait[index_], RP_UI_IMG);
         ObjSprite2D_SetDestCenter(objPlayerFront);
         ObjRender_SetPosition(objPlayerFront, x_ - 8, y_ - 8, 1);
 

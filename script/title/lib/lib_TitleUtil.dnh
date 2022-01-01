@@ -3,21 +3,15 @@
 
 //Create Menu Cursor
 function<int> CreateCursor(int x_, int y_) {
-    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(obj, IMG_TT_CURSOR);
-    ObjSprite2D_SetSourceRect(obj, 0, 0, 128, 16);
+    int obj = InitSprite2D(0, 0, 128, 16, IMG_TT_CURSOR, RP_UI_TEXT);
     ObjSprite2D_SetDestCenter(obj);
-    Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
     ObjRender_SetPosition(obj, x_, y_, 1);
     return obj;
 }
 
 //Screen fade animation
 function<void> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
-    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(obj, RP_UI_MAX);
-    ObjSprite2D_SetSourceRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
-    ObjSprite2D_SetDestRect(obj, 0, 0, GetScreenWidth(), GetScreenHeight());
+    int obj = InitSprite2D(0, 0, GetScreenWidth(), GetScreenHeight(), RP_UI_MAX);
     ObjRender_SetColor(obj, color_);
 
     async {
