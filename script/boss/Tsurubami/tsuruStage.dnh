@@ -35,14 +35,16 @@ task TStage() {
     StartDialogueScript(dialoguePath);
     yield; //this is fine
     StartScript(ID);
-    StartBGM(1, 0, 0);
+    StartBGM(1, 300, 0);
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
         yield;
     }
-    wait(60);
-    //after stage dialogue
-    wait(60);
-    //end score?
-    //maybe wait for input or something
+    wait(120); //last explosion & spell bonus numbers
+    StartDialogueScript(dialoguePath);
+    yield;
+    Stage_EndScreen(10000);
+    ClearBGM();
+    wait(300); //TOOD temporary probably get rid of this entirely, handle this from package
     CloseStgScene();
+    //TODO NEED TO RESET STAGE AND SYSTEM COMMON DATA AT END OF STAGES
 }

@@ -26,6 +26,10 @@ function<int[]> DigitToArray(int digit_) {
 	}
 	return res;
 }
+//Returns the length of a passed digit.
+function<int> GetDigitLength(int digit_) {
+    return floor(log10(digit_)) + 1;
+}
 //Move selection index, wrap between min/max, omit forbidden indices
 function<int> IncrementIndex(int index_, int amount_, int min_, int max_, int[] forbidden_) {
     index_ += amount_;

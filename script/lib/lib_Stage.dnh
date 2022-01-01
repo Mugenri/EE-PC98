@@ -161,3 +161,132 @@ function<void> Stage_SetIntroText(string header_, string subtitle_) { //stage na
         }
     }
 }
+
+function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
+    SetPauseEnable(false);
+    SetForbidPlayerShot(true);
+    SetForbidPlayerSpell(true);
+
+    //SCORE VARIABLES ----------------------------------
+    real grazeBonus = GetGraze() * 50;
+    real lifeBonus = GetPlayerLife() * 10000;
+    real pointCount = GetPoint();
+    pointCount = min(pointCount, 999);
+    int missCount = GetAreaCommonData(AREA_STAGE, "Player_Miss", 0);
+    int bombCount = GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0);
+    real noMissBonus = 500000;
+    real noBombBonus = 500000;
+    int continues = 0; //TODO make this an actual thing
+    real[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
+    int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
+    real[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 1.0, 1.4];
+    string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Extra", "Absurdly Extra"];
+    //TODO starting lives multiplier at some point maybe
+
+    //SCORE CALCULATION ----------------------------------
+    //stage bonus + graze * 50 + (lives * 10000) * point items + nomiss + nobomb * continue mult * diff mult = total
+    int totalScore = (stageBonus_ + grazeBonus + lifeBonus) * pointCount;
+    if (missCount == 0) totalScore += noMissBonus;
+    if (bombCount == 0) totalScore += noBombBonus;
+    totalScore *= multContinue[continues];
+    totalScore *= multDifficulty[difficulty];
+    totalScore = min(totalScore, 99999999); //cap to 100 million
+    AddScore(totalScore);
+
+    //TEXT SETUP --------------------------------------
+    //Screen dim
+    int objBlack = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjSprite2D_SetSourceRect(objBlack, 0, 0, MAX_X, MAX_Y);
+    ObjSprite2D_SetDestRect(objBlack, 0, 0, MAX_X, MAX_Y);
+    ObjRender_SetColor(objBlack, COLOR_BLACK);
+    Obj_SetRenderPriorityI(objBlack, RP_STG_END);
+    ObjRender_SetAlpha(objBlack, 92);
+    //Clear Bonus!! text
+    int headerText = ObjPrim_Create(OBJ_SPRITE_2D);
+    ObjPrim_SetTexture(headerText, IMG_SYSTEM_UI);
+    ObjSprite2D_SetSourceRect(headerText, 0, 352, 128, 368);
+    ObjSprite2D_SetDestRect(headerText, 0, 0, 128, 16);
+    ObjRender_SetPosition(headerText, 128, 48, 1);
+    Obj_SetRenderPriorityI(headerText, RP_STG_END);
+    //score bonuses
+    int stageText = CreateText(16, 112, RP_STG_END, "All Clear:", COLOR_WHITE);
+    int grazeText = CreateText(16, 144, RP_STG_END, "Graze Count x 50:", COLOR_WHITE);
+    int livesText = CreateText(16, 176, RP_STG_END, "Lives Remaining x 10000:", COLOR_WHITE);
+    int pointText = CreateText(16, 208, RP_STG_END, "  x   Point Items Collected:", COLOR_WHITE);
+    //conditional
+    int noMissText = CreateText(16, 240, RP_STG_END, "  +   No Miss Bonus:", COLOR_TEAL);
+    int noBombText = CreateText(16, 256, RP_STG_END, "  +   No Bomb Bonus:", COLOR_TEAL);
+    Obj_SetVisible(noMissText, missCount == 0);
+    Obj_SetVisible(noBombText, bombCount == 0);
+    //multipliers
+    int continueText = CreateText(16, 288, RP_STG_END, "Continues Used:", COLOR_RED);
+    Obj_SetVisible(continueText, continues > 0);
+    int difficultyText = CreateText(16, 304, RP_STG_END, difficultyTexts[difficulty] ~ " Rank:", COLOR_GREEN_L);
+    //total
+    int totalText = CreateText(16, 320, RP_STG_END, "Total:", COLOR_WHITE);
+
+    //SCORE NUMBERS --------------------------------------
+
+    int endList = InitParticleList(IMG_SYSTEM_UI, RP_STG_END, 0, 0, 16, 16); //score number list
+    ParticleListShader(endList, 16/256, 16/512);
+    ObjSprite2D_SetDestRect(endList, 0, 0, 16, 16);
+
+    //number arrays
+    int[] stageList = DigitToArray(stageBonus_);
+    int[] grazeList = DigitToArray(grazeBonus);
+    int[] livesList = DigitToArray(lifeBonus);
+    int[] pointList = DigitToArray(pointCount);
+    int[] noMissList = DigitToArray(noMissBonus);
+    int[] noBombList = DigitToArray(noBombBonus);
+    int[] continueList = DigitToArray(multContinue[continues] * 10, 2); // *10 to get a whole number, put a . between them. always has 2 digits
+    int[] difficultyList = DigitToArray(multDifficulty[difficulty] * 10, 2); // same as above
+    int[] totalList = DigitToArray(totalScore);
+
+    //length variables so they don't get called every frame
+    int stageLength = length(stageList);
+    int grazeLength = length(grazeList);
+    int livesLength = length(livesList);
+    int pointLength = length(pointList);
+    int noMissLength = length(noMissList);
+    int noBombLength = length(noBombList);
+    int totalLength = length(totalList);
+
+    //wait for input
+    while(GetVirtualKeyState(VK_SHOT) != KEY_PUSH) {
+        UpdateList(stageList, stageLength, ObjRender_GetY(stageText)); //stage bonus
+        UpdateList(grazeList, grazeLength, ObjRender_GetY(grazeText)); //graze bonus
+        UpdateList(livesList, livesLength, ObjRender_GetY(livesText)); //lives bonus
+        UpdateList(pointList, pointLength, ObjRender_GetY(pointText)); //point items
+        if (missCount == 0) UpdateList(noMissList, noMissLength, ObjRender_GetY(noMissText)); //no miss bonus
+        if (bombCount == 0) UpdateList(noBombList, noBombLength, ObjRender_GetY(noBombText)); //no bomb bonus
+        if (continues > 0) UpdateListDecimal(continueList, ObjRender_GetY(continueText), COLOR_RED); //continue multiplier
+        UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN); //difficulty multiplier
+        UpdateList(totalList, totalLength, ObjRender_GetY(totalText)); //total score
+        yield;
+        
+    }
+
+    function<void> UpdateList(int[] list_, int listLength_, int y_) { //draw score number right to left
+        for (int i = 0; i < listLength_; i++) {
+            int num = list_[listLength_ - i - 1];
+            ObjParticleList_SetPosition(endList, 352 - i * 16, y_, 1);
+            ObjParticleList_SetExtraData(endList, num, 1, 0);
+            ObjParticleList_AddInstance(endList);
+        }
+    }
+
+    function<void> UpdateListDecimal(int[] list_, int y_, int color_) { //for multiplier numbers. length is always 2
+        ObjParticleList_SetColor(endList, color_);
+        for (int i = 0; i < 2; i++) {
+            int num = list_[1 - i];
+            ObjParticleList_SetPosition(endList, 352 - i * 32, y_, 1);
+            ObjParticleList_SetExtraData(endList, num, 1, 0);
+            ObjParticleList_AddInstance(endList);
+        }
+        //decimal point
+        ObjParticleList_SetPosition(endList, 352 - 16, y_, 1);
+        ObjParticleList_SetExtraData(endList, 14, 0, 0);
+        ObjParticleList_AddInstance(endList);
+        ObjParticleList_SetColor(endList, COLOR_WHITE);
+    }
+}

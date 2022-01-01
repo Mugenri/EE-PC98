@@ -179,6 +179,7 @@ const int COLOR_ORANGE_D    = 0xBB5500;
 const int COLOR_YELLOW      = 0xFFFF00;
 const int COLOR_YELLOW_L    = 0xFFFF55;
 const int COLOR_YELLOW_D    = 0xDDCC44;
+const int COLOR_GREEN_L     = 0x00FF00;
 const int COLOR_GREEN       = 0x44BB33;
 const int COLOR_GREEN_D     = 0x226622;
 const int COLOR_BLUE        = 0x0000FF;

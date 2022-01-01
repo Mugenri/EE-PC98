@@ -78,10 +78,13 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
 
             alternative (stageResult)
             case (STAGE_RESULT_CLEARED) { //Game Won
-
+                WriteLog("won");
+                //TODO screen cap and fade out for 300 frames
+                break;
             }
             case (STAGE_RESULT_PLAYER_DOWN) { //Game Over
-
+                WriteLog("game over");
+                break;
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
                 TDefault();

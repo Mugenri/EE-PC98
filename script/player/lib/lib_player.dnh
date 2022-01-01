@@ -39,12 +39,22 @@ function<void> PlayerEvent() {
 		if (spell >= 1) {
 			SetScriptResult(true);
 			SetPlayerSpell(spell - 1);
+            //increment total bomb count for stage (for scoring and fun stats)
+            SetAreaCommonData(AREA_STAGE, "Player_Bomb", GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0) + 1);
 			TSpell(); //THIS MUST BE DEFINED BY THE PLAYER SCRIPT
 		} else SetScriptResult(false);
 	}
 	case (EV_HIT) THit();
-    case (EV_PLAYER_SHOOTDOWN) TMiss();
-	case (EV_PLAYER_REBIRTH) TRebirth();
+    case (EV_PLAYER_SHOOTDOWN) {
+        //increment total miss count for stage (for scoring and fun stats)
+        SetAreaCommonData(AREA_STAGE, "Player_Miss", GetAreaCommonData(AREA_STAGE, "Player_Miss", 0) + 1);
+        TMiss();
+    }
+	case (EV_PLAYER_REBIRTH) {
+        //TODO check total lives and work in a continue system somehow
+        
+        TRebirth();
+    }
     case (EV_GRAZE) {
         int[] objList = GetEventArgument(1); //list of bullets grazed in last frame
         
@@ -65,7 +75,7 @@ function<void> PlayerEvent() {
                     real distNearest = distPlayer * cos(anglePlayer - angleLaser);
                     x += distNearest * cos(angleLaser);
                     y += distNearest * sin(angleLaser);
-                } //if player is behind the base of the laser, particle spawns at original (x, y)
+                } //else player is behind the base of the laser, particle spawns at original (x, y)
             }
             num++;
             TGraze(x, y);
