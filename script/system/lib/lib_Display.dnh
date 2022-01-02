@@ -33,7 +33,32 @@ function<void> Display_Init() {
 //STG Frame Display
 //----------------------------------------------------
 function<void> InitFrame() {
-    int obj = InitSprite2D(0, 0, GetScreenWidth(), GetScreenHeight(), IMG_SYSTEM_FRAME, RP_UI_BG);
+    int obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+    ObjPrim_SetTexture(obj, IMG_SYSTEM_FRAME);
+    Obj_SetRenderPriorityI(obj, RP_UI_BG);
+    //left
+    ObjSpriteList2D_SetSourceRect(obj, 0, 32, 32, 432);
+    ObjSpriteList2D_SetDestRect(obj, 0, 0, 32, 400);
+    ObjRender_SetPosition(obj, 0, 0, 1);
+    ObjSpriteList2D_AddVertex(obj);
+    //top
+    ObjSpriteList2D_SetSourceRect(obj, 0, 0, 384, 16);
+    ObjSpriteList2D_SetDestRect(obj, 0, 0, 384, 16);
+    ObjRender_SetPosition(obj, 32, 0, 1);
+    ObjSpriteList2D_AddVertex(obj);
+    //right
+    ObjSpriteList2D_SetSourceRect(obj, 32, 32, 256, 432);
+    ObjSpriteList2D_SetDestRect(obj, 0, 0, 224, 400);
+    ObjRender_SetPosition(obj, 416, 0, 1);
+    ObjSpriteList2D_AddVertex(obj);
+    //bottom
+    ObjSpriteList2D_SetSourceRect(obj, 0, 16, 384, 32);
+    ObjSpriteList2D_SetDestRect(obj, 0, 0, 384, 16);
+    ObjRender_SetPosition(obj, 32, 384, 1);
+    ObjSpriteList2D_AddVertex(obj);
+
+    ObjSpriteList2D_CloseVertex(obj);
+
     SetStgFrame(32, 16, 416, 384, RP_STG_MIN, RP_STG_MAX);
 }
 
