@@ -16,6 +16,7 @@
 
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
+    StartShotScript(GetCurrentScriptDirectory() ~ "ControlShot.dnh");
 }
 
 @Event {

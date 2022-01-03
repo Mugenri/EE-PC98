@@ -17,17 +17,6 @@
 
 @Event {
     alternative (GetEventType())
-    case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
-        int obj = GetEventArgument(0);
-        real[] pos = GetEventArgument(1);
-        int score = Obj_GetValueDI(obj, SHOT_SCORE, 0);
-
-        //Delete effects
-        AddScore(score);
-        if (Obj_GetType(obj) == OBJ_SHOT) Cancel_Shot(obj);
-        else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
-        WriteLog("delete");
-    }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
         real[] pos = GetEventArgument(1);
