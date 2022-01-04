@@ -56,6 +56,10 @@ function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from fi
         CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
     }
 }
+//add the given value to the common data area and field
+function<void> CD_AddAreaCommonData(string area_, string field_, int amount_, int default_) {
+    SetAreaCommonData(area_, field_, GetAreaCommonData(area_, field_, default_) + amount_);
+}
 //Unlock extra stage
 function<void> CD_SetExtraStageFlag(int player_) {
     SetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), true);
