@@ -192,6 +192,7 @@ task THighScore() { //TODO make this the actual high score
             if (score - scoreRender <= 10) scoreRender = score;
             scoreRender = min(scoreRender, score);
         }
+        if (scoreRender > score) scoreRender = score; //score decreased through use of continues
         yield;
     }
 }
@@ -224,6 +225,7 @@ task TScore() { //TODO add support for scores > 100_000_000
             if (score - scoreRender <= 10) scoreRender = score;
             scoreRender = min(scoreRender, score);
         }
+        if (scoreRender > score) scoreRender = score; //score decreased through use of continues
         yield;
     }
 }

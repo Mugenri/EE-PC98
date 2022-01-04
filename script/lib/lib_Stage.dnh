@@ -13,6 +13,21 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
         Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
     }
     case (EV_CHANGE_BG) { BG_Update(GetEventArgument(0), GetEventArgument(1)); }
+    case (EV_CONTINUE) { ///used a continue
+        CD_AddAreaCommonData(AREA_STAGE, "Continues", 1, 0);
+
+        SetPlayerLife(2); //TODO set this to initial lives config setting
+        SetPlayerSpell(3);
+
+        AddScore(-GetScore() + GetAreaCommonData(AREA_STAGE, "Continues", 0));
+    }
+    case (EV_PLAYER_SHOOTDOWN) CheckContinue(); //player out of lives
+}
+
+function<void> CheckContinue() {
+    if (GetPlayerLife() < 0) {
+        NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
+    }
 }
 
 task TIntroTimer(int time_) { //time the intro fade takes to play
@@ -165,15 +180,14 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     SetForbidPlayerSpell(true);
 
     //SCORE VARIABLES ----------------------------------
-    real grazeBonus = GetGraze() * 50;
+    real grazeBonus = min(GetGraze(), 9999) * 50;
     real lifeBonus = GetPlayerLife() * 10000;
-    real pointCount = GetPoint();
-    pointCount = min(pointCount, 999);
+    real pointCount = min(GetPoint(), 999);
     int missCount = GetAreaCommonData(AREA_STAGE, "Player_Miss", 0);
     int bombCount = GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0);
     real noMissBonus = 500000;
     real noBombBonus = 500000;
-    int continues = 0; //TODO make this an actual thing
+    int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     real[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     real[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 1.0, 1.4];
@@ -194,7 +208,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     //Screen dim
     int objBlack = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_STG_END);
     ObjRender_SetColor(objBlack, COLOR_BLACK);
-    ObjRender_SetAlpha(objBlack, 92);
+    ObjRender_SetAlpha(objBlack, 96);
     //Clear Bonus!! text
     int headerText = InitSprite2D(0, 352, 128, 368, IMG_SYSTEM_UI, RP_STG_END);
     ObjRender_SetPosition(headerText, 128, 48, 1);
@@ -209,7 +223,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     Obj_SetVisible(noMissText, missCount == 0);
     Obj_SetVisible(noBombText, bombCount == 0);
     //multipliers
-    int continueText = CreateText(16, 288, RP_STG_END, "Continues Used:", COLOR_RED);
+    int continueText = CreateText(16, 288, RP_STG_END, IntToString(continues) ~ " Continues Used:", COLOR_RED);
     Obj_SetVisible(continueText, continues > 0);
     int difficultyText = CreateText(16, 304, RP_STG_END, difficultyTexts[difficulty] ~ " Rank:", COLOR_GREEN_L);
     //total
@@ -250,7 +264,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
         if (missCount == 0) UpdateList(noMissList, noMissLength, ObjRender_GetY(noMissText)); //no miss bonus
         if (bombCount == 0) UpdateList(noBombList, noBombLength, ObjRender_GetY(noBombText)); //no bomb bonus
         if (continues > 0) UpdateListDecimal(continueList, ObjRender_GetY(continueText), COLOR_RED); //continue multiplier
-        UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN); //difficulty multiplier
+        UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN_L); //difficulty multiplier
         UpdateList(totalList, totalLength, ObjRender_GetY(totalText)); //total score
         yield;
         

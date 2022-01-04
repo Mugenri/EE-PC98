@@ -4,6 +4,7 @@
 
 bool _pauseEnable;
 bool _dialogueRunning;
+bool _gameOver;
 string _dialoguePath;
 
 @Initialize {
@@ -22,6 +23,9 @@ string _dialoguePath;
     case (EV_PAUSE_ENABLE) {
         _pauseEnable = GetEventArgument(0);
     }
+    case (EV_CONTINUE) { //bring up the gameover menu, if continue is used then notify stage level script
+        _gameOver = true;
+    }
 }
 
 @MainLoop {yield;}
@@ -35,6 +39,7 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
 
     _pauseEnable = false;
     _dialogueRunning = false;
+    _gameOver = false;
     _dialoguePath = "";
 
     InitializeStageScene();
@@ -70,6 +75,22 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
         //--------------------------------------------------------------------
         if (_dialogueRunning) RunDialogue(_dialoguePath);
         //--------------------------------------------------------------------
+        //Gameover/Continue Menu
+        //--------------------------------------------------------------------
+        if (_gameOver) {
+            _gameOver = false;
+            int gameOverResult = GameOver();
+            alternative (gameOverResult)
+            case (RESULT_CONTINUE) {
+                NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
+                PauseStageScene(false);
+            }
+            case (RESULT_END) {
+                wait(210);
+                TerminateStageScene();
+            }
+        }
+        //--------------------------------------------------------------------
         //Stage Result Upon Ending
         //--------------------------------------------------------------------
         int stageState = GetStageSceneState();
@@ -79,7 +100,7 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
             alternative (stageResult)
             case (STAGE_RESULT_CLEARED) { //Game Won
                 WriteLog("won");
-                //TODO screen cap and fade out for 300 frames
+                //TODO screen cap and fade out for 300 frames. might have to put elsewhere?
                 break;
             }
             case (STAGE_RESULT_PLAYER_DOWN) { //Game Over
@@ -87,6 +108,7 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
                 break;
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
+                WriteLog("break off"); //need some way to differentiate between quit from pause and quit from continue
                 TDefault();
                 break;
             }
@@ -145,12 +167,27 @@ function<void> RunDialogue(string path_) {
     return;
 }
 
+function<int> GameOver() {
+    SetTransitionTexture();
+    PauseStageScene(true);
+
+    string pathScript = GetCurrentScriptDirectory() ~ "../../system/GameOver.dnh";
+
+    //Gameover script
+    int idScript = LoadScript(pathScript);
+    StartScript(idScript);
+
+    while (!IsCloseScript(idScript)) yield;
+
+    return GetScriptResult(idScript);
+}
+
 function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
 	RenderToTextureA1(RT_SCREENSHOT, RP_UI_MIN, RP_STG_BG, false);
     RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
 }
 
-task TDefault() { //Reset Common Data
+function<void> TDefault() { //Reset Common Data
 	SetAreaCommonData(AREA_TITLE, "ReplayPath", "");
 	SetAreaCommonData(AREA_TITLE, "PlayerType", 0);
 	SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
@@ -159,7 +196,7 @@ task TDefault() { //Reset Common Data
 	//SetAreaCommonData(AREA_TITLE, "ExtraMode", 0);
 }
 
-task TReturnToTitle() { //Run title screen
+function<void> TReturnToTitle() { //Run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
     int ID = LoadScript(path);
     StartScript(ID);

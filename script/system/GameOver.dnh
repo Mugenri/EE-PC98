@@ -1,0 +1,171 @@
+//Game Over Script
+#include "./../lib/lib_SystemAll.dnh"
+#include "./../lib/lib_File.dnh"
+#include "./../lib/lib_Util.dnh"
+
+int objFade; //square animation particle list
+
+@Initialize {
+	SetAutoDeleteObject(true);
+    objFade = InitParticleList(IMG_SYSTEM_UI, RP_UI_IMG, 0, 256, 16, 272);
+    ObjParticleList_SetColor(objFade, COLOR_BLACK);
+	TMenu();
+}
+
+@MainLoop {yield;}
+
+@Finalize {}
+
+task TMenu() { //Create pause menu
+	int indexCurrent = 0; //Selected Position
+    int selectMax = 1;
+    bool exitFlag = false;
+    int[] forbidIndex = [];
+
+    TCreateMenuGraphicsGameOver();
+
+    int objBlack = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_UI_BG); //screen dim object
+    ObjRender_SetColor(objBlack, COLOR_BLACK);
+    ObjRender_SetPosition(objBlack, 32, 16, 1);
+    Obj_SetVisible(objBlack, false);
+
+    //Gameover text animation
+    GameOverAnimation();
+
+    int credits = 3 - GetAreaCommonData(AREA_STAGE, "Continues", 0);
+    if (credits <= 0) forbidIndex = [0];
+
+    while (CheckForbidden(indexCurrent, forbidIndex)) {
+        indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+    }
+
+    //text stuffs
+    int continueText = CreateText(152, 160, RP_UI_TEXT, "Continue?", COLOR_WHITE);
+    int creditsText = CreateText(152, 352, RP_UI_TEXT, "Credits " ~ IntToString(credits), COLOR_GREEN_L);
+    ObjText_SetFontType(continueText, HEADER_FONT);
+    ObjText_SetFontType(creditsText, HEADER_FONT);
+
+	//Menu Placement
+	int mx = MID_X + 8;
+	int my = 208;
+	string[] texts = ["Yes", "No"];
+    int[] listResult = [RESULT_CONTINUE, RESULT_END];
+	ascent (iText in 0..length(texts)) {
+		TCreateMenuItemGameOver(iText, mx, my, texts[iText], COLOR_WHITE);
+        mx += 8;
+		my += 32;
+	}
+
+	//Menu Selection
+    WaitKeysFree([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
+	loop { //Wait for input loop
+        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case (VK_UP) {
+            indexCurrent = IncrementIndex(indexCurrent, -1, 0, selectMax, forbidIndex);
+        }
+        case (VK_DOWN) {
+            indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
+        }
+        case (VK_OK) {
+            exitFlag = true;
+            Obj_Delete(continueText);
+            Obj_Delete(creditsText);
+            
+            SetScriptResult(listResult[indexCurrent]);
+            if(listResult[indexCurrent] == RESULT_CONTINUE) ContinueAnimation();
+            if(listResult[indexCurrent] == RESULT_END) QuitAnimation();
+            CloseScript(GetOwnScriptID());
+        }
+        case (VK_CANCEL, VK_PAUSE) {
+            indexCurrent = 1;
+        }
+    }
+
+    task TCreateMenuItemGameOver(int index_, int mx_, int my_, string text_, int color_) {
+		int objText = CreateText(mx_, my_, text_, color_);
+        ObjText_SetFontType(objText, HEADER_FONT);
+		while (!exitFlag) {
+			ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_GREEN_L : credits != 0 ? COLOR_WHITE : COLOR_GRAY_D));
+			yield;
+		}
+        Obj_Delete(objText);
+	}
+
+    task TCreateMenuGraphicsGameOver() {
+        int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_BG);
+    }
+
+    function<void> GameOverAnimation() { //gameover screen animation
+        //SCREEN DIM TRANSITION
+        ParticleAnim(true);
+        //dim screen
+        Obj_SetVisible(objBlack, true);
+        wait(5);
+        ObjRender_SetAlpha(objBlack, 96);
+        //out (40 frames)
+        ParticleAnim(false);
+        
+        //TEXT
+        string word = "GAMEOVER"; //strings are character arrays
+        int objText = CreateText(240, 120, RP_UI_TEXT, "G", COLOR_WHITE);
+        ObjText_SetFontType(objText, HEADER_FONT);
+
+        //letter g move
+        for (int i = 0; i <= 60; i++) {
+            ObjRender_SetPosition(objText, Interpolate_Overshoot(MAX_X + 16, MID_X - 32, 3, i/60), MID_Y + 8, 1);
+            yield;
+        }
+        //spell word
+        for (int i = 1; i < length(word); i++) {
+            ObjText_SetText(objText, ObjText_GetText(objText) ~ ToString(word[i]));
+            yield;
+        }
+        //wait
+        while (GetVirtualKeyState(VK_OK) != KEY_PUSH) yield;
+        Obj_Delete(objText);
+    }
+
+    function<void> ContinueAnimation() { //used a continue
+        ParticleAnim(true);
+        ObjRender_SetAlpha(objBlack, 255);
+        wait(5);
+        Obj_SetVisible(objBlack, false);
+        ParticleAnim(false);
+    }
+
+    function<void> QuitAnimation() { //quit game
+        ParticleAnim(true);
+        ObjRender_SetAlpha(objBlack, 255);
+        ClearBGM();
+        wait(90);
+    }
+
+    function<void> ParticleAnim(bool in_) { //squares animation
+        int dir = in_ == true ? -1 : 1;
+        int frame = in_ == true ? 7 : 0;
+        loop (8) {
+            ObjSprite2D_SetSourceRect(objFade, 112 - (frame * 16), 256, 128 - (frame * 16), 272); //animation is drawn right to left in the file
+            ObjSprite2D_SetDestRect(objFade, 0, 0, 16, 16);
+            loop (5) { //number of frames to hold each animation frame
+                AddParticles();
+                yield;
+            }
+            frame += dir;
+        }
+    }
+
+    function<void> AddParticles() { //creates matrix of black squares
+        int x = 32;
+        int y = 16;
+        loop (23) { //vertical
+            loop (24) { //horizontal
+                ObjParticleList_SetPosition(objFade, x, y, 1);
+                ObjParticleList_AddInstance(objFade);
+                x += 16;
+            }
+            x = 32;
+            y += 16;
+        }
+    }
+}

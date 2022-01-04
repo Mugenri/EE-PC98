@@ -48,11 +48,9 @@ function<void> PlayerEvent() {
     case (EV_PLAYER_SHOOTDOWN) {
         //increment total miss count for stage (for scoring and fun stats)
         SetAreaCommonData(AREA_STAGE, "Player_Miss", GetAreaCommonData(AREA_STAGE, "Player_Miss", 0) + 1);
-        TMiss();
+        if (GetPlayerLife() >= 0) TMiss();
     }
 	case (EV_PLAYER_REBIRTH) {
-        //TODO check total lives and work in a continue system somehow
-        
         TRebirth();
     }
     case (EV_GRAZE) {
@@ -137,8 +135,6 @@ task TMiss() { //Player died
     real yPos = GetPlayerY();
     CallSFX(SND_PL_MISS);
 
-    DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
-
     TMissGlass();
     TMissCircle();
     
@@ -191,15 +187,12 @@ task TMiss() { //Player died
 }
 
 task TRebirth() { //Player respawn
-    if (GetPlayerState() == STATE_END) {
-        Obj_SetVisible(_objPlayer, false);
-        SetForbidPlayerShot(true);
-        return;
-    }
     SetPlayerSpell(3);
     SetForbidPlayerShot(false);
     SetForbidPlayerSpell(true);
     SetPlayerInvincibilityFrame(240);
+
+    DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
 
     TRebirthEffect();
     wait(240);
@@ -277,7 +270,7 @@ task TShotParticle(real x_, real y_) { //shot hit something, spawn shot flake pa
 }
 
 function<bool> Alive() {
-	return GetPlayerState == STATE_NORMAL || GetPlayerState == STATE_HIT;
+	return GetPlayerState == STATE_NORMAL;
 }
 
 function<bool> Shooting() {

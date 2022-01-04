@@ -30,6 +30,7 @@ const int EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7; //Triggered when the play
 const int EV_DIALOGUE_START     = EV_USER_PACKAGE + 8; //Called to start a dialogue sequence. pass (scriptPath)
 const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 9; //returns an array of [name, comment]. pass (bgmID)
 const int EV_STOP_SFX           = EV_USER_PACKAGE + 10;//Stop currently playing sfx
+const int EV_CONTINUE           = EV_USER_PACKAGE + 11;//Player used a continue
 
 //Boss Name Constants
 const string BOSS_ID_TSURUBAMI = "Tsurubami";
@@ -58,6 +59,9 @@ const int GAME_SPELL    = 3; //Spell Practice Mode
 const int MODE_NONE     = 0; //Normal stage start
 const int MODE_RETRY    = 1; //Retry from pause menu
 const int MODE_CONTINUE = 2; //After using a continue
+
+//Script Result Constants
+const int RESULT_CONTINUE = 0; //player used a continue
 
 //Sound Constants
 //Title
@@ -139,10 +143,10 @@ const string RT_SCREENSHOT  = "RT_SCREENSHOT"; //layers 0-21, 27-100
 //STG frame
 const real MIN_X = 0;
 const real MIN_Y = 0;
-const real MAX_X = GetStgFrameWidth();
-const real MAX_Y = GetStgFrameHeight();
-const real MID_X = MAX_X / 2;
-const real MID_Y = MAX_Y / 2;
+const real MAX_X = GetStgFrameWidth();  //384
+const real MAX_Y = GetStgFrameHeight(); //368
+const real MID_X = MAX_X / 2;           //192
+const real MID_Y = MAX_Y / 2;           //184
 //window frame
 const real WINDOW_WIDTH = GetScreenWidth();
 const real WINDOW_HEIGHT = GetScreenHeight();
