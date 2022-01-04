@@ -14,10 +14,10 @@ int _spellID = 1;
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(300);
+        SetScriptResult(3500); //good amount of health, takes about 25 seconds to capture
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(20);
+        SetScriptResult(30);
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
@@ -336,4 +336,16 @@ task TPatternO() {
         yield;
     }
     ObjMove_SetAngularVelocity(laser, 0);
+}
+
+task TPatternP() {
+    real angleT = rand(0, 360);
+    real xPos = rand(-15, 15);
+    real yPos = rand(-15, 15);
+    int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
+    loop(32){
+        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
+        angleT += 360/32;
+    }
+    CallSFX(SND_SHOT1);
 }
