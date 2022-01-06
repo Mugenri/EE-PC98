@@ -5,6 +5,7 @@
 //#Background["../../system/TestBG.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Spell.dnh"
 
 @Initialize {
     TPlural();
@@ -16,20 +17,15 @@
 
 task TPlural() {
     string dir = GetCurrentScriptDirectory();
-    int obj = ObjEnemyBossScene_Create();
+    _objScene = ObjEnemyBossScene_Create();
 
-    ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh"); //for testing purposes
-    ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell1.dnh");
-    ObjEnemyBossScene_Add(obj, 1, dir ~ "./nonspell1.dnh");
-    ObjEnemyBossScene_Add(obj, 1, dir ~ "./nonspell1.dnh");
-    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell2.dnh");
-    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell3.dnh");
-    // ObjEnemyBossScene_Add(obj, 0, dir ~ "./nonspell4.dnh");
+    ObjEnemyBossScene_Add(_objScene, 0, dir ~ "nonspell1.dnh");
+    ObjEnemyBossScene_Add(_objScene, 0, dir ~ "spell1.dnh");
 
-    ObjEnemyBossScene_LoadInThread(obj);
-    ObjEnemyBossScene_Regist(obj);
+    ObjEnemyBossScene_LoadInThread(_objScene);
+    ObjEnemyBossScene_Regist(_objScene);
 
-    while (!Obj_IsDeleted(obj)) {
+    while (!Obj_IsDeleted(_objScene)) {
         yield;
     }
     CloseScript(GetOwnScriptID());

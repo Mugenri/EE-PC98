@@ -1,6 +1,6 @@
 //Primitives effect library
 
-function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real rotation_, real maxRadius_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real maxRadius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, 0, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
@@ -20,7 +20,7 @@ function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real rot
     }
 }
 
-function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real rotation_, real radius_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, radius_, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
     int startVertex = vertices == sides_ + 2 ? 1 : 0;

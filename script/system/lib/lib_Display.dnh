@@ -599,7 +599,7 @@ task TSpellDisplay(int spellID_) {
     int seen = history[0];
     int captured = history[1];
     int bonus = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
-    
+    //if you see an error here you forgot to assign a spell bonus to your spell
     bool spellFailed = false;
     bool visible = true;
 

@@ -29,7 +29,7 @@ function<void> Boss_SetIntersection(int obj_, int target_, int toShot_, int toPl
 }
 //sets invulnerability of the given boss object
 function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
-    if (isVulnerable_) {
+    if (isVulnerable_ && !_spellBarrier && !_isSurvival) { //if no spell barrier is active and the spell is not a survival spell
         if (_isSpellVulnerable) ObjEnemy_SetDamageRate(obj_, 100, 100);
         else ObjEnemy_SetDamageRate(obj_, 100, 0.000001);
     } else {

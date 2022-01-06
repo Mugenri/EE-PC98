@@ -7,34 +7,23 @@
 #include "./lib_Tsuru.dnh"
 
 int _objBoss;
-int _count = -240; //Give time for transitions and everything to play
-int _loopTime = 90;
-int _spellID = 1;
+int _count = -60;
+int _loopTime = 240;
 
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3500); //good amount of health, takes about 25 seconds to capture
+        SetScriptResult(3000); 
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(30);
+        SetScriptResult(60);
     }
-    case (EV_REQUEST_SPELL_SCORE) {
-        SetScriptResult(200000);
-    }
-    // case (EV_REQUEST_IS_DURABLE_SPELL) {
-    //     SetScriptResult(true);
-    // }
 }
 
 @Initialize {
-    Boss_Init(false);
-    Boss_SetInitPosition(BOSS_ID_TSURUBAMI, MID_X, 60); //TODO only in first spell, kinda weird?
-    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
     TDrawBoss(_objBoss);
-    //startspell go here
-    Spell_SetCurrent(_spellID);
-    ObjEnemyBossScene_StartSpell(_objScene);
     TInitialize();
     TFinalize();
 }
@@ -45,12 +34,14 @@ int _spellID = 1;
         Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
-                //TPatternA();
-                //ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
-                //TPatternB(1);
-                TPatternI();
-                //CreateItem(MID_X, 90, ITEM_BOMB);
+                Anime_Charge(true);
+                TFireA(1);
+                wait(60);
+                TFireA(-1);
+                wait(60);
+                TFireB();
+                wait(60);
+                Anime_Charge(false);
             }
         }
         _count++;
@@ -59,293 +50,97 @@ int _spellID = 1;
 }
 
 task TInitialize() {
-    Transition_Circle(1, 60);
-    CallSFX(SND_TRANSITION);
-    wait(120);
-    if (!_spellBarrier && !_isSurvival) Boss_SetVulnerable(_objBoss, true); //if boss has no spell barrier (or currently active spell barrier) and spell is not survival
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
-    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Anime_Charge(false);
     Boss_Finalize(_objBoss);
-    //TODO spell practice needs to do something about the finalize block or does it actually
-    Transition_ChangeBG(0, 0);
 }
 
-task TPatternA() {
-    Anime_Charge(true);
-    wait(20);
+task TFireA(int dir_) {
+    //fire a curving amulet that leaves stationary orbs that either split and move sideways or explode in rings aimed at the player?
     if (!_bossAlive) return;
-    loop (3) {
+    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);
+    wait(30);
+
+    if (!_bossAlive) return;
+    int objAmulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 + 50 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    ObjShot_SetSpellResist(objAmulet, true);
+    ObjMove_SetAngularVelocity(objAmulet, -0.4 * dir_);
+    CallSFX(SND_SHOT3);
+
+    wait(20);
+    for (int i = 0; i < 12; i++) {
+        if (!_bossAlive || Obj_IsDeleted(objAmulet)) return;
+        real x = ObjMove_GetX(objAmulet);
+        real y = ObjMove_GetY(objAmulet);
+        if (i % 2 == 0) TShotA(x, y);
+        else TShotB(x, y);
+        CallSFX(SND_SHOT1);
+        wait(6);
+    }
+
+    task TShotA(real x_, real y_) { //exploding ring
+        int objShotA = CreateShotUA1(x_, y_, 0, 0, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        wait(60);
+        if (!_bossAlive || Obj_IsDeleted(objShotA)) return;
+        real x = ObjMove_GetX(objShotA);
+        real y = ObjMove_GetY(objShotA);
+        real angle = rand(0, 360);
+        if (!Obj_IsDeleted(objShotA)) Obj_Delete(objShotA);
+
+        loop (7) { //ring of bullets
+            real speedMod = rand (-0.2, 0.2);
+            CreateShotUA1(x, y, 0.9 + speedMod, angle, SHOT_WHITE+PILL_S, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_FADE);
+            angle += 360 / 7;
+        }
+    }
+
+    task TShotB(real x_, real y_) { //x way split
+        real angle = 0;
         loop (5) {
-            real angleT = rand(0, 360);
-            loop (25) {
-                if (!_bossAlive) return;
-                int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
-                angleT += 360/25;
-            }
-            wait(100);
-        }
-        wait(20);
-    }
-    wait(10);
-    Anime_Charge(false);
-}
-
-task TPatternB(int dir_) {
-    real angleT = 0;
-
-    loop (8) {
-        real x = ObjMove_GetX(_objBoss) + 30 * cos(angleT);
-        real y = ObjMove_GetY(_objBoss) + 30 * sin(angleT);
-        int obj = CreateStraightLaserUA1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 550, 60, 0xFF00FF, 60);
-        angleT += 45;
-        TMove(obj);
-    }
-
-    task TMove(int laser_) {
-        real x = ObjMove_GetX(laser_);
-        loop (50) {
-            ObjMove_SetX(laser_, x);
-            ObjStLaser_SetAngle(laser_, GetAngleToPlayer(laser_));
-            x += 3 * dir_;
-            yield;
-        }
-        loop (70) {
-            ObjMove_SetX(laser_, x);
-            x += 1.5 * dir_;
-            yield;
+            int obj = CreateShotUA1(x_, y_, 0, ObjMove_GetAngle(objAmulet) + angle, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+            ObjMove_AddPatternA1(obj, 60, 1.3, NO_CHANGE);
+            angle += 360 / 5;
         }
     }
 }
 
-task TPatternC() {
-    real angle = 180;
-    loop (11) {
-        if (!_bossAlive) return;
-        int dist = 25;
-        int obj = CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
-        angle -= 18;
-        wait(5);
-    }
-    angle = 0;
-    loop (11) {
-        if (!_bossAlive) return;
-        int dist = 15;
-        CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
-        angle += 18;
-        wait(5);
-    }
-}
-
-task TPatternD() {
-    loop (40) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, GetAngleToPlayer(_objBoss), SHOT_WHITE+NEEDLES, 0, 0, 0);
-        wait(2);
-    }
-}
-
-task TPatternE() {
-    real angleT = round(rand(0, 360));
-    real xPos = rand(-15, 15);
-    real yPos = rand(-15, 15);
-    int bSprite = round(rand(0, 1)) * 5;
-    loop (32) {
-        if (!_bossAlive) return;
-        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
-        angleT += 360/32;
-    }
-}
-
-task TPatternF(int dir_) {
-    real angleT = 90 + 45 * dir_;
-    real increment = 0.05;
-    
-    loop (550) {
-        if (!_bossAlive) return;
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ + 10, SHOT_BLACK+BALL_S, 0, 0, 0);
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_, SHOT_BLACK+BALL_S, 0, 0, 0);
-        CreateShotUA1(MID_X, MID_Y - 15, 2, angleT + increment * dir_ - 10, SHOT_BLACK+BALL_S, 0, 0, 0);
-        increment *= 1.04;
-        angleT += increment * dir_;
-        wait(2);
-    }
-} 
-
-task TPatternG() {
-    CreateShotUA2(MID_X, MID_Y, 2, 90, 0.2, 10, SHOT_BLACK+BALL_S, 0, 0, 0);
-    wait(60);
-    CreateShotUB1(MID_X, MID_Y, 1, 2, SHOT_BLACK+NEEDLES, 0, 0, 0);
-    wait(60);
-    CreateShotUB2(MID_X, MID_Y, 1, 2, 0.2, 0.2, 5, 3, SHOT_WHITE+CARD, 0, 0, 0);
-}
-
-task TPatternH() {
-    CreateStraightLaserUA1(MID_X - 40, MID_Y, 0, 80, 1000, 0x00FF00, 30);
-}
-
-task TPatternI() {
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 0, 100, 30, 32, COLOR_WHITE, false, RP_STG_EFF_LO);
-    wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
-    wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
-    wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
-    wait(20);
+task TFireB() {
+    //fire a curving amulet that leaves stationary orbs that either split and move sideways or explode in rings aimed at the player?
     if (!_bossAlive) return;
-    int shot1 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
-    int shot2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
-    ObjShot_SetSpellResist(shot1, true);
-    ObjShot_SetSpellResist(shot2, true);
-    loop (3) {
-        if (!_bossAlive) return;
-        SpawnShot(shot1);
-        SpawnShot(shot2);
-        wait(12);
-    }
+    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, -90, 30, 8, COLOR_GRAY_L);
+    wait(30);
 
-    function<void> SpawnShot(int obj_) {
-        real x = ObjMove_GetX(obj_);
-        real y = ObjMove_GetY(obj_);
-        loop (20) {
-            real speed = rand(0.4, 0.9);
-            real angle = rand(0, 360);
-            CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, SHOT_WHITE+NEEDLES, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_SPARKLE);
+    if (!_bossAlive) return;
+    int dir = 1;
+    loop (2) {
+        int objAmulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 - 80 * dir, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        ObjShot_SetSpellResist(objAmulet, true);
+        ObjMove_SetAngularVelocity(objAmulet, 4 * dir);
+        ObjMove_AddPatternA2(objAmulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0, NO_CHANGE);
+        TGravityShot(objAmulet);
+        dir = -1;
+    }
+    CallSFX(SND_SHOT3);
+
+    task TGravityShot(int obj_) {
+        wait(20);
+        loop {
+            if (!_bossAlive || Obj_IsDeleted(obj_)) return;
+            loop (2) {
+                CreateShotUB2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(-0.35, 0.35), -0.5, 0, 0.02 + rand(-0.01, 0.01), 0, 1.5, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+            }
+            CallSFX(SND_SHOT1);
+            wait(6);
         }
     }
-}
-
-task TPatternJ() {
-    real angleT = 360 / 36;
-    loop {
-        for (int i = 0; i <= 774; i++) {
-            CreateShotA1(MID_X + 24*cos(angleT), MID_Y + 24*sin(angleT), 1, angleT, i, 0);
-            angleT += 360 / 18;
-            yield;
-        }
-    }
-}
-
-task TPatternK() { //Emerald Megalith
-    real x = rand(35, GetStgFrameWidth() - 35);
-    real y = rand(60, MID_Y - 65);
-    real speed = rand(1.4, 2.8);
-
-    ascent (i in 0..30) {
-        int graphic = rand_int(0, 1) ? SHOT_GREEN+CRYSTAL_S : SHOT_GREEN+GEM;
-        real modif = rand(1, 1.3);
-        CreateShotA1(x, y, speed * modif, rand(0, 360), graphic, 0);
-    }
-
-    ascent (i in 0..3) {
-        CreateShotA1(x, y, speed, 135 - i*45, SHOT_GREEN+CRYSTAL_A, 0);
-    }
-}
-
-task TPatternL() {
-    real angleT = 0;
-    int index = 0;
-    loop {
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+YINYANG_S, 0, i+SPAWN_S+SIZE_8, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+BOUNCY_BALL, 0, i+SPAWN_E+SIZE_8, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+SPARKLE, 0, i+SPAWN_S+SIZE_16, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+GEM, 0, i+SPAWN_E+SIZE_16, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+YINYANG_A, 0, i+SPAWN_S+SIZE_32, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-        for (int i = index; i < 18; i++) {
-            CreateShotUA1(MID_X + 48 * cos(angleT), MID_Y + 48 * sin(angleT), 1, angleT, i+FIRE_A, 0, i+SPAWN_E+SIZE_32, 0);
-            angleT += 360 / 18;
-        }
-        angleT += 6;
-        wait(24);
-    }
-}
-
-task TPatternM() { //Delete effects
-    real angleT = 0;
-    int i = 0;
-    loop (72) {
-        CreateShotUA1(MID_X + 72 * cos(angleT), MID_Y + 72 * sin(angleT), 0, angleT, PELLET+(i%18), 0, i);
-        angleT += 360/72;
-        i++;
-    }
-    loop (18) {
-        CreateShotUA1(MID_X + 92 * cos(angleT), MID_Y + 92 * sin(angleT), 0, angleT, BALL_L+(i%18), 0, i);
-        angleT += 360/18;
-        i++;
-    }
-    loop (18) {
-        CreateShotUA1(MID_X + 145 * cos(angleT), MID_Y + 145 * sin(angleT), 0, angleT, BUBBLE+(i%18), 0, i);
-        angleT += 360/18;
-        i++;
-    }
-}
-
-task TPatternN() {
-    loop (14) {
-        ascent (i in 0..8) {
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) + 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) - 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
-        }
-        wait(4);
-    }
-}
-
-task TPatternO() {
-    CallSFX(SND_LASER1);
-    int laser = CreateCurveLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 6, 180 - rand_int(0, 2) * 90, 16, COLOR_BLUE, 0);
-    ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, NO_CHANGE, 0);
-    ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, NO_CHANGE, 7.5);
-    
-    loop (240) {
-        if (Obj_IsDeleted(laser)) break;
-        real angleL = ObjMove_GetAngle(laser);
-        real angleP = GetAngleToPlayer(laser);
-        real wvel = AngularDistance(angleL, angleP) > 0 ? 2.3 : -2.3;
-        ObjMove_SetAngularVelocity(laser, wvel);
-        yield;
-    }
-    ObjMove_SetAngularVelocity(laser, 0);
-}
-
-task TPatternP() {
-    real angleT = rand(0, 360);
-    real xPos = rand(-15, 15);
-    real yPos = rand(-15, 15);
-    int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
-    loop(32){
-        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
-        angleT += 360/32;
-    }
-    CallSFX(SND_SHOT1);
 }

@@ -28,9 +28,16 @@ function<int[]> Spell_GetHistory(int spellID_) {
 }
 
 //Stage functions
-function<void> Spell_SetCurrent(int spellID_) {
+function<void> Spell_SetCurrent(int spellID_, bool startSpell_) {
     SetAreaCommonData(AREA_STAGE, "Current_SpellID", spellID_);
+    if (startSpell_) ObjEnemyBossScene_StartSpell(_objScene);
 }
 function<int> Spell_GetCurrent() {
     return GetAreaCommonData(AREA_STAGE, "Current_SpellID", 0);
+}
+
+//Get Spell filepath based on ID
+function<string> Spell_GetPath(int spellID_) {
+    alternative(spellID_)
+    case(0) return DIR_STG ~ "Tsurubami/nonspell1.dnh";
 }
