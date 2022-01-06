@@ -708,7 +708,7 @@ task TSpellDisplay(int spellID_) {
 //----------------------------------------------------
 //Spell Bonus Display
 //----------------------------------------------------
-task TSpellBonus(int score_) { //TODO this doesn't work properly on the last spell for some reason
+task TSpellBonus(int score_) {
     while (!_bonusIsReady) yield; //has to yield until bonusReady for multiple things (ascii score text position esp.)
     _bonusIsReady = false; 
     _bonusDisplaying = true;
