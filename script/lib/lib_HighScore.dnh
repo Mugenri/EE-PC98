@@ -1,0 +1,40 @@
+//Highscore functions library
+//format is mode, player, difficulty, stageIndex
+//stored like eg. MAIN_0_1_4
+
+function<int> HS_GetHighScore() { //get a highscore from the current field
+    return GetAreaCommonData(AREA_HIGHSCORE, HS_GetHighScoreField(), 01000000);
+}
+
+function<int> HS_GetHighScore(string field_) { //get a highscore from the specified field
+    return GetAreaCommonData(AREA_HIGHSCORE, field_, 01000000);
+}
+
+function<string> HS_GetHighScoreField() { //current mode, player, stageIndex, difficulty or mode, player, stage/spell
+    string fieldName;
+    int mode = GetGameMode();
+    string player = IntToString(GetPlayerType());
+
+    alternative(mode)
+    case(GAME_NONE) assert(false, "Tried to get a high score without a selected game mode.");
+    case(GAME_MAIN) { //normal game
+        string stageIndex = IntToString(GetStageIndex());
+        string difficulty = IntToString(GetDifficulty());
+
+        fieldName = "MAIN_" ~ player ~ "_" ~ stageIndex ~ "_" ~ difficulty;
+    }
+    case(GAME_PRACTICE) { //stage practice
+        //probably wont have this
+    }
+    case (GAME_SPELL) { //spell practice
+        //TODO 
+    }
+
+    return fieldName;
+}
+
+function<bool> HS_SetHighScore(int score_) {
+    if (HS_GetHighScore() >= score_) return false;
+    SetAreaCommonData(AREA_HIGHSCORE, HS_GetHighScoreField(), score_);
+    return true;
+}

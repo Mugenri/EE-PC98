@@ -7,7 +7,9 @@
 //----------------------------------------------------
 function<int> GetPackageStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
 function<int> GetStageScriptID() { return(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", -1)); }
-function<int> GetPlayMode() { return(GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE)); }
+function<int> GetGameMode() { return(GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE)); } //main/extra, spell practice, stage practice
+function<int> GetPlayerType() { return(GetAreaCommonData(AREA_TITLE, "PlayerType", 0)); }
+function<int> GetStageIndex() { return(GetAreaCommonData(AREA_TITLE, "StageIndex", -1)); } //currently running stage
 function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
 function<void> SetPauseEnable(bool enable_) { NotifyEvent(GetPackageStageScriptID(), EV_PAUSE_ENABLE, enable_); }

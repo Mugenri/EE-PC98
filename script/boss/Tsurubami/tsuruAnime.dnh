@@ -24,7 +24,6 @@ task TDrawBoss(int objBoss_) {
                 } else {
                     ObjSprite2D_SetSourceRect(objBoss_, 256, 0, 320, 64);
                 }
-                WriteLog(ObjMove_GetAngle(objBoss_));
             }
         } else if (_charge) { //charge animation
             ObjSprite2D_SetSourceRect(objBoss_, 384 + floor(chargeFrame) * 64, 0, 448 + floor(chargeFrame) * 64, 64);

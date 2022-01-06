@@ -1,7 +1,7 @@
 //Difficulty Selection Screen
 function<int> ScenePlayerSelect(int selectedDefault_) {
     bool exitFlag = false;
-    int playMode = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+    int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
     int selectedDifficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     //let selectedStage = GetAreaCommonData(AREA_TITLE, "StageIndex", 0);
     

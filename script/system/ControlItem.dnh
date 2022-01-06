@@ -88,7 +88,7 @@
     }
 }
 
-function<void> ScrollText(bool isExtend_) {
+function<void> ScrollText(bool isExtend_) { //life/bomb extend notification
     int objText = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
     Obj_SetRenderPriorityI(objText, RP_STG_MAX);

@@ -1,9 +1,10 @@
 //STG window display setup library
-//TODO #include high score library at some point
+#include "./../../lib/lib_HighScore.dnh"
 
 int _displayList; //UI display numbers/icons
-int _scoreBonusList; //Spell bonus/cancel bonus numbers
+int _scoreBonusList; //Spell bonus/cancel bonus numbers on spell banner
 bool _bonusIsReady = false; //used to sync the appearance of the spell bonus/cancel bonus effects
+bool _bonusDisplaying = false; //spell bonus banner is currently running (used to delay high score notification)
 
 //----------------------------------------------------
 //Initialize Display
@@ -167,7 +168,7 @@ function<void> Difficulty() {
 //----------------------------------------------------
 //High Score Display
 //----------------------------------------------------
-task THighScore() { //TODO make this the actual high score
+task THighScore() {
 	//High Score Text
     int objScore = InitSprite2D(0, 272, 53, 288, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
@@ -176,24 +177,80 @@ task THighScore() { //TODO make this the actual high score
 	// Digits
 	int count = 8;
     int scoreRender = 0;
+    //scores and continues
+    int score = GetScore();
+    int highScore = HS_GetHighScore();
+    int continues = 0;
+    
+    int[] numList;
+    bool newHS = false;
+    
     loop {
-        int score = GetScore();
-		score = min(score, 99999999);
-		int[] numList = DigitToArray(scoreRender, count);
+        score = GetScore();
+        highScore = HS_GetHighScore();
+        
+        if (score < highScore) { //high score > score OR continues have been used. render high score as-is
+            continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
+            numList = DigitToArray(highScore, count);
+            while (score < highScore || continues != 0) {
+                score = GetScore();
+                for (int i = 0; i < count; i++) {
+                    ObjParticleList_SetPosition(_displayList, 448 + i * 16, 64, 1);
+                    ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
+                    ObjParticleList_AddInstance(_displayList);
+                }
+                yield;   
+            }
+            newHS = true; //GetScore() became higher than highScore, new high score
+        } else { //score >= highscore, render current score
+            if (newHS && continues == 0) TNewHighScore();
+            while (continues != 0 || score > highScore) {
+                score = GetScore();
+                numList = DigitToArray(scoreRender, count);
+                //Gradual increase of score counter
+                if (scoreRender < score) {
+                    scoreRender += round((score - scoreRender)/10);
+                    scoreRender -= scoreRender % 10; //take off the last number
+                    scoreRender += continues; //add number of continues to the end of the number
+                    if (score - scoreRender <= 10) scoreRender = score;
+                }
+                //render particle
+                for (int i = 0; i < count; i++) {
+                    ObjParticleList_SetPosition(_displayList, 448 + i * 16, 64, 1);
+                    ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
+                    ObjParticleList_AddInstance(_displayList);
+                }
+                yield;
+            }
+        }
+    }
 
-        for (int i = 0; i < count; i++) {
-            ObjParticleList_SetPosition(_displayList, 448 + i * 16, 64, 1);
-            ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
-            ObjParticleList_AddInstance(_displayList);
+    task TNewHighScore() { //new high score notification
+        while (_bonusDisplaying) yield; //wait for bonus text to finish its animation
+        newHS = false;
+        CallSFX(SND_EXTEND);
+        //Spell Bonus Text
+        int objText = InitSprite2D(0, 416, 128, 432, IMG_SYSTEM_UI, RP_STG_MAX);
+        ObjRender_SetY(objText, 32);
+
+        //move text
+        for (int i = 39; i >= 0; i--) { 
+            if (_bonusDisplaying) break;
+            ObjRender_SetX(objText, (MID_X + i * 8) - 64);
+            yield;
         }
-        //Gradual increase of score counter
-        if (scoreRender < score) {
-            scoreRender += round((score - scoreRender)/10);
-            if (score - scoreRender <= 10) scoreRender = score;
-            scoreRender = min(scoreRender, score);
+        //hold position
+        loop (60) {
+            if (_bonusDisplaying) break;
+            yield;
         }
-        if (scoreRender > score) scoreRender = score; //score decreased through use of continues
-        yield;
+        //move text
+        for (int i = 0; i < 40; i++) {
+            if (_bonusDisplaying) break;
+            ObjRender_SetX(objText, (MID_X - i * 8) - 64);
+            yield;
+        }
+        Obj_Delete(objText);
     }
 }
 
@@ -209,23 +266,28 @@ task TScore() { //TODO add support for scores > 100_000_000
 	// Digits
 	int count = 8;
     int scoreRender = 0;
+    int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     loop {
         int score = GetScore();
 		score = min(score, 99999999);
 		int[] numList = DigitToArray(scoreRender, count);
 
+        //Gradual increase of score counter
+        if (scoreRender < score) {
+            scoreRender += round((score - scoreRender)/10);
+            scoreRender -= scoreRender % 10; //take off the last number
+            scoreRender += continues; //add number of continues to the end of the number
+            if (score - scoreRender <= 10) scoreRender = score;
+        } else if (scoreRender > score) { //score decreased through use of continues
+            scoreRender = score; 
+            continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
+        }
+        //render particle
         for (int i = 0; i < count; i++) {
             ObjParticleList_SetPosition(_displayList, 448 + i * 16, 96, 1);
             ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
             ObjParticleList_AddInstance(_displayList);
         }
-        //Gradual increase of score counter
-        if (scoreRender < score) {
-            scoreRender += round((score - scoreRender)/10);
-            if (score - scoreRender <= 10) scoreRender = score;
-            scoreRender = min(scoreRender, score);
-        }
-        if (scoreRender > score) scoreRender = score; //score decreased through use of continues
         yield;
     }
 }
@@ -646,9 +708,10 @@ task TSpellDisplay(int spellID_) {
 //----------------------------------------------------
 //Spell Bonus Display
 //----------------------------------------------------
-task TSpellBonus(int score_) {
+task TSpellBonus(int score_) { //TODO this doesn't work properly on the last spell for some reason
     while (!_bonusIsReady) yield; //has to yield until bonusReady for multiple things (ascii score text position esp.)
     _bonusIsReady = false; 
+    _bonusDisplaying = true;
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
@@ -684,6 +747,7 @@ task TSpellBonus(int score_) {
         yield;
     }
     Obj_Delete(objText);
+    _bonusDisplaying = false;
 
     function<void> UpdateList(int x_) {
         //draws from right to left
@@ -790,4 +854,11 @@ task TReplayFPS() {
 		ObjText_SetText(objText, text);
 		yield;
 	}
+}
+
+//----------------------------------------------------
+//Utility
+//----------------------------------------------------
+function<void> NotificationText(int type_) { //runs a notification across the top of the screen
+
 }

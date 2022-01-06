@@ -8,10 +8,6 @@ const string[] SCRIPT_PLAYERS = [
     DIR_PLR ~ "Tsubakura.dnh"
 ];
 
-//Stage script directories
-const string STAGE_YABUSAME = DIR_STG ~ "Tsurubami/tsuruStage.dnh";
-const string STAGE_TSUBAKURA = DIR_STG ~ "Tsurubami2/tsuruStage.dnh";
-
 // --- Title Specific Images List --- //
 const string DIR_IMG_TITLE = GetCurrentScriptDirectory() ~ "../../img/title/";
 

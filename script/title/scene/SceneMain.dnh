@@ -12,7 +12,7 @@ const int INDEX_QUIT    = 7;
 
 task TMainMenu(bool playIntro_, int selectedDefault_) {
     bool exitFlag = false; //deletes certain things upon leaving this menu
-    SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE); //write data to save file
+    CD_SaveAll(); //write data to save file
 
     int selectMax = INDEX_QUIT;
     int indexCurrent = selectedDefault_;
@@ -105,7 +105,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         }
         case (INDEX_QUIT) {
             //Exit Game
-            SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
+            CD_SaveAll();
             ScreenBlackout(60, 200, 0, COLOR_BLACK);
             wait(80);
             ClosePackage();
@@ -152,7 +152,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         int selectedRank = D_NORMAL;
         int selectedPlayer = PLAYER_YABUSAME;
         //Main Play Mode
-        SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+        SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
 
         int tempSelect = 0;
         loop {
@@ -167,7 +167,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
                 selectedPlayer = tempSelect;
 
                 //Set CommonData for player selections
-                SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+                SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
                 SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
                 SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
@@ -190,7 +190,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         int selectedRank = D_EXTRA;
         int selectedPlayer = PLAYER_YABUSAME;
         //Main Play Mode
-        SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+        SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
 
         int tempSelect = 0;
         loop {
@@ -205,11 +205,13 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
                 selectedPlayer = tempSelect;
 
                 //Set CommonData for player selections
-                SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_MAIN);
+                SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
                 SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
                 SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
                 //Run main stage script
+                int stageIndex = selectedPlayer == 0 ? 0 : 1; //0 yabu, 1 tsuba. this will eventually be replaced by a stage selection system
+                SetAreaCommonData(AREA_TITLE, "StageIndex", stageIndex);
                 string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
                 int idScript = LoadScript(pathScript);
                 StartScript(idScript);

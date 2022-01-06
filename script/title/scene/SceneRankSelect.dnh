@@ -1,7 +1,7 @@
 //Difficulty Selection Screen
 function<int> SceneRankSelect(int selectedDefault_) {
     bool exitFlag = false; //Delete certain things upon leaving this menu
-    int playMode = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
+    int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
 
     bool extraMode = (selectedDefault_ == D_EXTRA || selectedDefault_ == D_ABEX);
     int[] imgValue = [0, 1, 2, 3];

@@ -136,9 +136,9 @@ function<void> Boss_Finalize(int obj_) {
         scoreTotal = -1;
     } //scoreTotal remains 0 otherwise
 
-    DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
-
     if (isSpell) NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_CANCEL_BONUS, scoreTotal); //Shot cancel bonus text
+    
+    DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
 
     async {
         wait(64); //explosion time

@@ -34,7 +34,7 @@ function<void> CD_Init() { //creates common data areas, loads data from files
     CD_LoadConfig(false);
 
     //load high scores from file
-    //LoadCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
+    LoadCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
 
     //load in result (player score list)
     //LoadCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
@@ -44,7 +44,7 @@ function<void> CD_Init() { //creates common data areas, loads data from files
 }
 
 function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault_
-    bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
+    bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG); //TODO wtf is this saved_config shit just use config
     if (IsCommonDataAreaExists(AREA_CONFIG)) ClearAreaCommonData(AREA_CONFIG);
     if (loadDefault_) saveFile = false;
     if (saveFile) { //load from save file
@@ -56,6 +56,24 @@ function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from fi
         CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
     }
 }
+
+function<void> CD_SaveAll() {
+    SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
+    SaveCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
+    SaveCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
+}
+function<void> CD_SaveData() {
+    SaveCommonDataAreaA2(AREA_SAVE, SAVE_COMMON_SAVE);
+}
+function<void> CD_SaveScore() {
+    SaveCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
+}
+function<void> CD_SaveResult() {
+    SaveCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
+}
+//----------------------------------------------------
+//General Functions
+//----------------------------------------------------
 //add the given value to the common data area and field
 function<void> CD_AddAreaCommonData(string area_, string field_, int amount_, int default_) {
     SetAreaCommonData(area_, field_, GetAreaCommonData(area_, field_, default_) + amount_);

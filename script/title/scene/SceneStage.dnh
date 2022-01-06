@@ -1,6 +1,8 @@
 //Stage Control Script
 #include "./../lib/lib_TitleCommon.dnh"
 #include "./../lib/lib_TitleUtil.dnh"
+#include "./../lib/lib_StagePath.dnh"
+#include "./../../lib/lib_HighScore.dnh"
 
 bool _pauseEnable;
 bool _dialogueRunning;
@@ -10,7 +12,7 @@ string _dialoguePath;
 @Initialize {
     SetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", GetOwnScriptID());
     SetAutoDeleteObject(true);
-    TStageScene(MODE_NONE);
+    TStageScene();
     ClearBGM();
 }
 
@@ -30,11 +32,12 @@ string _dialoguePath;
 
 @MainLoop {yield;}
 
-task TStageScene(int stageMode_) { //TODO serious refactoring
-    int playerType      = GetAreaCommonData(AREA_TITLE, "PlayerType", 0);
-    int getPlayMode    = GetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
-    int getRank        = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-    string replayPath  = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
+task TStageScene() { //TODO serious refactoring
+    int gameMode        = GetGameMode();
+    int playerType      = GetPlayerType();
+    int stageIndex      = GetStageIndex();
+    int rank            = GetDifficulty();
+    string replayPath   = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
     string pathPlayer   = SCRIPT_PLAYERS[playerType];
 
     _pauseEnable = false;
@@ -46,7 +49,7 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
 
     if (length(replayPath) > 0) SetStageReplayFile(replayPath);
 
-    string stageScript = playerType == PLAYER_YABUSAME ? STAGE_YABUSAME : STAGE_YABUSAME; //TODO Change to tsubakura stage
+    string stageScript = GetStagePath(stageIndex);
 
     ScreenBlackout(0, 35, 0, COLOR_BLACK); //grants 5 frames of black screen to hide any loading artifacts
     wait(30);
@@ -62,7 +65,7 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
             case (RESULT_RETRY) {
                 //Retry Stage
                 TerminateStageScene();
-                TStageScene(MODE_RETRY);
+                TStageScene();
                 return;
             }
             case (RESULT_END) {
@@ -80,6 +83,9 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
         if (_gameOver) {
             _gameOver = false;
             int gameOverResult = GameOver();
+            if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing through continue use
+                HS_SetHighScore(GetScore());
+            }
             alternative (gameOverResult)
             case (RESULT_CONTINUE) {
                 NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
@@ -103,24 +109,19 @@ task TStageScene(int stageMode_) { //TODO serious refactoring
                 //TODO screen cap and fade out for 300 frames. might have to put elsewhere?
                 break;
             }
-            case (STAGE_RESULT_PLAYER_DOWN) { //Game Over
+            case (STAGE_RESULT_PLAYER_DOWN) { //Game Over (likely does not trigger ever)
                 WriteLog("game over");
                 break;
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
                 WriteLog("break off"); //need some way to differentiate between quit from pause and quit from continue
-                TDefault();
                 break;
             }
         }
         yield;
     }
 
-    if (!IsReplay()) TReturnToTitle();
-    else {
-        TDefault();
-        TReturnToTitle();
-    }
+    TReturnToTitle();
 
     function<void> StartStage() {
         SetStageMainScript(stageScript);
@@ -187,16 +188,29 @@ function<void> SetTransitionTexture() { //saves the current frame to be used as 
     RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
 }
 
-function<void> TDefault() { //Reset Common Data
+function<void> SetDefault() { //Reset Game Common Data
 	SetAreaCommonData(AREA_TITLE, "ReplayPath", "");
+	SetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
 	SetAreaCommonData(AREA_TITLE, "PlayerType", 0);
-	SetAreaCommonData(AREA_TITLE, "PlayMode", GAME_NONE);
 	SetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-	//SetAreaCommonData(AREA_TITLE, "StageIndex", 0);
-	//SetAreaCommonData(AREA_TITLE, "ExtraMode", 0);
+	SetAreaCommonData(AREA_TITLE, "StageIndex", 0);
 }
 
 function<void> TReturnToTitle() { //Run title screen
+    //TODO check if a replay just played
+    if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) {
+        HS_SetHighScore(GetScore());
+    }
+    //save data
+    CD_SaveScore();
+    CD_SaveResult();
+
+    //clear common data areas
+    ClearAreaCommonData(AREA_STAGE);
+    ClearAreaCommonData(AREA_SYSTEM);
+    SetDefault();
+
+    //run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
     int ID = LoadScript(path);
     StartScript(ID);
