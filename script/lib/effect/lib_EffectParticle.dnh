@@ -34,22 +34,23 @@ function<void> Particle_CreateRing(real x_, real y_, real angle_, real radius_, 
 
 function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real radiusH_, real angle_, int count_) {
     real angleT = 0;
-    real frame = 0;
+    int frame = 0;
+    int frameRate = 5;
     real xStep = radiusW_;
     real yStep = radiusH_;
     async {
-        while (frame < 8) {
+        while (frame < 8 * frameRate) {
             loop (count_) {
                 real[] pos = Rotate2D(radiusW_ * cos(angleT), radiusH_ * sin(angleT), angle_);
                 ObjParticleList_SetPosition(_effectParticle16, x_ + pos[0], y_ + pos[1], 0);
-                ObjParticleList_SetExtraData(_effectParticle16, trunc(frame), 1, 0);
+                ObjParticleList_SetExtraData(_effectParticle16, frame / frameRate, 1, 0);
                 ObjParticleList_AddInstance(_effectParticle16);
 
                 angleT += 360/count_;
             }
             radiusW_ += xStep;
             radiusH_ += yStep;
-            frame += 1/5;
+            frame++;
             yield;
         }
     }
@@ -57,25 +58,26 @@ function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real rad
 
 function<void> Particle_ExplosionBig(real x_, real y_) {
     real angleT = 0;
-    real frame = 0;
+    int frame = 0;
+    int frameRate = 4;
     real step = 10;
     real radius = 0;
     async {
-        while (frame < 16) {
+        while (frame < 16 * frameRate) {
             loop (16) { //explosion ring
                 ObjParticleList_SetPosition(_effectParticle64, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 0);
-                ObjParticleList_SetExtraData(_effectParticle64, trunc(frame % 4), 4, 0);
+                ObjParticleList_SetExtraData(_effectParticle64, (frame / frameRate) % 4, 4, 0);
                 ObjParticleList_AddInstance(_effectParticle64);
 
                 angleT += 360 / 16;
             }
             //flame ball on boss location
             ObjParticleList_SetPosition(_effectParticle64, x_, y_, 0);
-            ObjParticleList_SetExtraData(_effectParticle64, trunc(frame / 2), 5, 0); //half frame rate
+            ObjParticleList_SetExtraData(_effectParticle64, (frame / frameRate / 2i), 5, 0); //half frame rate
             ObjParticleList_AddInstance(_effectParticle64);
 
             radius += step;
-            frame += 1/4;
+            frame++;
             yield;
         }
     }

@@ -24,6 +24,8 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
     //16 = 0-71
     //32 = 72-89
     //64 = 90-107
+    int frame = 0;
+    int frameRate = 4;
 
     if (effect < 72) TDelete16();
     else if (effect < 90) TDelete32();
@@ -32,13 +34,12 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
     task TDelete16() {
         int xFrame = trunc(effect / 18) * 4; //effect
         int yFrame = effect % 18; //color
-        real frame = 0;
 
-        while (frame < 4) {
+        while (frame < 4 * frameRate) {
             ObjParticleList_SetPosition(_effectCancel16, x, y, 1);
-            ObjParticleList_SetExtraData(_effectCancel16, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_SetExtraData(_effectCancel16, xFrame + frame / frameRate, yFrame, 0);
             ObjParticleList_AddInstance(_effectCancel16);
-            frame += 1/4;
+            frame++;
             x += speed * cos(angle);
             y += speed * sin(angle);
             yield;
@@ -49,13 +50,12 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
         effect -= 72; //32x32 effects start from 72
         int xFrame = trunc(effect / 9) * 4; //inv colors are 4 cells right of normal ones
         int yFrame = effect > 8 ? effect - 9 : effect; //color
-        real frame = 0;
 
-        while (frame < 4) {
+        while (frame < 4 * frameRate) {
             ObjParticleList_SetPosition(_effectCancel32, x, y, 1);
-            ObjParticleList_SetExtraData(_effectCancel32, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_SetExtraData(_effectCancel32, xFrame + frame / frameRate, yFrame, 0);
             ObjParticleList_AddInstance(_effectCancel32);
-            frame += 1/4;
+            frame++;
             x += speed * cos(angle);
             y += speed * sin(angle);
             yield;
@@ -66,13 +66,12 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
         effect -= 90; //64x64 effects start from 90
         int xFrame = trunc(effect / 9) * 4; //inv colors are 4 cells right of normal ones
         int yFrame = effect > 8 ? effect - 9 : effect; //color
-        real frame = 0;
 
         while (frame < 4) {
             ObjParticleList_SetPosition(_effectCancel64, x, y, 1);
-            ObjParticleList_SetExtraData(_effectCancel64, xFrame + trunc(frame), yFrame, 0);
+            ObjParticleList_SetExtraData(_effectCancel64, xFrame + frame / frameRate, yFrame, 0);
             ObjParticleList_AddInstance(_effectCancel64);
-            frame += 1/4;
+            frame++;
             x += speed * cos(angle);
             y += speed * sin(angle);
             yield;

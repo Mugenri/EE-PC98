@@ -1,12 +1,13 @@
 //Boss common functions library, includes all libraries in /bosslib
 #include "./lib_Common.dnh"
-#include "./lib_Shot.dnh"
 #include "./lib_Effect.dnh"
 #include "./lib_Item.dnh"
+#include "./lib_Shot.dnh"
 #include "./lib_Spell.dnh"
 
-#include "./bosslib/lib_Character.dnh"
+#include "./bosslib/lib_Animation.dnh"
 #include "./bosslib/lib_BossUtil.dnh"
+#include "./bosslib/lib_Character.dnh"
 
 bool _bossAlive = true; //boss health > 0
 bool _isDamaged = false; //used for damage animation
@@ -41,6 +42,7 @@ function<void> Boss_Init(bool isVulnerable_) {
 function<int> Boss_Create(string bossID_) { 
     int objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
     Boss_SetID(objBoss, bossID_);
+    Animation_DrawBoss(objBoss);
     Boss_GetInitPosition(objBoss);
     Boss_SetVulnerable(objBoss, false); //Must set damage rate manually after transition effects
     Boss_SetIndicator(objBoss);

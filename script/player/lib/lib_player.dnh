@@ -95,13 +95,14 @@ task TRender(int ParentID_) {
     ObjSprite2D_SetDestCenter(objHitbox);
 
 	while (!Obj_IsDeleted(ParentID_)) {
-		if (GetVirtualKeyState(VK_LEFT) == KEY_PUSH || GetVirtualKeyState(VK_LEFT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);
-		else if (GetVirtualKeyState(VK_RIGHT) == KEY_PUSH || GetVirtualKeyState(VK_RIGHT) == KEY_HOLD) ObjSprite2D_SetSourceRect(_objPlayer, 32, 0, 64, 48);
+        int leftState = GetVirtualKeyState(VK_LEFT);
+        int rightState = GetVirtualKeyState(VK_RIGHT);
+		if (leftState == KEY_PUSH || leftState == KEY_HOLD && rightState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);
+		else if (rightState == KEY_PUSH || rightState == KEY_HOLD && leftState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 32, 0, 64, 48);
 		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
 
         Obj_SetVisible(objHitbox, GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive());
         ObjRender_SetPosition(objHitbox, GetPlayerX(), GetPlayerY(), 1);
-
 		yield;
 	}
 }
@@ -152,15 +153,16 @@ task TMiss() { //Player died
             real xStep = speed * cos(angle);
             real yStep = speed * sin(angle);
 
-            real frame = 0;
+            int frame = 0;
+            int frameRate = 2;
             loop (140) {
                 ObjParticleList_SetPosition(_particleFlake, x, y, 1);
-                ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+                ObjParticleList_SetExtraData(_particleFlake, frame / frameRate, 0, 0);
                 ObjParticleList_SetColor(_particleFlake, COLOR_WHITE);
                 ObjParticleList_AddInstance(_particleFlake);
 
-                frame += 1/2;
-                if (frame >= 7) frame = 0;
+                frame++;
+                if (frame >= 7 * frameRate) frame = 0;
                 x += xStep;
                 y += yStep;
                 yield;
@@ -232,15 +234,16 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     CallSFX(SND_PL_GRAZE);
     AddScore(1000);
 
-    real frame = 0;
+    int frame = 0;
+    int frameRate = 2;
     loop (43) {
         ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+        ObjParticleList_SetExtraData(_particleFlake, frame / frameRate, 0, 0);
         ObjParticleList_SetColor(_particleFlake, COLOR_TAN);
         ObjParticleList_AddInstance(_particleFlake);
 
-        frame += 1/2;
-        if (frame >= 8) frame = 0;
+        frame++;
+        if (frame >= 8 * frameRate) frame = 0;
         x_ += xStep;
         y_ += yStep;
         yield;
@@ -253,15 +256,16 @@ task TShotParticle(real x_, real y_) { //shot hit something, spawn shot flake pa
     real xStep = speed * cos(angle);
     real yStep = speed * sin(angle);
 
-    real frame = 0;
+    int frame = 0;
+    int frameRate = 2;
     loop (40) {
         ObjParticleList_SetPosition(_particleFlake, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleFlake, trunc(frame), 0, 0);
+        ObjParticleList_SetExtraData(_particleFlake, frame / frameRate, 0, 0);
         ObjParticleList_SetColor(_particleFlake, COLOR_GRAY_L);
         ObjParticleList_AddInstance(_particleFlake);
 
-        frame += 1/2;
-        if (frame >= 8) frame = 0;
+        frame++;
+        if (frame >= 8 * frameRate) frame = 0;
         x_ += xStep;
         y_ += yStep;
         yStep += 0.05;

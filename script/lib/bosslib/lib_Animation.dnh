@@ -1,0 +1,125 @@
+//Boss animation library
+
+//index of each animation type
+const int ANIM_IDLE = 0;
+const int ANIM_LEFT = 1;
+const int ANIM_RIGHT = 2;
+const int ANIM_IDLE_INV = 3;
+const int ANIM_LEFT_INV = 4;
+const int ANIM_RIGHT_INV = 5;
+const int ANIM_CHARGE = 6;
+const int ANIM_SPECIAL = 7; //free slot for boss specific special animations
+
+bool _isCharging = false; //charging animation flag
+bool _isSpecial = false; //special animation flag uwu
+
+//draw the boss sprite on the given object with the attached bossID
+function<void> Animation_DrawBoss(int objBoss_) {
+    string bossID = Boss_GetID(objBoss_);
+    assert(bossID != "INVALID", "Invalid boss ID in animation library.");
+
+    ObjPrim_SetTexture(objBoss_, GetBossSprite(bossID));
+    Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
+
+    //Animation_Damage(objBoss_); worry about this in a bit
+
+    int[] wh = Animation_GetWidthHeight(bossID);
+    int width = wh[0];
+    int height = wh[1];
+    int[][] frameData = Animation_GetFrameData(bossID);
+    int animType = ANIM_IDLE;
+    int previousType = ANIM_IDLE;
+    int frame = 0;
+    int frameRate = 6;
+
+    async {
+        while(!Obj_IsDeleted(objBoss_)) {
+            //get animation type
+            real speed = ObjMove_GetSpeed(objBoss_);
+            real dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
+            //in order of precedence
+            if (_isSpecial) animType = ANIM_SPECIAL;
+            else if (_spellBarrier || _isSurvival) {
+                if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE_INV;
+                else {
+                    if (dir < 0) animType = ANIM_LEFT_INV;
+                    else animType = ANIM_RIGHT_INV;
+                }
+            } else if (_isCharging) animType = ANIM_CHARGE;
+            else {
+                if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE;
+                else {
+                    if (dir < 0) animType = ANIM_LEFT;
+                    else animType = ANIM_RIGHT;
+                }
+            }
+            SetFrame();
+            previousType = animType;
+            yield;
+        }
+    }
+
+    //fetches the sprite frame given the parameters of the sheet
+    function<void> SetFrame() {
+        int x = frameData[animType][1];
+        int y = frameData[animType][2];
+        int frames = frameData[animType][0] * frameRate;
+        if (previousType == animType && frames > frameRate) { //sprite has animation frames
+            if (frame >= frames) frame = 0;
+            int temp = frame / frameRate * width; //frame of animation of the current animation type
+            ObjSprite2D_SetSourceRect(objBoss_, x + temp, y, x + width + temp, y + height);
+            frame++;
+        } else { //sprite is static image OR changed to different type
+            frame = 0;
+            ObjSprite2D_SetSourceRect(objBoss_, x, y, x + width, y + height);
+        }
+        ObjSprite2D_SetDestCenter(objBoss_);
+    }
+}
+
+//toggle the charge and special animation flags (for use in single scripts)
+function<void> Animation_Charge(bool active_) {
+    _isCharging = active_;
+}
+function<void> Animation_Special(bool active_) {
+    _isSpecial = active_;
+}
+
+//----------------------------------------------------
+//Utility Functions
+//----------------------------------------------------
+//returns the size of each animation frame in the boss sprite sheet
+function<int[]> Animation_GetWidthHeight(string bossID_) {
+    int[] wh = [64, 64]; //default size of boss sprites is 64x64 per frame
+    //alternative(bossID_) no actual edge cases yet
+    return wh;
+}
+//returns an array of [frames, x, y] in each animation type
+function<int[][]> Animation_GetFrameData(string bossID_) {
+    int[][] data = [[1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0]]; //assume 1 frame for each animation
+    alternative (bossID_)
+    case (BOSS_ID_TSURUBAMI) data = [[1, 0, 0], [1, 64, 0], [1, 128, 0], [1, 192, 0], [1, 256, 0], [1, 320, 0], [4, 0, 64], [0, 0, 0]];
+    others assert(false, "No animation data for provided bossID.");
+    return data;
+}
+//white flash upon being damaged
+function<void> Animation_Damage(int objBoss_) {
+    ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
+    ObjShader_SetTechnique(objBoss_, "TecWhite");
+    bool isFlashing = false;
+    while (!Obj_IsDeleted(objBoss_)) {
+        if (isFlashing == false && _isDamaged) {
+            isFlashing = true;
+            loop (3) {
+                if (Obj_IsDeleted(objBoss_)) break;
+                ObjShader_SetFloat(objBoss_, "enable_", 1);
+                yield;
+                if (Obj_IsDeleted(objBoss_)) break;
+                ObjShader_SetFloat(objBoss_, "enable_", 0);
+                wait(3);
+            }
+            isFlashing = false;
+        } else yield;
+    }
+    ObjShader_SetFloat(objBoss_, "enable_", 0);
+}

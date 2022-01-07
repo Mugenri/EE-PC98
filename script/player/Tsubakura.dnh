@@ -130,13 +130,14 @@ task TShotCancel(int obj_, real x_, real y_, int graphic_) { //Player shot delet
     y_ -= speed * sin(angle);
     if (rand_int(1, 8) == 1) TShotParticle(x_, y_);
 
-    real frame = 0;
-    while (frame < 4) {
+    int frame = 0;
+    int frameRate = 2;
+    while (frame < 4 * frameRate) {
         ObjParticleList_SetPosition(_particleShot, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleShot, trunc(frame), 0, 0);
+        ObjParticleList_SetExtraData(_particleShot, frame / frameRate, 0, 0);
         ObjParticleList_AddInstance(_particleShot);
 
-        frame += 1/2;
+        frame++;
         y_ -= 1;
         yield;
     }

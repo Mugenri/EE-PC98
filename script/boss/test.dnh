@@ -4,7 +4,6 @@
 #System["./../../system/System.dnh"]
 
 #include "./../lib/lib_Boss.dnh"
-#include "./Tsurubami/lib_Tsuru.dnh"
 
 int _objBoss;
 int _count = -240; //Give time for transitions and everything to play
@@ -30,7 +29,6 @@ int _spellID = 999;
 @Initialize {
     Boss_Init(false);
     _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
-    TDrawBoss(_objBoss);
     //startspell go here
     Spell_SetCurrent(_spellID, true);
     TInitialize();
@@ -45,9 +43,9 @@ int _spellID = 999;
             async {
                 //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
                 //TPatternA();
-                //ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
+                ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
                 //TPatternB(1);
-                TPatternI();
+                //TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
             }
         }
@@ -60,20 +58,18 @@ task TInitialize() {
     Transition_Circle(1, 60);
     CallSFX(SND_TRANSITION);
     wait(120);
-    if (!_spellBarrier && !_isSurvival) Boss_SetVulnerable(_objBoss, true); //if boss has no spell barrier (or currently active spell barrier) and spell is not survival
+    Boss_SetVulnerable(_objBoss, true); //if boss has no spell barrier (or currently active spell barrier) and spell is not survival
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
     //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
-    Anime_Charge(false);
     Boss_Finalize(_objBoss);
     //TODO spell practice needs to do something about the finalize block or does it actually
     Transition_ChangeBG(0, 0);
 }
 
 task TPatternA() {
-    Anime_Charge(true);
     wait(20);
     if (!_bossAlive) return;
     loop (3) {
@@ -89,7 +85,6 @@ task TPatternA() {
         wait(20);
     }
     wait(10);
-    Anime_Charge(false);
 }
 
 task TPatternB(int dir_) {
