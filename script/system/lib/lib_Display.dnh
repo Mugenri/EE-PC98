@@ -175,7 +175,7 @@ task THighScore() {
     ObjRender_SetPosition(objScore, 486, 48, 1);
 
 	// Digits
-	int count = 8;
+	int count = 9;
     int scoreRender = 0;
     //scores and continues
     int score = GetScore();
@@ -195,7 +195,7 @@ task THighScore() {
             while (score < highScore || continues != 0) {
                 score = GetScore();
                 for (int i = 0; i < count; i++) {
-                    ObjParticleList_SetPosition(_displayList, 448 + i * 16, 64, 1);
+                    ObjParticleList_SetPosition(_displayList, 440 + i * 16, 64, 1);
                     ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
                     ObjParticleList_AddInstance(_displayList);
                 }
@@ -216,7 +216,7 @@ task THighScore() {
                 }
                 //render particle
                 for (int i = 0; i < count; i++) {
-                    ObjParticleList_SetPosition(_displayList, 448 + i * 16, 64, 1);
+                    ObjParticleList_SetPosition(_displayList, 440 + i * 16, 64, 1);
                     ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
                     ObjParticleList_AddInstance(_displayList);
                 }
@@ -257,19 +257,18 @@ task THighScore() {
 //----------------------------------------------------
 //Score Display
 //----------------------------------------------------
-task TScore() { //TODO add support for scores > 100_000_000
+task TScore() {
 	//Score Text
     int objScore = InitSprite2D(16, 272, 53, 288, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetColor(objScore, COLOR_YELLOW);
     ObjRender_SetPosition(objScore, 493, 80, 1);
 
 	// Digits
-	int count = 8;
+	int count = 9;
     int scoreRender = 0;
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     loop {
         int score = GetScore();
-		score = min(score, 99999999);
 		int[] numList = DigitToArray(scoreRender, count);
 
         //Gradual increase of score counter
@@ -284,7 +283,7 @@ task TScore() { //TODO add support for scores > 100_000_000
         }
         //render particle
         for (int i = 0; i < count; i++) {
-            ObjParticleList_SetPosition(_displayList, 448 + i * 16, 96, 1);
+            ObjParticleList_SetPosition(_displayList, 440 + i * 16, 96, 1);
             ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
             ObjParticleList_AddInstance(_displayList);
         }

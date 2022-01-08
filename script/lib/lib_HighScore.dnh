@@ -3,11 +3,11 @@
 //stored like eg. MAIN_0_1_4
 
 function<int> HS_GetHighScore() { //get a highscore from the current field
-    return GetAreaCommonData(AREA_HIGHSCORE, HS_GetHighScoreField(), 01000000);
+    return GetAreaCommonData(AREA_HIGHSCORE, HS_GetHighScoreField(), 001000000);
 }
 
 function<int> HS_GetHighScore(string field_) { //get a highscore from the specified field
-    return GetAreaCommonData(AREA_HIGHSCORE, field_, 01000000);
+    return GetAreaCommonData(AREA_HIGHSCORE, field_, 001000000);
 }
 
 function<string> HS_GetHighScoreField() { //current mode, player, stageIndex, difficulty or mode, player, stage/spell
