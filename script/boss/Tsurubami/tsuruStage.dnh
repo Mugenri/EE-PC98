@@ -22,16 +22,15 @@ bool _start = false;
 @Finalize {}
 
 task TStage() {
-    string csd = GetCurrentScriptDirectory();
-    string path = csd ~ "tsuruPlural.dnh";
+    string dir = GetCurrentScriptDirectory();
+    string path = dir ~ "tsuruPlural.dnh";
     int ID = LoadScriptInThread(path);
 
     while (!_start) yield;
 
-    Stage_SetIntroText("GOD FUCKING DAMNIT KRIS", "Where The Fuck Are We???");
-    wait(228);
+    Stage_SetIntroText("MUGENRI BARRIER", "Border of Unreality");
     
-    string dialoguePath = csd ~ "dialogueTest.dnh";
+    string dialoguePath = dir ~ "dialogueTest.dnh"; //TODO change to intro dialogue
     StartDialogueScript(dialoguePath);
     yield; //this is fine
     StartScript(ID);
@@ -40,6 +39,7 @@ task TStage() {
         yield;
     }
     wait(120); //last explosion & spell bonus numbers
+    dialoguePath = dir ~ "dialogueTest.dnh"; //TODO change to end dialogue
     StartDialogueScript(dialoguePath);
     yield;
     Stage_EndScreen(10000);

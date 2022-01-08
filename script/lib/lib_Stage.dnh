@@ -129,49 +129,46 @@ function<void> Stage_SetIntroText(string header_, string subtitle_) { //stage na
 
     int frame = 0;
     int frameRate = 4;
-    async {
-        while (_introPlaying) yield;
-        while (frame < 6 * frameRate) { //particles in
-            UpdateParticle(0);
-            frame++;
-            yield;
+    while (frame < 6 * frameRate) { //particles in
+        UpdateParticle(0);
+        frame++;
+        yield;
+    }
+    //show text/note icon
+    Obj_SetVisible(header, true);
+    Obj_SetVisible(subtitle, true);
+
+    while (frame < 12 * frameRate) { //rest of animation
+        UpdateParticle(0);
+        frame++;
+        yield;
+    }
+
+    wait(132);
+    Obj_Delete(header);
+    Obj_Delete(subtitle);
+
+    frame = 0;
+    while (frame < 12 * frameRate) { //particles out
+        UpdateParticle(1);
+        frame++;
+        yield;
+    }
+
+    Obj_Delete(particles);
+
+    function<void> UpdateParticle(bool isOut_) { //bool value used as 0 or 1
+        for (int i = 0; i < stepHeader; i++) {
+            ObjParticleList_SetPosition(particles, headerX + i * 16, MID_Y - 16, 1);
+            ObjParticleList_SetExtraData(particles, frame / frameRate, isOut_, 0);
+            ObjParticleList_SetColor(particles, COLOR_YELLOW);
+            ObjParticleList_AddInstance(particles);
         }
-        //show text/note icon
-        Obj_SetVisible(header, true);
-        Obj_SetVisible(subtitle, true);
-
-        while (frame < 12 * frameRate) { //rest of animation
-            UpdateParticle(0);
-            frame++;
-            yield;
-        }
-
-        wait(132);
-        Obj_Delete(header);
-        Obj_Delete(subtitle);
-
-        frame = 0;
-        while (frame < 12 * frameRate) { //particles out
-            UpdateParticle(1);
-            frame++;
-            yield;
-        }
-
-        Obj_Delete(particles);
-
-        function<void> UpdateParticle(bool isOut_) { //bool value used as 0 or 1
-            for (int i = 0; i < stepHeader; i++) {
-                ObjParticleList_SetPosition(particles, headerX + i * 16, MID_Y - 16, 1);
-                ObjParticleList_SetExtraData(particles, frame / frameRate, isOut_, 0);
-                ObjParticleList_SetColor(particles, COLOR_YELLOW);
-                ObjParticleList_AddInstance(particles);
-            }
-            for (int i = 0; i < stepSubtitle; i++) {
-                ObjParticleList_SetPosition(particles, subtitleX + i * 16, MID_Y + 16, 1);
-                ObjParticleList_SetExtraData(particles, frame / frameRate, isOut_, 0);
-                ObjParticleList_SetColor(particles, COLOR_WHITE);
-                ObjParticleList_AddInstance(particles);
-            }
+        for (int i = 0; i < stepSubtitle; i++) {
+            ObjParticleList_SetPosition(particles, subtitleX + i * 16, MID_Y + 16, 1);
+            ObjParticleList_SetExtraData(particles, frame / frameRate, isOut_, 0);
+            ObjParticleList_SetColor(particles, COLOR_WHITE);
+            ObjParticleList_AddInstance(particles);
         }
     }
 }

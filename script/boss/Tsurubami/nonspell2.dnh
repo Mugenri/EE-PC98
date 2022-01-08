@@ -1,0 +1,88 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["nonspell2"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _count = -60;
+int _loopTime = 240;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000); 
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(60);
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
+    TInitialize();
+    TFinalize();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    if (_bossAlive) {
+        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFireA(1);
+                wait(120);
+                TFireA(-1);
+            }
+        }
+        _count++;
+    }
+    yield;
+}
+
+task TInitialize() {
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+}
+
+task TFireA(int dir_) {
+    if (!_bossAlive) return;
+    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 20, 32, COLOR_GRAY_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_D);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_L);
+    wait(20);
+
+    for (int i = 1; i <= 20; i++) {
+        if (!_bossAlive) return;
+        real angleT = 90 + 20 * dir_ + Interpolate_Decelerate(0, 320, i / 22) * dir_;
+        int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 14, angleT, SHOT_BLACK+PILL_L, 0, SHOT_BLACK+CANCEL_32);
+        ObjShot_SetSpellResist(shot, true);
+        TSpawnRing(shot, i);
+        CallSFX(SND_SHOT1);
+        wait(Interpolate_Decelerate(12, 2, i / 20));
+    }
+
+    task TSpawnRing(int obj_, int modif_) {
+        wait(rand_int(2, 5));
+        loop (3) {
+            if (!_bossAlive) return;
+            real angleT = rand_int(0, 10) * 10;
+            int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
+            for (int i = 0; i < 4; i++) {
+                CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(0.6, 0.8), angleT, color+KUNAI, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST1);
+                angleT += 360 / 4;
+            }
+            wait (7);
+        }
+    }
+}
