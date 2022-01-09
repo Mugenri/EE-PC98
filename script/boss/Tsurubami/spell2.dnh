@@ -80,14 +80,14 @@ task TSlugShot() {
     real yPos = MID_Y + radius * sin(angleT);
     angleT = dottheta(xPos, yPos, ObjMove_GetX(_objPlayer), ObjMove_GetY(_objPlayer)) - 60;
 
-    int head = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY+BUTTERFLY, 0, SHOT_WHITE+CANCEL_32);
+    int head = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY+BUTTERFLY, 0, SHOT_GRAY+CANCEL_32);
     ObjShot_SetAutoDelete(head, false);
     ObjShot_SetSpellResist(head, true);
     TMovement(head);
     wait(8);
     loop (5) {
         if (!_bossAlive) return;
-        int trail = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY_INV+PILL_L, 0, SHOT_WHITE+CANCEL_32);
+        int trail = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(trail, true);
         ObjShot_SetAutoDelete(trail, false);
         TMovement(trail);
