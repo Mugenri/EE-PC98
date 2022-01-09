@@ -72,16 +72,16 @@ task TFireA(int dir_) {
     wait(30);
 
     if (!_bossAlive) return;
-    int objAmulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 + 50 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
-    ObjShot_SetSpellResist(objAmulet, true);
-    ObjMove_SetAngularVelocity(objAmulet, -0.4 * dir_);
+    int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 + 50 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    ObjShot_SetSpellResist(amulet, true);
+    ObjMove_SetAngularVelocity(amulet, -0.4 * dir_);
     CallSFX(SND_SHOT3);
 
     wait(20);
     for (int i = 0; i < 12; i++) {
-        if (!_bossAlive || Obj_IsDeleted(objAmulet)) return;
-        real x = ObjMove_GetX(objAmulet);
-        real y = ObjMove_GetY(objAmulet);
+        if (!_bossAlive || Obj_IsDeleted(amulet)) return;
+        real x = ObjMove_GetX(amulet);
+        real y = ObjMove_GetY(amulet);
         if (i % 2 == 0) TShotA(x, y);
         else TShotB(x, y);
         CallSFX(SND_SHOT1);
@@ -107,7 +107,7 @@ task TFireA(int dir_) {
     task TShotB(real x_, real y_) { //x way split
         real angle = 0;
         loop (5) {
-            int obj = CreateShotUA1(x_, y_, 0, ObjMove_GetAngle(objAmulet) + angle, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+            int obj = CreateShotUA1(x_, y_, 0, ObjMove_GetAngle(amulet) + angle, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
             ObjMove_AddPatternA1(obj, 60, 1.3, NO_CHANGE);
             angle += 360 / 5;
         }
@@ -125,11 +125,11 @@ task TFireB() {
     if (!_bossAlive) return;
     int dir = 1;
     loop (2) {
-        int objAmulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 - 80 * dir, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
-        ObjShot_SetSpellResist(objAmulet, true);
-        ObjMove_SetAngularVelocity(objAmulet, 4 * dir);
-        ObjMove_AddPatternA2(objAmulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0, NO_CHANGE);
-        TGravityShot(objAmulet);
+        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 - 80 * dir, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        ObjShot_SetSpellResist(amulet, true);
+        ObjMove_SetAngularVelocity(amulet, 4 * dir);
+        ObjMove_AddPatternA2(amulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0, NO_CHANGE);
+        TGravityShot(amulet);
         dir = -1;
     }
     CallSFX(SND_SHOT3);

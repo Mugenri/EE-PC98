@@ -39,7 +39,7 @@ int _spellID = 1;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     wait(30);
     Transition_Circle(1, 0);
     CallSFX(SND_TRANSITION);
@@ -114,7 +114,7 @@ task TFireA() {
             real angleT = ObjMove_GetAngle(obj_);
             if (yPos > MAX_Y) break;
             loop (3) CreateShotUA1(xPos, yPos, rand(4, 4.5), angleT + 180 + rand(-10, 10), SHOT_BLACK+FIRE_S, 0, SHOT_BLACK+CANCEL_BURST1);
-            int rainShot = CreateShotUA1(xPos, yPos, rand(3, 3.5), angleT + 180 + rand(-5, 5), SHOT_WHITE+FIRE_S, 0, SHOT_WHITE+CANCEL_BURST1);
+            int rainShot = CreateShotUA1(xPos, yPos, rand(3, 3.5), angleT + 180 + rand(-5, 5), SHOT_GRAY+FIRE_S, 0, SHOT_GRAY+CANCEL_BURST1);
             ObjMove_AddPatternB2(rainShot, 20, NO_CHANGE, NO_CHANGE, 0, 0.1, 0, rand(2.5, 3.1));
             wait(8 + modif_);
         }

@@ -102,6 +102,7 @@ function<void> Boss_Finalize(int obj_) {
     bool isCapture = Boss_IsSpellCaptured();
 
     if (isFinal) {
+        ObjMove_SetDestAtFrame(obj_, xPos, yPos, 0); //stop movement if final spell/spell practice
         SetPlayerInvincibilityFrame(60);
         Particle_RandomExplosionBig(xPos, yPos); //this function is blocking
         Obj_SetVisible(obj_, false);

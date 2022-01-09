@@ -1,0 +1,123 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["nonspell2"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _count = -60;
+int _loopTime = 180;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000); 
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(60 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                Animation_Charge(true);
+                TFireA(1);
+                wait(60);
+                Animation_Charge(false);
+                wait(30);
+                Animation_Charge(true);
+                TFireA(-1);
+                wait(60);
+                Animation_Charge(false);
+            }
+        }
+        yield;
+    }
+}
+
+task TFireA(int dir_) {
+    if (!_bossAlive) return;
+    //ring of rotating amulets that spawn lines of bullets that move away from the boss
+    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    wait(30);
+
+    if (!_bossAlive) return;
+    real angleT = 90;
+    loop (12) {
+        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        ObjShot_SetSpellResist(amulet, true);
+        TCommands(amulet);
+        angleT += 360 / 12;
+    }
+    CallSFX(SND_SHOT1);
+
+    wait(35);
+    if (!_bossAlive) return;
+
+    angleT = GetAngleToPlayer(_objBoss);
+    loop (32) {
+        int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 9, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
+        ObjMove_AddPatternA2(amulet2, 12, NO_CHANGE, NO_CHANGE, -1, NO_CHANGE, 1);
+        angleT += 360 / 32;
+    }
+    CallSFX(SND_SHOT1);
+
+    task TCommands(int parent_) {
+        ObjMove_SetAngularVelocity(parent_, 1.8 * dir_);
+        ObjMove_AddPatternA2(parent_, 45, NO_CHANGE, NO_CHANGE, NO_CHANGE, 1 * dir_, NO_CHANGE);
+        ObjMove_AddPatternA2(parent_, 90, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.2 * dir_, NO_CHANGE);
+        real bossX = ObjMove_GetX(_objBoss);
+        real bossY = ObjMove_GetY(_objBoss);
+        int delayTime = 64;
+
+        wait(20);
+
+        while (!Obj_IsDeleted(parent_) && _bossAlive && delayTime > 0) {
+            loop (4) {
+                if (Obj_IsDeleted(parent_) || !_bossAlive) break;
+                real pX = ObjMove_GetX(parent_);
+                real pY = ObjMove_GetY(parent_);
+                int shot = CreateShotUA1(pX, pY, 0, dottheta(pX, pY, bossX, bossY) + 180, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+                ObjMove_AddPatternA2(shot, delayTime * 2, NO_CHANGE, NO_CHANGE, 0.01, NO_CHANGE, 2);
+                wait(2);
+            }
+            delayTime -= 8;
+            wait(8);
+        }
+    }
+}
