@@ -6,9 +6,10 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
+int _diff = GetDifficulty() - 4;
 int _count = -120;
 int _loopTime = 310;
-int _spellID = 1;
+int _spellID = 1 + _diff;
 
 @Event {
     alternative (GetEventType())

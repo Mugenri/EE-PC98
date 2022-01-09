@@ -6,6 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
+int _diff = GetDifficulty() - 4;
 int _count = -60;
 int _loopTime = 180;
 
@@ -41,6 +42,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, MID_X][_diff], 60, LERP_DECELERATE);
     Animation_Charge(false);
     Boss_Finalize(_objBoss);
 }

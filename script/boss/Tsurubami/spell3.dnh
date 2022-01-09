@@ -6,9 +6,10 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
+int _diff = GetDifficulty() - 4;
 int _count = -120;
-int _loopTime = 520;
-int _spellID = 3;
+int _loopTime = [520, 60][_diff];
+int _spellID = 5 + _diff;
 
 @Event {
     alternative (GetEventType())
@@ -39,9 +40,9 @@ int _spellID = 3;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, MID_X][_diff], 30, LERP_DECELERATE);
     wait(30);
-    Transition_Circle(1, 0);
+    Transition_Rise(1, 0);
     CallSFX(SND_TRANSITION);
     wait(90);
     Boss_SetVulnerable(_objBoss, true);
@@ -70,8 +71,15 @@ task TMain() {
 task TFire() {
     if (!_bossAlive) return;
     int[] shots = [];
-    real x = ObjMove_GetX(_objBoss);
-    real y = ObjMove_GetY(_objBoss);
+    real xPos = ObjMove_GetX(_objBoss);
+    real yPos = ObjMove_GetY(_objBoss);
+
+    Primitive_ContractPolygon2D(xPos, yPos, 45, 100, 0, 20, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(xPos, yPos, 0, 100, 90, 20, 8, COLOR_GRAY_L);
+    Particle_ContractRing(xPos, yPos, 0, 100, -90, 20, 8, COLOR_GRAY_L);
+
+    wait(20);
 
     async {
         loop (300) {
@@ -82,14 +90,22 @@ task TFire() {
     }
 
     real angleT = rand(0, 360);
-    for (int i = 0; i < 32; i++) { //spawn
+    for (int i = 0; i < [32, 16][_diff]; i++) { //spawn
         if (!_bossAlive) return;
-        int shot = CreateShotUA1(x, y, 2.8, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+        int shot = CreateShotUA1(xPos, yPos, [2.8, 1.7][_diff], angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
         ObjShot_SetSpellResist(shot, true);
         shots = shots ~ [shot];
         angleT += rand(90, 120);
         CallSFX(SND_SHOT1);
         wait(2);
+    }
+
+    //shuffle indices
+    for (int i = 0; i < length(shots); i++) {
+        int j = rand_int(0, length(shots) - 1);
+        int temp = shots[i];
+        shots[i] = shots[j];
+        shots[j] = temp;
     }
 
     wait(120);
@@ -99,13 +115,19 @@ task TFire() {
         ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, -0.04, 0, 0);
     }
 
-    int firstLaser = CreateStraightLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 0, 5, COLOR_GRAY_L, 120);
+    int firstLaser = CreateStraightLaserUA1(xPos, yPos, 0, 0, 5, COLOR_GRAY_L, 120);
     int shot1 = shots[length(shots) - 1]; //last fired shot
+
+    Animation_Charge(true);
+
+    Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 120, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 125, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 130, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
 
     loop (75) { //point at last index
         if (!_bossAlive) return;
-        real x1 = ObjMove_GetX(_objBoss);
-        real y1 = ObjMove_GetY(_objBoss);
+        real x1 = xPos;
+        real y1 = yPos;
         real x2 = ObjMove_GetX(shot1);
         real y2 = ObjMove_GetY(shot1);
         real angle = dottheta(x1, y1, x2, y2);
@@ -135,7 +157,11 @@ task TFire() {
         }
     }
 
-    wait(45); //laser delay time
+    wait(13);
+    Particle_ContractRing(xPos, yPos, 0, 100, 180, 32, 8, COLOR_GRAY_L);
+    Particle_ContractRing(xPos, yPos, 0, 100, -180, 32, 8, COLOR_GRAY_L);
+    wait(32); //laser delay time
+    Animation_Charge(false);
 
     //explode shot
     for (int i = length(shots) - 1; i >= 0; i--) {
@@ -145,7 +171,7 @@ task TFire() {
         real y = ObjMove_GetY(shot);
         angleT = rand(0, 360);
         loop (5) {
-            CreateShotUA1(x, y, 0.75, angleT, SHOT_RED_INV+PELLET, 0, SHOT_RED_INV+SPAWN_S+SIZE_8, SHOT_RED_INV+CANCEL_BURST1);
+            CreateShotUA1(x, y, [0.75, 0.65][_diff], angleT, SHOT_RED_INV+PELLET, 0, SHOT_RED_INV+SPAWN_S+SIZE_8, SHOT_RED_INV+CANCEL_BURST1);
             angleT += 360 / 5;
         }
         Obj_Delete(shot);

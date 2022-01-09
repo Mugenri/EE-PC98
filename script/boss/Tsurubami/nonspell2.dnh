@@ -6,6 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
+int _diff = GetDifficulty() - 4;
 int _count = -60;
 int _loopTime = 240;
 
