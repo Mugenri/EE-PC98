@@ -1,0 +1,161 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["spell3"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _count = -120;
+int _loopTime = 520;
+int _spellID = 3;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(4000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(60 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(200000);
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    Spell_SetCurrent(_spellID, true);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(1, 0);
+    CallSFX(SND_TRANSITION);
+    wait(90);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire();
+            }
+        }
+        yield;
+    }
+}
+
+task TFire() {
+    if (!_bossAlive) return;
+    int[] shots = [];
+    real x = ObjMove_GetX(_objBoss);
+    real y = ObjMove_GetY(_objBoss);
+
+    async {
+        loop (300) {
+            if (!_bossAlive) return;
+            for each (shot in shots) Reflect(shot);
+            yield;
+        }
+    }
+
+    real angleT = rand(0, 360);
+    for (int i = 0; i < 32; i++) { //spawn
+        if (!_bossAlive) return;
+        int shot = CreateShotUA1(x, y, 2.8, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+        ObjShot_SetSpellResist(shot, true);
+        shots = shots ~ [shot];
+        angleT += rand(90, 120);
+        CallSFX(SND_SHOT1);
+        wait(2);
+    }
+
+    wait(120);
+
+    if (!_bossAlive) return;
+    for each (shot in shots) { //slow
+        ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, -0.04, 0, 0);
+    }
+
+    int firstLaser = CreateStraightLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 0, 5, COLOR_GRAY_L, 120);
+    int shot1 = shots[length(shots) - 1]; //last fired shot
+
+    loop (75) { //point at last index
+        if (!_bossAlive) return;
+        real x1 = ObjMove_GetX(_objBoss);
+        real y1 = ObjMove_GetY(_objBoss);
+        real x2 = ObjMove_GetX(shot1);
+        real y2 = ObjMove_GetY(shot1);
+        real angle = dottheta(x1, y1, x2, y2);
+        real len = distance(x1, y1, x2, y2);
+        ObjStLaser_SetAngle(firstLaser, angle);
+        ObjLaser_SetLength(firstLaser, len);
+        yield;
+    }
+
+    //bouncy laser
+    int shot2 = shot1;
+    async {
+        for (int i = length(shots) - 1; i > 0; i--) {
+            if (!_bossAlive) return;
+            shot1 = shot2;
+            shot2 = shots[i - 1];
+            real x2 = ObjMove_GetX(shot1);
+            real y2 = ObjMove_GetY(shot1);
+            real x1 = ObjMove_GetX(shot2);
+            real y1 = ObjMove_GetY(shot2);
+            real angle = dottheta(x1, y1, x2, y2);
+            real len = distance(x1, y1, x2, y2);
+            CreateStraightLaserUA1(x1, y1, angle, len, 5, COLOR_GRAY_L, 45);
+            ObjShot_SetDeleteFrame(shot1, 45);
+            CallSFX(SND_LASER2, 45);
+            wait(2);
+        }
+    }
+
+    wait(45); //laser delay time
+
+    //explode shot
+    for (int i = length(shots) - 1; i >= 0; i--) {
+        if (!_bossAlive) return;
+        int shot = shots[i];
+        real x = ObjMove_GetX(shot);
+        real y = ObjMove_GetY(shot);
+        angleT = rand(0, 360);
+        loop (5) {
+            CreateShotUA1(x, y, 0.75, angleT, SHOT_RED_INV+PELLET, 0, SHOT_RED_INV+SPAWN_S+SIZE_8, SHOT_RED_INV+CANCEL_BURST1);
+            angleT += 360 / 5;
+        }
+        Obj_Delete(shot);
+        wait(2);
+    }
+
+    function<bool> Reflect(int obj_) {
+        real x = ObjMove_GetX(obj_);
+        real y = ObjMove_GetY(obj_);
+        if (x < MIN_X || x > MAX_X) ObjMove_SetAngle(obj_, 180 - ObjMove_GetAngle(obj_));
+        if (y < MIN_Y || y > MAX_Y) ObjMove_SetAngle(obj_, -ObjMove_GetAngle(obj_));
+    }
+}
