@@ -269,7 +269,7 @@ function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, in
     return hitbox;
 }
 
-function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxWidth_, real sustain_, int colorOut_, int colorIn_, int delay_) {
+function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, real maxWidth_, real sustain_, int colorOut_, int colorIn_, int delay_) {
     //This will fuck up the hitbox if it isn't true.
     if (maxWidth_ > length_) length_ = maxWidth_;
     //Object Creation
@@ -415,4 +415,15 @@ function<int> MasterSpark(real x_, real y_, real angle_, real length_, real maxW
         }
         return obj;
     }
+}
+
+function<int> Laser_WarningLine(real x_, real y_, real angle_, int length_, int time_) {
+    int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+    ObjPrim_SetVertexPosition(line, 0, x_, y_, 1);
+    ObjPrim_SetVertexPosition(line, 1, x_ + length_ * cos(angle_), y_ + length_ * sin(angle_), 1);
+    async {
+        wait(time_);
+        if (!Obj_IsDeleted(line)) Obj_Delete(line);
+    }
+    return line;
 }

@@ -15,20 +15,40 @@ int _loopTime = 240;
         SetScriptResult(3000); 
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60);
+        SetScriptResult(60 + absolute(_count / 60));
     }
 }
 
 @Initialize {
     Boss_Init(true);
-    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     TInitialize();
     TFinalize();
+    TMain();
 }
 
 @MainLoop {
     Boss_Update(_objBoss);
-    if (_bossAlive) {
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
         Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -37,20 +57,8 @@ int _loopTime = 240;
                 TFireA(-1);
             }
         }
-        _count++;
+        yield;
     }
-    yield;
-}
-
-task TInitialize() {
-    wait(120);
-    Boss_SetVulnerable(_objBoss, true);
-}
-
-task TFinalize() {
-    while (_bossAlive) yield;
-    Animation_Charge(false);
-    Boss_Finalize(_objBoss);
 }
 
 task TFireA(int dir_) {

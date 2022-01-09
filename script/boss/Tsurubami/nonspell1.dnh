@@ -15,7 +15,7 @@ int _loopTime = 240;
         SetScriptResult(3000); 
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60);
+        SetScriptResult(60 + absolute(_count / 60));
     }
 }
 
@@ -24,11 +24,29 @@ int _loopTime = 240;
     _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
     TInitialize();
     TFinalize();
+    TMain();
 }
 
 @MainLoop {
     Boss_Update(_objBoss);
-    if (_bossAlive) {
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
         Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -42,20 +60,8 @@ int _loopTime = 240;
                 Animation_Charge(false);
             }
         }
-        _count++;
+        yield;
     }
-    yield;
-}
-
-task TInitialize() {
-    wait(60);
-    Boss_SetVulnerable(_objBoss, true);
-}
-
-task TFinalize() {
-    while (_bossAlive) yield;
-    Animation_Charge(false);
-    Boss_Finalize(_objBoss);
 }
 
 task TFireA(int dir_) {
@@ -133,7 +139,7 @@ task TFireB() {
         loop {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             loop (2) {
-                CreateShotUB2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(-0.35, 0.35), -0.5, 0, 0.02 + rand(-0.01, 0.01), 0, 1.5, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+                CreateShotUB2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(-0.35, 0.35), -0.5, 0, 0.02 + rand(-0.01, 0.01), 0, 1.2, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
             }
             CallSFX(SND_SHOT1);
             wait(6);

@@ -19,8 +19,8 @@ bool _isSurvival = false; //survival spell
 real _bossLife; //current life
 real _previousLife = 0; //life of previous frame
 
-real intersectionShot = 32; //default intersection to shot
-real intersectionPlayer = 24; //default intersection to player
+real intersectionShot = 28; //default intersection to shot
+real intersectionPlayer = 20; //default intersection to player
 
 //Initialize a boss scene
 function<void> Boss_Init(bool isVulnerable_) {
@@ -148,10 +148,10 @@ function<void> Boss_Finalize(int obj_) {
     
     DeleteShotAll(TYPE_ALL, TYPE_ITEM); //Delete to item for score text
 
-    async {
+    async { //120 frames
         wait(64); //explosion time
         StopSlow(TARGET_ALL); //if slow is active
-        wait(60); //grace period
+        wait(56); //grace period
 
         //Setup boss init position for next single
         xPos = ObjMove_GetX(obj_);

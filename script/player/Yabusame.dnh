@@ -96,7 +96,7 @@ task TOption(int dir_) {
                     real[][] enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
                     real angle = 270;
                     if (length(enemy) > 0) angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
-                    int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 4, 1, 2);
+                    int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 3, 1, 2);
                     Obj_SetRenderPriorityI(shot, Obj_GetRenderPriorityI(objOption));
                     loop (3) yield;
                 }
