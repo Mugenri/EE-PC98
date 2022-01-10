@@ -25,7 +25,7 @@ int _spellID = 5 + _diff;
 }
 
 @Initialize {
-    Boss_Init(true);
+    Boss_Init(false);
     _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     Spell_SetCurrent(_spellID, true);
     TInitialize();

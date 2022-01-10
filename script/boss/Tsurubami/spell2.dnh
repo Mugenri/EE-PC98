@@ -25,7 +25,7 @@ int _spellID = 3 + _diff;
 }
 
 @Initialize {
-    Boss_Init(true);
+    Boss_Init(false);
     _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     Spell_SetCurrent(_spellID, true);
     TInitialize();
@@ -78,7 +78,7 @@ task TSlugShot() {
     real angleT = GetAngleToPlayer(_objBoss) + rand(75, 285); //don't spawn directly behind the player
     real xPos = MID_X + radius * cos(angleT);
     real yPos = MID_Y + radius * sin(angleT);
-    angleT = dottheta(xPos, yPos, ObjMove_GetX(_objPlayer), ObjMove_GetY(_objPlayer)) - 60;
+    angleT = dottheta(xPos, yPos, MID_X, MID_Y) - 60 + rand(-20, 20);
 
     int head = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY+BUTTERFLY, 0, SHOT_GRAY+CANCEL_32);
     ObjShot_SetAutoDelete(head, false);

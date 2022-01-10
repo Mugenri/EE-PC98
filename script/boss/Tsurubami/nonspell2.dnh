@@ -71,14 +71,14 @@ task TFireA(int dir_) {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_L);
     wait(20);
 
-    for (int i = 1; i <= 20; i++) {
+    for (int i = 1; i <= 22; i++) {
         if (!_bossAlive) return;
         real angleT = 90 + 20 * dir_ + Interpolate_Decelerate(0, 320, i / 22) * dir_;
         int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 14, angleT, SHOT_BLACK+PILL_L, 0, SHOT_BLACK+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         TSpawnRing(shot, i);
         CallSFX(SND_SHOT1);
-        wait(Interpolate_Decelerate(12, 2, i / 20));
+        wait(Interpolate_Decelerate(12, 2, i / 22));
     }
 
     task TSpawnRing(int obj_, int modif_) {
@@ -87,9 +87,9 @@ task TFireA(int dir_) {
             if (!_bossAlive) return;
             real angleT = rand_int(0, 10) * 10;
             int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 3; i++) {
                 CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(0.6, 0.8), angleT, color+KUNAI, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST1);
-                angleT += 360 / 4;
+                angleT += 360 / 3;
             }
             wait (7);
         }

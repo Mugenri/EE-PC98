@@ -2,7 +2,6 @@
 #ScriptVersion[3]
 #Title["Tsurubami Plural"]
 #System["../../system/System.dnh"]
-//#Background["../../system/TestBG.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
 #include "./../../lib/lib_Spell.dnh"
