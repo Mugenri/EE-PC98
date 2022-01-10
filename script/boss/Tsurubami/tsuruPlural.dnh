@@ -18,6 +18,7 @@ task TPlural() {
     string dir = GetCurrentScriptDirectory();
     _objScene = ObjEnemyBossScene_Create();
 
+    // ObjEnemyBossScene_Add(_objScene, 0, dir ~ "../test.dnh");
     ObjEnemyBossScene_Add(_objScene, 0, dir ~ "nonspell1.dnh");
     ObjEnemyBossScene_Add(_objScene, 0, dir ~ "spell1.dnh");
     ObjEnemyBossScene_Add(_objScene, 1, dir ~ "nonspell2.dnh");

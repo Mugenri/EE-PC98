@@ -6,67 +6,70 @@
 #include "./../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _count = -240; //Give time for transitions and everything to play
-int _loopTime = 90;
+int _diff = GetDifficulty() - 4;
+int _count = -60;
+int _loopTime = 240;
 int _spellID = 999;
+int health = 3000;
 
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3500); //good amount of health, takes about 25 seconds to capture
+        SetScriptResult(health);
+        //3000 = 20 - 22 seconds, standard nonspell health
+        //3500 = 23 - 26 seconds, standard spell health
+        //4000 ~ 30 seconds without shotgunning, 15 - 25 with shotgunning, longer/slower/complex spell health
+
+        //roughly 134 - 138 average dps
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(30);
+        SetScriptResult(60 + absolute(_count / 60));
     }
-    case (EV_REQUEST_SPELL_SCORE) {
-        SetScriptResult(200000);
-    }
-    // case (EV_REQUEST_IS_DURABLE_SPELL) {
-    //     SetScriptResult(true);
-    // }
 }
 
 @Initialize {
-    Boss_Init(false);
+    Boss_Init(true);
     _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
-    //startspell go here
-    Spell_SetCurrent(_spellID, true);
     TInitialize();
     TFinalize();
+    TMain();
 }
 
 @MainLoop {
     Boss_Update(_objBoss);
-    if (_bossAlive) {
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    WriteLog("Capture Time: " ~ ToString(_count / 60));
+    WriteLog("DPS: " ~ ToString(health / (_count / 60)));
+    Animation_Charge(false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
         Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
                 //TPatternA();
-                ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
+                //ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
                 //TPatternB(1);
                 //TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
             }
         }
-        _count++;
+        yield;
     }
-    yield;
-}
-
-task TInitialize() {
-    Transition_Circle(1, 60);
-    CallSFX(SND_TRANSITION);
-    wait(120);
-    Boss_SetVulnerable(_objBoss, true); //if boss has no spell barrier (or currently active spell barrier) and spell is not survival
-}
-
-task TFinalize() {
-    while (_bossAlive) yield;
-    //ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
-    Boss_Finalize(_objBoss);
-    //TODO spell practice needs to do something about the finalize block or does it actually
-    Transition_ChangeBG(0, 0);
 }
 
 task TPatternA() {
