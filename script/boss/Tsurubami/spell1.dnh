@@ -76,6 +76,10 @@ task TFireA() {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90, 30, 8, COLOR_GRAY_L);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90, 30, 8, COLOR_GRAY_L);
     wait(30);
+    async {
+        wait(150);
+        if (_bossAlive) CallSFX(SND_CHARGE1);
+    }
     for (int i = 0; i < 30; i+=2) { //gravity shots
         if (!_bossAlive) return;
         real xSpeed = rand(1, 2.5);

@@ -1,19 +1,19 @@
 //Primitives effect library
 
-function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real maxRadius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real radius_, real maxRadius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, 0, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    maxRadius_ -= radius_;
     async {
-        real radius = 0;
         loop (frames_) {
             real angleT = angle_;
             for (int i = startVertex; i < vertices; i++) {
-                ObjPrim_SetVertexPosition(polygon, i, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angleT), y_ + radius_ * sin(angleT), 1);
                 angleT += 360 / sides_;
             }
             angle_ += rotation_ / frames_;
-            radius += maxRadius_ / frames_;
+            radius_ += maxRadius_ / frames_;
             yield;
         }
         Obj_Delete(polygon);

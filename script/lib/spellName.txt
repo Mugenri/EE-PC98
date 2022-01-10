@@ -4,3 +4,5 @@ Snare Card "Talisman Skewer"
 NOT FINISHED
 Reflection Card "Moonlight Lattice"
 Reflection Card "Moonbeam Massacre"
+Senri Technique "Donation Overflow"
+NOT FINISHED

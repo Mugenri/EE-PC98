@@ -14,7 +14,7 @@ int _spellID = 5 + _diff;
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(4000);
+        SetScriptResult(3800);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(60 + absolute(_count / 60));
@@ -50,6 +50,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, 30, 70, 60, LERP_DECELERATE);
     Animation_Charge(false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
@@ -123,6 +124,7 @@ task TFire() {
     Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 120, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 125, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 130, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    CallSFX(SND_CHARGE1);
 
     loop (75) { //point at last index
         if (!_bossAlive) return;
@@ -139,6 +141,7 @@ task TFire() {
 
     //bouncy laser
     int shot2 = shot1;
+
     async {
         for (int i = length(shots) - 1; i > 0; i--) {
             if (!_bossAlive) return;
@@ -152,10 +155,17 @@ task TFire() {
             real len = distance(x1, y1, x2, y2);
             CreateStraightLaserUA1(x1, y1, angle, len, 5, COLOR_GRAY_L, 45);
             ObjShot_SetDeleteFrame(shot1, 45);
-            CallSFX(SND_LASER2, 45);
             wait(2);
         }
     }
+    async {
+        wait(45);
+        loop (length(shots) - 1) {
+            if (_bossAlive) CallSFX(SND_LASER2);
+            wait(2);
+        }
+    }
+
 
     wait(13);
     Particle_ContractRing(xPos, yPos, 0, 100, 180, 32, 8, COLOR_GRAY_L);
