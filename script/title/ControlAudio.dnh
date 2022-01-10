@@ -12,7 +12,7 @@ int _objSFX = ObjSound_Create();
 const string[] SOUNDS = [
     DIR_SE ~ "seBang1.wav",         //0
     DIR_SE ~ "seBang2.wav",
-    DIR_SE ~ "seCharge.wav",
+    DIR_SE ~ "seCharge1.wav",
     DIR_SE ~ "seExplosion1.wav",
     DIR_SE ~ "seExplosion2.wav",
     DIR_SE ~ "seExplosion3.wav",
@@ -40,7 +40,9 @@ const string[] SOUNDS = [
     DIR_SE ~ "seTransition.wav",
     DIR_SE ~ "seDamage.wav",
     DIR_SE ~ "seExtend.wav",
-    DIR_SE ~ "seTimer.wav"          //30
+    DIR_SE ~ "seTimer.wav",         //30
+    DIR_SE ~ "seCharge2.wav",
+    DIR_SE ~ "seShot4.wav"
 ];
 
 @Initialize {
