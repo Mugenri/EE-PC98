@@ -37,12 +37,6 @@ function<string> GetBGMName(int trackID_) { return(NotifyEvent(GetAudioScriptID(
 
 // --- SFX Functions --- //
 function<void> CallSFX(int soundID_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID_); }
-function<void> CallSFX(int soundID_, int delay_) { //this is like explicitly for lasers with delay
-    async {
-        wait(delay_);
-        NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID_);
-    }
-}
 
 function<void> StopSFX() { NotifyEvent(GetAudioScriptID(), EV_STOP_SFX, 0); }
 
