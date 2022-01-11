@@ -17,7 +17,7 @@ int _spellID = 5 + _diff;
         SetScriptResult(3500);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60 + absolute(_count / 60));
+        SetScriptResult(45 + absolute(_count / 60));
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
@@ -40,18 +40,18 @@ int _spellID = 5 + _diff;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, MID_X][_diff], 30, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, MID_X][_diff], 60, LERP_DECELERATE);
     wait(30);
     Transition_Rise(1, 0);
     CallSFX(SND_TRANSITION);
-    wait(90);
+    wait(120);
     Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
     ObjMove_SetDestAtFrame(_objBoss, 30, 70, 60, LERP_DECELERATE);
-    Animation_Charge(false);
+    Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
 }
@@ -59,7 +59,7 @@ task TFinalize() {
 task TMain() {
     while (_count < -30) yield;
     while (_bossAlive) {
-        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TFire();
@@ -119,7 +119,7 @@ task TFire() {
     int firstLaser = CreateStraightLaserUA1(xPos, yPos, 0, 0, 5, COLOR_GRAY_L, 120);
     int shot1 = shots[length(shots) - 1]; //last fired shot
 
-    Animation_Charge(true);
+    Animation_Charge(_objBoss, true);
 
     Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 120, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     Primitive_ContractPolygon2D(xPos, yPos, 45, 128, 0, 125, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
@@ -171,7 +171,7 @@ task TFire() {
     Particle_ContractRing(xPos, yPos, 0, 100, 180, 32, 8, COLOR_GRAY_L);
     Particle_ContractRing(xPos, yPos, 0, 100, -180, 32, 8, COLOR_GRAY_L);
     wait(32); //laser delay time
-    Animation_Charge(false);
+    Animation_Charge(_objBoss, false);
 
     //explode shot
     for (int i = length(shots) - 1; i >= 0; i--) {

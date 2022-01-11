@@ -16,7 +16,7 @@ int _loopTime = 240;
         SetScriptResult(3000); 
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60 + absolute(_count / 60));
+        SetScriptResult(40 + absolute(_count / 60));
     }
 }
 
@@ -35,30 +35,31 @@ int _loopTime = 240;
 }
 
 task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30);
     wait(60);
     Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
-    Animation_Charge(false);
+    Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
 
 task TMain() {
     while (_count < -30) yield;
     while (_bossAlive) {
-        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                Animation_Charge(true);
+                Animation_Charge(_objBoss, true);
                 TFireA(1);
                 wait(60);
                 TFireA(-1);
                 wait(60);
                 TFireB();
                 wait(60);
-                Animation_Charge(false);
+                Animation_Charge(_objBoss, false);
             }
         }
         yield;

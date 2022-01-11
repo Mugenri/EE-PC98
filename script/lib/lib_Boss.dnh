@@ -19,8 +19,8 @@ bool _isSurvival = false; //survival spell
 real _bossLife; //current life
 real _previousLife = 0; //life of previous frame
 
-real intersectionShot = 28; //default intersection to shot
-real intersectionPlayer = 20; //default intersection to player
+real _intersectionShot = 28; //default intersection to shot
+real _intersectionPlayer = 20; //default intersection to player
 
 //Initialize a boss scene
 function<void> Boss_Init(bool isVulnerable_) {
@@ -54,10 +54,10 @@ function<int> Boss_Create(string bossID_, real x_, real y_) {
     Boss_SetInitPosition(bossID_, x_, y_);
     return Boss_Create(bossID_);
 }
-//update function to be run in mainloop of single (mainBoss_ is the primary boss object for multiple boss fights)
-function<void> Boss_Update(int mainBoss_) {
+//update function to be run in mainloop of single TODO test double bosses with two health pools
+function<void> Boss_Update(int objBoss_) {
     _isDamaged = false;
-    _bossLife = ObjEnemy_GetInfo(mainBoss_, INFO_LIFE);
+    _bossLife = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 
     if (_bossLife <= 0) {
         _bossAlive = false; //health check
@@ -71,23 +71,23 @@ function<void> Boss_Update(int mainBoss_) {
             AddScore(10 * (round (_previousLife - _bossLife))); //~10 points per point of boss health
         } else {
             CallSFX(SND_INVINCIBLE);
-            ObjEnemy_SetLife(mainBoss_, ceil(_bossLife)); //accounts for how invincibility is handled
+            ObjEnemy_SetLife(objBoss_, ceil(_bossLife)); //accounts for how invincibility is handled
         }
     }
 
-    if (!_isSpellVulnerable && !_isSurvival && _spellBarrier == false && IsPlayerSpellActive() && _bossAlive) TSpellBarrier(mainBoss_); //bomb invulnerability check
+    if (!_isSpellVulnerable && !_isSurvival && _spellBarrier == false && IsPlayerSpellActive() && _bossAlive) TSpellBarrier(objBoss_); //bomb invulnerability check
 
     _previousLife = _bossLife;
 
-    task TSpellBarrier(int mainBoss_) {
+    task TSpellBarrier(int objBoss_) {
         _spellBarrier = true;
         while (IsPlayerSpellActive() && _bossAlive) { //_bossAlive just in case
-            Boss_SetVulnerable(mainBoss_, false);
+            Boss_SetVulnerable(objBoss_, false);
             yield;
         }
         wait(15);
         _spellBarrier = false;
-        Boss_SetVulnerable(mainBoss_, true);
+        Boss_SetVulnerable(objBoss_, true);
     }
 }
 

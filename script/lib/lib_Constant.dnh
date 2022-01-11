@@ -188,6 +188,9 @@ const int SHOT_CANCEL       = 2; //If the bullet/laser should be given a cancel 
 const int SHOT_EFFECT       = 3; //Key field for bullet deletion effect
 //Boss
 const int BOSS_ID           = 4; //Boss ID string constant
+const int BOSS_DAMAGE       = 5; //Boss took damage this frame
+// const int ANIM_CHARGE       = 6; //reserved for animation library
+// const int ANIM_SPECIAL      = 7; //reserved for animation library
 
 //----------------------------------------------------
 //COLOR CONSTANTS

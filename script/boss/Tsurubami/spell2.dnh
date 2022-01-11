@@ -17,7 +17,7 @@ int _spellID = 3 + _diff;
         SetScriptResult(4000);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60 + absolute(_count / 60));
+        SetScriptResult(50 + absolute(_count / 60));
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(200000);
@@ -44,14 +44,14 @@ task TInitialize() {
     wait(30);
     Transition_Rise(1, 0);
     CallSFX(SND_TRANSITION);
-    wait(90);
+    wait(120);
     Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
-    Animation_Charge(false);
+    Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
 }
@@ -59,7 +59,7 @@ task TFinalize() {
 task TMain() {
     while (_count < -30) yield;
     while (_bossAlive) {
-        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TSlugShot();
@@ -120,7 +120,7 @@ task TSlugShot() {
 
 task TSkewer() {
     real angleT = GetAngleToPlayer(_objBoss);
-    Animation_Charge(true);
+    Animation_Charge(_objBoss, true);
     Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), angleT, 280, 45);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, 90, 37, 8, COLOR_BLACK);
     wait(8);
@@ -131,5 +131,5 @@ task TSkewer() {
         CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 26), angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
     }
     CallSFX(SND_SHOT1);
-    Animation_Charge(false);
+    Animation_Charge(_objBoss, false);
 }

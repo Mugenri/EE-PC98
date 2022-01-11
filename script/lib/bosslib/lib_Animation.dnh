@@ -10,9 +10,6 @@ const int ANIM_RIGHT_INV = 5;
 const int ANIM_CHARGE = 6;
 const int ANIM_SPECIAL = 7; //free slot for boss specific special animations
 
-bool _isCharging = false; //charging animation flag
-bool _isSpecial = false; //special animation flag uwu
-
 //draw the boss sprite on the given object with the attached bossID
 function<void> Animation_DrawBoss(int objBoss_) {
     string bossID = Boss_GetID(objBoss_);
@@ -21,7 +18,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
     ObjPrim_SetTexture(objBoss_, GetBossSprite(bossID));
     Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
 
-    //Animation_Damage(objBoss_); worry about this in a bit
+    Animation_Damage(objBoss_);
 
     int[] wh = Animation_GetWidthHeight(bossID);
     int width = wh[0];
@@ -38,14 +35,14 @@ function<void> Animation_DrawBoss(int objBoss_) {
             real speed = ObjMove_GetSpeed(objBoss_);
             real dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
             //in order of precedence
-            if (_isSpecial) animType = ANIM_SPECIAL;
+            if (Obj_GetValueDI(objBoss_, ANIM_SPECIAL, false)) animType = ANIM_SPECIAL;
             else if (_spellBarrier || _isSurvival) {
                 if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE_INV;
                 else {
                     if (dir < 0) animType = ANIM_LEFT_INV;
                     else animType = ANIM_RIGHT_INV;
                 }
-            } else if (_isCharging) animType = ANIM_CHARGE;
+            } else if (Obj_GetValueDI(objBoss_, ANIM_CHARGE, false)) animType = ANIM_CHARGE;
             else {
                 if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE;
                 else {
@@ -78,11 +75,11 @@ function<void> Animation_DrawBoss(int objBoss_) {
 }
 
 //toggle the charge and special animation flags (for use in single scripts)
-function<void> Animation_Charge(bool active_) {
-    _isCharging = active_;
+function<void> Animation_Charge(int obj_, bool active_) {
+    Obj_SetValueI(obj_, ANIM_CHARGE, active_);
 }
-function<void> Animation_Special(bool active_) {
-    _isSpecial = active_;
+function<void> Animation_Special(int obj_, bool active_) {
+    Obj_SetValue(obj_, ANIM_SPECIAL, active_);
 }
 
 //----------------------------------------------------
@@ -107,19 +104,21 @@ function<void> Animation_Damage(int objBoss_) {
     ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
     ObjShader_SetTechnique(objBoss_, "TecWhite");
     bool isFlashing = false;
-    while (!Obj_IsDeleted(objBoss_)) {
-        if (isFlashing == false && _isDamaged) {
-            isFlashing = true;
-            loop (3) {
-                if (Obj_IsDeleted(objBoss_)) break;
-                ObjShader_SetFloat(objBoss_, "enable_", 1);
-                yield;
-                if (Obj_IsDeleted(objBoss_)) break;
-                ObjShader_SetFloat(objBoss_, "enable_", 0);
-                wait(3);
-            }
-            isFlashing = false;
-        } else yield;
+    async {
+        while (!Obj_IsDeleted(objBoss_)) {
+            if (isFlashing == false && _isDamaged) {
+                isFlashing = true;
+                loop (3) {
+                    if (Obj_IsDeleted(objBoss_)) break;
+                    ObjShader_SetFloat(objBoss_, "enable_", 1);
+                    yield;
+                    if (Obj_IsDeleted(objBoss_)) break;
+                    ObjShader_SetFloat(objBoss_, "enable_", 0);
+                    wait(3);
+                }
+                isFlashing = false;
+            } else yield;
+        }
+        ObjShader_SetFloat(objBoss_, "enable_", 0);
     }
-    ObjShader_SetFloat(objBoss_, "enable_", 0);
 }

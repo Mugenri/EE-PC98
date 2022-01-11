@@ -22,10 +22,10 @@ function<void> Boss_SetIntersection(int obj_, int toShot_, int toPlayer_) {
     ObjEnemy_SetIntersectionCircleToShot(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
     ObjEnemy_SetIntersectionCircleToPlayer(obj_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
 }
-//Sets another hitbox for target_ at obj_'s location for 1 frame
+//Sets another hitbox for obj_ at target_'s location for 1 frame
 function<void> Boss_SetIntersection(int obj_, int target_, int toShot_, int toPlayer_) {
-    ObjEnemy_SetIntersectionCircleToShot(target_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toShot_);
-    ObjEnemy_SetIntersectionCircleToPlayer(target_, ObjMove_GetX(obj_), ObjMove_GetY(obj_), toPlayer_);
+    ObjEnemy_SetIntersectionCircleToShot(obj_, ObjMove_GetX(target_), ObjMove_GetY(target_), toShot_);
+    ObjEnemy_SetIntersectionCircleToPlayer(obj_, ObjMove_GetX(target_), ObjMove_GetY(target_), toPlayer_);
 }
 //sets invulnerability of the given boss object
 function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {

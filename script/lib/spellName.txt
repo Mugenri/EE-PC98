@@ -6,3 +6,5 @@ Reflection Card "Moonlight Lattice"
 Reflection Card "Moonbeam Massacre"
 Senri Technique "Donation Overflow"
 NOT FINISHED
+Senri Technique "Ink Projection Youkai Seal"
+Forbidden Art "Dual Youkai Annihilation Seal"

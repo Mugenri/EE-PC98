@@ -17,7 +17,7 @@ int _spellID = 7 + _diff;
         SetScriptResult(4000);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(60 + absolute(_count / 60));
+        SetScriptResult(50 + absolute(_count / 60));
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(300000);
@@ -44,14 +44,14 @@ task TInitialize() {
     wait(30);
     Transition_Circle(1, 0);
     CallSFX(SND_TRANSITION);
-    wait(90);
+    wait(120);
     Boss_SetVulnerable(_objBoss, true);
 }
 
 task TFinalize() {
     while (_bossAlive) yield;
-    ObjMove_SetDestAtFrame(_objBoss, 30, 70, 60, LERP_DECELERATE);
-    Animation_Charge(false);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
 }
@@ -59,7 +59,7 @@ task TFinalize() {
 task TMain() {
     while (_count < -30) yield;
     while (_bossAlive) {
-        Boss_SetIntersection(_objBoss, intersectionShot, intersectionPlayer);
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TFire();
@@ -73,6 +73,7 @@ task TFire() {
     if (!_bossAlive) return;
 
     CallSFX(SND_CHARGE2);
+    Animation_Charge(_objBoss, true);
     wait(15);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 150, 180, 30, 8, COLOR_GRAY);
     wait(3);
@@ -86,6 +87,7 @@ task TFire() {
     wait(3);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 150, -180, 30, 8, COLOR_WHITE);
     wait(30);
+    Animation_Charge(_objBoss, false);
 
     if (!_bossAlive) return;
 
@@ -127,7 +129,7 @@ task TFire() {
     real randX;
     real randY;
 
-    loop {
+    loop { //get location of safe zone
         real angleT = rand(0, 360);
         randX = pX + 135 * cos(angleT);
         randY = pY + 135 * sin(angleT);
@@ -136,8 +138,9 @@ task TFire() {
 
     DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, randX, randY, 32);
 
-    for each (shot in shots) Obj_Delete(shot);
+    for each (shot in shots) ObjShot_SetDeleteFrame(shot, 0);
 
+    //display safe zone
     Primitive_ContractPolygon2D(randX, randY, 45, 135, 0, 180, 32, COLOR_GREEN_L, false, RP_STG_EFF_MID);
     loop (3) {
         if (!_bossAlive) return;

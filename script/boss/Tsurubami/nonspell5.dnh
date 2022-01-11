@@ -1,0 +1,125 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["nonspell5"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - 4;
+int _count = -60;
+int _loopTime = 252;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(2900); 
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire();
+                wait(36);
+                TMovement(1);
+                wait(90);
+                TFire();
+                wait(36);
+                TMovement(-1);
+            }
+        }
+        yield;
+    }
+}
+
+task TFire() {
+    if (!_bossAlive) return;
+    real bossX = ObjMove_GetX(_objBoss);
+    real bossY = ObjMove_GetY(_objBoss);
+
+    //yin yang ring
+    real angleT = rand(0, 360);
+    loop (12) {
+        int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
+        ObjShot_SetSpellResist(orbShot, true);
+        TReflect(orbShot);
+        angleT += 360 / 12;
+    }
+
+    //red ring bullets
+    for (int i = 0; i < 3; i++) {
+        angleT = rand(0, 360);
+        loop (20) {
+            int shot = CreateShotUA1(bossX, bossY, rand(1.2, 1.6) + 0.4 * i, angleT, SHOT_RED+RING_S, i * 4, SHOT_RED+CANCEL_BURST2);
+            angleT += 360 / 20;
+        }
+    }
+
+    //aimed shots
+    angleT = GetAngleToPlayer(_objBoss);
+    for (int i = 0; i < 6; i++) {
+        if (!_bossAlive) return;
+        TAmuletLine(i, angleT);
+        CallSFX(SND_SHOT1);
+        wait(6);
+    }
+
+    task TReflect(int obj_) {
+        while (!Obj_IsDeleted(obj_) && _bossAlive) {
+            real xPos = ObjMove_GetX(obj_);
+            if (xPos < MIN_X || xPos > MAX_X) {
+                ObjMove_SetX(obj_, clamp(xPos, MIN_X, MAX_X));
+                ObjMove_SetAngle(obj_, 180 - ObjMove_GetAngle(obj_));
+                ObjMove_AddPatternB2(obj_, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.05, NO_CHANGE, 2.75);
+            }
+            yield;
+        }
+    }
+
+    task TAmuletLine(real angleMod_, real angleP_) {
+        int color = SHOT_RED_INV;
+        for (int i = 7 - angleMod_; i >= 0; i--) {
+            if (!_bossAlive) return;
+            CreateShotUA1(bossX, bossY, 2 + 0.45 * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(bossX, bossY, 2 + 0.45 * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            color = SHOT_BLACK;
+        }
+    }
+}
+
+task TMovement(int dir_) { 
+    if (_bossAlive) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(45, 140) * dir_, 50 + rand(0, 40), 90, LERP_DECELERATE);
+}
