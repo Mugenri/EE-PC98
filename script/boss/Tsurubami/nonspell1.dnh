@@ -35,7 +35,7 @@ int _loopTime = 240;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
     wait(60);
     Boss_SetVulnerable(_objBoss, true);
 }

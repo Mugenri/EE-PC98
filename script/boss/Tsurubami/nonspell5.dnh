@@ -42,6 +42,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
@@ -74,6 +75,7 @@ task TFire() {
     real angleT = rand(0, 360);
     loop (12) {
         int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
+        if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
         ObjShot_SetSpellResist(orbShot, true);
         TReflect(orbShot);
         angleT += 360 / 12;
@@ -101,9 +103,11 @@ task TFire() {
         while (!Obj_IsDeleted(obj_) && _bossAlive) {
             real xPos = ObjMove_GetX(obj_);
             if (xPos < MIN_X || xPos > MAX_X) {
+                real angleT = ObjMove_GetAngle(obj_);
                 ObjMove_SetX(obj_, clamp(xPos, MIN_X, MAX_X));
-                ObjMove_SetAngle(obj_, 180 - ObjMove_GetAngle(obj_));
+                ObjMove_SetAngle(obj_, 180 - angleT);
                 ObjMove_AddPatternB2(obj_, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.05, NO_CHANGE, 2.75);
+                if (cos(180 - angleT) < 0) ObjRender_SetScaleX(obj_, -1);
             }
             yield;
         }

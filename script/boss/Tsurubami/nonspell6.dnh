@@ -1,0 +1,101 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["nonspell6"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - 4;
+int _count = -60;
+int _loopTime = [16, 6][_diff];
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000); 
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TFireB();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            TFireA();
+        }
+        yield;
+    }
+}
+
+task TFireA() {
+    if (!_bossAlive) return;
+
+    int numShot = 8;
+    real angleT = 35 * sin(_count / 2.5) + 360 / numShot;
+    loop (numShot) {
+        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        ObjShot_SetSpellResist(amulet, true);
+        TSplit(amulet);
+        angleT += 360 / numShot;
+    }
+    CallSFX(SND_SHOT1);
+
+    task TSplit(int obj_) {
+        wait(30);
+        if (Obj_IsDeleted(obj_) || !_bossAlive) return;
+        real angleT = ObjMove_GetAngle(obj_);
+        ObjMove_SetAngle(obj_, angleT + 25);
+        int newShot = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 3.2, angleT - 25, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        ObjShot_SetSpellResist(newShot, true);
+        TSplit(newShot);
+        TSplit(obj_);
+    }
+}
+
+task TFireB() {
+    while (_count < 0) yield;
+    real angleT = 180;
+    int waitTime = [4, 2][_diff];
+    int numShot = 24;
+    real speed = [1.6, 2.1][_diff];
+    while (_bossAlive) {
+        for (int i = 1; i < 8; i++) {
+            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT + i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT + 180 - i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+        }
+        angleT += 360 / numShot;
+        wait(waitTime);
+    }
+}

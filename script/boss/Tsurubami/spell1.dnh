@@ -40,7 +40,7 @@ int _spellID = 1 + _diff;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
     wait(30);
     Transition_Circle(1, 0);
     CallSFX(SND_TRANSITION);

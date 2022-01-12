@@ -95,6 +95,7 @@ const int SND_CHARGE1       = 2;
 const int SND_CHARGE2       = 31;
 const int SND_LASER1        = 8;
 const int SND_LASER2        = 9;
+const int SND_MASTERSPARK   = 33;
 const int SND_EXPLOSION1    = 3;
 const int SND_EXPLOSION2    = 4;
 const int SND_EXPLOSION3    = 5;

@@ -9,7 +9,7 @@ int _objClone; //second hitbox
 int _objBoss;
 int _diff = GetDifficulty() - 4;
 int _count = -360;
-int _loopTime = [240, 220][_diff];
+int _loopTime = 190;
 int _spellID = 9 + _diff;
 
 @Event {
@@ -46,8 +46,8 @@ int _spellID = 9 + _diff;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
-    ObjMove_SetDestAtFrame(_objClone, MID_X, MID_Y, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 30, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objClone, MID_X, MID_Y, 30, LERP_DECELERATE);
     wait(30);
     Transition_Rise(1, 0);
     CallSFX(SND_TRANSITION);
@@ -58,6 +58,7 @@ task TInitialize() {
 task TFinalize() {
     while (_bossAlive) yield;
     Obj_Delete(_objClone);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
@@ -83,8 +84,8 @@ task TMain() {
 task TMovement(int obj_, int dir_) {
     while (_count < 0) yield;
     while (_bossAlive) {
-        real x = 0.5 + 0.5 * (-cos(_count * 0.8));
-        real y = 0.5 + 0.5 * (sin(_count * 0.8));
+        real x = 0.5 + 0.5 * (-cos(_count));
+        real y = 0.5 + 0.5 * (sin(_count));
         real xPos = Interpolate_Linear(MID_X - 150 * dir_, MID_X + 150 * dir_, x);
         real yPos = Interpolate_Linear(MID_Y - 150 * dir_, MID_Y + 150 * dir_, y);
         ObjMove_SetDestAtFrame(obj_, xPos, yPos, 1);
@@ -148,8 +149,9 @@ task TFire() {
     //tsuru burst fire
     real radius = rand(0, 5);
     real angleT = ObjMove_GetAngle(_objBoss) - 90;
-    int waitTime = [1, 1][_diff];
-    int numShot = [16, 64][_diff];
+    int waitTime = [0, 1][_diff];
+    int numShot = [17, 64][_diff];
+    int moveTime = [110, 50][_diff];
     loop (numShot) {
         if (!_bossAlive) return;
         real radius = 150;
@@ -157,14 +159,14 @@ task TFire() {
         real yPos = MID_Y + radius * sin(angleT);
         int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 0, SHOT_GRAY+PILL_A, 0, SHOT_GRAY+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
-        ObjMove_SetDestAtFrame(shot, xPos, yPos, 120, LERP_ACCELERATE);
+        ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
         shots = shots ~ [shot];
-        CallSFX(SND_SHOT1);
+        CallSFX(SND_SHOT3);
         angleT += 360 / numShot;
         wait(waitTime);
     }
 
-    wait(80);
+    wait([80, 30][_diff]);
     if (!_bossAlive) return;
 
     //clone lasers
@@ -197,7 +199,7 @@ task TFire() {
         }
 
         if (Obj_IsDeleted(shot_) || !_bossAlive) return;
-        CreateLooseLaserUA1(bX, bY, 14, angleT, 140, COLOR_BLACK, 0);
+        CreateLooseLaserUA1(bX, bY, [14, 20][_diff], angleT, 140, COLOR_BLACK, 0);
         CallSFX(SND_LASER2);
 
         real dist = distance(bX, bY, sX, sY);

@@ -1,0 +1,177 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["spell5"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - 4;
+int _count = -120;
+int _loopTime = 660;
+int _spellID = 11 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(4000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(50 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(300000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    Spell_SetCurrent(_spellID, true);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TKillAura();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(1, 0);
+    CallSFX(SND_TRANSITION);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TKillAura() {
+    while (_count < -60) yield;
+    int killAura = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, true, RP_STG_EFF_LO);
+    int radius = 175;
+    int cooldown = 30;
+
+    //spawn animation
+    for (int i = 1; i <= 60; i++) {
+        real x = ObjMove_GetX(_objBoss);
+        real y = ObjMove_GetY(_objBoss);
+        real angleT = 0;
+        int tempRad = Interpolate_Decelerate(0, radius, i / 60);
+        for (int j = 0; j < 34; j++) {
+            ObjPrim_SetVertexPosition(killAura, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
+            angleT += 360 / 34; 
+        }
+        yield;
+    }
+
+    while (_bossAlive) {
+        real x = ObjMove_GetX(_objBoss);
+        real y = ObjMove_GetY(_objBoss);
+        real pX = ObjMove_GetX(_objPlayer);
+        real pY = ObjMove_GetY(_objPlayer);
+        real angleT = 0;
+        //set position, check for player
+        for (int i = 0; i < 34; i++) {
+            ObjPrim_SetVertexPosition(killAura, i, x + radius * cos(angleT), y + radius * sin(angleT), 1);
+            angleT += 360 / 34; 
+        }
+        if (cooldown > 0) {
+            cooldown--;
+        }
+        if (distance(x, y, pX, pY) < radius && cooldown == 0) {
+            CreateShotUA1(ObjMove_GetX(_objPlayer), ObjMove_GetY(_objPlayer), 0, 0, SHOT_RED+PELLET, 0, SHOT_RED+CANCEL_BURST1);
+            //TODO make prettier
+            cooldown = 30;
+        }
+        yield;
+    }
+    Obj_Delete(killAura);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire(1);
+                wait(330);
+                TFire(-1);
+            }
+        }
+        yield;
+    }
+}
+
+task TFire(int dir_) {
+    if (!_bossAlive) return;
+
+    //move to position
+    real xDest = MID_X - 160 * dir_;
+    real yDest = MID_Y - 150;
+    wait(60);
+    ObjMove_SetDestAtFrame(_objBoss, xDest, yDest, 90, LERP_SMOOTHER);
+
+    //spawn laser
+    real angleLaser = 90 - 90 * dir_;
+    int mSpark = CreateMasterSpark(0, 0, angleLaser, 550, 140, 120, COLOR_GRAY, COLOR_GRAY_L, 100);
+    CallSFX(SND_CHARGE1);
+
+    loop (100) {
+        ObjMove_SetPosition(mSpark, ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss));
+        yield;
+    }
+
+    if (!_bossAlive) return;
+    CallSFX(SND_MASTERSPARK);
+    Animation_Charge(_objBoss, true);
+
+    wait(20);
+    if (!_bossAlive) return;
+
+    async { //bullets at edge of screen
+        int color = 0;
+        while (_bossAlive && !Obj_IsDeleted(mSpark)) {
+            int tempColor = [SHOT_GRAY, SHOT_WHITE, SHOT_BLUE][color % 3];
+            real angleT = ObjStLaser_GetAngle(mSpark) + rand(-7, 7);
+            real xPos = xDest + 525 * cos(angleT);
+            real yPos = yDest + 525 * sin(angleT);
+            xPos = clamp(xPos, MIN_X, MAX_X);
+            yPos = clamp(yPos, MIN_Y, MAX_Y);
+            loop (2) {
+                CreateShotUB2(xPos, yPos, rand(-1.5, -2.8) * dir_, rand(-0.8, -3.7), 0.006 * dir_, 0.03, -1 * dir_, 2.6, tempColor+CRYSTAL_S, 0, tempColor+SPAWN_S+SIZE_16, tempColor+CANCEL_SPARKLE);
+            }
+            color++;
+            CallSFX(SND_SHOT1);
+            wait(3);
+        }
+    }
+
+    async { //laser movement
+        real min = 90 - 90 * dir_;
+        real max = 90 - 20 * dir_;
+        for (int i = 1; i <= 120; i++) {
+            if (!_bossAlive || Obj_IsDeleted(mSpark)) return;
+            ObjStLaser_SetAngle(mSpark, Interpolate_Accelerate(min, max, i / 120));
+            yield;
+        }
+    }
+
+    wait(120);
+    if (!_bossAlive) return;
+    Obj_Delete(mSpark);
+    wait(15);
+    if (!_bossAlive) return;
+    Animation_Charge(_objBoss, false);
+}
