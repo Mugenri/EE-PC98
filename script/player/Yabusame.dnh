@@ -13,7 +13,7 @@ int _countShot = 0; //shot type stagger
 @Initialize {
     string imageFile = IMG_PLR_YABUSAME;
     string shotData = DIR_PLR ~ "YabuShot.dnh";
-    InitPlayer(imageFile, shotData, 3, 1.53);
+    InitPlayer(imageFile, shotData, 3, 1.53, 24);
 
     TShot();
     TOption(1);

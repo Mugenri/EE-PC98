@@ -7,7 +7,7 @@ string _pathShot; //player shot data passed by player script
 int _particleFlake;
 int _particleShot;
 
-function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_) {
+function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_, int itemScope_) {
     Common_Init();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
@@ -24,6 +24,7 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
     SetPlayerDownStateFrame(0);
     SetPlayerRebirthFrame(15);
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
+    SetPlayerItemScope(itemScope_);
     SetPlayerInvincibleGraze(false);
     SetPlayerIntersectionEraseShot(false);
 
