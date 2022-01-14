@@ -140,7 +140,8 @@ task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text b
             tempString = tempString ~ [tempStrings[i][j]];
             ObjText_SetText(obj_, tempString);
             if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
-                yield;
+                CallSFX(SND_TALK);
+                yield;;
             }
         }
         tempString = tempString ~ ['[','r',']']; //append a newline after each substring

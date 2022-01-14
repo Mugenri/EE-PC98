@@ -107,6 +107,8 @@ const int SND_INVINCIBLE    = 6;
 const int SND_TRANSITION    = 27;
 const int SND_EXTEND        = 29;
 const int SND_TIMER         = 30;
+//Other
+const int SND_TALK          = 34;
 
 //----------------------------------------------------
 //RENDER PRIORITY CONSTANTS
