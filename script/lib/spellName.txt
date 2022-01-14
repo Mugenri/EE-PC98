@@ -1,12 +1,12 @@
-Storm Card "Inkshower Accident"
-NOT FINISHED
+Drizzle Card "Inkshower Downpour"
+Storm Card "Flash Flood"
 Snare Card "Talisman Skewer"
-NOT FINISHED
+Snare Card "Indiscriminate Hunter"
 Reflection Card "Moonlight Lattice"
 Reflection Card "Moonbeam Massacre"
 Senri Technique "Donation Overflow"
-NOT FINISHED
+Forbidden Art "Tax Evasion"
 Senri Technique "Ink Projection Youkai Seal"
 Forbidden Art "Dual Youkai Annihilation Seal"
-Severing Card "Bury Beneath the Clouds"
-NOT FINISHED
+Severing Card "Burial Under Cloudy Skies"
+Severing Card "Unconventional Grave-Digger"

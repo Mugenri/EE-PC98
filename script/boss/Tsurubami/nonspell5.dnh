@@ -73,20 +73,22 @@ task TFire() {
 
     //yin yang ring
     real angleT = rand(0, 360);
-    loop (12) {
+    real numShot = [12, 15][_diff];
+    loop (numShot) {
         int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
         if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
         ObjShot_SetSpellResist(orbShot, true);
         TReflect(orbShot);
-        angleT += 360 / 12;
+        angleT += 360 / numShot;
     }
 
     //red ring bullets
+    numShot = [20, 34][_diff];
     for (int i = 0; i < 3; i++) {
         angleT = rand(0, 360);
-        loop (20) {
+        loop (numShot) {
             int shot = CreateShotUA1(bossX, bossY, rand(1.2, 1.6) + 0.4 * i, angleT, SHOT_RED+RING_S, i * 4, SHOT_RED+CANCEL_BURST2);
-            angleT += 360 / 20;
+            angleT += 360 / numShot;
         }
     }
 
@@ -114,11 +116,12 @@ task TFire() {
     }
 
     task TAmuletLine(real angleMod_, real angleP_) {
+        real speedMod = [0.45, 0.80][_diff];
         int color = SHOT_RED_INV;
         for (int i = 7 - angleMod_; i >= 0; i--) {
             if (!_bossAlive) return;
-            CreateShotUA1(bossX, bossY, 2 + 0.45 * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
-            CreateShotUA1(bossX, bossY, 2 + 0.45 * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(bossX, bossY, 2 + speedMod * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(bossX, bossY, 2 + speedMod * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
             color = SHOT_BLACK;
         }
     }

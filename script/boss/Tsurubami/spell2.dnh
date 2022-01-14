@@ -46,6 +46,7 @@ task TInitialize() {
     CallSFX(SND_TRANSITION);
     wait(120);
     Boss_SetVulnerable(_objBoss, true);
+    Animation_Charge(_objBoss, true);
 }
 
 task TFinalize() {
@@ -57,6 +58,7 @@ task TFinalize() {
 }
 
 task TMain() {
+    int waitTime = [90, 10][_diff];
     while (_count < -30) yield;
     while (_bossAlive) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
@@ -64,8 +66,10 @@ task TMain() {
             async {
                 TSlugShot();
                 TSlugShot();
-                TSkewer();
             }
+        }
+        if (_count % waitTime == 0 && _count >= 0) {
+            TSkewer();
         }
         yield;
     }
@@ -85,7 +89,7 @@ task TSlugShot() {
     ObjShot_SetSpellResist(head, true);
     TMovement(head);
     wait(8);
-    loop (5) {
+    loop ([5, 7][_diff]) {
         if (!_bossAlive) return;
         int trail = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(trail, true);
@@ -120,7 +124,7 @@ task TSlugShot() {
 
 task TSkewer() {
     real angleT = GetAngleToPlayer(_objBoss);
-    Animation_Charge(_objBoss, true);
+    real modif = 0;
     Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), angleT, 280, 45);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, 90, 37, 8, COLOR_BLACK);
     wait(8);
@@ -128,8 +132,8 @@ task TSkewer() {
     wait(37);
     if (!_bossAlive) return;
     for (int i = 0; i < 24; i++) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 26), angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 26), angleT + modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        if (_diff == 1) modif = rand(-5, 5);
     }
     CallSFX(SND_SHOT1);
-    Animation_Charge(_objBoss, false);
 }

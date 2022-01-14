@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - 4;
 int _count = -60;
-int _loopTime = 180;
+int _loopTime = [180, 40][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -55,12 +55,12 @@ task TMain() {
             async {
                 Animation_Charge(_objBoss, true);
                 TFireA(1);
-                wait(60);
+                wait(_loopTime / 3);
                 Animation_Charge(_objBoss, false);
-                wait(30);
+                wait(_loopTime / 6);
                 Animation_Charge(_objBoss, true);
                 TFireA(-1);
-                wait(60);
+                wait(_loopTime / 3);
                 Animation_Charge(_objBoss, false);
             }
         }
@@ -70,7 +70,6 @@ task TMain() {
 
 task TFireA(int dir_) {
     if (!_bossAlive) return;
-    //ring of rotating amulets that spawn lines of bullets that move away from the boss
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(3);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
@@ -79,9 +78,11 @@ task TFireA(int dir_) {
     wait(30);
 
     if (!_bossAlive) return;
+    //ring of rotating amulets that spawn lines of bullets that move away from the boss
     real angleT = 90;
+    real speed = [3.2, 5.2][_diff];
     loop (12) {
-        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);
         TCommands(amulet);
         angleT += 360 / 12;
@@ -91,11 +92,14 @@ task TFireA(int dir_) {
     wait(35);
     if (!_bossAlive) return;
 
-    angleT = GetAngleToPlayer(_objBoss);
-    loop (32) {
-        int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 9, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
+    //aimed circles
+    speed = [9, 12.5][_diff];
+    int numShot = [32, 40][_diff];
+    angleT = GetAngleToPlayer(_objBoss) + [0, 540 / numShot][_diff];
+    loop (numShot) {
+        int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet2, 12, NO_CHANGE, NO_CHANGE, -1, NO_CHANGE, 1);
-        angleT += 360 / 32;
+        angleT += 360 / numShot;
     }
     CallSFX(SND_SHOT1);
 
@@ -105,21 +109,26 @@ task TFireA(int dir_) {
         ObjMove_AddPatternA2(parent_, 90, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.2 * dir_, NO_CHANGE);
         real bossX = ObjMove_GetX(_objBoss);
         real bossY = ObjMove_GetY(_objBoss);
-        int delayTime = 64;
+        int delayTime = [128, 64][_diff];
+        int waitTime = [8, 5][_diff];
+        real accel = [0.01, 0.04][_diff];
+        real maxSpeed = [2, 3][_diff];
+        int shotNum = [4, 8][_diff];
 
         wait(20);
 
-        while (!Obj_IsDeleted(parent_) && _bossAlive && delayTime > 0) {
-            loop (4) {
+        while (!Obj_IsDeleted(parent_) && _bossAlive) {
+            loop (shotNum) {
                 if (Obj_IsDeleted(parent_) || !_bossAlive) break;
                 real pX = ObjMove_GetX(parent_);
                 real pY = ObjMove_GetY(parent_);
                 int shot = CreateShotUA1(pX, pY, 0, dottheta(pX, pY, bossX, bossY) + 180, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);
-                ObjMove_AddPatternA2(shot, delayTime * 2, NO_CHANGE, NO_CHANGE, 0.01, NO_CHANGE, 2);
-                wait(2);
+                ObjMove_AddPatternA2(shot, delayTime, NO_CHANGE, NO_CHANGE, 0.01, NO_CHANGE, maxSpeed);
+                wait([2, 1][_diff]);
             }
-            delayTime -= 8;
-            wait(8);
+            delayTime -= 16;
+            delayTime = max(delayTime, 16);
+            wait(waitTime);
         }
     }
 }

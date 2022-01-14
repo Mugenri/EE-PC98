@@ -13,7 +13,7 @@ int _loopTime = [16, 6][_diff];
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3000); 
+        SetScriptResult(2800); 
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(40 + absolute(_count / 60));
@@ -63,7 +63,7 @@ task TFireA() {
     if (!_bossAlive) return;
 
     int numShot = 8;
-    real angleT = 35 * sin(_count / 2.5) + 360 / numShot;
+    real angleT = 30 * sin(_count / 2.5) + 360 / numShot;
     loop (numShot) {
         int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);

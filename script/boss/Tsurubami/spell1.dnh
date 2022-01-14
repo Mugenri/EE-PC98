@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - 4;
 int _count = -120;
-int _loopTime = 310;
+int _loopTime = [310, 180][_diff];
 int _spellID = 1 + _diff;
 
 @Event {
@@ -80,15 +80,19 @@ task TFireA() {
         wait(150);
         if (_bossAlive) CallSFX(SND_CHARGE1);
     }
-    for (int i = 0; i < 30; i+=2) { //gravity shots
+    int numShot = 30;
+    real yAccel = [0.2, 0.38][_diff];
+    real yMax = [4.8, 5.8][_diff];
+    for (int i = 0; i < numShot; i+=2) { //gravity shots
         if (!_bossAlive) return;
         real xSpeed = rand(1, 2.5);
         xSpeed = rand_int(0, 1) == 0 ? xSpeed : xSpeed * -1;
-        int shot = CreateShotUB2(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), xSpeed, rand(-3, -5), 0, 0.2, 0, 4.8, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+SPAWN_E+SIZE_32, SHOT_GRAY_INV+CANCEL_32);
+        int shot = CreateShotUB2(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), xSpeed, -yMax, 0, yAccel, 0, yMax, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+SPAWN_E+SIZE_32, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         TRain(shot, i);
         CallSFX(SND_SHOT3);
-        wait(30 - i);
+        if (_diff == 0) wait(numShot - i);
+        else wait(10);
     }
 
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
@@ -98,12 +102,13 @@ task TFireA() {
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
 
-    for (int i = 1; i <= 3; i++) { //red bursts
+    numShot = [16, 20][_diff];
+    for (int i = 1; i <= 3; i++) { //blue bursts
         if (!_bossAlive) return;
         real angleT = rand(0, 360);
-        for (int j = 0; j < 16 * i; j++) {
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), rand(4.8, 5) / i, angleT, SHOT_RED_INV+FIRE_S, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
-            angleT += 360/(16*i);
+        for (int j = 0; j < numShot * i; j++) {
+            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), rand(4.8, 5) / i, angleT, SHOT_BLUE_INV+FIRE_S, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST1);
+            angleT += 360/(numShot*i);
         }
         CallSFX(SND_SHOT1);
         wait(6);
@@ -112,14 +117,15 @@ task TFireA() {
     Animation_Charge(_objBoss, false);
 
     task TRain(int obj_, int modif_) { //rain bullets
+        int color = [SHOT_GRAY, SHOT_WHITE][_diff];
         wait(45);
         while(_bossAlive && !Obj_IsDeleted(obj_)) {
             real xPos = ObjMove_GetX(obj_);
             real yPos = ObjMove_GetY(obj_);
             real angleT = ObjMove_GetAngle(obj_);
             if (yPos > MAX_Y) break;
-            loop (3) CreateShotUA1(xPos, yPos, rand(4, 4.5), angleT + 180 + rand(-10, 10), SHOT_BLACK+FIRE_S, 0, SHOT_BLACK+CANCEL_BURST1);
-            int rainShot = CreateShotUA1(xPos, yPos, rand(3, 3.5), angleT + 180 + rand(-5, 5), SHOT_GRAY+FIRE_S, 0, SHOT_GRAY+CANCEL_BURST1);
+            loop (3) CreateShotUA1(xPos, yPos, rand(4, 4.5), angleT + 180 + rand(-22, 22), SHOT_BLACK+FIRE_S, 0, SHOT_BLACK+CANCEL_BURST1);
+            int rainShot = CreateShotUA1(xPos, yPos, rand(3, 3.5), angleT + 180 + rand(-5, 5), color+FIRE_S, 0, color+CANCEL_BURST1);
             ObjMove_AddPatternB2(rainShot, 20, NO_CHANGE, NO_CHANGE, 0, 0.1, 0, rand(2.5, 3.1));
             wait(12 + modif_);
         }

@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - 4;
 int _count = -60;
-int _loopTime = 240;
+int _loopTime = [240, 120][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -49,12 +49,13 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
+    int waitTime = [120, 60][_diff];
     while (_bossAlive) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TFireA(1);
-                wait(120);
+                wait(waitTime);
                 TFireA(-1);
             }
         }
@@ -78,7 +79,8 @@ task TFireA(int dir_) {
         ObjShot_SetSpellResist(shot, true);
         TSpawnRing(shot, i);
         CallSFX(SND_SHOT1);
-        wait(Interpolate_Decelerate(12, 2, i / 22));
+        if (_diff == 0) wait(Interpolate_Decelerate(12, 2, i / 22));
+        else wait(4);
     }
 
     task TSpawnRing(int obj_, int modif_) {

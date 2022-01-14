@@ -80,14 +80,16 @@ task TFireA(int dir_) {
     CallSFX(SND_SHOT3);
 
     wait(20);
-    for (int i = 0; i < 12; i++) {
+    int spawnNum = [12, 24][_diff];
+    int waitTime = [6, 3][_diff];
+    for (int i = 0; i < spawnNum; i++) {
         if (!_bossAlive || Obj_IsDeleted(amulet)) return;
         real x = ObjMove_GetX(amulet);
         real y = ObjMove_GetY(amulet);
         if (i % 2 == 0) TShotA(x, y);
         else TShotB(x, y);
         CallSFX(SND_SHOT1);
-        wait(6);
+        wait(waitTime);
     }
 
     task TShotA(real x_, real y_) { //exploding ring
@@ -138,13 +140,14 @@ task TFireB() {
 
     task TGravityShot(int obj_) {
         wait(20);
+        int waitTime = [8, 6][_diff];
         loop {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             loop (2) {
                 CreateShotUB2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(-0.35, 0.35), -0.5, 0, 0.02 + rand(-0.01, 0.01), 0, 1.2, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
             }
             CallSFX(SND_SHOT1);
-            wait(8);
+            wait(waitTime);
         }
     }
 }
