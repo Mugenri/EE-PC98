@@ -129,36 +129,27 @@ function<void> SceneMusicRoom() {
             int lines = InitPrim2D(PRIMITIVE_LINELIST, 24, RP_UI_BG);
             
             int i = 0;
+            real time = 300;
             async {
-                loop {
-                    TMoveLineV(i);
-                    i += 2;
-                    if (i > 23) i = 0;
-                    wait(30);
+                while (!exitFlag) {
+                    for (int i = 0; i < 23; i += 2) {
+                        if (exitFlag) break;
+                        TMoveLineV(i);
+                        wait(30);
+                    }
                 }
             }
 
             return lines;
 
             task TMoveLineV(int index_) {
-                real xPos = 650;
-                real speed = 0;
+                real xPos;
                 ObjPrim_SetVertexColor(lines, index_, COLOR_GREEN_D);
                 ObjPrim_SetVertexColor(lines, index_ + 1, COLOR_GREEN_D);
-                while (xPos > 600) {
-                    xPos -= speed;
+                for (int i = 1; i <= time; i++) {
+                    xPos = Interpolate_Accelerate(WINDOW_WIDTH, 0, i / time);
                     ObjPrim_SetVertexPosition(lines, index_, xPos, 0, 1);
-                    ObjPrim_SetVertexPosition(lines, index_ + 1, xPos, 640, 1);
-                    speed += 0.01;
-                    yield;
-                }
-                ObjPrim_SetVertexColor(lines, index_, COLOR_GREEN);
-                ObjPrim_SetVertexColor(lines, index_ + 1, COLOR_GREEN);
-                while (xPos > 0) {
-                    xPos -= speed;
-                    ObjPrim_SetVertexPosition(lines, index_, xPos, 0, 1);
-                    ObjPrim_SetVertexPosition(lines, index_ + 1, xPos, 640, 1);
-                    speed += 0.02;
+                    ObjPrim_SetVertexPosition(lines, index_ + 1, xPos, WINDOW_HEIGHT, 1);
                     yield;
                 }
             }
