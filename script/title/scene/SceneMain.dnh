@@ -25,22 +25,23 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     if (playIntro_) {
-        //TODO play intro anim, this should be blocking and cancel upon pressing a button
+        MenuIntro();
+    } else {
+        TCreateMenuGraphicsMain();
     }
 
     //Init title graphics/replace intro prims with images
-    TCreateMenuGraphicsMain();
+    
 
     //Set up the menu
     {
-        int menuX = 400;
-        int menuY = 244;
+        int menuX = 428;
+        int menuY = 16;
         int[] xOffset = [-15, 110, -30, 90, -50, 75, -20, 100];
-        int yOffset = 15;
         string[] texts = ["Extra Start", "Practice", "Replays", "Result", "Music Room", "Sound Test", "Options", "Quit"];
         ascent (i in 0..selectMax + 1) {
-            TCreateMenuItemMain(i, menuX, menuY, xOffset[i], yOffset, texts[i]);
-            menuY += yOffset;
+            TCreateMenuItemMain(i, menuX, menuY, xOffset[i], texts[i]);
+            menuY += 16;
         }
         TCreateMenuInfo(1, GetScreenHeight() - 16); //version text
     }
@@ -112,25 +113,74 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         }
     }
 
+    function MenuIntro() {
+        //setup
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
+        ObjRender_SetColor(bg, COLOR_BLACK);
+        wait(30);
+        int logo1 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        ObjRender_SetColor(logo1, COLOR_BLUE_D);
+        ObjRender_SetPosition(logo1, WINDOW_WIDTH, 3, 1);
+        int logo2 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        ObjRender_SetColor(logo2, COLOR_INDIGO_D);
+        ObjRender_SetPosition(logo2, WINDOW_WIDTH, 3, 1);
+        int logo3 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        ObjRender_SetColor(logo3, COLOR_INDIGO_L);
+        ObjRender_SetPosition(logo3, WINDOW_WIDTH, 3, 1);
+        int logo4 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        ObjRender_SetColor(logo4, COLOR_WHITE);
+        ObjRender_SetPosition(logo4, WINDOW_WIDTH, 3, 1);
+
+        //anim
+        MoveLogo(logo1);
+        wait(8);
+        MoveLogo(logo2);
+        wait(8);
+        MoveLogo(logo3);
+        wait(8);
+        MoveLogo(logo4);
+        wait(40);
+        ScreenBlackout(40, 5, 40, COLOR_WHITE);
+        wait(40);
+
+        //cleanup
+        Obj_Delete(bg);
+        Obj_Delete(logo1);
+        Obj_Delete(logo2);
+        Obj_Delete(logo3);
+        Obj_Delete(logo4);
+
+        //normal menu fadein
+        TCreateMenuGraphicsMain();
+        wait(45);
+
+        task MoveLogo(int obj_) {
+            real frames = 40;
+            for (int i = 1; i <= 40; i++) {
+                ObjRender_SetPosition(obj_, Interpolate_Accelerate(WINDOW_WIDTH, 5, i / frames), 3, 1);
+                yield;
+            }
+        }
+    }
+
     task TCreateMenuGraphicsMain() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
+        int logo = InitSprite2D(0, 0, 327, 87, IMG_TT_LOGO, RP_UI_TEXT);
 
-        int yabu = InitSprite2D(0, 0, 288, 360, IMG_TT_YABU, RP_UI_BG);
-
-        ObjRender_SetPosition(yabu, 40, 20, 1);
+        ObjRender_SetPosition(logo, 5, 3, 1);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
-        Obj_Delete(yabu);
+        Obj_Delete(logo);
     }
 
-    task TCreateMenuItemMain(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
-        int color = COLOR_WHITE;
+    task TCreateMenuItemMain(int index_, int x_, int y_, int xOff_, string text_) {
+        int color = COLOR_INDIGO_L;
         if (CheckForbidden(index_, forbidIndex)) color = COLOR_BLUE_D;
-        int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, color);
+        int objText = CreateText(x_ + xOff_, y_, text_, color);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         while (!exitFlag) {
-            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_YELLOW : color));
+            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : color));
             Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
@@ -139,7 +189,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     task TCreateMenuInfo(int x_, int y_) {
-        int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, COLOR_WHITE);
+        int objText = CreateText(x_, y_, "Version " ~GAME_VERSION, COLOR_BLACK);
         while (!exitFlag) yield;
         Obj_Delete(objText);
     }

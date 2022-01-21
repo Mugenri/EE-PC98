@@ -1,0 +1,99 @@
+//Dialogue test script
+//Cant include lib_Common because dialogue is being called from the package
+#include "./../../lib/lib_Dialogue.dnh" //dialogue functions
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TBackground();
+    TMain();
+}
+
+@Event {}
+
+@MainLoop {yield;}
+
+@Finalize {}
+
+task TBackground() {
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_MIN);
+}
+
+//dialogue function
+task TMain() {
+    Dialogue_Start(); //pause game, create text boxes
+    Dialogue(); //main dialogue function
+    Dialogue_End(); //remove text boxes
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Dialogue() {
+    //create player/enemy portraits and text fields
+    int playerCutin = Dialogue_CreatePortrait(BOSS_ID_YABUSAME, false);
+    int bossCutin = Dialogue_CreatePortrait(BOSS_ID_TSURUBAMI, true);
+
+    //dialogue line position
+    int line = 0;
+    loop {
+        bool end = DialogueLine(line);
+        if (end) break;
+        line++;
+        Dialogue_Wait();
+    }
+    //Dialogue end
+    Obj_Delete(playerCutin);
+    Obj_Delete(bossCutin);
+
+    function<bool> DialogueLine(int line_) {
+        //-----------------------------
+        alternative (line_)
+        case (0) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Enough games, get out here!");
+        }
+        case (1) {
+            Dialogue_SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, MID_X, 60);
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_BossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
+        }
+        case (2) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "You called?");
+        }
+        case (3) {
+            Dialogue_SetPortrait(playerCutin, 1);
+            Dialogue_SetText(false, "You know as well as I do why/we're here.");
+        }
+        case (4) {
+            Dialogue_SetPortrait(bossCutin, 8);
+            Dialogue_SetText(true, "Ah. I see.../There are others watching,/are there?");
+        }
+        case (5) {
+            Dialogue_SetPortrait(playerCutin, 4);
+            Dialogue_SetText(false, "Don't you know what that/means?");
+        }
+        case (6) {
+            Dialogue_SetPortrait(playerCutin, 3);
+            Dialogue_SetText(false, "It means I get to beat you/up <3.");
+        }
+        case (7) {
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "Oh, I'm certain this is going/to go quite differently than/you're imagining...");
+        }
+        case (8) {
+            Dialogue_SetPortrait(playerCutin, 10);
+            Dialogue_SetText(false, "Let's put on a show then!");
+        }
+        case (9) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "For the viewers at home too~");
+        }
+        case (10) {
+            Dialogue_SetPortrait(bossCutin, 11);
+            Dialogue_SetText(true, "You'll regret being so/brazen!");
+        }
+        others{
+            return true;
+        }
+        return false;
+    }
+}

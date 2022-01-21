@@ -22,7 +22,9 @@ function<string> BGM_GetPath(int bgmID_) {
 //Returns text information for the specified track (for music menu)
 function<string[]> BGM_GetText(int bgmID_) {
     //returns array of name, comment
-//-------------------------------------------------  <- max line length
+/*
+---------------------------------------------------  <- max line length
+*/
     string name = "";
     string comment = "";
     alternative (bgmID_)

@@ -11,6 +11,7 @@
 #include "./scene/SceneSoundTest.dnh"
 
 bool _titleEnd = false;
+int _titleList; //particles
 
 @Initialize {
     SetAutoDeleteObject(true);
@@ -35,6 +36,10 @@ bool _titleEnd = false;
 task TTitleScene() {
     int testBG = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MIN); //if this is ever visible something is wrong
     ObjRender_SetColor(testBG, COLOR_RED); //its a bigass red rectangle
+
+    //title particle effect list
+    _titleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_UI_PARTICLE, 0, 0, 16, 16);
+    ParticleListShader(_titleList, 16/512, 16/512);
 
     StartBGM(0, 60, 30);
     TMainMenu(true, INDEX_EXTRA);

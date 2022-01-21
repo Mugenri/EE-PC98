@@ -13,7 +13,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
 
     int indexCurrent = selectedDefault_;
 
-    int[] forbidIndex = [];
+    int[] forbidIndex = [1];
     
     // Check if player has unlocked this difficulty (defaults to true)
     bool[] unlockFlag = [false, false];
@@ -30,7 +30,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     //Forbid Indices
     ascent (i in 0..length(unlockFlag)) {
         if (!unlockFlag[i]) {
-            //forbidIndex = forbidIndex ~ [i]; //TODO temporary for testing
+            forbidIndex = forbidIndex ~ [i]; //TODO temporary for testing
         }
     }
 
@@ -83,16 +83,74 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         ScreenBlackout(0, 0, 10, COLOR_WHITE);
         wait(60);
         ScreenBlackout(60, 60, 0, COLOR_BLACK);
-        //fade music too, Need to set this up
         wait(60);
         NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
     }
 
     task TCreateMenuGraphicsPlayer() {
-        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
+        ObjRender_SetColor(bg, COLOR_BLACK);
+        int circleOut = InitSprite2D(486, 0, 1017, 400, IMG_TT_PLAYERBG, RP_UI_BG);
+        ObjRender_SetPosition(circleOut, 55, 0, 1);
+        int circleIn = InitSprite2D(0, 0, 486, 400, IMG_TT_PLAYERBG, RP_UI_IMG);
+        ObjRender_SetPosition(circleIn, 78, 0, 1);
 
-        while (!exitFlag) yield;
+        int radius = 241;
+        TCircles();
+        while (!exitFlag) {
+            real angleT = rand(-50, 50); //get angle from center to edge of circle that is on screen
+            MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT), WINDOW_HEIGHT_MID + radius * sin(angleT), angleT);
+            MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT + 180), WINDOW_HEIGHT_MID + radius * sin(angleT + 180), angleT + 180);
+            yield;
+        }
         Obj_Delete(bg);
+        Obj_Delete(circleOut);
+        Obj_Delete(circleIn);
+
+        task TCircles() {
+            int primCircle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG);
+            int vertices = ObjPrim_GetVertexCount(primCircle);
+
+            real tempRadius = radius;
+            int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
+            int frame = 0;
+            real frames = 120; //to avoid int division
+            while (!exitFlag) {
+                real angleT = 0;
+                tempRadius = Interpolate_Decelerate(radius, 0, frame / frames);
+                for (int i = 0; i < ObjPrim_GetVertexCount(primCircle); i++) {
+                    ObjPrim_SetVertexPosition(primCircle, i, WINDOW_WIDTH_MID + tempRadius * cos(angleT), WINDOW_HEIGHT_MID + tempRadius * sin(angleT), 1);
+                    ObjPrim_SetVertexColor(primCircle, i, color[frame * 4 ~/ frames]);
+                    angleT += 360 / (vertices - 1);
+                }
+                frame++;
+                if (frame >= frames) frame = 0;
+                yield;
+            }
+            Obj_Delete(primCircle);
+        }
+
+        task MoveParticle(real x_, real y_, real angle_) {
+            int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
+            real maxSpeed = rand(2, 3.4);
+            real speed = maxSpeed;
+            int frame = 0;
+            int frameRate = 20;
+            while (!exitFlag) {
+                //add particle
+                ObjParticleList_SetPosition(_titleList, x_, y_, 1);
+                ObjParticleList_SetExtraData(_titleList, trunc(3 - (frame / frameRate)), 0, 0);
+                ObjParticleList_SetColor(_titleList, color[frame / frameRate]);
+                ObjParticleList_AddInstance(_titleList);
+                //update position variables
+                x_ += speed * cos(angle_);
+                y_ += speed * sin(angle_);
+                speed = Interpolate_Decelerate(maxSpeed, 0, frame / (frameRate * 4.0));
+                frame++;
+                if (frame >= frameRate * 4) break;
+                else yield;
+            }
+        }
     }
 
     task TCreateMenuItemPlayer(int index_, int x_, int y_) {

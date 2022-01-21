@@ -45,20 +45,21 @@ function<void> Texture_Init() {
 function<string[]> GetImgTitle() { //returns title image paths (lib_TitleCommon.dnh)
     return [
         IMG_TT_BG,
-        IMG_TT_YABU,
+        IMG_TT_LOGO,
+        IMG_TT_RANKBG,
+        IMG_TT_PLAYERBG,
         IMG_TT_PLAYER1,
         IMG_TT_PLAYER2,
         IMG_TT_MUSIC,
-        IMG_TT_CURSOR,
-        IMG_TT_RANK
+        IMG_TT_CURSOR
     ];
 }
 
 function<string[]> GetImgEffect() { //returns particle/visual effect image paths (lib_File.dnh)
     return [
         IMG_EFFECT_CANCEL,
-        IMG_EFFECT_SPAWN,
         IMG_EFFECT_PARTICLE,
+        IMG_EFFECT_SPAWN,
         IMG_EFFECT_TRANSITION
     ];
 }
@@ -66,28 +67,28 @@ function<string[]> GetImgEffect() { //returns particle/visual effect image paths
 function<string[]> GetImgSystem() { //returns system related image paths (lib_File.dnh)
     return [
         IMG_SYSTEM_FRAME,
-        IMG_SYSTEM_LOGO,
-        IMG_SYSTEM_UI,
-        IMG_SYSTEM_TEXTBOX,
         IMG_SYSTEM_ITEM,
-        IMG_SYSTEM_SHOT
+        IMG_SYSTEM_LOGO,
+        IMG_SYSTEM_SHOT,
+        IMG_SYSTEM_TEXTBOX,
+        IMG_SYSTEM_UI
     ];
 }
 
 function<string[]> GetImgPlayer() { //returns player related image paths (lib_File.dnh)
     return [
-        IMG_PLR_YABUSAME,
+        IMG_PLR_HITBOX,
         IMG_PLR_TSUBAKURA,
-        IMG_PLR_HITBOX
+        IMG_PLR_YABUSAME
     ];
 }
 
 function<string[]> GetImgStage() { //returns stage/boss sprite related image paths (lib_File.dnh)
     return [
         //Character Portraits
-        IMG_PORTRAIT_YABUSAME,
         IMG_PORTRAIT_TSUBAKURA,
         IMG_PORTRAIT_TSURUBAMI,
+        IMG_PORTRAIT_YABUSAME,
         //Boss Sprites
         IMG_STG_TSURUBAMI,
         //Backgrounds

@@ -42,7 +42,7 @@ function<void> SceneSoundTest() {
     }
 
     task TMenuItem() {
-        int text = CreateText(200, 200, ToString(indexCurrent), COLOR_WHITE);
+        int text = CreateText(504, 24, ToString(indexCurrent), COLOR_BLACK);
 
         while (!exitFlag) {
             ObjText_SetText(text, ToString(indexCurrent));

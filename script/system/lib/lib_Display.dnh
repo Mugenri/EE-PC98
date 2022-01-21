@@ -59,7 +59,7 @@ function<void> InitFrame() {
     ObjSpriteList2D_AddVertex(obj);
 
     ObjSpriteList2D_CloseVertex(obj);
-
+    
     SetStgFrame(32, 16, 416, 384, RP_STG_MIN, RP_STG_MAX);
 }
 
@@ -77,8 +77,7 @@ task TIntro() {
     int frames = 8; //number of animation frames
 
     int objLogo = InitSprite2D(0, 0, 323, 108, IMG_SYSTEM_LOGO, RP_STG_MAX);
-    ObjSprite2D_SetDestCenter(objLogo);
-    ObjRender_SetPosition(objLogo, 192, 184, 1); //MID_Y constant doesnt work here for some reason, don't care enough to figure out why
+    ObjRender_SetPosition(objLogo, MID_X - 162, MID_Y - 54, 1);
     ObjRender_SetAlpha(objLogo, 0);
 
     //Stop player movement while screen is black

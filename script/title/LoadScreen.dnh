@@ -11,6 +11,9 @@ task TLoadScene() { //loading screen
     //initialize user render targets
     CreateRenderTarget(RT_SCREENSHOT);
 
+    //Preload textures
+    Texture_Init();
+
     { //load audio manager
         string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
         int id = LoadScript(path);
@@ -21,11 +24,6 @@ task TLoadScene() { //loading screen
     InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
     //load achievement script if i make one
-
-    //init high score
-
-    //Preload textures
-    Texture_Init();
 
     wait(60); //Give loading screen time to run
 

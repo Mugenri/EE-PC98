@@ -12,28 +12,28 @@ const string DIR_SE     = GetCurrentScriptDirectory() ~ "../se/";
 
 //Effect images
 const string IMG_EFFECT_CANCEL      = DIR_IMG ~ "effect/shotCancelEffect.png";
-const string IMG_EFFECT_SPAWN       = DIR_IMG ~ "effect/shotSpawnEffect.png";
 const string IMG_EFFECT_PARTICLE    = DIR_IMG ~ "effect/particleEffect.png";
+const string IMG_EFFECT_SPAWN       = DIR_IMG ~ "effect/shotSpawnEffect.png";
 const string IMG_EFFECT_TRANSITION  = DIR_IMG ~ "effect/transitionEffect.png";
 
 //System images
 const string IMG_SYSTEM_FRAME       = DIR_IMG ~ "system/systemFrame.png";
-const string IMG_SYSTEM_LOGO        = DIR_IMG ~ "system/gameLogo.png";
-const string IMG_SYSTEM_UI          = DIR_IMG ~ "system/systemUI.png";
-const string IMG_SYSTEM_TEXTBOX     = DIR_IMG ~ "system/textbox.png";
 const string IMG_SYSTEM_ITEM        = DIR_IMG ~ "system/item.png";
+const string IMG_SYSTEM_LOGO        = DIR_IMG ~ "system/gameLogo.png";
 const string IMG_SYSTEM_SHOT        = DIR_IMG ~ "system/mugenriShot.png";
+const string IMG_SYSTEM_TEXTBOX     = DIR_IMG ~ "system/textbox.png";
+const string IMG_SYSTEM_UI          = DIR_IMG ~ "system/systemUI.png";
 
 //Player Images
-const string IMG_PLR_YABUSAME       = DIR_IMG ~ "character/yabusame/yabuSTG.png";
-const string IMG_PLR_TSUBAKURA      = DIR_IMG ~ "character/tsubakura/tsubaSTG.png";
 const string IMG_PLR_HITBOX         = DIR_IMG ~ "character/hitbox.png";
+const string IMG_PLR_TSUBAKURA      = DIR_IMG ~ "character/tsubakura/tsubaSTG.png";
+const string IMG_PLR_YABUSAME       = DIR_IMG ~ "character/yabusame/yabuSTG.png";
 
 //Stage Images
 //Character Portraits
-const string IMG_PORTRAIT_YABUSAME  = DIR_IMG ~ "character/yabusame/yabuPortrait.png";
 const string IMG_PORTRAIT_TSUBAKURA = DIR_IMG ~ "character/tsubakura/tsubaPortrait.png";
 const string IMG_PORTRAIT_TSURUBAMI = DIR_IMG ~ "character/tsurubami/tsuruPortrait.png";
+const string IMG_PORTRAIT_YABUSAME  = DIR_IMG ~ "character/yabusame/yabuPortrait.png";
 //Boss Sprites
 const string IMG_STG_TSURUBAMI      = DIR_IMG ~ "character/tsurubami/tsuruSTG.png";
 //Backgrounds
