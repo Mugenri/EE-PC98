@@ -11,8 +11,8 @@
 /tools/
 
 #Directories to ignore
-script/data
-script/replay
+/data/
+/replay/
 
 #File types to ignore
 *.dat

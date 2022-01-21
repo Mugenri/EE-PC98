@@ -30,7 +30,7 @@ task TStage() {
 
     Stage_SetIntroText("MUGENRI BARRIER", "Border of Unreality");
     
-    string dialoguePath = dir ~ "dialogueTest.dnh"; //TODO change to intro dialogue
+    string dialoguePath = dir ~ "dialogueIntro.dnh";
     StartDialogueScript(dialoguePath);
     yield; //this is fine
     StartScript(ID);
@@ -39,9 +39,9 @@ task TStage() {
         yield;
     }
     wait(120); //last explosion & spell bonus numbers
-    dialoguePath = dir ~ "dialogueTest.dnh"; //TODO change to end dialogue
-    StartDialogueScript(dialoguePath);
-    yield;
+    //dialoguePath = dir ~ "dialogueIntro.dnh"; //TODO change to end dialogue
+    //StartDialogueScript(dialoguePath);
+    //yield;
     Stage_EndScreen(10000);
     ClearBGM();
     wait(300); //TOOD temporary probably get rid of this entirely, handle this from package

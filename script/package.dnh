@@ -1,13 +1,12 @@
 #TouhouDanmakufu[Package]
-#Title["PC98 Game"]
-#Text["woohoo pc98"]
+#Title["連縁无現里 ~ Misremembered Memories"]
+#Text[""]
 #Player["./player/Yabusame.dnh", "./player/Tsubakura.dnh"]
 
 //opening screen
 #include "./title/loadScreen.dnh"
 
 @Initialize {
-    //TODO add an image archive file here
     Load_Init();
 }
 

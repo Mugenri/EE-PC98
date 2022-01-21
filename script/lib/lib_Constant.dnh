@@ -3,7 +3,7 @@
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
-const string GAME_VERSION = "0.1";
+const string GAME_VERSION = "0.10a";
 
 //----------------------------------------------------
 //FONT CONSTANTS
@@ -114,8 +114,9 @@ const int SND_TALK          = 34;
 //RENDER PRIORITY CONSTANTS
 //----------------------------------------------------
 const int RP_UI_MIN         = 0;  //Min render priority
-const int RP_UI_BG          = 2;  //Menu backgrounds
-const int RP_UI_IMG         = 5;  //Menu/UI images
+const int RP_UI_BG          = 2;  //Menu/UI backgrounds
+const int RP_UI_PARTICLE    = 4;  //Menu/UI particle effects
+const int RP_UI_IMG         = 7;  //Menu/UI images
 const int RP_UI_TEXT        = 10; //Menu/UI text
 const int RP_STG_MIN        = 20; //Min stage render priority
 const int RP_STG_BG         = 21; //Background render layer
@@ -160,10 +161,10 @@ const string RT_SCREENSHOT  = "RT_SCREENSHOT"; //layers 0-21, 27-100
 //STG frame
 const real MIN_X = 0;
 const real MIN_Y = 0;
-const real MAX_X = GetStgFrameWidth();  //384
-const real MAX_Y = GetStgFrameHeight(); //368
-const real MID_X = MAX_X / 2;           //192
-const real MID_Y = MAX_Y / 2;           //184
+const real MAX_X = 384;         //384
+const real MAX_Y = 368;         //368
+const real MID_X = MAX_X / 2;   //192
+const real MID_Y = MAX_Y / 2;   //184
 //window frame
 const real WINDOW_WIDTH = GetScreenWidth();
 const real WINDOW_HEIGHT = GetScreenHeight();

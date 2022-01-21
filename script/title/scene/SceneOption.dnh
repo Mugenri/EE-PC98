@@ -17,8 +17,8 @@ function<void> SceneOption() {
     //Set up the menu
     string[] commonName = ["BGM_Volume", "SFX_Volume"]; //common data field names
     {
-        int menuX = 460;
-        int menuY = 280;
+        int menuX = 504;
+        int menuY = 24;
         int yOffset = 15;
         string[] texts = ["BGM Volume    ", "SFX Volume    ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
         ascent (i in 0..selectMax + 1) {
@@ -73,18 +73,17 @@ function<void> SceneOption() {
 
     task TCreateMenuGraphicsOption() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
+        int logo = InitSprite2D(0, 0, 327, 87, IMG_TT_LOGO, RP_UI_TEXT);
 
-        int yabu = InitSprite2D(0, 0, 288, 360, IMG_TT_YABU, RP_STG_BG);
-
-        ObjRender_SetPosition(yabu, 40, 20, 1);
+        ObjRender_SetPosition(logo, 5, 3, 1);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
-        Obj_Delete(yabu);
+        Obj_Delete(logo);
     }
 
     task TCreateMenuItemOption(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
-        int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_WHITE);
+        int objText = CreateText(x_ + xOff_, y_ + yOff_, text_, COLOR_INDIGO_L);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         //Align to middle
         ObjRender_SetX(objText, ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText) / 2);
@@ -95,7 +94,7 @@ function<void> SceneOption() {
         //Additional options would go here
 
         while (!exitFlag) {
-            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_YELLOW : COLOR_WHITE));
+            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
             Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
@@ -103,10 +102,11 @@ function<void> SceneOption() {
         Obj_Delete(objCursor);
 
         task TCreateOptionSlider(int index_) {
-            int objSlider = CreateText(x_ + 8 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", COLOR_WHITE);
+            int objSlider = CreateText(x_ + 8 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", COLOR_INDIGO_L);
             
             while (!exitFlag) {
                 ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100)));
+                ObjText_SetVertexColor(objSlider, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
                 yield;
             }
             Obj_Delete(objSlider);

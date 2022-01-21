@@ -8,8 +8,14 @@ function<void> Load_Init() {
 
 task TLoadScene() { //loading screen
 
+    //Disable fast forward
+    SetSkipModeKey(KEY_INVALID);
+
     //initialize user render targets
     CreateRenderTarget(RT_SCREENSHOT);
+
+    //Preload textures
+    Texture_Init();
 
     { //load audio manager
         string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
@@ -21,11 +27,6 @@ task TLoadScene() { //loading screen
     InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
     //load achievement script if i make one
-
-    //init high score
-
-    //Preload textures
-    Texture_Init();
 
     wait(60); //Give loading screen time to run
 

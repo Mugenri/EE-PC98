@@ -70,7 +70,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
             frame = 0;
             ObjSprite2D_SetSourceRect(objBoss_, x, y, x + width, y + height);
         }
-        ObjSprite2D_SetDestCenter(objBoss_);
+        ObjSprite2D_SetDestCenter(objBoss_); //MUST BE EVEN NUMBERED SPRITES
     }
 }
 

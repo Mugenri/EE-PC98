@@ -170,7 +170,7 @@ function<void> Dialogue_Wait() { //waits for player input to advance text
 }
 
 function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
-    if (!_skip && flag_ > 60) {
+    if (!_skip && flag_ > 30) {
         _skip = true;
         flag_ = 0;
     }

@@ -105,7 +105,7 @@ function<int> InitParticleList(string path_, int priority_, int l_, int t_, int 
 	ObjPrim_SetTexture(obj, path_);
 	ObjRender_SetBlendType(obj, BLEND_ALPHA);
 	ObjSprite2D_SetSourceRect(obj, l_, t_, r_, b_);
-	ObjSprite2D_SetDestCenter(obj);
+	ObjSprite2D_SetDestCenter(obj); //MUST BE EVEN NUMBERED SPRITES
 	ObjPrim_SetVertexIndex(obj, [0, 1, 2, 3]);
     return obj;
 }
