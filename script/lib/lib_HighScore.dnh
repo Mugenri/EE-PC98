@@ -16,14 +16,14 @@ function<string> HS_GetHighScoreField() { //current mode, player, stageIndex, di
     string player = IntToString(GetPlayerType());
 
     alternative(mode)
-    case(GAME_NONE) assert(false, "Tried to get a high score without a selected game mode.");
-    case(GAME_MAIN) { //normal game
+    case (GAME_NONE) assert(false, "Tried to get a high score without a selected game mode.");
+    case (GAME_MAIN) { //normal game
         string stageIndex = IntToString(GetStageIndex());
         string difficulty = IntToString(GetDifficulty());
 
         fieldName = "MAIN_" ~ player ~ "_" ~ stageIndex ~ "_" ~ difficulty;
     }
-    case(GAME_PRACTICE) { //stage practice
+    case (GAME_PRACTICE) { //stage practice
         //probably wont have this
     }
     case (GAME_SPELL) { //spell practice

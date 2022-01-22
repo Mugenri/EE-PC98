@@ -113,7 +113,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         }
     }
 
-    function MenuIntro() {
+    function<void> MenuIntro() {
         //setup
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);

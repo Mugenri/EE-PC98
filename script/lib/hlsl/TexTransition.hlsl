@@ -31,7 +31,7 @@ PS_OUTPUT PsMask( PS_INPUT In ) : COLOR0
 
 	float4 color = colorTexture * colorDiffuse;
 	Out.color = color;
-	if(color.a > 0)
+	if (color.a > 0)
 	{
 		float2 maskUV;
 

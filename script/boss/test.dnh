@@ -339,7 +339,7 @@ task TPatternP() {
     real xPos = rand(-15, 15);
     real yPos = rand(-15, 15);
     int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
-    loop(32){
+    loop (32){
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
         angleT += 360/32;
     }

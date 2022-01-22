@@ -30,7 +30,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
     int frameRate = 6;
 
     async {
-        while(!Obj_IsDeleted(objBoss_)) {
+        while (!Obj_IsDeleted(objBoss_)) {
             //get animation type
             real speed = ObjMove_GetSpeed(objBoss_);
             real dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-

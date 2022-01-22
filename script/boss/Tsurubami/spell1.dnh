@@ -119,7 +119,7 @@ task TFireA() {
     task TRain(int obj_, int modif_) { //rain bullets
         int color = [SHOT_GRAY, SHOT_WHITE][_diff];
         wait(45);
-        while(_bossAlive && !Obj_IsDeleted(obj_)) {
+        while (_bossAlive && !Obj_IsDeleted(obj_)) {
             real xPos = ObjMove_GetX(obj_);
             real yPos = ObjMove_GetY(obj_);
             real angleT = ObjMove_GetAngle(obj_);

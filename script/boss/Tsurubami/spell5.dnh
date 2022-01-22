@@ -183,7 +183,7 @@ task TFire() {
         real sX;
         real sY;
         real angleT;
-        loop(time_) {
+        loop (time_) {
             if (Obj_IsDeleted(shot_) || !_bossAlive) {
                 if (!Obj_IsDeleted(warning)) Obj_Delete(warning);
                 return;

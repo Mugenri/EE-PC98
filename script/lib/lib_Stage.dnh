@@ -255,7 +255,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int totalLength = length(totalList);
 
     //wait for input
-    while(GetVirtualKeyState(VK_SHOT) != KEY_PUSH) {
+    while (GetVirtualKeyState(VK_SHOT) != KEY_PUSH) {
         UpdateList(stageList, stageLength, ObjRender_GetY(stageText)); //stage bonus
         UpdateList(grazeList, grazeLength, ObjRender_GetY(grazeText)); //graze bonus
         UpdateList(livesList, livesLength, ObjRender_GetY(livesText)); //lives bonus

@@ -653,7 +653,7 @@ task TSpellDisplay(int spellID_) {
     _objScene = GetEnemyBossSceneObjectID(); //update manually, executes same frame as single script
 
     async { //checks if spell has been failed
-        while(ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
+        while (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
             if (ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SHOOTDOWN_COUNT) + ObjEnemyBossScene_GetInfo(_objScene, INFO_PLAYER_SPELL_COUNT) > 0) {
                 Obj_SetVisible(failText, visible);
                 spellFailed = true;
@@ -671,7 +671,7 @@ task TSpellDisplay(int spellID_) {
         UpdateAsciiNum(yPos);
         yield;
     }
-    while(ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
+    while (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 0) { //while spell active
         visible = GetPlayerY() > 64;
         Obj_SetVisible(banner, visible);
         Obj_SetVisible(nameText, visible);

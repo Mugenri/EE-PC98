@@ -73,8 +73,8 @@ task TMenu() { //Create pause menu
             Obj_Delete(creditsText);
             
             SetScriptResult(listResult[indexCurrent]);
-            if(listResult[indexCurrent] == RESULT_CONTINUE) ContinueAnimation();
-            if(listResult[indexCurrent] == RESULT_END) QuitAnimation();
+            if (listResult[indexCurrent] == RESULT_CONTINUE) ContinueAnimation();
+            if (listResult[indexCurrent] == RESULT_END) QuitAnimation();
             CloseScript(GetOwnScriptID());
         }
         case (VK_CANCEL, VK_PAUSE) {

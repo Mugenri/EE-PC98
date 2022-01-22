@@ -39,5 +39,5 @@ function<int> Spell_GetCurrent() {
 //Get Spell filepath based on ID
 function<string> Spell_GetPath(int spellID_) {
     alternative(spellID_)
-    case(0) return DIR_STG ~ "Tsurubami/nonspell1.dnh";
+    case (0) return DIR_STG ~ "Tsurubami/nonspell1.dnh";
 }
