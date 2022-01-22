@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 package.script.main = script/package.dnh
-=======
-package.script.main = script/package.dnh
->>>>>>> 7c2c678620e1465f9e4db48995a2532694fd3f40
 window.title = 連縁无現里 ~ Misremembered Memories v0.10a
 screen.width = 640
 screen.height = 400
