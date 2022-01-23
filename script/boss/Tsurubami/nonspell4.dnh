@@ -80,8 +80,8 @@ task TFire() {
         real xPos = ObjMove_GetX(amulet);
         real yPos = ObjMove_GetY(amulet);
         real angleT = ObjMove_GetAngle(amulet);
-        CreateShotUA2(xPos, yPos, 0, angleT + modif, accel, maxSpeed, SHOT_GRAY+TALISMAN_A, 0, SHOT_GRAY+CANCEL_BURST1);
-        CreateShotUA2(xPos, yPos, 0, angleT - modif, accel, maxSpeed, SHOT_GRAY+TALISMAN_A, 0, SHOT_GRAY+CANCEL_BURST1);
+        CreateShotUA2(xPos, yPos, 0, angleT + modif, accel, maxSpeed, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
+        CreateShotUA2(xPos, yPos, 0, angleT - modif, accel, maxSpeed, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
         wait(waitTime);
     }
 }

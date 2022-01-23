@@ -46,5 +46,4 @@ task TStage() {
     ClearBGM();
     wait(300); //TOOD temporary probably get rid of this entirely, handle this from package
     CloseStgScene();
-    //TODO NEED TO RESET STAGE AND SYSTEM COMMON DATA AT END OF STAGES
 }

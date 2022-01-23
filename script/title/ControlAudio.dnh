@@ -44,7 +44,8 @@ const string[] SOUNDS = [
     DIR_SE ~ "seCharge2.wav",
     DIR_SE ~ "seShot4.wav",
     DIR_SE ~ "seMasterSpark.wav",
-    DIR_SE ~ "seTalk.wav"
+    DIR_SE ~ "seTalk.wav",
+    DIR_SE ~ "seBossTitle.wav"
 ];
 
 @Initialize {

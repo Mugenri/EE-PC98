@@ -13,7 +13,7 @@ int _countShot = 0; //shot type stagger
 @Initialize {
     string imageFile = IMG_PLR_YABUSAME;
     string shotData = DIR_PLR ~ "YabuShot.dnh";
-    InitPlayer(imageFile, shotData, 3, 1.53, 24);
+    InitPlayer(imageFile, shotData, 3, 1.53, 24, 64);
 
     TShot();
     TOption(1);
@@ -24,6 +24,7 @@ int _countShot = 0; //shot type stagger
     _count++;
     if (Shooting() && !IsPlayerSpellActive() && Alive()) _countShot++;
     else _countShot = -1;
+    if (Alive() && GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD) CollectItemsInCircle(GetPlayerX(), GetPlayerY(), _itemScope);
     yield;
 }
 
@@ -161,7 +162,7 @@ task TSpell() {
     radius = 28;
     int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
     ascent (i in 0..17) {
-        ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
+        ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
     }
     loop (20) {
         ascent (i in 0..17) {

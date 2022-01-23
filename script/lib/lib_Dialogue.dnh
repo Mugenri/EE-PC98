@@ -20,6 +20,7 @@ function<void> Dialogue_Start() { //call to start dialogue sequence
     _playerText = CreateDialogueText(false);
     _bossText = CreateDialogueText(true);
     wait(48); //animation time
+    TSkipPrompt();
 }
 
 function<void> Dialogue_End() { //call to end dialogue sequence
@@ -60,8 +61,38 @@ task TCreateTextBoxes() {
 
     function<void> ChangeFrame(int obj_, int frame_, bool isBoss_) {
         ObjSprite2D_SetSourceRect(obj_, 0, 0 + 48*frame_, 320, 48 + 48*frame_);
-        ObjSprite2D_SetDestRect(obj_, 0, 0, 320, 48); //position controlled by objrender_setposition();
+        ObjSprite2D_SetDestRect(obj_, 0, 0, 320, 48);
     }
+
+}
+
+task TSkipPrompt() {
+    int objText = CreateText(32, MAX_Y + 16, RP_UI_TEXT, "", COLOR_WHITE);
+
+    while (!_endDialogue) {
+        ObjText_SetText(objText, "> Hold SHOT to skip");
+        loop (30) {
+            if (_endDialogue) break;
+            yield;
+        }
+        ObjText_SetText(objText, "> Hold SHOT to skip.");
+        loop (30) {
+            if (_endDialogue) break;
+            yield;
+        }
+        ObjText_SetText(objText, "> Hold SHOT to skip..");
+        loop (30) {
+            if (_endDialogue) break;
+            yield;
+        }
+        ObjText_SetText(objText, "> Hold SHOT to skip...");
+        loop (30) {
+            if (_endDialogue) break;
+            yield;
+        }
+    }
+
+    Obj_Delete(objText);
 }
 
 //----------------------------------------------------
@@ -94,15 +125,10 @@ function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text obj
     int xPos = isBoss_ ? 49 : 161;
     int yPos = isBoss_ ? 191 : 319;
 
-    int obj = ObjText_Create();
-    ObjText_SetFontType(obj, SYS_FONT);
-    ObjText_SetFontSize(obj, 16);
-    ObjText_SetVertexColor(obj, 0xFF000000 + COLOR_WHITE);
-    ObjText_SetFontBorderType(obj, BORDER_NONE);
+    int obj = CreateText(xPos, yPos, RP_UI_TEXT, "", COLOR_WHITE);
     ObjText_SetLinePitch(obj, 0);
     ObjText_SetMaxWidth(obj, 242);
-    Obj_SetRenderPriorityI(obj, RP_UI_TEXT);
-    ObjRender_SetPosition(obj, xPos, yPos, 1);
+
     return obj;
 }
 
@@ -113,11 +139,11 @@ function<void> Dialogue_SetText(bool isBoss_, string text_) { //Sets selected te
         ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_LEFT);
         ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
         ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
-        TTextScroll(_bossText, text_);
+        TTextScroll(_bossText, text_, true);
     } else {
         ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_WHITE);
         ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_BLUE);
-        TTextScroll(_playerText, text_);
+        TTextScroll(_playerText, text_, true);
     }
 }
 
@@ -125,10 +151,10 @@ function<void> Dialogue_BossTitle(string text_) { //Centers text for use in boss
     ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_CENTER);
     ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
     ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
-    TTextScroll(_bossText, text_);
+    TTextScroll(_bossText, text_, false);
 }
 
-task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text boxes
+task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gradually in text boxes
     _reading = true;
     string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
     string tempString = "";
@@ -140,7 +166,8 @@ task TTextScroll(int obj_, string text_) { //Makes text fill gradually in text b
             tempString = tempString ~ [tempStrings[i][j]];
             ObjText_SetText(obj_, tempString);
             if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
-                CallSFX(SND_TALK);
+                if (isSpeech_) CallSFX(SND_TALK);
+                else CallSFX(SND_BOSSTITLE);
                 yield;;
             }
         }

@@ -117,7 +117,8 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
 function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_, real sustain_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
-    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_, 1, delay_);
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_ + delay_, 1, 0);
+    ObjShot_SetIntersectionEnable(hitbox, false);
     Obj_SetValueI(hitbox, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
@@ -136,6 +137,9 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     //Update loop 
     async {
         real radius = 0.5; //radius of white part
+        //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is complete
+        real angle = ObjStLaser_GetAngle(hitbox);
+        real len = ObjLaser_GetLength(hitbox);
         loop (max(0, delay_ - 9)) {
             if (Obj_IsDeleted(hitbox)) break;
             UpdatePosition(0);
@@ -145,9 +149,6 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
         Obj_SetVisible(line1, true);
         Obj_SetVisible(circle2, true);
         Obj_SetVisible(line2, true);
-        //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is completed
-        real angle = ObjStLaser_GetAngle(hitbox);
-        real len = ObjLaser_GetLength(hitbox);
         while (radius <= 2) { //expand laser
             loop (3) {
                 if (Obj_IsDeleted(hitbox)) break;
@@ -156,12 +157,12 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
             }
             radius *= 2;
         }
+        ObjShot_SetIntersectionEnable(hitbox, true);
         loop (sustain_) {
             if (Obj_IsDeleted(hitbox)) break;
             UpdatePosition(3);
             yield;
         }
-        if (!Obj_IsDeleted(hitbox)) ObjShot_SetIntersectionEnable(hitbox, false);
         if (radius > 2) radius = 2;
         while (radius >= 0.5) { //contract laser
             loop (3) {

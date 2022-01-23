@@ -9,7 +9,7 @@ int _objClone; //second hitbox
 int _objBoss;
 int _diff = GetDifficulty() - 4;
 int _count = -360;
-int _loopTime = 190;
+int _loopTime = [210, 200][_diff];
 int _spellID = 9 + _diff;
 
 @Event {
@@ -73,7 +73,7 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _objClone, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                wait(30);
+                wait(90);
                 TFire();
             }
         }
@@ -87,7 +87,7 @@ task TMovement(int obj_, int dir_) {
         real x = 0.5 + 0.5 * (-cos(_count));
         real y = 0.5 + 0.5 * (sin(_count));
         real xPos = Interpolate_Linear(MID_X - 150 * dir_, MID_X + 150 * dir_, x);
-        real yPos = Interpolate_Linear(MID_Y - 150 * dir_, MID_Y + 150 * dir_, y);
+        real yPos = Interpolate_Linear(MID_Y + 150 * dir_, MID_Y - 150 * dir_, y);
         ObjMove_SetDestAtFrame(obj_, xPos, yPos, 1);
         yield;
     }
@@ -101,12 +101,12 @@ task TBounds() {
         real angleT = dottheta(MID_X, MID_Y, x1, y1);
         real x2 = MID_X + 150 * cos(angleT + 180);
         real y2 = MID_Y + 150 * sin(angleT + 180);
-        CreateShotUA1(x1, y1, 1.0, angleT, SHOT_GRAY+TALISMAN_A, 0, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
-        CreateShotUA1(x1, y1, 0.5, angleT + 12, SHOT_GRAY+TALISMAN_A, 2, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
-        CreateShotUA1(x1, y1, 0.2, angleT + 90, SHOT_GRAY+TALISMAN_A, 4, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
-        CreateShotUA1(x2, y2, 1.0, angleT + 180, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
-        CreateShotUA1(x2, y2, 0.5, angleT + 12 + 180, SHOT_BLACK+TALISMAN_A, 2, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
-        CreateShotUA1(x2, y2, 0.2, angleT + 90 + 180, SHOT_BLACK+TALISMAN_A, 4, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+        CreateShotUA1(x1, y1, 1.0, angleT, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+        CreateShotUA1(x1, y1, 0.5, angleT + 12, SHOT_BLACK+TALISMAN_A, 2, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+        CreateShotUA1(x1, y1, 0.2, angleT + 90, SHOT_BLACK+TALISMAN_A, 4, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+        CreateShotUA1(x2, y2, 1.0, angleT + 180, SHOT_GRAY+TALISMAN_A, 0, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+        CreateShotUA1(x2, y2, 0.5, angleT + 12 + 180, SHOT_GRAY+TALISMAN_A, 2, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+        CreateShotUA1(x2, y2, 0.2, angleT + 90 + 180, SHOT_GRAY+TALISMAN_A, 4, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
         CallSFX(SND_SHOT1);
         wait(6);
     }
@@ -148,9 +148,9 @@ task TFire() {
     
     //tsuru burst fire
     real radius = rand(0, 5);
-    real angleT = ObjMove_GetAngle(_objBoss) - 90;
+    real angleT = ObjMove_GetAngle(_objBoss) + 90;
     int waitTime = [0, 1][_diff];
-    int numShot = [17, 64][_diff];
+    int numShot = [12, 64][_diff];
     int moveTime = [110, 50][_diff];
     loop (numShot) {
         if (!_bossAlive) return;
@@ -162,7 +162,7 @@ task TFire() {
         ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
         shots = shots ~ [shot];
         CallSFX(SND_SHOT3);
-        angleT += 360 / numShot;
+        angleT -= 360 / numShot;
         wait(waitTime);
     }
 
@@ -170,41 +170,39 @@ task TFire() {
     if (!_bossAlive) return;
 
     //clone lasers
-    int time = [70, 50][_diff];
+    int sustain = [45, 10][_diff];
+    int delay = [70, 50][_diff];
     for each (shot in shots) { //create straight laser for each shot
-        TLaser(shot, time);
+        TLaser(shot, sustain, delay);
         if (_diff == 1) yield;
     }
 
-    task TLaser(int shot_, int time_) { //draw laser from boss to shot
-        int warning = Laser_WarningLine(0, 0, 0, 0, time_);
-        real bX;
-        real bY;
-        real sX;
-        real sY;
-        real angleT;
-        loop (time_) {
-            if (Obj_IsDeleted(shot_) || !_bossAlive) {
-                if (!Obj_IsDeleted(warning)) Obj_Delete(warning);
-                return;
+    task TLaser(int shot_, int sustain_, int delay_) { //draw laser from boss to shot
+        real bX = ObjMove_GetX(_objClone);
+        real bY = ObjMove_GetY(_objClone);
+        real sX = ObjMove_GetX(shot_);
+        real sY = ObjMove_GetY(shot_);
+        real angleT = dottheta(bX, bY, sX, sY);
+        int laser = CreateStraightLaserUA1(bX, bY, angleT, 500, sustain_, COLOR_GRAY, delay_);
+
+        async {
+            loop (sustain_ + delay_) {
+                if (!_bossAlive || Obj_IsDeleted(laser)) return;
+                bX = ObjMove_GetX(_objClone);
+                bY = ObjMove_GetY(_objClone);
+                sX = ObjMove_GetX(shot_);
+                sY = ObjMove_GetY(shot_);
+                angleT = dottheta(bX, bY, sX, sY);
+                ObjMove_SetPosition(laser, bX, bY);
+                ObjStLaser_SetAngle(laser, angleT);
+                yield;
             }
-            bX = ObjMove_GetX(_objClone);
-            bY = ObjMove_GetY(_objClone);
-            sX = ObjMove_GetX(shot_);
-            sY = ObjMove_GetY(shot_);
-            angleT = dottheta(bX, bY, sX, sY);
-            ObjPrim_SetVertexPosition(warning, 0, bX, bY, 1);
-            ObjPrim_SetVertexPosition(warning, 1, bX + 500 * cos(angleT), bY + 500 * sin(angleT), 1);
-            yield;
         }
 
         if (Obj_IsDeleted(shot_) || !_bossAlive) return;
-        CreateLooseLaserUA1(bX, bY, [14, 20][_diff], angleT, 140, COLOR_BLACK, 0);
+        wait(delay_); //laser expand animation
         CallSFX(SND_LASER2);
-
-        real dist = distance(bX, bY, sX, sY);
-        wait(dist / 14);
-        angleT = rand(0, 360);
+        wait(sustain_);
         ObjShot_SetDeleteFrame(shot_, 0);
     }
 }

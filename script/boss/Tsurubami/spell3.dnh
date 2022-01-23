@@ -91,9 +91,10 @@ task TFire() {
     }
 
     real angleT = rand(0, 360);
+    real speed = [2.5, 1.7][_diff];
     for (int i = 0; i < [32, 16][_diff]; i++) { //spawn
         if (!_bossAlive) return;
-        int shot = CreateShotUA1(xPos, yPos, [2.8, 1.7][_diff], angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+        int shot = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
         ObjShot_SetSpellResist(shot, true);
         shots = shots ~ [shot];
         angleT += rand(90, 120);
@@ -109,7 +110,7 @@ task TFire() {
         shots[j] = temp;
     }
 
-    wait(120);
+    wait(90);
 
     if (!_bossAlive) return;
     for each (shot in shots) { //slow

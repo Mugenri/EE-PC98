@@ -45,6 +45,10 @@ task TStageScene() { //TODO serious refactoring
     _gameOver = false;
     _dialoguePath = "";
 
+    //reset common data areas before running a new stage
+    ClearAreaCommonData(AREA_STAGE);
+    ClearAreaCommonData(AREA_SYSTEM);
+
     InitializeStageScene();
 
     if (length(replayPath) > 0) SetStageReplayFile(replayPath);
@@ -205,7 +209,7 @@ function<void> TReturnToTitle() { //Run title screen
     CD_SaveScore();
     CD_SaveResult();
 
-    //clear common data areas
+    //reset relevant common data
     ClearAreaCommonData(AREA_STAGE);
     ClearAreaCommonData(AREA_SYSTEM);
     SetDefault();
