@@ -93,8 +93,10 @@ task TRender(int ParentID_) {
     ObjSprite2D_SetDestCenter(_objPlayer);
     Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
     //hitbox
-    int objHitbox = InitSprite2D(0, 0, 4, 4, IMG_PLR_HITBOX, RP_STG_HITBOX);
+    int objHitbox = InitSprite2D(0, 0, 8, 8, IMG_PLR_HITBOX, RP_STG_HITBOX);
     ObjSprite2D_SetDestCenter(objHitbox);
+    int frame = 0;
+    int frameRate = 6;
 
 	while (!Obj_IsDeleted(ParentID_)) {
         int leftState = GetVirtualKeyState(VK_LEFT);
@@ -103,8 +105,12 @@ task TRender(int ParentID_) {
 		else if (rightState == KEY_PUSH || rightState == KEY_HOLD && leftState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 32, 0, 64, 48);
 		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
 
+        ObjSprite2D_SetSourceRect(objHitbox, 0 + 8 * (frame / frameRate), 0, 8 + 8 * (frame / frameRate), 8);
+        ObjSprite2D_SetDestCenter(objHitbox);
         Obj_SetVisible(objHitbox, GetVirtualKeyState(VK_SLOWMOVE) != KEY_FREE && Alive());
         ObjRender_SetPosition(objHitbox, GetPlayerX(), GetPlayerY(), 1);
+        frame++;
+        if (frame >= 6 * frameRate) frame = 0;
 		yield;
 	}
 }
@@ -116,10 +122,11 @@ task THit() { //Player deathbomb window
     
     //Closing circle
     real radius = 28;
-    int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
-    ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
+    int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 18, RP_STG_EFF_MAX);
+    ascent (i in 0..18) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
     loop (14) {
-        ascent (i in 0..17) {
+        ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
+        ascent (i in 1..18) {
             real angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
         }
@@ -175,7 +182,7 @@ task TMiss() { //Player died
         real radius = 0;
         real decayRate = 3.5;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
-        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
+        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
         loop (120) {
             ascent (i in 0..17) {
                 real angleT = 360/16 * i;
@@ -213,7 +220,7 @@ task TRebirth() { //Player respawn
         CallSFX(SND_PL_VULNERABLE);
         real radius = 28;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
-        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, 170, 221, 255);
+        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
         loop (20) {
             ascent (i in 0..17) {
                 real angleT = 360/16 * i;

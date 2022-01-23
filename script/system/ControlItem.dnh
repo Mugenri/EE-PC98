@@ -25,11 +25,13 @@
         //create item in place of bullet
         if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
         //Text and delete effects
-        AddScore(score);
         if (Obj_GetType(obj) == OBJ_SHOT) {
             if (score != 0) Ascii_ScoreNum(pos[0], pos[1], score);
             Cancel_Shot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
+        //score
+        if (score == 0) score = 100; //minimum shot score
+        AddScore(score);
     }
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);

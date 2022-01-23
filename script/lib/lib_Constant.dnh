@@ -220,6 +220,7 @@ const int COLOR_BLUE_L      = 0xAAAAFF;
 const int COLOR_BLUE_D      = 0x111166;
 const int COLOR_TEAL        = 0x00FFFF;
 const int COLOR_SKY         = 0xDDDDFF;
+const int COLOR_ICE         = 0xAADDFF;
 const int COLOR_INDIGO      = 0x6655BB;
 const int COLOR_INDIGO_L    = 0xBBBBFF;
 const int COLOR_INDIGO_D    = 0x554499;

@@ -58,8 +58,9 @@ task TFinalize() {
 
 task TKillAura() {
     while (_count < -60) yield;
-    int killAura = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, true, RP_STG_EFF_LO);
-    int radius = 175;
+    int killAura = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, false, RP_STG_EFF_LO);
+    int killAura2 = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, false, RP_STG_EFF_LO);
+    int radius = [175, 270][_diff];
     int cooldown = 30;
 
     //spawn animation
@@ -68,11 +69,27 @@ task TKillAura() {
         real y = ObjMove_GetY(_objBoss);
         real angleT = 0;
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
-        for (int j = 0; j < 34; j++) {
+        for (int j = 0; j < 33; j++) {
             ObjPrim_SetVertexPosition(killAura, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
-            angleT += 360 / 34; 
+            angleT += 360 / 32; 
         }
         yield;
+    }
+
+    async {
+        while (_bossAlive) {
+            for (int i = 1; i <= 60; i++) {
+                real x = ObjMove_GetX(_objBoss);
+                real y = ObjMove_GetY(_objBoss);
+                real angleT = 0;
+                int tempRad = Interpolate_Decelerate(0, radius, i / 60);
+                for (int j = 0; j < 33; j++) {
+                    ObjPrim_SetVertexPosition(killAura2, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
+                    angleT += 360 / 32; 
+                }
+                yield;
+            }
+        }
     }
 
     while (_bossAlive) {
@@ -82,9 +99,9 @@ task TKillAura() {
         real pY = ObjMove_GetY(_objPlayer);
         real angleT = 0;
         //set position, check for player
-        for (int i = 0; i < 34; i++) {
+        for (int i = 0; i < 33; i++) {
             ObjPrim_SetVertexPosition(killAura, i, x + radius * cos(angleT), y + radius * sin(angleT), 1);
-            angleT += 360 / 34; 
+            angleT += 360 / 32; 
         }
         if (cooldown > 0) {
             cooldown--;
@@ -132,7 +149,7 @@ task TFire(int dir_) {
 
     //spawn laser
     real angleLaser = 90 - 90 * dir_;
-    int mSpark = CreateMasterSpark(0, 0, angleLaser, 550, 140, 120, COLOR_GRAY, COLOR_GRAY_L, 100);
+    int mSpark = CreateMasterSpark(0, 0, angleLaser, 550, 140, 160, COLOR_GRAY, COLOR_GRAY_L, 100);
     CallSFX(SND_CHARGE1);
 
     loop (100) {
@@ -147,7 +164,7 @@ task TFire(int dir_) {
     wait(20);
     if (!_bossAlive) return;
 
-    int loopNum = [2, 4][_diff];
+    int loopNum = [2, 3][_diff];
     real maxYSpeed = [3.1, 2.5][_diff];
     async { //bullets at edge of screen
         int color = 0;
@@ -170,14 +187,14 @@ task TFire(int dir_) {
     async { //laser movement
         real min = 90 - 90 * dir_;
         real max = 90 - 20 * dir_;
-        for (int i = 1; i <= 120; i++) {
+        for (int i = 1; i <= 160; i++) {
             if (!_bossAlive || Obj_IsDeleted(mSpark)) return;
-            ObjStLaser_SetAngle(mSpark, Interpolate_Accelerate(min, max, i / 120));
+            ObjStLaser_SetAngle(mSpark, Interpolate_Accelerate(min, max, i / 160));
             yield;
         }
     }
 
-    wait(120);
+    wait(160);
     if (!_bossAlive) return;
     Obj_Delete(mSpark);
     wait(15);

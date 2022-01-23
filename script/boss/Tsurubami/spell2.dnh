@@ -65,6 +65,7 @@ task TMain() {
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TSlugShot();
+                wait(45);
                 TSlugShot();
             }
         }
@@ -79,17 +80,17 @@ task TSlugShot() {
     //bullet move in sine wave but slow down and speed up, leave a trail of bullets
     if (!_bossAlive) return;
     real radius = 270;
-    real angleT = GetAngleToPlayer(_objBoss) + rand(75, 285); //don't spawn directly behind the player
+    real angleT = GetAngleToPlayer(_objBoss) + rand(140, 220); //don't spawn directly behind the player
     real xPos = MID_X + radius * cos(angleT);
     real yPos = MID_Y + radius * sin(angleT);
-    angleT = dottheta(xPos, yPos, MID_X, MID_Y) - 60 + rand(-20, 20);
+    angleT = dottheta(xPos, yPos, MID_X, MID_Y) - 30 + rand(-8, 8);
 
     int head = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY+BUTTERFLY, 0, SHOT_GRAY+CANCEL_32);
     ObjShot_SetAutoDelete(head, false);
     ObjShot_SetSpellResist(head, true);
     TMovement(head);
     wait(8);
-    loop ([5, 7][_diff]) {
+    loop ([5, 6][_diff]) {
         if (!_bossAlive) return;
         int trail = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(trail, true);
@@ -105,19 +106,20 @@ task TSlugShot() {
         }
         async {
             while (!Obj_IsDeleted(obj_) && _bossAlive) {
-                int objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) + 90 + rand(-20, 20), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
-                ObjShot_SetDeleteFrame(objTrail, 300);
-                objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) - 90 + rand(-20, 20), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
-                ObjShot_SetDeleteFrame(objTrail, 300);
-                wait(rand_int(180, 240));
+                int objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) + 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
+                objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) - 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
+                wait(rand_int(90, 155));
             }
         }
+        real accel = 0.11;
+        real wvel = 1.4;
+        int frame = 35;
         while (!Obj_IsDeleted(obj_)) {
-            ObjMove_AddPatternA2(obj_, 0, NO_CHANGE, NO_CHANGE, 0.04, 1, 1.5);
-            ObjMove_AddPatternA2(obj_, 60, NO_CHANGE, NO_CHANGE, -0.04, NO_CHANGE, 0);
-            ObjMove_AddPatternA2(obj_, 120, NO_CHANGE, NO_CHANGE, 0.04, -1, 1.5);
-            ObjMove_AddPatternA2(obj_, 180, NO_CHANGE, NO_CHANGE, -0.04, NO_CHANGE, 0);
-            wait(240);
+            ObjMove_AddPatternA2(obj_, 0, NO_CHANGE, NO_CHANGE, accel, 1, 1.8);
+            ObjMove_AddPatternA2(obj_, frame, NO_CHANGE, NO_CHANGE, -accel, NO_CHANGE, 0);
+            ObjMove_AddPatternA2(obj_, frame * 2, NO_CHANGE, NO_CHANGE, accel, -1, 1.8);
+            ObjMove_AddPatternA2(obj_, frame * 3, NO_CHANGE, NO_CHANGE, -accel, NO_CHANGE, 0);
+            wait(frame * 4);
         }
     }
 }
@@ -131,8 +133,8 @@ task TSkewer() {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, -90, 37, 8, COLOR_GRAY_D);
     wait(37);
     if (!_bossAlive) return;
-    for (int i = 0; i < 24; i++) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 26), angleT + modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+    for (int i = 0; i < 15; i++) {
+        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
         if (_diff == 1) modif = rand(-5, 5);
     }
     CallSFX(SND_SHOT1);
