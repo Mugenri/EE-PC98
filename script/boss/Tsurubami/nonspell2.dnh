@@ -79,7 +79,7 @@ task TFireA(int dir_) {
         ObjShot_SetSpellResist(shot, true);
         TSpawnRing(shot, i);
         CallSFX(SND_SHOT1);
-        if (_diff == 0) wait(Interpolate_Decelerate(12, 2, i / 22));
+        if ([true, true, false][_diff]) wait(Interpolate_Decelerate(12, 2, i / 22));
         else wait(4);
     }
 

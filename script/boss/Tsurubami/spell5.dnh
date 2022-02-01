@@ -174,7 +174,7 @@ task TFire() {
     int delay = [70, 70, 50][_diff];
     for each (shot in shots) { //create straight laser for each shot
         TLaser(shot, sustain, delay);
-        if (_diff == 1) yield;
+        wait([0, 0, 1][_diff]);
     }
 
     task TLaser(int shot_, int sustain_, int delay_) { //draw laser from boss to shot

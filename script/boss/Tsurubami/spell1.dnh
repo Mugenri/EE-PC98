@@ -91,8 +91,7 @@ task TFireA() {
         ObjShot_SetSpellResist(shot, true);
         TRain(shot, i);
         CallSFX(SND_SHOT3);
-        if (_diff == 0) wait(numShot - i);
-        else wait(10);
+        wait([numShot - i, numShot - i, 10][_diff]);
     }
 
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
