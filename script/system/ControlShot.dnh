@@ -1,6 +1,6 @@
 //TEMPORARY SHOT SCRIPT until these events get shoved into item scripts
 #include "./lib/lib_SystemCommon.dnh"
-#include "./../lib/effect/lib_EffectCancel.dnh"
+#include "./../lib/effectlib/lib_EffectCancel.dnh"
 
 @Initialize {
     System_Init();

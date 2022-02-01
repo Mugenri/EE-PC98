@@ -1,8 +1,8 @@
 //Item Script, also handles shot deletion
 #include "./lib/lib_SystemCommon.dnh"
 #include "./lib/lib_AsciiNum.dnh"
-#include "./../lib/effect/lib_EffectCancel.dnh"
-
+#include "./../lib/effectlib/lib_EffectCancel.dnh"
+//TODO adjust item score based on difficulty
 @Initialize {
     System_Init();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());

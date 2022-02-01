@@ -1,11 +1,11 @@
-#include "./shot/lib_Laser.dnh"
+#include "./shotlib/lib_Laser.dnh"
 
-#include "./shot/lib_ShotConstant.dnh"
+#include "./shotlib/lib_ShotConstant.dnh"
 
 //File paths
-const string pathShotData = GetCurrentScriptDirectory() ~ "shot/dat_Shot.dnh";
-const string pathShotAnim = GetCurrentScriptDirectory() ~ "shot/dat_ShotAnim.dnh";
-const string pathShotSpawn = GetCurrentScriptDirectory() ~ "shot/dat_ShotSpawn.dnh";
+const string pathShotData = GetCurrentScriptDirectory() ~ "shotlib/dat_Shot.dnh";
+const string pathShotAnim = GetCurrentScriptDirectory() ~ "shotlib/dat_ShotAnim.dnh";
+const string pathShotSpawn = GetCurrentScriptDirectory() ~ "shotlib/dat_ShotSpawn.dnh";
 
 function<void> Shot_Init() {
     LoadEnemyShotData(pathShotData);

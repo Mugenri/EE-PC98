@@ -1,5 +1,5 @@
 //General Effect library
-#include "./effect/lib_EffectParticle.dnh"
-#include "./effect/lib_EffectPrimitive.dnh"
-#include "./effect/lib_EffectTransition.dnh"
+#include "./effectlib/lib_EffectParticle.dnh"
+#include "./effectlib/lib_EffectPrimitive.dnh"
+#include "./effectlib/lib_EffectTransition.dnh"
 //lib_EffectCancel doesn't need to be included here, only ControlItem.dnh should be using it.
