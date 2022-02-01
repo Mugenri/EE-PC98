@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty - D_EASYEX;
 int _count = -60;
-int _loopTime = [180, 180, 40][_diff];
+int _loopTime = [180, 180, 42][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -93,13 +93,14 @@ task TFireA(int dir_) {
     if (!_bossAlive) return;
 
     //aimed circles
-    speed = [9, 9, 12.5][_diff];
-    int numShot = [32, 32, 40][_diff];
-    angleT = GetAngleToPlayer(_objBoss) + [0, 0, 540 / numShot][_diff];
-    loop (numShot) {
+    speed = [9, 9, 14.5][_diff];
+    int numShot = [64, 64, 72][_diff];
+    angleT = GetAngleToPlayer(_objBoss) + [0, 0, 360 / numShot][_diff];
+    for (int i = 0; i < numShot; i++) {
         int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet2, 12, NO_CHANGE, NO_CHANGE, -1, NO_CHANGE, 1);
         angleT += 360 / numShot;
+        if (i % 2 == 1) ObjShot_SetDeleteFrame(amulet2, 40);
     }
     CallSFX(SND_SHOT1);
 
