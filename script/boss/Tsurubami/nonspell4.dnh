@@ -6,9 +6,9 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -60;
-int _loopTime = [5, 3][_diff];
+int _loopTime = [5, 5, 3][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -63,18 +63,18 @@ task TMain() {
 
 task TFire() {
     if (!_bossAlive) return;
-    real speed = [3.8, 5.2][_diff];
-    real modif = [5, 4][_diff];
+    real speed = [3.8, 3.8, 5.2][_diff];
+    real modif = [5, 5, 4][_diff];
     int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, _count * modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjShot_SetSpellResist(amulet, true);
     Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), _count * modif, 550, 15);
     CallSFX(SND_SHOT1);
 
     wait(20);
-    modif = [15, 7][_diff];
-    int waitTime = [18, 11][_diff];
-    real accel = [0.025, 0.04][_diff];
-    real maxSpeed = [2.0, 2.4][_diff];
+    modif = [15, 15, 7][_diff];
+    int waitTime = [18, 18, 11][_diff];
+    real accel = [0.025, 0.025, 0.04][_diff];
+    real maxSpeed = [2.0, 2.0, 2.4][_diff];
     while (!Obj_IsDeleted(amulet)) {
         if (!_bossAlive) return;
         real xPos = ObjMove_GetX(amulet);

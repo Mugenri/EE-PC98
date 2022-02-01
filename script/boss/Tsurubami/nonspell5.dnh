@@ -6,7 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -60;
 int _loopTime = 292;
 
@@ -73,7 +73,7 @@ task TFire() {
 
     //yin yang ring
     real angleT = rand(0, 360);
-    real numShot = [12, 18][_diff];
+    real numShot = [12, 12, 18][_diff];
     loop (numShot) {
         int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
         if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
@@ -83,7 +83,7 @@ task TFire() {
     }
 
     //red ring bullets
-    numShot = [20, 60][_diff];
+    numShot = [20, 20, 60][_diff];
     for (int i = 0; i < 3; i++) {
         angleT = rand(0, 360);
         loop (numShot) {
@@ -116,7 +116,7 @@ task TFire() {
     }
 
     task TAmuletLine(real angleMod_, real angleP_) {
-        real speedMod = [0.45, 0.80][_diff];
+        real speedMod = [0.45, 0.45, 0.80][_diff];
         int color = SHOT_RED_INV;
         for (int i = 7 - angleMod_; i >= 0; i--) {
             if (!_bossAlive) return;

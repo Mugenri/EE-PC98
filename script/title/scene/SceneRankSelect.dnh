@@ -3,13 +3,13 @@ function<int> SceneRankSelect(int selectedDefault_) {
     bool exitFlag = false; //Delete certain things upon leaving this menu
     int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
 
-    bool extraMode = (selectedDefault_ == D_EXTRA || selectedDefault_ == D_ABEX);
+    bool extraMode = (selectedDefault_ >= D_EASYEX);
     int[] imgValue = [0, 1, 2, 3];
 
     //Extra Stage menu
     if (extraMode) {
-        selectedDefault_ = 0;
-        imgValue = [4, 5];
+        selectedDefault_ -= D_EASYEX;
+        imgValue = [4, 5, 6];
     }
 
     int selectMax = length(imgValue) - 1;
@@ -22,8 +22,8 @@ function<int> SceneRankSelect(int selectedDefault_) {
     TCreateMenuGraphicsRank();
 
     //Create Menu Items
-    int menuX = GetScreenWidth() / 2 - 112;
-    int menuY = GetScreenHeight() / 2 - (25 * selectMax) - 9;
+    int menuX = WINDOW_WIDTH / 2 - 112;
+    int menuY = WINDOW_HEIGHT / 2 - (25 * selectMax) - 9;
     ascent (i in 0..selectMax + 1) {
         TCreateMenuItemRank(i, menuX, menuY, imgValue[i]);
         menuY += 50;
@@ -55,8 +55,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
         }
     }
     exitFlag = true;
-    if (resultIndex == 0 && extraMode) resultIndex = D_EXTRA;
-    if (resultIndex == 1 && extraMode) resultIndex = D_ABEX;
+    if (resultIndex >= 0 && extraMode) resultIndex += D_EASYEX;
     SetAreaCommonData(AREA_TITLE, "Difficulty", resultIndex);
     return(resultIndex);
 
@@ -133,12 +132,12 @@ function<int> SceneRankSelect(int selectedDefault_) {
     }
 
     task TCreateMenuItemRank(int index_, int x_, int y_, int imgIndex_) {
-        int objText = InitSprite2D(0, 400 + imgIndex_ * 18, 225, 400 + (imgIndex_ + 1) * 18, IMG_TT_RANKBG, RP_UI_IMG);
+        int objText = InitSprite2D(0, 386 + imgIndex_ * 18, 225, 386 + (imgIndex_ + 1) * 18, IMG_TT_RANKBG, RP_UI_IMG);
         ObjRender_SetPosition(objText, x_, y_, 1);
 
         while (!exitFlag) {
             int modif = index_ == indexCurrent ? 0 : 225;
-            ObjSprite2D_SetSourceRect(objText, 0 + modif, 400 + imgIndex_ * 18, 225 + modif + 1, 400 + (imgIndex_ + 1) * 18); //WHY DOES THIS NEED + 1 WHAT THE FUCK
+            ObjSprite2D_SetSourceRect(objText, 0 + modif, 386 + imgIndex_ * 18, 225 + modif + 1, 386 + (imgIndex_ + 1) * 18); //WHY DOES THIS NEED + 1 WHAT THE FUCK
             yield;
         }
         Obj_Delete(objText);

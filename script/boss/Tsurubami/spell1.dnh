@@ -6,9 +6,9 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -120;
-int _loopTime = [310, 180][_diff];
+int _loopTime = [310, 310, 180][_diff];
 int _spellID = 1 + _diff;
 
 @Event {
@@ -81,8 +81,8 @@ task TFireA() {
         if (_bossAlive) CallSFX(SND_CHARGE1);
     }
     int numShot = 30;
-    real yAccel = [0.2, 0.38][_diff];
-    real yMax = [4.8, 5.8][_diff];
+    real yAccel = [0.2, 0.2, 0.38][_diff];
+    real yMax = [4.8, 4.8, 5.8][_diff];
     for (int i = 0; i < numShot; i+=2) { //gravity shots
         if (!_bossAlive) return;
         real xSpeed = rand(1, 2.5);
@@ -102,7 +102,7 @@ task TFireA() {
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
 
-    numShot = [16, 20][_diff];
+    numShot = [16, 16, 20][_diff];
     for (int i = 1; i <= 3; i++) { //blue bursts
         if (!_bossAlive) return;
         real angleT = rand(0, 360);
@@ -117,7 +117,7 @@ task TFireA() {
     Animation_Charge(_objBoss, false);
 
     task TRain(int obj_, int modif_) { //rain bullets
-        int color = [SHOT_GRAY, SHOT_WHITE][_diff];
+        int color = [SHOT_GRAY, SHOT_GRAY, SHOT_WHITE][_diff];
         wait(45);
         while (_bossAlive && !Obj_IsDeleted(obj_)) {
             real xPos = ObjMove_GetX(obj_);

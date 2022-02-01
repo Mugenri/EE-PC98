@@ -6,9 +6,9 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -60;
-int _loopTime = [16, 6][_diff];
+int _loopTime = [16, 16, 6][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -87,9 +87,9 @@ task TFireA() {
 task TFireB() {
     while (_count < 0) yield;
     real angleT = 180;
-    int waitTime = [4, 2][_diff];
+    int waitTime = [4, 4, 2][_diff];
     int numShot = 24;
-    real speed = [1.6, 2.1][_diff];
+    real speed = [1.6, 1.6, 2.1][_diff];
     while (_bossAlive) {
         for (int i = 1; i < 8; i++) {
             CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT + i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);

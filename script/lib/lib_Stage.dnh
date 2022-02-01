@@ -189,8 +189,8 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     real[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
-    real[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 1.0, 1.4];
-    string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Extra", "Absurdly Extra"];
+    real[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
+    string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Easy Extra", "Extra", "Absurdly Extra"];
     //TODO starting lives multiplier at some point maybe
 
     //SCORE CALCULATION ----------------------------------

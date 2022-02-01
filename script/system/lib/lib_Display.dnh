@@ -149,17 +149,11 @@ task TIntro() {
 //Selected Difficulty Display
 //----------------------------------------------------
 function<void> Difficulty() {
-    string[] texts = ["Easy", "Normal", "Hard", "Unreal", "Extra", "Ab-Ex"];
-    int[] colors = [COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_WHITE, COLOR_RED, COLOR_WHITE];
+    string[] texts = ["Easy", "Normal", "Hard", "Unreal", "Ez-Ex", "Extra", "Ab-Ex"];
+    int[] colors = [COLOR_GREEN_L, COLOR_BLUE, COLOR_RED, COLOR_MAGENTA_L, COLOR_GREEN_L, COLOR_RED, COLOR_WHITE];
     int diff = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
-    int objText = ObjText_Create();
-	ObjText_SetText(objText, texts[diff]);
-	ObjText_SetFontSize(objText, 16);
+    int objText = CreateText(448, 20, RP_UI_TEXT, texts[diff], colors[diff]);
     ObjText_SetFontType(objText, HEADER_FONT);
-	ObjText_SetVertexColor(objText, 0xFF000000 + colors[diff]);
-	ObjText_SetFontBorderType(objText, BORDER_NONE);
-	Obj_SetRenderPriorityI(objText, RP_UI_TEXT);
-	ObjRender_SetPosition(objText, 448, 20, 1);
     ObjText_SetMaxWidth(objText, 128);
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
 }
@@ -811,15 +805,9 @@ task TCancelBonus(int score_) {
 //FPS Display
 //----------------------------------------------------
 task TFPS() {
-	int objText = ObjText_Create();
-	ObjText_SetFontSize(objText, 16);
-	ObjText_SetFontType(objText, SYS_FONT);
-	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
+	int objText = CreateText(0, WINDOW_HEIGHT - 20, RP_UI_MAX, "", COLOR_WHITE);
 	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
-	ObjText_SetMaxWidth(objText, GetScreenWidth() - 8);
-	Obj_SetRenderPriorityI(objText, RP_UI_MAX);
-	ObjRender_SetX(objText, 0);
-	ObjRender_SetY(objText, GetScreenHeight() - 20);
+	ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
 
 	loop {
 		real fps = GetCurrentFps();
@@ -830,6 +818,7 @@ task TFPS() {
 }
 
 task TReplayFPS() {
+    //TODO this DEFINITELY needs reformatting
 	if (!IsReplay()) return;
 
 	int objText = ObjText_Create();
@@ -842,7 +831,7 @@ task TReplayFPS() {
 	Obj_SetRenderPriorityI(objText, RP_UI_MAX);
 
 	int px = GetStgFrameLeft() + GetStgFrameWidth() - 18;
-	int py = GetStgFrameTop() + GetScreenHeight() - 14;
+	int py = GetStgFrameTop() + GetStgFrameHeight() - 14;
 	ObjRender_SetX(objText, px);
 	ObjRender_SetY(objText, py);
 

@@ -11,7 +11,7 @@ function<int> CreateCursor(int x_, int y_) {
 
 //Screen fade animation
 function<void> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
-    int obj = InitSprite2D(0, 0, GetScreenWidth(), GetScreenHeight(), RP_UI_MAX);
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MAX);
     ObjRender_SetColor(obj, color_);
 
     async {

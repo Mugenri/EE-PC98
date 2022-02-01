@@ -6,10 +6,10 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -120;
-int _loopTime = [520, 60][_diff];
-int _spellID = 5 + _diff;
+int _loopTime = [520, 520, 75][_diff];
+int _spellID = 7 + _diff;
 
 @Event {
     alternative (GetEventType())
@@ -40,7 +40,7 @@ int _spellID = 5 + _diff;
 }
 
 task TInitialize() {
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, MID_X][_diff], 30, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, 60, MID_Y][_diff], 30, LERP_DECELERATE);
     wait(30);
     Transition_Rise(1, 0);
     CallSFX(SND_TRANSITION);
@@ -91,8 +91,8 @@ task TFire() {
     }
 
     real angleT = rand(0, 360);
-    real speed = [2.5, 1.7][_diff];
-    for (int i = 0; i < [32, 16][_diff]; i++) { //spawn
+    real speed = [2.5, 2.5, 1.6][_diff];
+    for (int i = 0; i < [32, 32, 16][_diff]; i++) { //spawn
         if (!_bossAlive) return;
         int shot = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
         ObjShot_SetSpellResist(shot, true);
@@ -175,16 +175,17 @@ task TFire() {
     Animation_Charge(_objBoss, false);
 
     //explode shot
-    int color = [SHOT_BLUE, SHOT_RED_INV][_diff];
+    int color = [SHOT_BLUE_INV, SHOT_BLUE_INV, SHOT_RED_INV][_diff];
+    int loopNum = [5, 5, 3][_diff];
     for (int i = length(shots) - 1; i >= 0; i--) {
         if (!_bossAlive) return;
         int shot = shots[i];
         real x = ObjMove_GetX(shot);
         real y = ObjMove_GetY(shot);
         angleT = rand(0, 360);
-        loop (5) {
-            CreateShotUA1(x, y, [0.75, 0.65][_diff], angleT, color+PELLET, 0, color+SPAWN_S+SIZE_8, color+CANCEL_BURST1);
-            angleT += 360 / 5;
+        loop (loopNum) {
+            CreateShotUA1(x, y, [0.75, 0.75, 0.65][_diff], angleT, color+PELLET, 0, color+SPAWN_S+SIZE_8, color+CANCEL_BURST1);
+            angleT += 360 / loopNum;
         }
         Obj_Delete(shot);
         wait(2);

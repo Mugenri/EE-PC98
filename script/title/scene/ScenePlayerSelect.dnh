@@ -2,8 +2,7 @@
 function<int> ScenePlayerSelect(int selectedDefault_) {
     bool exitFlag = false;
     int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
-    int selectedDifficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
-    //let selectedStage = GetAreaCommonData(AREA_TITLE, "StageIndex", 0);
+    int selectedDifficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
     
     //Player Icons
     string[] imgPlayerPortrait = [IMG_TT_PLAYER1, IMG_TT_PLAYER2];
@@ -13,13 +12,13 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
 
     int indexCurrent = selectedDefault_;
 
-    int[] forbidIndex = [1];
+    int[] forbidIndex = [];
     
     // Check if player has unlocked this difficulty (defaults to true)
-    bool[] unlockFlag = [false, false];
+    bool[] unlockFlag = [true, true];
 
     //Extra Unlock
-    if (selectedDifficulty == D_EXTRA || selectedDifficulty == D_ABEX) {
+    if (selectedDifficulty >= D_EASYEX) {
         unlockFlag = [
             CD_GetExtraStageFlag(PLAYER_YABUSAME), 
             CD_GetExtraStageFlag(PLAYER_TSUBAKURA)
@@ -42,11 +41,11 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     TCreateMenuGraphicsPlayer();
 
     //Create Menu Items
-    int menuX = GetScreenWidth() / 2 - 128;
-    int menuY = GetScreenHeight() / 2;
+    int menuX = WINDOW_WIDTH / 2 - 128;
+    int menuY = WINDOW_HEIGHT / 2;
     ascent (i in 0..selectMax + 1) {
         TCreateMenuItemPlayer(i, menuX, menuY);
-        menuX = GetScreenWidth() / 2 + 128;
+        menuX = WINDOW_WIDTH / 2 + 128;
     }
 
     wait(15); //wait for screen fade from previous menu to clear

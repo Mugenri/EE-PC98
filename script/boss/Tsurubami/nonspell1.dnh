@@ -6,7 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
 int _loopTime = 240;
 
@@ -80,8 +80,8 @@ task TFireA(int dir_) {
     CallSFX(SND_SHOT3);
 
     wait(20);
-    int spawnNum = [12, 24][_diff];
-    int waitTime = [6, 3][_diff];
+    int spawnNum = [12, 12, 24][_diff];
+    int waitTime = [6, 6, 3][_diff];
     for (int i = 0; i < spawnNum; i++) {
         if (!_bossAlive || Obj_IsDeleted(amulet)) return;
         real x = ObjMove_GetX(amulet);
@@ -140,7 +140,7 @@ task TFireB() {
 
     task TGravityShot(int obj_) {
         wait(20);
-        int waitTime = [8, 6][_diff];
+        int waitTime = [8, 8, 6][_diff];
         loop {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             loop (2) {

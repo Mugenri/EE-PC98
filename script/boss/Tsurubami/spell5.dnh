@@ -7,10 +7,10 @@
 
 int _objClone; //second hitbox
 int _objBoss;
-int _diff = GetDifficulty() - 4;
+int _diff = GetDifficulty - D_EASYEX;
 int _count = -360;
-int _loopTime = [210, 200][_diff];
-int _spellID = 9 + _diff;
+int _loopTime = [210, 210, 200][_diff];
+int _spellID = 13 + _diff;
 
 @Event {
     alternative (GetEventType())
@@ -149,9 +149,9 @@ task TFire() {
     //tsuru burst fire
     real radius = rand(0, 5);
     real angleT = ObjMove_GetAngle(_objBoss) + 90;
-    int waitTime = [0, 1][_diff];
-    int numShot = [12, 64][_diff];
-    int moveTime = [110, 50][_diff];
+    int waitTime = [0, 0, 1][_diff];
+    int numShot = [12, 12, 64][_diff];
+    int moveTime = [110, 110, 50][_diff];
     loop (numShot) {
         if (!_bossAlive) return;
         real radius = 150;
@@ -166,12 +166,12 @@ task TFire() {
         wait(waitTime);
     }
 
-    wait([80, 30][_diff]);
+    wait([80, 80, 30][_diff]);
     if (!_bossAlive) return;
 
     //clone lasers
-    int sustain = [45, 10][_diff];
-    int delay = [70, 50][_diff];
+    int sustain = [45, 45, 10][_diff];
+    int delay = [70, 70, 50][_diff];
     for each (shot in shots) { //create straight laser for each shot
         TLaser(shot, sustain, delay);
         if (_diff == 1) yield;

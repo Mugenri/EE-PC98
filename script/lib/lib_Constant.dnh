@@ -55,8 +55,9 @@ const int D_EASY    = 0;
 const int D_NORMAL  = 1;
 const int D_HARD    = 2;
 const int D_LUNATIC = 3;
-const int D_EXTRA   = 4;
-const int D_ABEX    = 5;
+const int D_EASYEX  = 4;
+const int D_EXTRA   = 5;
+const int D_ABEX    = 6;
 
 //Game Mode Constants
 const int GAME_NONE     = 0; //None
