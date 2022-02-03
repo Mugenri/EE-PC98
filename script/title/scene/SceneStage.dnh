@@ -1,7 +1,6 @@
 //Stage Control Script
 #include "./../lib/lib_TitleCommon.dnh"
 #include "./../lib/lib_TitleUtil.dnh"
-#include "./../lib/lib_StagePath.dnh"
 #include "./../../lib/lib_HighScore.dnh"
 
 bool _pauseEnable;
@@ -53,7 +52,10 @@ task TStageScene() { //TODO serious refactoring
 
     if (length(replayPath) > 0) SetStageReplayFile(replayPath);
 
-    string stageScript = GetStagePath(stageIndex);
+    string stageScript;
+    alternative (gameMode)
+    case (GAME_MAIN) { stageScript = GetStagePath(stageIndex); }
+    case (GAME_SPELL) { stageScript = DIR_STG ~ "Stage_SpellPractice.dnh"; }
 
     ScreenBlackout(0, 35, 0, COLOR_BLACK); //grants 5 frames of black screen to hide any loading artifacts
     wait(30);
@@ -195,7 +197,7 @@ function<void> SetTransitionTexture() { //saves the current frame to be used as 
 function<void> SetDefault() { //Reset Game Common Data
 	SetAreaCommonData(AREA_TITLE, "ReplayPath", "");
 	SetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
-	SetAreaCommonData(AREA_TITLE, "PlayerType", 0);
+	SetAreaCommonData(AREA_TITLE, "PlayerType", PLAYER_YABUSAME);
 	SetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
 	SetAreaCommonData(AREA_TITLE, "StageIndex", 0);
 }
@@ -218,4 +220,12 @@ function<void> TReturnToTitle() { //Run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
     int ID = LoadScript(path);
     StartScript(ID);
+}
+
+//return stage script using stage index
+function<string> GetStagePath(int index_) {
+    alternative(index_)
+    case (0) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //yabusame stage
+    case (1) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //tsubakura stage
+    others assert(false, "Invalid stage index.");
 }

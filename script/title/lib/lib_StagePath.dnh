@@ -1,8 +1,0 @@
-//Stores file paths to stage scripts based on an index
-
-function<string> GetStagePath(int index_) {
-    alternative(index_)
-    case (0) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //yabusame 
-    case (1) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //tsubakura
-    others assert(false, "Invalid stage index.");
-}
