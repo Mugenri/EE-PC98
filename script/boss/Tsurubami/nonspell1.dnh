@@ -22,7 +22,8 @@ int _loopTime = 240;
 
 @Initialize {
     Boss_Init(true);
-    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
+    if (GetGameMode() == GAME_MAIN) _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
+    else _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     TInitialize();
     TFinalize();
     TMain();

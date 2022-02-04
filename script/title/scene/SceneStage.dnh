@@ -29,7 +29,7 @@ string _dialoguePath;
     }
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 task TStageScene() { //TODO serious refactoring
     int gameMode        = GetGameMode();
@@ -57,8 +57,8 @@ task TStageScene() { //TODO serious refactoring
     case (GAME_MAIN) { stageScript = GetStagePath(stageIndex); }
     case (GAME_SPELL) { stageScript = DIR_STG ~ "Stage_SpellPractice.dnh"; }
 
-    ScreenBlackout(0, 35, 0, COLOR_BLACK); //grants 5 frames of black screen to hide any loading artifacts
-    wait(30);
+    wait(20);
+
     StartStage();
 
     loop {
@@ -93,6 +93,12 @@ task TStageScene() { //TODO serious refactoring
                 HS_SetHighScore(GetScore());
             }
             alternative (gameOverResult)
+            case (RESULT_RETRY) {
+                //Retry (spell practice)
+                TerminateStageScene();
+                TStageScene();
+                return;
+            }
             case (RESULT_CONTINUE) {
                 NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
                 PauseStageScene(false);
@@ -134,59 +140,60 @@ task TStageScene() { //TODO serious refactoring
         SetStagePlayerScript(pathPlayer);
         StartStageScene();
     }
-}
 
-function<int> PauseMenu() {
-	StopBGM(); //pause music
-    SetTransitionTexture(); //save current frame as pause bg
-    PauseStageScene(true); //pause stage
-	
-	string pathScript = GetCurrentScriptDirectory() ~ "../../system/Pause.dnh";
-	
-	//Run pause script
-	int idScript = LoadScript(pathScript);
-	StartScript(idScript);
-	
-	while (!IsCloseScript(idScript)) {
-		yield;
-	}
-	
-    //resume stage
-	PauseStageScene(false);
-	int res = GetScriptResult(idScript);
-	return res;
-}
+    function<int> PauseMenu() {
+        if (gameMode == GAME_MAIN) StopBGM(); //pause music
+        SetTransitionTexture(); //save current frame as pause bg
+        PauseStageScene(true); //pause stage
+        
+        string pathScript = GetCurrentScriptDirectory() ~ "../../system/Pause.dnh";
+        
+        //Run pause script
+        int idScript = LoadScript(pathScript);
+        StartScript(idScript);
+        
+        while (!IsCloseScript(idScript)) {
+            yield;
+        }
+        
+        //resume stage
+        PauseStageScene(false);
+        int res = GetScriptResult(idScript);
+        return res;
+    }
 
-function<void> RunDialogue(string path_) {
-    SetTransitionTexture();
-    PauseStageScene(true);
+    function<void> RunDialogue(string path_) {
+        SetTransitionTexture();
+        PauseStageScene(true);
 
-    //Start dialogue
-    int idScript = LoadScript(path_);
-    StartScript(idScript);
+        //Start dialogue
+        int idScript = LoadScript(path_);
+        StartScript(idScript);
 
-    while (!IsCloseScript(idScript)) yield;
+        while (!IsCloseScript(idScript)) yield;
 
-    //resume
-    _dialogueRunning = false;
-    PauseStageScene(false);
-    UnloadScriptFromCache(path_);
-    return;
-}
+        //resume
+        _dialogueRunning = false;
+        PauseStageScene(false);
+        UnloadScriptFromCache(path_);
+        return;
+    }
 
-function<int> GameOver() {
-    SetTransitionTexture();
-    PauseStageScene(true);
+    function<int> GameOver() {
+        SetTransitionTexture();
+        PauseStageScene(true);
 
-    string pathScript = GetCurrentScriptDirectory() ~ "../../system/GameOver.dnh";
+        string pathScript = GetCurrentScriptDirectory() ~ "../../system/GameOver.dnh";
+        //TODO something for spell practice
 
-    //Gameover script
-    int idScript = LoadScript(pathScript);
-    StartScript(idScript);
+        //Gameover script
+        int idScript = LoadScript(pathScript);
+        StartScript(idScript);
 
-    while (!IsCloseScript(idScript)) yield;
+        while (!IsCloseScript(idScript)) yield;
 
-    return GetScriptResult(idScript);
+        return GetScriptResult(idScript);
+    }
 }
 
 function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
@@ -211,6 +218,8 @@ function<void> TReturnToTitle() { //Run title screen
     CD_SaveScore();
     CD_SaveResult();
 
+    int gameMode = GetGameMode(); //before clearing common data, get game mode
+
     //reset relevant common data
     ClearAreaCommonData(AREA_STAGE);
     ClearAreaCommonData(AREA_SYSTEM);
@@ -219,7 +228,12 @@ function<void> TReturnToTitle() { //Run title screen
     //run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
     int ID = LoadScript(path);
+    int preloadIndex = -1;
+    if (gameMode == GAME_SPELL) preloadIndex = 1; //preload spell practice
+    SetScriptArgument(ID, 0, preloadIndex); //preload spell practice
     StartScript(ID);
+
+    CloseScript(GetOwnScriptID());
 }
 
 //return stage script using stage index

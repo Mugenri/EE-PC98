@@ -9,7 +9,7 @@ int _objBoss;
 int _diff = GetDifficulty - D_EASYEX;
 int _count = -120;
 int _loopTime = 630;
-int _spellID = 16 + _diff;
+int _spellID = 33 + _diff;
 
 @Event {
     alternative (GetEventType())
@@ -154,6 +154,7 @@ task TFire(int dir_) {
     CallSFX(SND_CHARGE1);
 
     loop (100) {
+        if (!_bossAlive) return;
         ObjMove_SetPosition(mSpark, ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss));
         yield;
     }
@@ -181,7 +182,7 @@ task TFire(int dir_) {
             }
             color++;
             CallSFX(SND_SHOT1);
-            wait(1);
+            yield;
         }
     }
 

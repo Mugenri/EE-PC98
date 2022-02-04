@@ -1,0 +1,92 @@
+#TouhouDanmakufu[Stage]
+#ScriptVersion[3]
+#Title["Spell Practice Stage"]
+#System["./../system/System.dnh"]
+
+#include "./../lib/lib_Common.dnh"
+#include "./../lib/lib_Stage.dnh"
+
+bool _start = false;
+
+@Initialize {
+    Stage_Init(0, 0);
+    TStage();
+}
+
+@Event { Stage_Event(); }
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TStage() {
+    //init variables
+    int stageIndex = GetStageIndex();
+    int spellID = GetSpellPracticeID();
+    
+    string bgPath = SpellPractice_GetBackground(stageIndex);
+    int bgmIndex = SpellPractice_GetBGMIndex(stageIndex, spellID);
+    string pathSingle = SpellPractice_GetSpellPath(stageIndex, spellID);
+
+    //load and execute background script
+    int bgID = LoadScript(bgPath);
+    StartScript(bgID);
+
+    //get path and preload single
+    _objScene = ObjEnemyBossScene_Create();
+    ObjEnemyBossScene_Add(_objScene, 0, pathSingle);
+    ObjEnemyBossScene_LoadInThread(_objScene);
+    ObjEnemyBossScene_SetUnloadCache(_objScene, true);
+
+    while (!_start) yield;
+
+    //start spell
+    StartBGM(bgmIndex, 60, 0);
+    ObjEnemyBossScene_Regist(_objScene);
+    while (!Obj_IsDeleted(_objScene)) yield;
+
+    wait(120);
+    //TODO change to a pause screen and reload
+    ClearBGM();
+    wait(300);
+    CloseScript(bgID);
+    CloseStgScene();
+}
+
+function<string> SpellPractice_GetBackground(int stageIndex_) {
+    string dir = DIR_STG;
+    alternative (stageIndex_)
+    case (0) { return dir ~ "tsurubami/tsuruBG.dnh"; } //tsurubami
+    others { assert(false, "Invalid Stage Index."); }
+}
+
+function<int> SpellPractice_GetBGMIndex(int stageIndex_, int spellID_) {
+    alternative (stageIndex_)
+    case (0) { return 1; } //Eternal Dance Engine
+    case (1) { return 2; } //Broken Eternal Dance Engine
+    others { assert(false, "Invalid Stage Index."); }
+}
+
+//get non/spell filepath based on ID
+function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
+    string dir = DIR_STG;
+    alternative (stageIndex_)
+    case (0) { //Tsurubami
+        dir = dir ~ "tsurubami/";
+        alternative (spellID_)
+        case (0, 1, 2)      { return dir ~ "nonspell1.dnh"; }
+        case (3, 4, 5)      { return dir ~ "spell1.dnh"; }
+        case (6, 7, 8)      { return dir ~ "nonspell2.dnh"; }
+        case (9, 10, 11)    { return dir ~ "spell2.dnh"; }
+        case (12, 13, 14)   { return dir ~ "nonspell3.dnh"; }
+        case (15, 16, 17)   { return dir ~ "spell3.dnh"; }
+        case (18, 19, 20)   { return dir ~ "nonspell4.dnh"; }
+        case (21, 22, 23)   { return dir ~ "spell4.dnh"; }
+        case (24, 25, 26)   { return dir ~ "nonspell5.dnh"; }
+        case (27, 28, 29)   { return dir ~ "spell5.dnh"; }
+        case (30, 31, 32)   { return dir ~ "nonspell6.dnh"; }
+        case (33, 34, 35)   { return dir ~ "spell6.dnh"; }
+        others { assert(false, "Invalid Spell ID."); }
+    }
+    others { assert(false, "Invalid Stage Index."); }
+}

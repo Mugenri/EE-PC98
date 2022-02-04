@@ -127,6 +127,6 @@ task TFire() {
     }
 }
 
-task TMovement(int dir_) { 
+task TMovement(int dir_) {
     if (_bossAlive) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(45, 140) * dir_, 50 + rand(0, 40), 90, LERP_DECELERATE);
 }

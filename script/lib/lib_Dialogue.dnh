@@ -158,23 +158,39 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
     _reading = true;
     string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
     string tempString = "";
+    char lastChar;
+    int waitTime;
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
         SetVirtualKeyState(VK_OK, KEY_FREE);
     }
     ascent (i in 0..length(tempStrings)) { //list of substrings
         ascent (j in 0..length(tempStrings[i])) { //for each character in a substring
             tempString = tempString ~ [tempStrings[i][j]];
+            lastChar = tempString[-1];
             ObjText_SetText(obj_, tempString);
             if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
-                if (isSpeech_) CallSFX(SND_TALK);
-                else CallSFX(SND_BOSSTITLE);
-                yield;;
+                if (lastChar != ' ') {
+                    if (isSpeech_) CallSFX(SND_TALK);
+                    else CallSFX(SND_BOSSTITLE);
+                }
+                loop (GetWaitTime()) { //isSpeech_ being used as an int
+                    if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) yield;
+                    else break;
+                }
             }
         }
         tempString = tempString ~ ['[','r',']']; //append a newline after each substring
     }
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) SetVirtualKeyState(VK_OK, KEY_FREE); //Prevents the keystate from carrying over to the reading check in WaitForInput()
     _reading = false;
+
+    function<int> GetWaitTime() {
+        if (!isSpeech_) return 5;
+        alternative (lastChar)
+        case ('.', '!', '?') { return 10; } //end of sentence
+        case (' ') { return 3; }
+        others { return 1; }
+    }
 }
 
 //----------------------------------------------------

@@ -14,7 +14,7 @@
     Ascii_Init();
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Event {
     alternative (GetEventType())
@@ -103,7 +103,7 @@ function<void> ScrollText(bool isExtend_) { //life/bomb extend notification
 
     async {
         //move text
-        for (int i = 39; i >= 0; i--) { 
+        for (int i = 39; i >= 0; i--) {
             ObjRender_SetX(objText, MID_X + i * 8);
             yield;
         }

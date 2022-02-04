@@ -39,7 +39,7 @@ function<void> Boss_Init(bool isVulnerable_) {
     Shot_Init();
 }
 //Initialize a boss object
-function<int> Boss_Create(string bossID_) { 
+function<int> Boss_Create(string bossID_) {
     int objBoss = ObjEnemy_Create(OBJ_ENEMY_BOSS);
     Boss_SetID(objBoss, bossID_);
     Animation_DrawBoss(objBoss);
@@ -50,7 +50,7 @@ function<int> Boss_Create(string bossID_) {
     return objBoss;
 }
 //Initialize a boss object at a given coordinate
-function<int> Boss_Create(string bossID_, real x_, real y_) { 
+function<int> Boss_Create(string bossID_, real x_, real y_) {
     Boss_SetInitPosition(bossID_, x_, y_);
     return Boss_Create(bossID_);
 }

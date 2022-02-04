@@ -1,11 +1,12 @@
 //Background functions library
-int _bIndex = -1; //Used by event in stage script
+int _bIndex = -1; //Used by event in background script
 int _priority = RP_STG_BG2; //switches to BG1 on first call
 int _transitionTime = 0; //used for timing removal of background transition shaders and exiting of background tasks
 int _objShader; //background transition shader
 
 function<void> BG_Init(int index_) {
     TUpdateRenderTargets();
+    SetAreaCommonData(AREA_STAGE, "SCRIPT_BG", GetOwnScriptID());
     //Initialize shader object.
     _objShader = ObjShader_Create();
     ObjShader_SetShaderF(_objShader, HLSL_TRANSITION); //texture mask shader
@@ -15,12 +16,20 @@ function<void> BG_Init(int index_) {
     BG_Update(index_, 0);
 }
 
-function<void> BG_Update(int index_, int time_) {
-    _transitionTime = time_; //also serves as transition time for closing running background task
-    _priority = _priority == RP_STG_BG1 ? RP_STG_BG2 : RP_STG_BG1; //switch to unused background render priority ranges
-    assert(index_ != _bIndex, "Attempted to transition to the same index background.");
+function<void> BG_Event() {
+    alternative(GetEventType())
+    case (EV_CHANGE_BG) { BG_Update(GetEventArgument(0), GetEventArgument(1)); }
+}
 
-    ChangeIndex(index_, _priority); //MUST be defined by including library
+function<void> BG_Update(int index_, int time_) {
+    if (index_ == _bIndex) { //this shouldn't happen
+        WriteLog("Attempted to transition to the same background index, terminating transition task.");
+        return;
+    }
+    _transitionTime = time_; //also serves as time until closing the current background task
+    _priority = _priority == RP_STG_BG1 ? RP_STG_BG2 : RP_STG_BG1; //switch to unused background render priority ranges
+
+    ChangeIndex(index_, _priority); //MUST BE DEFINED BY INCLUDING SCRIPT, if abstract functions were a thing this would be one
 
     //bakcground draw object
     int canvas = GetCanvas(time_ != 0);

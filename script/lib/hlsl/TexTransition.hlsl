@@ -5,7 +5,7 @@ const float SCREEN_WIDTH = 1024;
 const float SCREEN_HEIGHT = 512;
 texture textureMask_;
 sampler samplerMask_ = sampler_state
-{ 
+{
 	Texture = <textureMask_>;
 };
 

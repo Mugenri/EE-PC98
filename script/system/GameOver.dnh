@@ -12,7 +12,7 @@ int objFade; //square animation particle list
 	TMenu();
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Finalize {}
 

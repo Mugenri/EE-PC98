@@ -6,7 +6,9 @@
 
 @Initialize {
     InitFrame();
+    System_Init();
     System_InitCommonData();
+    Display_Init();
     Ascii_Init();
     Ascii_InitSpell();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
@@ -21,14 +23,16 @@
 
 @Event {
 	alternative (GetEventType())
-	case (EV_START_BOSS_SPELL) { //Spell_SetCurrent() should be used in the single before declaring a spell
+	case (EV_START_BOSS_SPELL) { //Spell_SetCurrent() should be used in the single to declare a spell
         int currentSpell = Spell_GetCurrent(); //current spell ID
-        Spell_Seen(currentSpell); //increment spell seen counter
-        TSpellDisplay(currentSpell); //spell display
+        int currentStage = GetStageIndex(); //current stage index
+        Spell_Seen(currentStage, currentSpell); //increment spell seen counter
+        TSpellDisplay(currentStage, currentSpell); //spell display
 	}
 	case (EV_GAIN_SPELL) { //This returns the score value set in the single, not affected by time.
         int currentSpell = Spell_GetCurrent();
-        Spell_Captured(currentSpell);
+        int currentStage = GetStageIndex();
+        Spell_Captured(currentStage, currentSpell);
         int score = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
         score -= score % 10; //round to nearest 10
 		TSpellBonus(score);
@@ -36,10 +40,6 @@
     case (EV_CANCEL_BONUS) {
         int score = GetEventArgument(0);
         TCancelBonus(score);
-    }
-    case (EV_PLAYER_LOADED) { //Requires that the player be loaded.
-        System_Init();
-        Display_Init();
     }
 }
 

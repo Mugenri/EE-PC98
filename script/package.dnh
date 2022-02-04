@@ -10,6 +10,6 @@
     Load_Init();
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Finalize {}

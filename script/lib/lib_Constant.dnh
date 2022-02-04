@@ -3,13 +3,13 @@
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
-const string GAME_VERSION = "0.10a";
+const string GAME_VERSION = "0.20a";
 
 //----------------------------------------------------
 //FONT CONSTANTS
 //----------------------------------------------------
 const string SYS_FONT = "PC-9800";
-const string SYS_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/font/PC-9800.ttf";
+const string SYS_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/font/PC-9800.ttf"; //TODO change this and similar to module directory
 const string HEADER_FONT = "Magic Decimal Sharp";
 const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/font/MagicDecimalSharp.ttf";
 
@@ -17,26 +17,25 @@ const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/f
 //EVENT CONSTANTS
 //----------------------------------------------------
 //Stage Constants
-const int EV_STAGE_START        = EV_USER_STAGE + 1; //Starts the dialogue/plural scripts after the stage intro animation completes
-const int EV_STAGE_INTRO_START  = EV_USER_STAGE + 2; //Stage intro fade begins and player can move/shoot/pause the game
-const int EV_CHANGE_BG          = EV_USER_STAGE + 3; //Change background index number, pass (index, transitionTime)
+const int EV_STAGE_START        = EV_USER_STAGE + 1;    //Starts the dialogue/plural scripts after the stage intro animation completes
+const int EV_STAGE_INTRO_START  = EV_USER_STAGE + 2;    //Stage intro fade begins and player can move/shoot/pause the game
+const int EV_CHANGE_BG          = EV_USER_STAGE + 3;    //Change background index number, pass (index, transitionTime)
 
 //System Constants
-const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1; //Create Item, pass (x, y, TYPE_CONSTANT)
-const int EV_CANCEL_BONUS       = EV_USER_SYSTEM + 2; //Bullet cancel score bonus text, pass (score)
+const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1;   //Create Item, pass (x, y, TYPE_CONSTANT)
+const int EV_CANCEL_BONUS       = EV_USER_SYSTEM + 2;   //Bullet cancel score bonus text, pass (score)
 
 //Package Constants
-const int EV_PLAY_BGM           = EV_USER_PACKAGE + 1; //Stops current track, plays new track. pass (trackID, fade, delay)
-const int EV_PAUSE_ENABLE       = EV_USER_PACKAGE + 2; //Enable/disable pausing in the stage control script. pass (enable)
-const int EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3; //unlock specified achievement pass (achievementID)
-const int EV_STOP_BGM           = EV_USER_PACKAGE + 4; //pass true to pause, pass false to resume
-const int EV_PLAY_SFX           = EV_USER_PACKAGE + 5; //Play sfx from audio script. pass (sfxID) 
-const int EV_TITLE_END          = EV_USER_PACKAGE + 6; //End title screen script
-const int EV_PLAYER_LOADED      = EV_USER_PACKAGE + 7; //Triggered when the player script is finished initializing
-const int EV_DIALOGUE_START     = EV_USER_PACKAGE + 8; //Called to start a dialogue sequence. pass (scriptPath)
-const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 9; //returns an array of [name, comment]. pass (bgmID)
-const int EV_STOP_SFX           = EV_USER_PACKAGE + 10;//Stop currently playing sfx
-const int EV_CONTINUE           = EV_USER_PACKAGE + 11;//Player used a continue
+const int EV_PLAY_BGM           = EV_USER_PACKAGE + 1;  //Stops current track, plays new track. pass (trackID, fade, delay)
+const int EV_PAUSE_ENABLE       = EV_USER_PACKAGE + 2;  //Enable/disable pausing in the stage control script. pass (enable)
+const int EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3;  //unlock specified achievement. pass (achievementID)
+const int EV_STOP_BGM           = EV_USER_PACKAGE + 4;  //pass true to pause, pass false to resume
+const int EV_PLAY_SFX           = EV_USER_PACKAGE + 5;  //Play sfx from audio script. pass (sfxID) 
+const int EV_TITLE_END          = EV_USER_PACKAGE + 6;  //End title screen script
+const int EV_DIALOGUE_START     = EV_USER_PACKAGE + 7;  //Called to start a dialogue sequence. pass (scriptPath)
+const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 8;  //returns an array of [name, comment]. pass (bgmID)
+const int EV_STOP_SFX           = EV_USER_PACKAGE + 9;  //Stop currently playing sfx
+const int EV_CONTINUE           = EV_USER_PACKAGE + 10; //Player used a continue
 
 //----------------------------------------------------
 //GAME CONSTANTS
@@ -62,8 +61,7 @@ const int D_ABEX    = 6;
 //Game Mode Constants
 const int GAME_NONE     = 0; //None
 const int GAME_MAIN     = 1; //Normal Game
-const int GAME_PRACTICE = 2; //Stage Practice Mode
-const int GAME_SPELL    = 3; //Spell Practice Mode
+const int GAME_SPELL    = 2; //Spell Practice Mode
 
 //Script Result Constants
 const int RESULT_CONTINUE = 0; //player used a continue (game over menu)
@@ -195,8 +193,8 @@ const int SHOT_EFFECT       = 3; //Key field for bullet deletion effect
 //Boss
 const int BOSS_ID           = 4; //Boss ID string constant
 const int BOSS_DAMAGE       = 5; //Boss took damage this frame
-// const int ANIM_CHARGE       = 6; //reserved for animation library
-// const int ANIM_SPECIAL      = 7; //reserved for animation library
+// const int ANIM_CHARGE       = 6; //value reserved for animation library
+// const int ANIM_SPECIAL      = 7; //value reserved for animation library
 
 //----------------------------------------------------
 //COLOR CONSTANTS

@@ -31,8 +31,6 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
     SetPlayerIntersectionEraseShot(false);
 
     SetPlayerSpeed(speed_, focusSpeed_);
-
-    NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_PLAYER_LOADED, 0); //Starts the stage intro
 }
 
 function<void> PlayerEvent() {

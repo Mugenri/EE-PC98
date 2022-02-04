@@ -33,6 +33,7 @@ task TLoadScene() { //loading screen
     { //Run title screen
         string path = GetCurrentScriptDirectory() ~ "Title.dnh";
         int id = LoadScript(path);
+        SetScriptArgument(id, 0, -1); //no preload
         StartScript(id);
     }
 }

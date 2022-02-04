@@ -79,7 +79,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
         //white screen flash then fadeout
-        ScreenBlackout(0, 0, 10, COLOR_WHITE);
+        ScreenBlackout(0, 0, 20, COLOR_WHITE);
         wait(60);
         ScreenBlackout(60, 60, 0, COLOR_BLACK);
         wait(60);

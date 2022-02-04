@@ -9,6 +9,7 @@
 #include "./scene/ScenePlayerSelect.dnh"
 #include "./scene/SceneRankSelect.dnh"
 #include "./scene/SceneSoundTest.dnh"
+#include "./scene/SceneSpellPractice.dnh"
 
 bool _titleEnd = false;
 int _titleList; //particles
@@ -17,8 +18,9 @@ int _titleList; //particles
     SetAutoDeleteObject(true);
     SetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", GetOwnScriptID());
     //TODO unload/uncache all scripts that were created during the stage, perhaps with a stage management script
-
-    TTitleScene();
+    //this should probably go in the stage script
+    int preloadIndex = GetScriptArgument(0);
+    TTitleScene(preloadIndex);
 }
 
 @Event {
@@ -28,12 +30,12 @@ int _titleList; //particles
     }
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Finalize {}
 
 //Load Title
-task TTitleScene() {
+task TTitleScene(int preloadIndex_) {
     int testBG = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MIN); //if this is ever visible something is wrong
     ObjRender_SetColor(testBG, COLOR_RED); //its a bigass red rectangle
 
@@ -42,7 +44,7 @@ task TTitleScene() {
     ParticleListShader(_titleList, 16/512, 16/512);
 
     StartBGM(0, 60, 30);
-    TMainMenu(true, INDEX_EXTRA);
+    TMainMenu(true, INDEX_EXTRA, preloadIndex_);
 
     while (!_titleEnd) {
         yield;

@@ -1,18 +1,32 @@
 //Stage function library
 bool _introPlaying = true; //assume screen is fading from black
+real[] tempSpeed = []; //store player speed to stop movement during intro fade
+
+function<void> Stage_Init(int lives_, int bombs_) {
+    SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
+    SetPlayerLife(lives_);
+    SetPlayerSpell(bombs_);
+    //Stop player movement while screen is black
+    SetForbidPlayerShot(true);
+    SetForbidPlayerSpell(true);
+    tempSpeed = GetPlayerSpeed();
+    SetPlayerSpeed(0, 0);
+}
 
 function<void> Stage_Event() { //Generic stage events (can create another event block in the stage script for specialized events)
     alternative (GetEventType())
     case (EV_STAGE_INTRO_START) { //immediately as intro fade begins
         TIntroTimer(80); //if bgm starts here, delay bgm text for 80 frames
         SetPauseEnable(true);
+        //resume player movement when the transition begins
+        SetForbidPlayerShot(false);
+        SetForbidPlayerSpell(false);
+        SetPlayerSpeed(tempSpeed[0], tempSpeed[1]);
     }
     case (EV_STAGE_START) _start = true; //immediately after intro fade ends
     case (EV_PLAY_BGM) {
-        wait(GetEventArgument(1));
-        Stage_SetBGMText(GetBGMName(GetEventArgument(0)));
+        Stage_SetBGMText(GetEventArgument(0), GetEventArgument(1), GetEventArgument(2));
     }
-    case (EV_CHANGE_BG) { BG_Update(GetEventArgument(0), GetEventArgument(1)); }
     case (EV_CONTINUE) { ///used a continue
         CD_AddAreaCommonData(AREA_STAGE, "Continues", 1, 0);
 
@@ -35,8 +49,11 @@ task TIntroTimer(int time_) { //time the intro fade takes to play
     _introPlaying = false;
 }
 
-function<void> Stage_SetBGMText(string text_) { //newly playing bgm text (228 frames of animation)
-    int objText = CreateText(0, MAX_Y - 17, RP_STG_MAX, text_, COLOR_WHITE);
+function<void> Stage_SetBGMText(int index_, int delay_, int current_) { //newly playing bgm text (228 frames of animation)
+    if (index_ == current_) return; //already playing, cancel
+    wait(delay_);
+    string text = GetBGMName(index_);
+    int objText = CreateText(0, MAX_Y - 17, RP_STG_MAX, text, COLOR_WHITE);
     ObjText_SetMaxWidth(objText, MAX_X - 1);
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
     Obj_SetVisible(objText, false);
@@ -222,7 +239,9 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     Obj_SetVisible(noMissText, missCount == 0);
     Obj_SetVisible(noBombText, bombCount == 0);
     //multipliers
-    int continueText = CreateText(16, 288, RP_STG_END, IntToString(continues) ~ " Continues Used:", COLOR_RED);
+    string tempText = " Continues";
+    if (continues == 1) tempText = " Continue";
+    int continueText = CreateText(16, 288, RP_STG_END, IntToString(continues) ~ tempText ~ " Used:", COLOR_RED);
     Obj_SetVisible(continueText, continues > 0);
     int difficultyText = CreateText(16, 304, RP_STG_END, difficultyTexts[difficulty] ~ " Rank:", COLOR_GREEN_L);
     //total

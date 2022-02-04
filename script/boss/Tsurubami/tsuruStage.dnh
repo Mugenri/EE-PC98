@@ -5,24 +5,27 @@
 
 #include "./../../lib/lib_Common.dnh"
 #include "./../../lib/lib_Stage.dnh"
-#include "./background.dnh"
 
 bool _start = false;
 
 @Initialize {
-    SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
-    BG_Init(0);
+    Stage_Init(2, 3);
     TStage();
 }
 
 @Event { Stage_Event(); }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Finalize {}
 
 task TStage() {
     string dir = GetCurrentScriptDirectory();
+    //load and execute background script
+    string bgPath = dir ~ "tsuruBG.dnh";
+    int bgID = LoadScript(bgPath);
+    StartScript(bgID);
+    //preload plural
     string path = dir ~ "tsuruPlural.dnh";
     int ID = LoadScriptInThread(path);
 
@@ -45,5 +48,6 @@ task TStage() {
     Stage_EndScreen(10000);
     ClearBGM();
     wait(300); //TOOD temporary probably get rid of this entirely, handle this from package
+    CloseScript(bgID);
     CloseStgScene();
 }

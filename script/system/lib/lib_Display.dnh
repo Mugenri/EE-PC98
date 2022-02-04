@@ -73,49 +73,38 @@ task TIntro() {
     //Fade square particle list
     int objFade = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, 0, 256, 16, 272);
     ObjParticleList_SetColor(objFade, COLOR_BLACK);
-
-    int frames = 8; //number of animation frames
-
+    //game logo
     int objLogo = InitSprite2D(0, 0, 323, 108, IMG_SYSTEM_LOGO, RP_STG_MAX);
     ObjRender_SetPosition(objLogo, MID_X - 162, MID_Y - 54, 1);
     ObjRender_SetAlpha(objLogo, 0);
 
-    //Stop player movement while screen is black
-    SetForbidPlayerShot(true);
-    SetForbidPlayerSpell(true);
-    real[] tempSpeed = GetPlayerSpeed();
-    SetPlayerSpeed(0, 0);
+    if (GetGameMode() == GAME_MAIN) { //only play logo display in main game
+        wait(60);
 
-    wait(60);
-
-    ascent (i in 1..4) {
-        real alpha = 255/3 * i;
-        ObjRender_SetAlpha(objLogo, alpha);
-        wait(10);
+        ascent (i in 1..4) {
+            real alpha = 255/3 * i;
+            ObjRender_SetAlpha(objLogo, alpha);
+            wait(10);
+        }
+        wait(60);
+        ascent (i in 1..4) {
+            real alpha = 255 - (255/3 * i);
+            ObjRender_SetAlpha(objLogo, alpha);
+            wait(10);
+        }
     }
-    wait(60);
-    ascent (i in 1..4) {
-        real alpha = 255 - (255/3 * i);
-        ObjRender_SetAlpha(objLogo, alpha);
-        wait(10);
-    }
-    Obj_Delete(objLogo);
+        Obj_Delete(objLogo);
 
     wait(10);
 
     //Transition begin event
-    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", -1), EV_STAGE_INTRO_START, 0);
+    NotifyEvent(GetStageScriptID(), EV_STAGE_INTRO_START, 0);
 
-    //resume player movement when the transition begins
-    SetForbidPlayerShot(false);
-    SetForbidPlayerSpell(false);
-    SetPlayerSpeed(tempSpeed[0], tempSpeed[1]);
-
-    //delete black rectangle
     Obj_Delete(objBG);
 
     //intro animation (80 frames)
     int frame = 0;
+    int frames = 8; //number of animation frames
     loop (frames) {
         ObjSprite2D_SetSourceRect(objFade, 112 - (frame * 16), 256, 128 - (frame * 16), 272); //animation is drawn right to left in the file
         ObjSprite2D_SetDestRect(objFade, 0, 0, 16, 16);
@@ -227,7 +216,7 @@ task THighScore() {
         ObjRender_SetY(objText, 32);
 
         //move text
-        for (int i = 39; i >= 0; i--) { 
+        for (int i = 39; i >= 0; i--) {
             if (_bonusDisplaying) break;
             ObjRender_SetX(objText, (MID_X + i * 8) - 64);
             yield;
@@ -585,13 +574,13 @@ task TPointItem() {
 //----------------------------------------------------
 //Active Spell Banner and Spell History Display
 //----------------------------------------------------
-task TSpellDisplay(int spellID_) {
-    int[] history = Spell_GetHistory(spellID_);
-    string name = Spell_GetName(spellID_);
+task TSpellDisplay(int stageIndex_, int spellID_) {
+    int[] history = Spell_GetHistory(GetGameMode(), stageIndex_, spellID_);
+    string name = Spell_GetName(stageIndex_, spellID_);
     int seen = history[0];
     int captured = history[1];
-    int bonus = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
     //if you see an error here you forgot to assign a spell bonus to your spell
+    int bonus = NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", 0), EV_REQUEST_SPELL_SCORE, 0);
     bool spellFailed = false;
     bool visible = true;
 
@@ -723,7 +712,7 @@ task TSpellBonus(int score_) {
     int[] numList = DigitToArray(score_, min(numLength, 9));
 
     //move text
-    for (int i = 39; i >= 0; i--) { 
+    for (int i = 39; i >= 0; i--) {
         ObjRender_SetX(objText, (97 + i * 8) - 47); //align with cancel bonus text
         yield;
     }
@@ -773,7 +762,7 @@ task TCancelBonus(int score_) {
     if (numLength > 0) numList = DigitToArray(score_, min(numLength, 9));
 
     //move text
-    for (int i = 39; i >= 0; i--) { 
+    for (int i = 39; i >= 0; i--) {
         ObjRender_SetX(objText, 97 + i * 8);
         yield;
     }

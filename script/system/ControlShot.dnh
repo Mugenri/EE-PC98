@@ -9,7 +9,7 @@
     Cancel_Init();
 }
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Event {
     alternative (GetEventType())

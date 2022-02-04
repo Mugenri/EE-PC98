@@ -186,8 +186,8 @@ function<void> SceneMusicRoom() {
     function<void> CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
         ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_WHITE);
         ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_WHITE);
-        ObjText_SetText(playingText, BGM_GetText(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1))[0]);
-        ObjText_SetText(descriptionText, BGM_GetText(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1))[1]);
+        ObjText_SetText(playingText, BGM_GetText(GetCurrentBGMID())[0]);
+        ObjText_SetText(descriptionText, BGM_GetText(GetCurrentBGMID())[1]);
         revealPrompt = false;
     }
 }

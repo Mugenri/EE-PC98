@@ -1,0 +1,178 @@
+//Tsurubami backgrounds
+#include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Background.dnh"
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    BG_Init(0);
+}
+
+@Event { BG_Event(); }
+
+@MainLoop { yield; }
+
+function<void> ChangeIndex(int index_, int priority_) {
+    //change to index (starts shutdown for current bg)
+    _bIndex = index_;
+    alternative (index_)
+    case (0) { TBackground(index_, priority_); }
+    case (1) { TSpellBackground(index_, priority_); }
+    others { assert(false, "Invalid background index."); }
+}
+
+task TBackground(int index_, int priority_) {
+    bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    //bg
+    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+
+    int count = 0;
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            TExit();
+            index_ = _bIndex;
+        }
+        if (count % 90 == 0) TCircle();
+        count++;
+        yield;
+    }
+
+    Obj_Delete(bg);
+    Obj_Delete(black);
+
+    task TCircle() {
+        int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, priority_);
+        ascent (i in 0..33) ObjPrim_SetVertexColor(circle, i, COLOR_GRAY_D);
+
+        real frames = 90;
+        for (int i = 1; i <= frames; i++) {
+            int radius = Interpolate_Accelerate(0, 275, i / frames);
+            real angle = 0;
+            ascent (j in 0..33) {
+                ObjPrim_SetVertexPosition(circle, j, MID_X + radius * cos(angle), MID_Y + radius * sin(angle), 1);
+                angle += 360/32;
+            }
+            if (!exitFlag) yield;
+        }
+        Obj_Delete(circle);
+    }
+
+    task TExit () { //TODO find a way to make this reusable instead of copy pasting it? exit background task
+        int timer = _transitionTime;
+        while (timer > 0) {
+            timer--;
+            yield;
+        }
+        exitFlag = true;
+    }
+}
+
+task TSpellBackground(int index_, int priority_) {
+    bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    //torii & kanji
+    int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+
+    int count = 30;
+    int color = 0;
+    bool increment = true;
+
+    TLineEffect();
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            TExit();
+            index_ = _bIndex;
+        }
+        ObjRender_SetColor(black, color, color, color);
+
+        if (increment) count++;
+        else count--;
+
+        if (count >= 209) increment = false;
+        else if (count < 30) increment = true;
+
+        color = truncate(count/60) * 6;
+        yield;
+    }
+
+    Obj_Delete(black);
+    Obj_Delete(bg);
+
+    task TLineEffect() {
+        //Used for movement
+        int count = 0;
+
+        //starting point for line columns/rows
+        int xOrigin = -17;
+        int yOrigin = -26;
+
+        int x = xOrigin;
+        int y = yOrigin;
+
+        //Vertical Lines
+        loop (5) {
+            TCreateLine(x, y, 71, 7, true);
+            x += 139;
+        }
+
+        x = xOrigin - 139; //need one point back to cover full range of motion
+        y = yOrigin + 70; //Height of a rectangle
+
+        //Horizontal Lines
+        loop (5) {
+            TCreateLine(x, y, 140, 7, false);
+            y += 70;
+        }
+
+        //Movement
+        while (!exitFlag) {
+            if (count >= 140) count = 0;
+            count++;
+            yield;
+        }
+
+        task TCreateLine(int xStart_, int yStart_, int step_, int points_, bool vertical_) {
+            int[][] positions = [];
+
+            int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
+            ascent (i in 0..points_) {
+                ObjPrim_SetVertexColor(line, i, COLOR_GRAY_D);
+            }
+            ascent (i in 0..points_) {
+                ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);
+                positions = positions ~ [[xStart_, yStart_]];
+                if (vertical_) yStart_ += step_;
+                else xStart_ += step_;
+            }
+
+            //set positions based on grid position and multiplier based on distance from the middle
+            while (!exitFlag) {
+                ascent (i in 0..length(positions)) {
+                    int xCurr = positions[i][0] - count;
+                    int yCurr = positions[i][1];
+                    xCurr -= (xCurr - MID_X) * 0.06 * (absolute(yCurr - MID_Y) * 0.02);
+                    yCurr += (yCurr - MID_Y) * 0.06 * (absolute(xCurr - MID_X) * 0.02);
+
+                    ObjPrim_SetVertexPosition(line, i, xCurr, yCurr, 1);
+                }
+                yield;
+            }
+            Obj_Delete(line);
+        }
+    }
+
+    task TExit () { //exit background task
+        int timer = _transitionTime;
+        while (timer > 0) {
+            timer--;
+            yield;
+        }
+        exitFlag = true;
+    }
+}

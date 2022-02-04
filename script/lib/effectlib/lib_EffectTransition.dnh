@@ -4,7 +4,7 @@
 //Utility
 //----------------------------------------------------
 function<void> Transition_ChangeBG(int index_, int transitionTime_) { //change background to selected index with transition graphic time
-    NotifyEvent(GetStageScriptID(), EV_CHANGE_BG, index_, transitionTime_);
+    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_BG", -1), EV_CHANGE_BG, index_, transitionTime_);
 }
 
 function<int> GetTransitionObject(bool useShader_) { //get a transition effect sprite object

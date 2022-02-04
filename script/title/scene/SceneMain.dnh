@@ -10,7 +10,11 @@ const int INDEX_SOUND   = 5;
 const int INDEX_OPTION  = 6;
 const int INDEX_QUIT    = 7;
 
-task TMainMenu(bool playIntro_, int selectedDefault_) {
+task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
+    if (preloadIndex_ >= 0) {
+        SelectItem(preloadIndex_, true);
+        return;
+    }
     bool exitFlag = false; //deletes certain things upon leaving this menu
     CD_SaveAll(); //write data to save file
 
@@ -60,7 +64,8 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
             indexCurrent = IncrementIndex(indexCurrent, 1, 0, selectMax, forbidIndex);
         }
         case (VK_OK) {
-            SelectItem(indexCurrent);
+            CallSFX(SND_TT_DECIDE);
+            SelectItem(indexCurrent, false);
             break;
         }
         case (VK_CANCEL, VK_PAUSE) {
@@ -69,31 +74,55 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         }
     }
 
-    function<int> SelectItem(int index_) {
-        CallSFX(SND_TT_DECIDE);
+    function<int> SelectItem(int index_, bool isPreload_) {
+        //preload skips the main title menu and loads into the submenu
         alternative (index_)
         // case (INDEX_START) {
         //     //Game Start
+        //     if (!isPreload_) {
+        //         ScreenBlackout(10, 5, 10, COLOR_BLACK);
+        //         wait(10);
+        //     }
         //     TSelectStart();
         // }
         case (INDEX_EXTRA) {
             //Extra Start
+            if (!isPreload_) {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             TSelectExtra();
         }
         case (INDEX_PRACTICE) {
-            //Stage Practice
+            //Spell Practice
+            if (!isPreload_) {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             TSelectPractice();
         }
         case (INDEX_REPLAY) {
             //Replays
+            if (!isPreload_) {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             TSelectReplay();
         }
         case (INDEX_SCORE) {
             //Result
+            if (!isPreload_) {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             TSelectScore();
         }
         case (INDEX_MUSIC) {
             //Music Room
+            if (!isPreload_) {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             TSelectMusic();
         }
         case (INDEX_SOUND) {
@@ -108,6 +137,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
             //Exit Game
             CD_SaveAll();
             ScreenBlackout(60, 200, 0, COLOR_BLACK);
+            ClearBGM();
             wait(80);
             ClosePackage();
         }
@@ -115,6 +145,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
 
     function<void> MenuIntro() {
         //setup
+        bool skipIntro = false;
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
         wait(30);
@@ -132,16 +163,33 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         ObjRender_SetPosition(logo4, WINDOW_WIDTH, 3, 1);
 
         //anim
-        MoveLogo(logo1);
-        wait(8);
-        MoveLogo(logo2);
-        wait(8);
-        MoveLogo(logo3);
-        wait(8);
-        MoveLogo(logo4);
-        wait(40);
-        ScreenBlackout(40, 5, 40, COLOR_WHITE);
-        wait(40);
+        MoveLogo(logo1, 0);
+        MoveLogo(logo2, 8);
+        MoveLogo(logo3, 16);
+        MoveLogo(logo4, 24);
+
+        //player input to skip intro
+        async {
+            loop (125) { //animation time
+                if (GetVirtualKeyState(VK_OK) == KEY_PUSH) {
+                    skipIntro = true;
+                    break;
+                }
+                yield;
+            }
+        }
+
+        loop (40) { //wait for text scroll
+            if (skipIntro) break;
+            yield;
+        }
+
+        int objWhite = ScreenBlackout(40, 5, 40, COLOR_WHITE);
+        
+        loop (40) { //fade in anim
+            if (skipIntro) break;
+            yield;
+        }
 
         //cleanup
         Obj_Delete(bg);
@@ -150,13 +198,20 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         Obj_Delete(logo3);
         Obj_Delete(logo4);
 
-        //normal menu fadein
+        //normal menu
         TCreateMenuGraphicsMain();
-        wait(45);
+        loop (45) { //rest of fade animation
+            if (skipIntro) break;
+            yield;
+        }
 
-        task MoveLogo(int obj_) {
+        if (!Obj_IsDeleted(objWhite)) Obj_Delete(objWhite);
+
+        task MoveLogo(int obj_, int wait_) {
+            wait(wait_);
             real frames = 40;
             for (int i = 1; i <= 40; i++) {
+                if (Obj_IsDeleted(obj_)) return;
                 ObjRender_SetPosition(obj_, Interpolate_Accelerate(WINDOW_WIDTH, 5, i / frames), 3, 1);
                 yield;
             }
@@ -195,8 +250,6 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
     }
 
     task TSelectStart() { //UNUSED
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
         exitFlag = true;
         //Declare variables to be set by submenus
         int selectedRank = D_NORMAL;
@@ -228,13 +281,11 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
                 return;
             }
         }
-        //Only Runs if the submenu is exited
-        TMainMenu(false, INDEX_EXTRA);
+        //Exited start game menu
+        TMainMenu(false, INDEX_EXTRA, -1);
     }
 
     task TSelectExtra() {
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
         exitFlag = true;
         //Declare variables to be set by submenus
         int selectedRank = D_EXTRA;
@@ -268,39 +319,78 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
                 return;
             }
         }
-        //Only Runs if the submenu is exited
-        TMainMenu(false, INDEX_EXTRA);
+        //Exited extra start menu
+        TMainMenu(false, INDEX_EXTRA, -1);
     }
 
-    task TSelectPractice() { //UNUSED
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
+    task TSelectPractice() {
         exitFlag = true;
-        //ScenePractice();
+        //Declare variables to be set by submenus
+        //maybe get an array of diff, player, spellID from the spell practice menu
+        //how tf do handle return to title from spell practice in a way that isn't annoying
+        //maybe add a default menu select option to the menu function
+        //make this go straight to another menu function? have default options to put the cursor back
+        //on the previously selected spell based on common data?
+        int selectedRank = D_EXTRA;
+        int selectedPlayer = PLAYER_YABUSAME;
+        //Main Play Mode
+        SetAreaCommonData(AREA_TITLE, "GameMode", GAME_SPELL);
 
-        //Only Runs if the submenu is exited
-        TMainMenu(false, INDEX_PRACTICE);
+        int tempSelect = 0;
+        loop {
+            //Select Difficulty
+            tempSelect = SceneRankSelect(selectedRank);
+            if (tempSelect < 0) break;
+            selectedRank = tempSelect;
+            loop {
+                //Select Player
+                tempSelect = ScenePlayerSelect(selectedPlayer);
+                if (tempSelect < 0) break;
+                selectedPlayer = tempSelect;
+
+                //Set CommonData for player selections
+                SetAreaCommonData(AREA_TITLE, "GameMode", GAME_SPELL);
+                SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+                SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank); //might not need this one depending on how menu is set up
+
+                //Run main stage script
+                int stageIndex = selectedPlayer == 0 ? 0 : 1; //TODO make dependent upon spell selected
+                SetAreaCommonData(AREA_TITLE, "StageIndex", stageIndex);
+                SetAreaCommonData(AREA_TITLE, "SpellPracticeID", 9 + selectedRank - D_EASYEX); //temp af
+                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+                int idScript = LoadScript(pathScript);
+                StartScript(idScript);
+                return;
+            }
+        }
+
+        //Exited spell practice menu
+        TMainMenu(false, INDEX_PRACTICE, -1);
     }
 
     task TSelectReplay() {
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
         exitFlag = true;
         //SceneReplay();
 
-        //Only Runs if the submenu is exited
-        TMainMenu(false, INDEX_REPLAY);
+        //Exited Replay menu
+        TMainMenu(false, INDEX_REPLAY, -1);
+    }
+
+    task TSelectScore() {
+        exitFlag = true;
+        //SceneScore();
+
+        //Exited player score menu
+        TMainMenu(false, INDEX_SCORE, -1);
     }
 
     task TSelectMusic() {
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
         exitFlag = true;
         SceneMusicRoom();
 
         //Exited music menu
         StartBGM(0, 60, 15);
-        TMainMenu(false, INDEX_MUSIC);
+        TMainMenu(false, INDEX_MUSIC, -1);
     }
 
     task TSelectSound() {
@@ -308,17 +398,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         SceneSoundTest();
 
         //Exited sound test menu
-        TMainMenu(false, INDEX_SOUND);
-    }
-
-    task TSelectScore() {
-        ScreenBlackout(10, 5, 10, COLOR_BLACK);
-        wait(10);
-        exitFlag = true;
-        //SceneScore();
-
-        //Exited player score menu
-        TMainMenu(false, INDEX_SCORE);
+        TMainMenu(false, INDEX_SOUND, -1);
     }
 
     task TSelectOption() {
@@ -326,6 +406,6 @@ task TMainMenu(bool playIntro_, int selectedDefault_) {
         SceneOption();
 
         //Exited option menu
-        TMainMenu(false, INDEX_OPTION);
+        TMainMenu(false, INDEX_OPTION, -1);
     }
 }

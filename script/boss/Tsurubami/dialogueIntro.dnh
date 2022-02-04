@@ -10,7 +10,7 @@
 
 @Event {}
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 @Finalize {}
 

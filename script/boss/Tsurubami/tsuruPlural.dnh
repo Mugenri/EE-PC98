@@ -12,7 +12,7 @@
 
 @Event {}
 
-@MainLoop {yield;}
+@MainLoop { yield; }
 
 task TPlural() {
     string dir = GetCurrentScriptDirectory();

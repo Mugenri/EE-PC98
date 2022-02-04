@@ -10,24 +10,29 @@ function<int> CreateCursor(int x_, int y_) {
 }
 
 //Screen fade animation
-function<void> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
+function<int> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
     int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MAX);
     ObjRender_SetColor(obj, color_);
 
     async {
-        descent (i in 0..fadeOut_) {
-            real alpha = 255 - (i+1)/fadeOut_*255;
-            ObjRender_SetAlpha(obj, alpha);
+        for (real i = 1; i <= fadeOut_; i++) {
+            if (Obj_IsDeleted(obj)) break;
+            ObjRender_SetAlpha(obj, Interpolate_Linear(0, 255, i / fadeOut_));
             yield;
         }
         ObjRender_SetAlpha(obj, 255);
-        wait(between_);
-        ascent (i in 0..fadeIn_) {
-            real alpha = 255 - (i+1)/fadeIn_*255;
-            ObjRender_SetAlpha(obj, alpha);
+        loop (between_) {
+            if (Obj_IsDeleted(obj)) break;
             yield;
         }
-        Obj_Delete(obj);
+        for (real i = 1; i <= fadeIn_; i++) {
+            if (Obj_IsDeleted(obj)) break;
+            ObjRender_SetAlpha(obj, Interpolate_Linear(255, 0, i / fadeIn_));
+            yield;
+        }
+        if (!Obj_IsDeleted(obj)) Obj_Delete(obj);
     }
+
+    return obj;
 }
 

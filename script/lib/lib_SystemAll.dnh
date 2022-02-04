@@ -7,9 +7,10 @@
 //----------------------------------------------------
 function<int> GetPackageStageScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", -1)); }
 function<int> GetStageScriptID() { return(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", -1)); }
-function<int> GetGameMode() { return(GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE)); } //main/extra, spell practice, stage practice
+function<int> GetGameMode() { return(GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE)); } //main/extra, spell practice
 function<int> GetPlayerType() { return(GetAreaCommonData(AREA_TITLE, "PlayerType", 0)); }
 function<int> GetStageIndex() { return(GetAreaCommonData(AREA_TITLE, "StageIndex", -1)); } //currently running stage
+function<int> GetSpellPracticeID() { return(GetAreaCommonData(AREA_TITLE, "SpellPracticeID", -1)); } //selected spell to play in spell practice
 function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
 function<void> SetPauseEnable(bool enable_) { NotifyEvent(GetPackageStageScriptID(), EV_PAUSE_ENABLE, enable_); }
@@ -21,9 +22,10 @@ function<int> GetAudioScriptID() { return(GetAreaCommonData(AREA_TITLE, "SCRIPT_
 // --- BGM Functions --- //
 //Play track
 function<void> StartBGM(int trackID_, int fade_, int delay_) {
+    int currentID = GetCurrentBGMID(); //for stage bgm text display
     NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, trackID_, fade_, delay_);
-    NotifyEvent(GetStageScriptID(), EV_PLAY_BGM, trackID_, delay_);
-    }
+    NotifyEvent(GetStageScriptID(), EV_PLAY_BGM, trackID_, delay_, currentID);
+}
 //Pause track
 function<void> StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
@@ -34,6 +36,8 @@ function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, -1, 0, 
 function<int> GetBGMVolume() { return(GetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100)); }
 
 function<string> GetBGMName(int trackID_) { return(NotifyEvent(GetAudioScriptID(), EV_GET_BGM_NAME, trackID_)); }
+//Currently playing bgm
+function<int> GetCurrentBGMID() { return(GetAreaCommonData(AREA_TITLE, "BGM_ID", -1)); }
 
 // --- SFX Functions --- //
 function<void> CallSFX(int soundID_) { NotifyEvent(GetAudioScriptID(), EV_PLAY_SFX, soundID_); }
