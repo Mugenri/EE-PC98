@@ -114,7 +114,7 @@ function<void> SceneOption() {
     }
 
     function<void> IncrementVolume(int index_, int value_) {
-        int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100) + value_, 0, 100); 
+        int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100) + value_, 0, 100);
         SetAreaCommonData(AREA_CONFIG, commonName[index_], newValue);
     }
 

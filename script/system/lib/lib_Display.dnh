@@ -254,7 +254,7 @@ task TScore() {
             scoreRender += continues; //add number of continues to the end of the number
             if (score - scoreRender <= 10) scoreRender = score;
         } else if (scoreRender > score) { //score decreased through use of continues
-            scoreRender = score; 
+            scoreRender = score;
             continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
         }
         //render particle
@@ -685,7 +685,7 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
 //----------------------------------------------------
 task TSpellBonus(int score_) {
     while (!_bonusIsReady) yield; //has to yield until bonusReady for multiple things (ascii score text position esp.)
-    _bonusIsReady = false; 
+    _bonusIsReady = false;
     _bonusDisplaying = true;
     AddScore(score_);
     //Ascii numbers around boss

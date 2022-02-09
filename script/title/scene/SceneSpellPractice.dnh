@@ -283,7 +283,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                     for (int frame = 1; frame <= frames; frame++) {
                         if (exitFlag) break;
                         for (int i = 0; i < vertices; i++) {
-                            real x = Interpolate_Accelerate(x1 + rad1 * cos(angleT), x2 + rad2 * cos(angleT), frame / frames); 
+                            real x = Interpolate_Accelerate(x1 + rad1 * cos(angleT), x2 + rad2 * cos(angleT), frame / frames);
                             real y = Interpolate_Accelerate(y1 + rad1 * sin(angleT), y2 + rad2 * sin(angleT), frame / frames);
                             ObjPrim_SetVertexPosition(prim, i, x, y, 1);
                             angleT += 360 / (vertices - 1);

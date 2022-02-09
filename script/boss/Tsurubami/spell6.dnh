@@ -71,7 +71,7 @@ task TKillAura() {
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
         for (int j = 0; j < 33; j++) {
             ObjPrim_SetVertexPosition(killAura, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
-            angleT += 360 / 32; 
+            angleT += 360 / 32;
         }
         yield;
     }
@@ -85,7 +85,7 @@ task TKillAura() {
                 int tempRad = Interpolate_Decelerate(0, radius, i / 60);
                 for (int j = 0; j < 33; j++) {
                     ObjPrim_SetVertexPosition(killAura2, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
-                    angleT += 360 / 32; 
+                    angleT += 360 / 32;
                 }
                 yield;
             }
@@ -101,7 +101,7 @@ task TKillAura() {
         //set position, check for player
         for (int i = 0; i < 33; i++) {
             ObjPrim_SetVertexPosition(killAura, i, x + radius * cos(angleT), y + radius * sin(angleT), 1);
-            angleT += 360 / 32; 
+            angleT += 360 / 32;
         }
         if (cooldown > 0) {
             cooldown--;

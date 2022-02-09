@@ -14,7 +14,7 @@ _spellID = 0 + _diff;
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3000); 
+        SetScriptResult(3000);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(40 + absolute(_count / 60));

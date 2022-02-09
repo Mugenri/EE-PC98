@@ -5,7 +5,7 @@ float enable_;
 
 struct PS_INPUT {
     float4 diffuse : COLOR0;  
-    float2 texCoord : TEXCOORD0; 
+    float2 texCoord : TEXCOORD0;
 };
 
 float4 PsWhite(PS_INPUT inPs) : COLOR0 {

@@ -180,7 +180,7 @@ task TSpell() {
         real playerX = GetPlayerX();
         real playerY = GetPlayerY();
         int circle = CreateCircle(playerX, playerY);
-        int[] lines = []; 
+        int[] lines = [];
         loop (10) lines = lines ~ [CreateLine(playerX, playerY)];
 
         while (!Obj_IsDeleted(objManage)) {
