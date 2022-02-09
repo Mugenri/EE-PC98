@@ -193,15 +193,15 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
 
         //prim bg
         //inner
-        int rad1 = 150;
-        int x1 = WINDOW_WIDTH_MID;
-        int y1 = WINDOW_HEIGHT_MID;
+        int rad1 = 112;
+        int x1 = 440;
+        int y1 = 252;
         //outer
         int rad2 = 565;
-        int x2 = WINDOW_WIDTH_MID + 48;
-        int y2 = WINDOW_HEIGHT_MID - 230;
+        real x2 = WINDOW_WIDTH_MID;
+        real y2 = WINDOW_HEIGHT_MID;
 
-        int spokes = 32; //# lines from in to out
+        int spokes = 12; //# lines from in to out
 
         int cInner = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG); //inner circle
         real angleT = -90;
@@ -222,7 +222,18 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
 
         TMove();
 
-        while (!exitFlag) yield;
+        real count = rand(0, 360);
+        while (!exitFlag) {
+            x2 = 320 + 150 * cos(count);
+            y2 = 200 + 200 * sin(count);
+            angleT = -90;
+            for (int i = 0; i < spokes * 2; i+= 2) {
+                ObjPrim_SetVertexPosition(cLines, i + 1, x2 + rad2 * cos(angleT), y2 + rad2 * sin(angleT), 1);
+                angleT += 360 / spokes;
+            }
+            count += 1/4;
+            yield;
+        }
 
         Obj_Delete(bg);
         Obj_Delete(sceneSprites);
@@ -281,7 +292,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                     }
                     Obj_Delete(prim);
                 }
-                wait(15);
+                wait(22);
             }
         }
 
