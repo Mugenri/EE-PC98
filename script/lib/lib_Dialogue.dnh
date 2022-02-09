@@ -222,9 +222,9 @@ function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
 
 function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, string bossID_, int xPos_, int yPos_) { //Screen whiteout that places the boss sprite 
     //boss sprite to be placed, autodeletes upon script closure
-    int bossSprite = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(bossSprite, RP_UI_IMG);
-    ObjPrim_SetTexture(bossSprite, GetBossSprite(bossID_));
+    int bossSprite = InitSprite2D(0, 0, 64, 64, GetBossSprite(bossID_), RP_UI_IMG);
+    ObjSprite2D_SetDestCenter(bossSprite);
+    Obj_SetVisible(bossSprite, false);
 
     //screen whiteout
     int whiteout = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_UI_MAX);
@@ -238,9 +238,7 @@ function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, stri
         yield;
     }
     ObjRender_SetAlpha(whiteout, 255);
-    //if i try to use objrender_setvisible on this instead of setting rects at this point it makes the whiteout effect flicker, no idea why.
-    ObjSprite2D_SetSourceRect(bossSprite, 0, 0, 64, 64); //THIS MUST BE STANDARDIZED
-    ObjSprite2D_SetDestCenter(bossSprite);
+    Obj_SetVisible(bossSprite, true);
     ObjRender_SetPosition(bossSprite, xPos_ + 32, yPos_ + 16, 1); //shifted to align with stg window coordinates
 
     wait(between_);
