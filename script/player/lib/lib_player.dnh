@@ -24,7 +24,7 @@ function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);
-    SetPlayerRebirthFrame(15);
+    SetPlayerRebirthFrame(18);
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
     SetPlayerItemScope(itemScope_);
     SetPlayerInvincibleGraze(false);
@@ -123,14 +123,15 @@ task THit() { //Player deathbomb window
     //Closing circle
     real radius = 28;
     int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 18, RP_STG_EFF_MAX);
-    ascent (i in 0..18) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
-    loop (14) {
+    for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
+    int frames = 14;
+    for (real frame = 0; frame <= frames; frame++) {
         ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
-        ascent (i in 1..18) {
-            real angleT = 360/16 * i;
-            ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
+        radius = Interpolate_Accelerate(28, 0, frame / frames);
+        for (int i = 1; i < ObjPrim_GetVertexCount(circle); i++) {
+            real angleT = 360 / (ObjPrim_GetVertexCount(circle) - 2) * i;
+            ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
         }
-        radius -= 2;
         if (IsPlayerSpellActive()) break;
         yield;
     }
