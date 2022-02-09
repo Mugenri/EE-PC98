@@ -14,7 +14,7 @@ _spellID = 6 + _diff;
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3000); 
+        SetScriptResult(3000);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(40 + absolute(_count / 60));
@@ -87,7 +87,7 @@ task TFireA(int dir_) {
     task TSpawnRing(int obj_, int modif_) {
         wait(rand_int(2, 5));
         loop (3) {
-            if (!_bossAlive) return;
+            if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             real angleT = rand_int(0, 10) * 10;
             int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
             for (int i = 0; i < 3; i++) {
