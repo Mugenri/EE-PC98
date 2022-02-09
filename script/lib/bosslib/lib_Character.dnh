@@ -18,7 +18,7 @@ const string[] IMG_CHARA_TSURUBAMI = [
 function<string> GetBossSprite(string bossID_) { //Returns boss stg sprite sheet
     alternative (bossID_)
     case (BOSS_ID_TSURUBAMI) return IMG_CHARA_TSURUBAMI[1];
-    others assert(false, "Invalid Boss Sprite ID in lib_Character.dnh");
+    others assert(false, IntToString(bossID_) ~ " is an invalid boss sprite ID.");
 }
 
 function<string> GetBossPortrait(string bossID_) { //Returns character dialogue portrait sheet
@@ -26,5 +26,5 @@ function<string> GetBossPortrait(string bossID_) { //Returns character dialogue 
     case (BOSS_ID_YABUSAME) return IMG_CHARA_YABUSAME[0];
     case (BOSS_ID_TSUBAKURA) return IMG_CHARA_TSUBAKURA[0];
     case (BOSS_ID_TSURUBAMI) return IMG_CHARA_TSURUBAMI[0];
-    others assert(false, "Invalid Boss Portrait ID in lib_Character.dnh");
+    others assert(false, IntToString(bossID_) ~ " is an invalid boss portrait ID.");
 }

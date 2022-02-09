@@ -82,6 +82,18 @@ function<int> InitSprite2D(int l_, int t_, int r_, int b_, int priority_) {
     Obj_SetRenderPriorityI(obj, priority_);
     return obj;
 }
+//Initializes a 2D sprite list object
+function<int> InitSpriteList2D(string texture_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
+    ObjPrim_SetTexture(obj, texture_);
+    Obj_SetRenderPriorityI(obj, priority_);
+    return obj;
+}
+//Sets the source and dest rect of a sprite list object
+function<void> ObjSpriteList2D_SetSourceDestRect(int obj_, int l_, int t_, int r_, int b_) {
+    ObjSpriteList2D_SetSourceRect(obj_, l_, t_, r_, b_);
+    ObjSpriteList2D_SetDestRect(obj_, 0, 0, r_ - l_, b_ - t_);
+}
 //Create Text object with pc9800 font
 function<int> CreateText(int x_, int y_, int priority_, string text_, int color_) { //color_ is an RGB hex value added to 255 alpha (0xFF000000)
     int obj = ObjText_Create();

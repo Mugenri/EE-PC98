@@ -28,9 +28,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
 
     //Forbid Indices
     ascent (i in 0..length(unlockFlag)) {
-        if (!unlockFlag[i]) {
-            forbidIndex = forbidIndex ~ [i]; //TODO temporary for testing
-        }
+        if (!unlockFlag[i]) forbidIndex = forbidIndex ~ [i];
     }
 
     //Don't select forbidden index as default
@@ -83,7 +81,6 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         wait(60);
         ScreenBlackout(60, 60, 0, COLOR_BLACK);
         wait(60);
-        NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
     }
 
     task TCreateMenuGraphicsPlayer() {

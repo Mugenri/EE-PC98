@@ -68,9 +68,9 @@ function<int> SceneRankSelect(int selectedDefault_) {
     task TCreateMenuGraphicsRank() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
-        int circleOut = InitSprite2D(303, 0, 630, 327, IMG_TT_RANKBG, RP_UI_BG);
+        int circleOut = InitSprite2D(303, 0, 630, 327, IMG_TT_RANK, RP_UI_BG);
         ObjRender_SetPosition(circleOut, 157, 36, 1);
-        int circleIn = InitSprite2D(0, 0, 303, 303, IMG_TT_RANKBG, RP_UI_IMG);
+        int circleIn = InitSprite2D(0, 0, 303, 303, IMG_TT_RANK, RP_UI_IMG);
         ObjRender_SetPosition(circleIn, 169, 48, 1);
 
         real radius = 150; //radius of circle
@@ -132,12 +132,12 @@ function<int> SceneRankSelect(int selectedDefault_) {
     }
 
     task TCreateMenuItemRank(int index_, int x_, int y_, int imgIndex_) {
-        int objText = InitSprite2D(0, 386 + imgIndex_ * 18, 225, 386 + (imgIndex_ + 1) * 18, IMG_TT_RANKBG, RP_UI_IMG);
+        int objText = InitSprite2D(0, 386 + imgIndex_ * 18, 225, 386 + (imgIndex_ + 1) * 18, IMG_TT_RANK, RP_UI_IMG);
         ObjRender_SetPosition(objText, x_, y_, 1);
 
         while (!exitFlag) {
             int modif = index_ == indexCurrent ? 0 : 225;
-            ObjSprite2D_SetSourceRect(objText, 0 + modif, 386 + imgIndex_ * 18, 225 + modif + 1, 386 + (imgIndex_ + 1) * 18); //WHY DOES THIS NEED + 1 WHAT THE FUCK
+            ObjSprite2D_SetSourceRect(objText, 0 + modif, 386 + imgIndex_ * 18, 225 + modif, 386 + (imgIndex_ + 1) * 18);
             yield;
         }
         Obj_Delete(objText);

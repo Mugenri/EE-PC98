@@ -17,7 +17,7 @@ function<void> ChangeIndex(int index_, int priority_) {
     alternative (index_)
     case (0) { TBackground(index_, priority_); }
     case (1) { TSpellBackground(index_, priority_); }
-    others { assert(false, "Invalid background index."); }
+    others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
 task TBackground(int index_, int priority_) {

@@ -1,2 +1,455 @@
 //Spell practice screen
-//TODO everything
+
+#include "./../../lib/lib_Spell.dnh"
+#include "./../../lib/lib_HighScore.dnh"
+
+function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
+    //submenu indices
+    const int MENU_STAGE = 0;
+    const int MENU_SPELL = 1;
+
+    bool exitFlag = false;
+
+    //Player, Difficulty, Stage, SpellID
+    int[] returnData = selectedDefault_;
+
+    int subIndex = 0; //current submenu
+    int selectedPlayer = returnData[0];
+    int selectedDiff = returnData[1];
+    //arrays of info for each submenu 
+    int[] selectMax = [0, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
+    int[] indexListSize = [7, 4]; //max number of items on screen (0 indexed)
+    int[] indexListTop = [0, 0]; //index at top of list
+
+    int[] indexCurrent = [0, 0]; //current index in each menu
+
+    TCreateMenuGraphicsSpell();
+
+    if (autoSelect_) {
+        int stageIndex = selectedDefault_[2];
+        int spellID = selectedDefault_[3];
+        int spellIndex = GetIndexFromSpellID(stageIndex, spellID);
+        indexCurrent = [stageIndex, spellIndex];
+        subIndex = MENU_SPELL;
+    }
+
+    int menuX = 16;
+    int menuY = 140;
+    int yOff = 16;
+    //stage & spell selection
+    for (int submenu = 0; submenu <= MENU_SPELL; submenu++) {
+        for (int menuIndex = 0; menuIndex <= indexListSize[submenu]; menuIndex++) {
+            TCreateMenuItemSpell(submenu, menuIndex, menuX, menuY);
+            menuY += yOff;
+        }
+        menuX = WINDOW_WIDTH - 8 - 384;
+        menuY = 140;
+        yOff += 32;
+    }
+
+    wait(15); //wait for screen fade from previous menu to clear
+    WaitKeysFree([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_SLOWMOVE, VK_OK, VK_CANCEL, VK_PAUSE]);
+    loop {
+        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_SLOWMOVE, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case (VK_UP, VK_DOWN) {
+            CallSFX(SND_TT_SELECT);
+            int increment = userKey == VK_UP ? -1 : 1;
+            indexCurrent[subIndex] = IncrementIndex(indexCurrent[subIndex], increment, 0, selectMax[subIndex]);
+            if (subIndex == MENU_STAGE) {
+                int currStage = indexCurrent[MENU_STAGE];
+                int numDiff = length(GetDifficultyList(currStage));
+                selectMax[MENU_SPELL] = GetSpellIndexListSize(currStage, numDiff);
+            }
+        }
+        case (VK_LEFT, VK_RIGHT) {
+            CallSFX(SND_TT_SELECT);
+            int increment = userKey == VK_LEFT ? -1 : 1;
+            int[] diffList = GetDifficultyList(indexCurrent[MENU_STAGE]);
+            selectedDiff = IncrementIndex(selectedDiff, increment, diffList[0], diffList[-1]);
+        }
+        case (VK_SLOWMOVE) {
+            CallSFX(SND_TT_SELECT);
+            ChangePlayer();
+        }
+        case (VK_OK) {
+            SelectIndex(indexCurrent[subIndex], subIndex);
+            if (subIndex > MENU_SPELL) { //start spell
+                subIndex--;
+                CallSFX(SND_TT_DECIDE);
+                ScreenBlackout(0, 0, 20, COLOR_WHITE);
+                wait(60);
+                ScreenBlackout(60, 60, 0, COLOR_BLACK);
+                wait(60);
+                break;
+            }
+        }
+        case (VK_CANCEL, VK_PAUSE) {
+            CallSFX(SND_TT_CANCEL);
+            subIndex--;
+            if (subIndex == MENU_STAGE) {
+                indexCurrent[MENU_SPELL] = 0;
+                indexListTop[MENU_SPELL] = 0;
+            }
+            if (subIndex < MENU_STAGE) {
+                returnData[0] = -1;
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+                break;
+            }
+        }
+        //check if cursor has scrolled outside current list
+        if (indexCurrent[subIndex] > indexListTop[subIndex] + indexListSize[subIndex]) indexListTop[subIndex] = indexCurrent[subIndex] - indexListSize[subIndex];
+        else if (indexCurrent[subIndex] < indexListTop[subIndex]) indexListTop[subIndex] = indexCurrent[subIndex];
+    }
+    exitFlag = true;
+
+    return returnData;
+
+    function<void> SelectIndex(int index_, int submenu_) {
+        int numDiff = length(GetDifficultyList(indexCurrent[MENU_STAGE]));
+        alternative (submenu_)
+        case (MENU_STAGE) {
+            if (CheckUnlock(MENU_STAGE, index_, numDiff)) {
+                CallSFX(SND_TT_DECIDE);
+                returnData[2] = index_;
+                selectMax[MENU_SPELL] = GetSpellIndexListSize(index_, numDiff);
+                subIndex++;
+            } else {
+                CallSFX(SND_TT_CANCEL);
+            }
+        }
+        case (MENU_SPELL) {
+            if (CheckUnlock(MENU_SPELL, index_, numDiff)) {
+                int tempDiff = ScaleDiff(selectedDiff);
+                returnData[0] = selectedPlayer;
+                returnData[1] = selectedDiff;
+                returnData[3] = index_ * numDiff + tempDiff;
+                subIndex++;
+            } else {
+                CallSFX(SND_TT_CANCEL);
+            }
+        }
+    }
+
+    function<void> ChangePlayer() {
+        bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
+        int[] forbidden = [];
+        for (int i = 0; i < length(flags); i++) {
+            if (!flags[i]) forbidden = forbidden ~ [i];
+        }
+        selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSUBAKURA, forbidden);
+    }
+
+    task TCreateMenuGraphicsSpell() {
+        TDiffDisplay();
+        TPlayerDisplay();
+
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
+        ObjRender_SetColor(bg, COLOR_BLACK);
+
+        //dividers & static text
+        int sceneSprites = InitSpriteList2D(IMG_TT_SPELL, RP_UI_IMG);
+        //logo
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 0, 0, 432, 80);
+        ObjRender_SetPosition(sceneSprites, 0, 0, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Help text
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 0, 128, 144, 192);
+        ObjRender_SetPosition(sceneSprites, 496, 8, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Boss text
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 336, 80, 400, 98);
+        ObjRender_SetPosition(sceneSprites, 86, 88, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Player text
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 336, 98, 432, 116);
+        ObjRender_SetPosition(sceneSprites, 70, 303, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Large divider
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 0, 80, 336, 96);
+        ObjRender_SetPosition(sceneSprites, 277, 109, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Medium dividers
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 0, 96, 304, 112);
+        ObjRender_SetPosition(sceneSprites, 289, 174, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        ObjRender_SetPosition(sceneSprites, 289, 222, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        ObjRender_SetPosition(sceneSprites, 289, 270, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        ObjRender_SetPosition(sceneSprites, 289, 318, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //Small dividers
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 0, 112, 208, 128);
+        ObjRender_SetPosition(sceneSprites, 16, 110, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        ObjRender_SetPosition(sceneSprites, 16, 286, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+
+        ObjSpriteList2D_CloseVertex(sceneSprites);
+
+        TRenderArrows();
+
+        //prim bg
+        //inner
+        int rad1 = 150;
+        int x1 = WINDOW_WIDTH_MID;
+        int y1 = WINDOW_HEIGHT_MID;
+        //outer
+        int rad2 = 565;
+        int x2 = WINDOW_WIDTH_MID + 48;
+        int y2 = WINDOW_HEIGHT_MID - 230;
+
+        int spokes = 32; //# lines from in to out
+
+        int cInner = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG); //inner circle
+        real angleT = -90;
+        for (int i = 0; i < ObjPrim_GetVertexCount(cInner); i++) {
+            ObjPrim_SetVertexPosition(cInner, i, x1 + rad1 * cos(angleT), y1 + rad1 * sin(angleT), 1);
+            ObjPrim_SetVertexColor(cInner, i, COLOR_PURPLE_D);
+            angleT += 360 / (ObjPrim_GetVertexCount(cInner) - 1);
+        }
+        angleT = -90;
+        int cLines = InitPrim2D(PRIMITIVE_LINELIST, spokes * 2, RP_UI_BG); //spokes
+        for (int i = 0; i < spokes * 2; i += 2) {
+            ObjPrim_SetVertexPosition(cLines, i, x1 + rad1 * cos(angleT), y1 + rad1 * sin(angleT), 1);
+            ObjPrim_SetVertexPosition(cLines, i + 1, x2 + rad2 * cos(angleT), y2 + rad2 * sin(angleT), 1);
+            ObjPrim_SetVertexColor(cLines, i, COLOR_PURPLE_D);
+            ObjPrim_SetVertexColor(cLines, i + 1, COLOR_PURPLE_D);
+            angleT += 360 / spokes;
+        }
+
+        TMove();
+
+        while (!exitFlag) yield;
+
+        Obj_Delete(bg);
+        Obj_Delete(sceneSprites);
+        Obj_Delete(cInner);
+        Obj_Delete(cLines);
+
+        task TRenderArrows() {
+            int uStage = InitSprite2D(208, 112, 224, 128, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(uStage, 110, 126, 1);
+            int uSpell = InitSprite2D(208, 112, 224, 128, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(uSpell, 432, 126, 1);
+            int dStage = InitSprite2D(224, 112, 240, 128, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(dStage, 110, 268, 1);
+            int dSpell = InitSprite2D(224, 112, 240, 128, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(dSpell, 432, 368, 1);
+
+            while (!exitFlag) {
+                int stMax = selectMax[MENU_STAGE];
+                int stSize = indexListSize[MENU_STAGE];
+                int stTop = indexListTop[MENU_STAGE];
+                int spMax = selectMax[MENU_SPELL];
+                int spSize = indexListSize[MENU_SPELL];
+                int spTop = indexListTop[MENU_SPELL];
+                Obj_SetVisible(uStage, stTop != 0);
+                Obj_SetVisible(uSpell, spTop != 0);
+                Obj_SetVisible(dStage, stTop + stSize < stMax);
+                Obj_SetVisible(dSpell, spTop + spSize < spMax);
+                yield;
+            }
+            Obj_Delete(uStage);
+            Obj_Delete(uSpell);
+            Obj_Delete(dStage);
+            Obj_Delete(dSpell);
+        }
+
+        task TMove() {
+            while(!exitFlag) {
+                async {
+                    int prim = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG); //moving circle
+                    int vertices = ObjPrim_GetVertexCount(prim);
+                    for (int i = 0; i < vertices; i++) {
+                        ObjPrim_SetVertexColor(prim, i, COLOR_PURPLE_D);
+                    }
+                    real angleT = -90;
+                    real frames = 180; //anim time
+
+                    for (int frame = 1; frame <= frames; frame++) {
+                        if (exitFlag) break;
+                        for (int i = 0; i < vertices; i++) {
+                            real x = Interpolate_Accelerate(x1 + rad1 * cos(angleT), x2 + rad2 * cos(angleT), frame / frames); 
+                            real y = Interpolate_Accelerate(y1 + rad1 * sin(angleT), y2 + rad2 * sin(angleT), frame / frames);
+                            ObjPrim_SetVertexPosition(prim, i, x, y, 1);
+                            angleT += 360 / (vertices - 1);
+                        }
+                        yield;
+                    }
+                    Obj_Delete(prim);
+                }
+                wait(15);
+            }
+        }
+
+        task TDiffDisplay() { //difficulty selection display
+            int diffText = InitSprite2D(0, 386 + selectedDiff * 18, 225, 386 + (selectedDiff + 1) * 18, IMG_TT_RANK, RP_UI_TEXT);
+            ObjRender_SetPosition(diffText, 328, 88, 1);
+            int currDiff = -1;
+            int currStage = indexCurrent[MENU_STAGE];
+
+            while (!exitFlag) {
+                if (currStage != indexCurrent[MENU_STAGE]) {
+                    currStage = indexCurrent[MENU_STAGE];
+                    int diffList = GetDifficultyList(currStage);
+                    if (!contains(diffList, currDiff)) currDiff = diffList[0];
+                }
+                if (currDiff != selectedDiff) {
+                    currDiff = selectedDiff;
+                    ObjSprite2D_SetSourceRect(diffText, 0, 386 + currDiff * 18, 225, 386 + (currDiff + 1) * 18);
+                }
+                yield;
+            }
+            Obj_Delete(diffText);
+        }
+
+        task TPlayerDisplay() { //player selection display
+            int playerText = CreateText(16, 332, RP_UI_TEXT, "ERR", COLOR_WHITE);
+            ObjText_SetMaxWidth(playerText, 204);
+            ObjText_SetHorizontalAlignment(playerText, ALIGNMENT_CENTER);
+            int currPlayer = -1;
+
+            while (!exitFlag) {
+                if (currPlayer != selectedPlayer) {
+                    currPlayer = selectedPlayer;
+                    ObjText_SetText(playerText, ["Yabusame Houren", "Tsubakura Enraku"][currPlayer]);
+                }
+                yield;
+            }
+            Obj_Delete(playerText);
+        }
+    }
+
+    task TCreateMenuItemSpell(int subIndex_, int index_, int xPos_, int yPos_) {
+        int objText = CreateText(xPos_, yPos_, RP_UI_TEXT, "ERR", COLOR_RED); //should never display this
+        int realID = indexListTop[subIndex_] + index_; //actual index number = top of list + menu item index
+
+        bool isUnlock; //has this been seen before?
+        int currDiff; //current difficulty setting
+        int numDiff; //number of difficulties available
+        int currPlayer; //player index
+
+        //modify text object depending on menu type
+        alternative (subIndex_)
+        case (MENU_STAGE) {
+            ObjText_SetMaxWidth(objText, 204);
+            ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
+        }
+        case (MENU_SPELL) {
+            ObjText_SetMaxWidth(objText, 384);
+            ObjText_SetHorizontalAlignment(objText, ALIGNMENT_CENTER);
+            ObjText_SetLinePitch(objText, 0);
+        }
+
+        //initial list creation
+        UpdateListItem();
+
+        while (!exitFlag) {
+            if (indexListTop[subIndex_] + index_ != realID || currDiff != selectedDiff || currPlayer != selectedPlayer) {
+                UpdateListItem();
+            }
+            int[] cUnfocSelect = [COLOR_WHITE, COLOR_GRAY];
+            ObjText_SetVertexColor(objText, 0xFF000000 + (subIndex_ == subIndex ? realID == indexCurrent[subIndex_] ? COLOR_YELLOW : COLOR_WHITE : realID == indexCurrent[subIndex_] ? cUnfocSelect[subIndex_] : COLOR_GRAY)); //christ
+            yield;
+        }
+
+        Obj_Delete(objText);
+
+        function UpdateListItem() {
+            realID = indexListTop[subIndex_] + index_;
+            currDiff = selectedDiff;
+            numDiff = length(GetDifficultyList(indexCurrent[MENU_STAGE]));
+            currPlayer = selectedPlayer;
+            if (index_ > selectMax[subIndex_]) {
+                ObjText_SetText(objText, ""); //doesn't exist
+                return;
+            }
+            alternative (subIndex_)
+            case (MENU_STAGE) {
+                if (CheckUnlock(subIndex_, realID, numDiff)) ObjText_SetText(objText, GetBossName(realID));
+                else ObjText_SetText(objText, "???");
+            }
+            case (MENU_SPELL) {
+                int tempDiff = ScaleDiff(currDiff);
+                if (CheckUnlock(subIndex_, realID, numDiff)) {
+                    //MAIN 00 / 00   SPELL 00 / 00   SCORE 000000000
+                    int spellID = realID * numDiff + tempDiff;
+                    int currStage = indexCurrent[MENU_STAGE];
+                    int[] hMain = Spell_GetHistory(GAME_MAIN, currPlayer, currStage, spellID);
+                    int[] hSpell = Spell_GetHistory(GAME_SPELL, currPlayer, currStage, spellID);
+                    int scoreSpell = HS_GetHighScore("SPELL_" ~ IntToString(currPlayer) ~ "_" ~ IntToString(currStage) ~ "_" ~ IntToString(spellID), 0);
+                    string historyText = GetSpellHistoryText(hMain, hSpell, scoreSpell);
+                    ObjText_SetText(objText, Spell_GetName(indexCurrent[MENU_STAGE], realID * numDiff + tempDiff) ~ "[r]" ~ historyText);
+                }
+                else ObjText_SetText(objText, "? Undiscovered ?");
+            }
+        }
+    }
+
+    function<int> GetSpellIndexListSize(int stageIndex_, int numDiff_) { //number of different spell files per stage - 1 (0 indexed)
+        int numSize = 0;
+        while (Spell_GetName(stageIndex_, numSize * numDiff_) != "INVALID") numSize++;
+        return numSize - 1;
+    }
+
+    function<int[]> GetDifficultyList(int stageIndex_) { //difficulty settings for the stage
+        alternative (stageIndex_)
+        case (0, 1) { return [D_EASYEX, D_EXTRA, D_ABEX]; }
+        others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
+    }
+
+    function<string> GetBossName(int stageIndex_) { //25 character limit
+        alternative (stageIndex_)
+        case (0) { return "Tsurubami?"; }
+        case (1) { return "Tsurubami"; }
+        others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
+    }
+
+    function<bool> CheckUnlock(int subIndex_, int ID_, numDiff_) {
+        bool isUnlock = false;
+        alternative (subIndex_)
+        case (MENU_STAGE) { //first attack in the given stage has been seen by any player in main game mode on any available difficulty
+            for (int playerType = PLAYER_YABUSAME; playerType <= PLAYER_TSUBAKURA; playerType++) {
+                for (int spellID = 0; spellID < numDiff_; spellID++) {
+                    if (Spell_GetHistory(GAME_MAIN, playerType, ID_, spellID)[0] > 0) isUnlock = true;
+                }
+            }
+        }
+        case (MENU_SPELL) { //spell id has been seen by any player in main game mode
+            int tempDiff = ScaleDiff(selectedDiff);
+            int spellID = ID_ * numDiff_ + tempDiff; //actual spell ID
+            for (int playerType = PLAYER_YABUSAME; playerType <= PLAYER_TSUBAKURA; playerType++) {
+                if (Spell_GetHistory(GAME_MAIN, playerType, indexCurrent[MENU_STAGE], spellID)[0] > 0) isUnlock = true;
+            }
+        }
+        return isUnlock;
+    }
+
+    function<int> ScaleDiff(int diff_) { //adjust difficulty number to match spell index for diff_ > D_LUNATIC
+        if (diff_ > D_LUNATIC) diff_ -= D_EASYEX;
+        return diff_;
+    }
+
+    function<int> GetIndexFromSpellID(int stageIndex_, int spellID_) { //get spell menu index from spell ID
+        int numDiff_ = length(GetDifficultyList(stageIndex_));
+        int tempDiff = ScaleDiff(selectedDiff);
+        return (spellID_ - tempDiff) / numDiff_;
+    }
+
+    function<string> GetSpellHistoryText(int[] historyMain_, int[] historySpell_, int spellScore) {
+        int mSeen = historyMain_[0];
+        int mCaptured = historyMain_[1];
+        int sSeen = historySpell_[0];
+        int sCaptured = historySpell_[1];
+
+        return StringFormat("MAIN %s | SPELL %s | SCORE %9d",
+            "ssd",
+            mCaptured < 100 ? StringFormat("%02d", "d", mCaptured) ~ "/" ~ (mSeen < 100 ? StringFormat("%02d ", "d", mSeen) : "99+") : "MASTER",
+            sCaptured < 100 ? StringFormat("%02d", "d", sCaptured) ~ "/" ~ (sSeen < 100 ? StringFormat("%02d ", "d", sSeen) : "99+") : "MASTER",
+            spellScore
+        );
+    }
+}

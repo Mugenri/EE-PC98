@@ -99,7 +99,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 ScreenBlackout(10, 5, 10, COLOR_BLACK);
                 wait(10);
             }
-            TSelectPractice();
+            TSelectPractice(isPreload_);
         }
         case (INDEX_REPLAY) {
             //Replays
@@ -316,6 +316,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
                 int idScript = LoadScript(pathScript);
                 StartScript(idScript);
+                NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
                 return;
             }
         }
@@ -323,45 +324,36 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         TMainMenu(false, INDEX_EXTRA, -1);
     }
 
-    task TSelectPractice() {
+    task TSelectPractice(bool preload_) { //Spell Practice Mode
         exitFlag = true;
-        //Declare variables to be set by submenus
-        //maybe get an array of diff, player, spellID from the spell practice menu
-        //how tf do handle return to title from spell practice in a way that isn't annoying
-        //maybe add a default menu select option to the menu function
-        //make this go straight to another menu function? have default options to put the cursor back
-        //on the previously selected spell based on common data?
-        int selectedRank = D_EXTRA;
-        int selectedPlayer = PLAYER_YABUSAME;
-        //Main Play Mode
         SetAreaCommonData(AREA_TITLE, "GameMode", GAME_SPELL);
 
-        int tempSelect = 0;
+        int[] tempData;
+        int[] selectedDefault = [PLAYER_YABUSAME, D_EXTRA, 0, 0];
+        if (preload_) {
+            int player = GetPlayerType();
+            int diff = GetDifficulty();
+            int stage = GetStageIndex();
+            int spell = GetSpellPracticeID();
+            selectedDefault = [player, diff, stage, spell];
+        }
+
         loop {
-            //Select Difficulty
-            tempSelect = SceneRankSelect(selectedRank);
-            if (tempSelect < 0) break;
-            selectedRank = tempSelect;
-            loop {
-                //Select Player
-                tempSelect = ScenePlayerSelect(selectedPlayer);
-                if (tempSelect < 0) break;
-                selectedPlayer = tempSelect;
+            tempData = SceneSpellPractice(selectedDefault, preload_);
+            if (tempData[0] == -1) break;
 
-                //Set CommonData for player selections
-                SetAreaCommonData(AREA_TITLE, "GameMode", GAME_SPELL);
-                SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
-                SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank); //might not need this one depending on how menu is set up
-
-                //Run main stage script
-                int stageIndex = selectedPlayer == 0 ? 0 : 1; //TODO make dependent upon spell selected
-                SetAreaCommonData(AREA_TITLE, "StageIndex", stageIndex);
-                SetAreaCommonData(AREA_TITLE, "SpellPracticeID", 9 + selectedRank - D_EASYEX); //temp af
-                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-                int idScript = LoadScript(pathScript);
-                StartScript(idScript);
-                return;
-            }
+            //Set CommonData for player selections
+            SetAreaCommonData(AREA_TITLE, "GameMode", GAME_SPELL);
+            SetAreaCommonData(AREA_TITLE, "PlayerType", tempData[0]);
+            SetAreaCommonData(AREA_TITLE, "Difficulty", tempData[1]);
+            SetAreaCommonData(AREA_TITLE, "StageIndex", tempData[2]);
+            SetAreaCommonData(AREA_TITLE, "SpellPracticeID", tempData[3]);
+            //start stage
+            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+            int idScript = LoadScript(pathScript);
+            StartScript(idScript);
+            NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
+            return;
         }
 
         //Exited spell practice menu

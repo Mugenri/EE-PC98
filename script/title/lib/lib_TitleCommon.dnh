@@ -18,7 +18,7 @@ const string IMG_TT_BG          = DIR_IMG_TITLE ~ "titleBG.png";
 const string IMG_TT_LOGO        = DIR_IMG_TITLE ~ "titleLogo.png";
 
 //Rank Select
-const string IMG_TT_RANKBG      = DIR_IMG_TITLE ~ "rankBG.png";
+const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "rankBG.png";
 
 //Player Select
 const string IMG_TT_PLAYERBG    = DIR_IMG_TITLE ~ "playerSelectBG.png";
@@ -26,6 +26,7 @@ const string IMG_TT_PLAYER1     = DIR_IMG_TITLE ~ "playerSelectYabu.png"; //TODO
 const string IMG_TT_PLAYER2     = DIR_IMG_TITLE ~ "playerSelectTsuba.png";
 
 //Others
+const string IMG_TT_SPELL       = DIR_IMG_TITLE ~ "spellPractice.png";
 const string IMG_TT_MUSIC       = DIR_IMG_TITLE ~ "musicRoom.png";
 const string IMG_TT_CURSOR      = DIR_IMG_TITLE ~ "selectCursor.png";
 

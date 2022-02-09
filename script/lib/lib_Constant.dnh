@@ -166,10 +166,10 @@ const real MAX_Y = 368;         //368
 const real MID_X = MAX_X / 2;   //192
 const real MID_Y = MAX_Y / 2;   //184
 //window frame
-const real WINDOW_WIDTH = GetScreenWidth();
-const real WINDOW_HEIGHT = GetScreenHeight();
-const real WINDOW_WIDTH_MID = WINDOW_WIDTH / 2;
-const real WINDOW_HEIGHT_MID = WINDOW_HEIGHT / 2;
+const real WINDOW_WIDTH = GetScreenWidth(); //640
+const real WINDOW_HEIGHT = GetScreenHeight(); //400
+const real WINDOW_WIDTH_MID = WINDOW_WIDTH / 2; //320
+const real WINDOW_HEIGHT_MID = WINDOW_HEIGHT / 2; //200
 
 //----------------------------------------------------
 //ITEM CONSTANTS

@@ -9,6 +9,8 @@
 #include "./bosslib/lib_BossUtil.dnh"
 #include "./bosslib/lib_Character.dnh"
 
+int _spellID = -1; // currently running spell
+
 bool _bossAlive = true; //boss health > 0
 bool _isDamaged = false; //used for damage animation
 bool _isSpellVulnerable = true; //is vulnerable to bomb damage
@@ -25,6 +27,7 @@ real _intersectionPlayer = 20; //default intersection to player
 //Initialize a boss scene
 function<void> Boss_Init(bool isVulnerable_) {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_SINGLE", GetOwnScriptID());
+    Spell_SetCurrent(_spellID);
     Common_Init();
     Particle_Init();
 
@@ -100,6 +103,10 @@ function<void> Boss_Finalize(int obj_) {
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
     bool isFinal = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_LAST_STEP);
     bool isCapture = Boss_IsSpellCaptured();
+
+    int currentStage = GetStageIndex();
+    int currentSpell = Spell_GetCurrent();
+    if (isCapture) Spell_Captured(currentStage, currentSpell);
 
     if (isFinal) {
         ObjMove_AddPatternA1(obj_, 0, 0, NO_CHANGE); //stop movement if final spell/spell practice

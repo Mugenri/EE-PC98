@@ -17,7 +17,7 @@ function<void> BG_Init(int index_) {
 }
 
 function<void> BG_Event() {
-    alternative(GetEventType())
+    alternative (GetEventType())
     case (EV_CHANGE_BG) { BG_Update(GetEventArgument(0), GetEventArgument(1)); }
 }
 

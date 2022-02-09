@@ -85,7 +85,7 @@ function<void> Particle_ExplosionBig(real x_, real y_) {
 
 function<void> Particle_RandomExplosionSmall(real x_, real y_) {
     int type = prand_int(0, 1);
-    alternative(type)
+    alternative (type)
     case (0) Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64); //circle
     case (1) { //random ellipse
         real angleT = prand_int(0, 3) * 45;
@@ -96,7 +96,7 @@ function<void> Particle_RandomExplosionSmall(real x_, real y_) {
 
 function<void> Particle_RandomExplosionBig(real x_, real y_) { //each of these should take 40 frames before last explosion
     int type = prand_int(0, 2);
-    alternative(type)
+    alternative (type)
     case (0) { //circle & vertical ellipses
         Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64);
         Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);

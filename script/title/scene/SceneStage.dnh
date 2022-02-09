@@ -70,6 +70,9 @@ task TStageScene() { //TODO serious refactoring
             alternative (pauseResult)
             case (RESULT_RETRY) {
                 //Retry Stage
+                if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing through continue use
+                    HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
+                }
                 TerminateStageScene();
                 TStageScene();
                 return;
@@ -90,7 +93,7 @@ task TStageScene() { //TODO serious refactoring
             _gameOver = false;
             int gameOverResult = GameOver();
             if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing through continue use
-                HS_SetHighScore(GetScore());
+                HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
             }
             alternative (gameOverResult)
             case (RESULT_RETRY) {
@@ -211,19 +214,19 @@ function<void> SetDefault() { //Reset Game Common Data
 
 function<void> TReturnToTitle() { //Run title screen
     //TODO check if a replay just played
+    int gameMode = GetGameMode(); //before clearing common data, get game mode
+
     if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) {
-        HS_SetHighScore(GetScore());
+        HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
     }
     //save data
     CD_SaveScore();
     CD_SaveResult();
 
-    int gameMode = GetGameMode(); //before clearing common data, get game mode
-
     //reset relevant common data
     ClearAreaCommonData(AREA_STAGE);
     ClearAreaCommonData(AREA_SYSTEM);
-    SetDefault();
+    //SetDefault();
 
     //run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
@@ -238,8 +241,8 @@ function<void> TReturnToTitle() { //Run title screen
 
 //return stage script using stage index
 function<string> GetStagePath(int index_) {
-    alternative(index_)
+    alternative (index_)
     case (0) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //yabusame stage
     case (1) return DIR_STG ~ "Tsurubami/tsuruStage.dnh"; //tsubakura stage
-    others assert(false, "Invalid stage index.");
+    others assert(false, index_ ~ " is an invalid stage index.");
 }

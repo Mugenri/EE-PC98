@@ -88,7 +88,7 @@ function<void> Animation_Special(int obj_, bool active_) {
 //returns the size of each animation frame in the boss sprite sheet
 function<int[]> Animation_GetWidthHeight(string bossID_) {
     int[] wh = [64, 64]; //default size of boss sprites is 64x64 per frame
-    //alternative(bossID_) no actual edge cases yet
+    //alternative (bossID_) no actual edge cases yet
     return wh;
 }
 //returns an array of [frames, x, y] in each animation type

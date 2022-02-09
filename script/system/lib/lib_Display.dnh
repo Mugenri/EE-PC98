@@ -34,27 +34,21 @@ function<void> Display_Init() {
 //STG Frame Display
 //----------------------------------------------------
 function<void> InitFrame() {
-    int obj = ObjPrim_Create(OBJ_SPRITE_LIST_2D);
-    ObjPrim_SetTexture(obj, IMG_SYSTEM_FRAME);
-    Obj_SetRenderPriorityI(obj, RP_UI_BG);
+    int obj = InitSpriteList2D(IMG_SYSTEM_FRAME, RP_UI_BG);
     //left
-    ObjSpriteList2D_SetSourceRect(obj, 0, 32, 32, 432);
-    ObjSpriteList2D_SetDestRect(obj, 0, 0, 32, 400);
+    ObjSpriteList2D_SetSourceDestRect(obj, 0, 32, 32, 432);
     ObjRender_SetPosition(obj, 0, 0, 1);
     ObjSpriteList2D_AddVertex(obj);
     //top
-    ObjSpriteList2D_SetSourceRect(obj, 0, 0, 384, 16);
-    ObjSpriteList2D_SetDestRect(obj, 0, 0, 384, 16);
+    ObjSpriteList2D_SetSourceDestRect(obj, 0, 0, 384, 16);
     ObjRender_SetPosition(obj, 32, 0, 1);
     ObjSpriteList2D_AddVertex(obj);
     //right
-    ObjSpriteList2D_SetSourceRect(obj, 32, 32, 256, 432);
-    ObjSpriteList2D_SetDestRect(obj, 0, 0, 224, 400);
+    ObjSpriteList2D_SetSourceDestRect(obj, 32, 32, 256, 432);
     ObjRender_SetPosition(obj, 416, 0, 1);
     ObjSpriteList2D_AddVertex(obj);
     //bottom
-    ObjSpriteList2D_SetSourceRect(obj, 0, 16, 384, 32);
-    ObjSpriteList2D_SetDestRect(obj, 0, 0, 384, 16);
+    ObjSpriteList2D_SetSourceDestRect(obj, 0, 16, 384, 32);
     ObjRender_SetPosition(obj, 32, 384, 1);
     ObjSpriteList2D_AddVertex(obj);
 
@@ -161,16 +155,16 @@ task THighScore() {
     int scoreRender = 0;
     //scores and continues
     int score = GetScore();
-    int highScore = HS_GetHighScore();
+    int defaultScore = GetGameMode() == GAME_MAIN ? 001000000 : 0;
+    int highScore = HS_GetHighScore(defaultScore);
     int continues = 0;
     
     int[] numList;
     bool newHS = false;
-    
     loop {
         score = GetScore();
-        highScore = HS_GetHighScore();
-        
+        highScore = HS_GetHighScore(defaultScore);
+
         if (score < highScore) { //high score > score OR continues have been used. render high score as-is
             continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
             numList = DigitToArray(highScore, count);
@@ -186,7 +180,7 @@ task THighScore() {
             newHS = true; //GetScore() became higher than highScore, new high score
         } else { //score >= highscore, render current score
             if (newHS && continues == 0) TNewHighScore();
-            while (continues != 0 || score > highScore) {
+            while (continues == 0 && score >= highScore) {
                 score = GetScore();
                 numList = DigitToArray(scoreRender, count);
                 //Gradual increase of score counter
@@ -575,7 +569,7 @@ task TPointItem() {
 //Active Spell Banner and Spell History Display
 //----------------------------------------------------
 task TSpellDisplay(int stageIndex_, int spellID_) {
-    int[] history = Spell_GetHistory(GetGameMode(), stageIndex_, spellID_);
+    int[] history = Spell_GetHistory(GetGameMode(), GetPlayerType(), stageIndex_, spellID_);
     string name = Spell_GetName(stageIndex_, spellID_);
     int seen = history[0];
     int captured = history[1];
