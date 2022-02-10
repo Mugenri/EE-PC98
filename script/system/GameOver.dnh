@@ -7,7 +7,7 @@ int objFade; //square animation particle list
 
 @Initialize {
 	SetAutoDeleteObject(true);
-    objFade = InitParticleList(IMG_SYSTEM_UI, RP_UI_IMG, 0, 256, 16, 272);
+    objFade = InitParticleList(IMG_SYSTEM_UI, RP_UI_IMG, [0, 256, 16, 272]);
     ObjParticleList_SetColor(objFade, COLOR_BLACK);
 	TMenu();
 }

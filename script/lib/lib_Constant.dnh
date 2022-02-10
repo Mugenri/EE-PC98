@@ -159,17 +159,17 @@ const string RT_SCREENSHOT  = "RT_SCREENSHOT"; //layers 0-21, 27-100
 //POSITION CONSTANTS
 //----------------------------------------------------
 //STG frame
-const real MIN_X = 0;
-const real MIN_Y = 0;
-const real MAX_X = 384;         //384
-const real MAX_Y = 368;         //368
-const real MID_X = MAX_X / 2;   //192
-const real MID_Y = MAX_Y / 2;   //184
+const float MIN_X = 0;
+const float MIN_Y = 0;
+const float MAX_X = 384;         //384
+const float MAX_Y = 368;         //368
+const float MID_X = MAX_X / 2;   //192
+const float MID_Y = MAX_Y / 2;   //184
 //window frame
-const real WINDOW_WIDTH = GetScreenWidth(); //640
-const real WINDOW_HEIGHT = GetScreenHeight(); //400
-const real WINDOW_WIDTH_MID = WINDOW_WIDTH / 2; //320
-const real WINDOW_HEIGHT_MID = WINDOW_HEIGHT / 2; //200
+const float WINDOW_WIDTH = GetScreenWidth(); //640
+const float WINDOW_HEIGHT = GetScreenHeight(); //400
+const float WINDOW_WIDTH_MID = WINDOW_WIDTH / 2; //320
+const float WINDOW_HEIGHT_MID = WINDOW_HEIGHT / 2; //200
 
 //----------------------------------------------------
 //ITEM CONSTANTS

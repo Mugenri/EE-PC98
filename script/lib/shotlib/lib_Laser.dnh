@@ -1,8 +1,8 @@
 //Custom laser behavior library
 
-int _laserParticle = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_LASER, 0, 48, 16, 64); //curvy laser particle list
+int _laserParticle = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_LASER, [0, 48, 16, 64]); //curvy laser particle list
 
-function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, real maxLength_, int color_, int delay_) {
+function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_, float maxLength_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
     int time = 550/speed_ + maxLength_/speed_; //rough amount of frames it will take the laser to leave the screen (550px is hypotenuse of stg window)
@@ -25,10 +25,10 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
         Obj_SetVisible(circle2, true);
         Obj_SetVisible(line2, true);
 
-        real laserLength = 0;
-        real x = ObjMove_GetX(hitbox);
-        real y = ObjMove_GetY(hitbox);
-        real angle = ObjStLaser_GetAngle(hitbox);
+        float laserLength = 0;
+        float x = ObjMove_GetX(hitbox);
+        float y = ObjMove_GetY(hitbox);
+        float angle = ObjStLaser_GetAngle(hitbox);
         bool full = false;
 
         while (!Obj_IsDeleted(hitbox)) {
@@ -61,21 +61,21 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
         Obj_Delete(line1);
         Obj_Delete(line2);
 
-        function<void> UpdateCircle(real x_, real y_) {
+        function<void> UpdateCircle(float x_, float y_) {
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
             ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
             ascent (i in 1..14) {
-                real angleT = 360/12 * i;
+                float angleT = 360/12 * i;
                 ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + 6 * cos(angleT), as_int(y_) + 6 * sin(angleT), 1);
             }
             ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
             ascent (i in 1..14) {
-                real angleT = 360/12 * i;
+                float angleT = 360/12 * i;
                 ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + 4 * cos(angleT), as_int(y_) + 4 * sin(angleT), 1);
             }
         }
 
-        function<void> UpdateLine(real x_, real y_, real angle_, real length_) {
+        function<void> UpdateLine(float x_, float y_, float angle_, float length_) {
             //colored
             ObjPrim_SetVertexPosition(line1, 0, x_ + 4 * cos(angle_ + 90), y_ + 4 * sin(angle_ + 90), 1);
             ObjPrim_SetVertexPosition(line1, 1, x_ + 4 * cos(angle_ - 90), y_ + 4 * sin(angle_ - 90), 1);
@@ -114,7 +114,7 @@ function<int> CreateLooseLaserUA1(real x_, real y_, real speed_, real angle_, re
     }
 }
 
-function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_, real sustain_, int color_, int delay_) {
+function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float length_, float sustain_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
     int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_ + delay_, 1, 0);
@@ -136,10 +136,10 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
 
     //Update loop 
     async {
-        real radius = 0.5; //radius of white part
+        float radius = 0.5; //radius of white part
         //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is complete
-        real angle = ObjStLaser_GetAngle(hitbox);
-        real len = ObjLaser_GetLength(hitbox);
+        float angle = ObjStLaser_GetAngle(hitbox);
+        float len = ObjLaser_GetLength(hitbox);
         loop (max(0, delay_ - 9)) {
             if (Obj_IsDeleted(hitbox)) break;
             UpdatePosition(0);
@@ -195,18 +195,18 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
             //delay laser bulb
             ObjPrim_SetVertexPosition(guide2, 0, as_int(x_), as_int(y_), 1);
             ascent (i in 1..14) {
-                real angleT = 360/12 * i;
+                float angleT = 360/12 * i;
                 ObjPrim_SetVertexPosition(guide2, i, as_int(x_) + 2 * cos(angleT), as_int(y_) + 2 * sin(angleT), 1);
             }
             //circles
             ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
             ascent (i in 1..14) {
-                real angleT = 360/12 * i;
+                float angleT = 360/12 * i;
                 ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + (radius_ * 2 + 2) * cos(angleT), as_int(y_) + (radius_ * 2 + 2) * sin(angleT), 1);
             }
             ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
             ascent (i in 1..14) {
-                real angleT = 360/12 * i;
+                float angleT = 360/12 * i;
                 ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + (radius_ * 2) * cos(angleT), as_int(y_) + (radius_ * 2) * sin(angleT), 1);
             }
             //lines
@@ -248,7 +248,7 @@ function<int> CreateStraightLaserUA1(real x_, real y_, real angle_, real length_
     }
 }
 
-function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, int length_, int color_, int delay_) {
+function<int> CreateCurveLaserUA1(float x_, float y_, float speed_, float angle_, int length_, int color_, int delay_) {
     int hitbox = CreateCurveLaserA1(x_, y_, speed_, angle_, length_, 24, 1, delay_);
     Obj_SetValueI(hitbox, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
@@ -259,7 +259,7 @@ function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, in
         while (!Obj_IsDeleted(hitbox)) {
             int[] nodes = ObjCrLaser_GetNodePointerList(hitbox);
             for each (node in nodes) {
-                real[] pos = ObjCrLaser_GetNodePosition(hitbox, node);
+                float[] pos = ObjCrLaser_GetNodePosition(hitbox, node);
                 ObjParticleList_SetPosition(_laserParticle, pos[0], pos[1], 1);
                 ObjParticleList_SetColor(_laserParticle, color_);
                 ObjParticleList_AddInstance(_laserParticle);
@@ -270,7 +270,7 @@ function<int> CreateCurveLaserUA1(real x_, real y_, real speed_, real angle_, in
     return hitbox;
 }
 
-function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, real maxWidth_, real sustain_, int colorOut_, int colorIn_, int delay_) {
+function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_, float maxWidth_, float sustain_, int colorOut_, int colorIn_, int delay_) {
     //This will fuck up the hitbox if it isn't true.
     if (maxWidth_ > length_) length_ = maxWidth_;
     //Object Creation
@@ -295,7 +295,7 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
     //Update loop 
     async {
         int frames = 30; //laser expansion time
-        real width = 0;
+        float width = 0;
         loop (delay_) {
             if (Obj_IsDeleted(controller)) break;
             UpdatePosition(0);
@@ -309,8 +309,8 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
         Obj_SetVisible(circle3, true);
         Obj_SetVisible(line3, true);
         //declared in this scope so they can be stored if the controller is deleted before the laser animation is completed
-        real angle = ObjStLaser_GetAngle(controller);
-        real len = ObjLaser_GetLength(controller);
+        float angle = ObjStLaser_GetAngle(controller);
+        float len = ObjLaser_GetLength(controller);
         //expand laser
         while (width < maxWidth_) {
             if (Obj_IsDeleted(controller)) break;
@@ -338,8 +338,8 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
         Obj_Delete(line3);
 
         function<void> UpdatePosition(int radius_) {
-            real radiusOut = min(radius_ * 1.32, radius_ + 16);
-            real radiusIn = min(radius_ * 1.16, radius_ + 8);
+            float radiusOut = min(radius_ * 1.32, radius_ + 16);
+            float radiusIn = min(radius_ * 1.16, radius_ + 8);
             if (!Obj_IsDeleted(controller)) { //update laser position/angle/length if the controller still exists
                 x_ = ObjMove_GetX(controller);
                 y_ = ObjMove_GetY(controller);
@@ -347,8 +347,8 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
                 len = ObjLaser_GetLength(controller) - radius_; //length of laser after the center of the circular part
             }
             //center of circular part, base of line part
-            real x = x_ + radiusOut * cos(angle);
-            real y = y_ + radiusOut * sin(angle);
+            float x = x_ + radiusOut * cos(angle);
+            float y = y_ + radiusOut * sin(angle);
             
             //delay laser
             if (!Obj_IsDeleted(guide1)) {
@@ -363,17 +363,17 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
             //circles
             ObjPrim_SetVertexPosition(circle1, 0, x, y, 1); //colorOut
             ascent (i in 1..34) {
-                real angleT = 360/64 * (i - 1) + angle + 90;
+                float angleT = 360/64 * (i - 1) + angle + 90;
                 ObjPrim_SetVertexPosition(circle1, i, x + (radiusOut) * cos(angleT), y + (radiusOut) * sin(angleT), 1);
             }
             ObjPrim_SetVertexPosition(circle2, 0, x, y, 1); //colorIn
             ascent (i in 1..34) {
-                real angleT = 360/64 * (i - 1) + angle + 90;
+                float angleT = 360/64 * (i - 1) + angle + 90;
                 ObjPrim_SetVertexPosition(circle2, i, x + (radiusIn) * cos(angleT), y + (radiusIn) * sin(angleT), 1);
             }
             ObjPrim_SetVertexPosition(circle3, 0, x, y, 1); //white
             ascent (i in 1..34) {
-                real angleT = 360/64 * (i - 1) + angle + 90;
+                float angleT = 360/64 * (i - 1) + angle + 90;
                 ObjPrim_SetVertexPosition(circle3, i, x + (radius_) * cos(angleT), y + (radius_) * sin(angleT), 1);
             }
             //lines
@@ -418,7 +418,7 @@ function<int> CreateMasterSpark(real x_, real y_, real angle_, real length_, rea
     }
 }
 
-function<int> Laser_WarningLine(real x_, real y_, real angle_, int length_, int time_) {
+function<int> Laser_WarningLine(float x_, float y_, float angle_, int length_, int time_) {
     int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
     ObjPrim_SetVertexPosition(line, 0, x_, y_, 1);
     ObjPrim_SetVertexPosition(line, 1, x_ + length_ * cos(angle_), y_ + length_ * sin(angle_), 1);

@@ -13,7 +13,7 @@ int _countShot = 0; //shot type stagger
 @Initialize {
     string imageFile = IMG_PLR_YABUSAME;
     string shotData = DIR_PLR ~ "YabuShot.dnh";
-    InitPlayer(imageFile, shotData, 3, 1.53, 24, 64);
+    InitPlayer(imageFile, shotData, 3, 1.53, 16, 64);
 
     TShot();
     TOption(1);
@@ -24,7 +24,7 @@ int _countShot = 0; //shot type stagger
     _count++;
     if (Shooting() && !IsPlayerSpellActive() && Alive()) _countShot++;
     else _countShot = -1;
-    if (Alive() && GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD) CollectItemsInCircle(GetPlayerX(), GetPlayerY(), _itemScope);
+    if (Alive()) SetPlayerItemScope(GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD ? _focusScope : _itemScope);
     yield;
 }
 
@@ -49,7 +49,7 @@ task TShot() {
                 }
             } else {
                 loop (3) { //focus shot
-                    real modifier = 15*sin(_count);
+                    float modifier = 15*sin(_count);
                     ascent (i in -5..6) {
                         int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier*i, 1, 1, 1);
                         Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
@@ -74,7 +74,7 @@ task TOption(int dir_) {
     TOptionShot();
 
     loop {
-        real rotationX = cos(_count*4);
+        float rotationX = cos(_count*4);
         distCurrent = (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) ? distUnfocus : distFocus;
 
         ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent*dir_*rotationX, GetPlayerY() + distCurrent*dir_*sin(_count*5), 1);
@@ -92,10 +92,10 @@ task TOption(int dir_) {
         loop {
             if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
                 loop (3) {
-                    real optionX = ObjRender_GetX(objOption);
-                    real optionY = ObjRender_GetY(objOption);
-                    real[][] enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
-                    real angle = 270;
+                    float optionX = ObjRender_GetX(objOption);
+                    float optionY = ObjRender_GetY(objOption);
+                    float[][] enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
+                    float angle = 270;
                     if (length(enemy) > 0) angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
                     int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 3, 1, 2);
                     Obj_SetRenderPriorityI(shot, Obj_GetRenderPriorityI(objOption));
@@ -107,14 +107,14 @@ task TOption(int dir_) {
     }
 }
 
-task TShotCancel(int obj_, real x_, real y_, int graphic_) { //Player shot deletion effect
-    real angle = ObjMove_GetAngle(obj_);
-    real speed = ObjMove_GetSpeed(obj_);
+task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot deletion effect
+    float angle = ObjMove_GetAngle(obj_);
+    float speed = ObjMove_GetSpeed(obj_);
     x_ -= speed * cos(angle);
     y_ -= speed * sin(angle);
-    real xStep = cos(angle);
-    real yStep = sin(angle);
-    real angleZ = graphic_ == 1 ? angle + 90 : 0;
+    float xStep = cos(angle);
+    float yStep = sin(angle);
+    float angleZ = graphic_ == 1 ? angle + 90 : 0;
     if (rand_int(1, 8) == 1) TShotParticle(x_, y_);
     
     int frame = 0;
@@ -142,7 +142,7 @@ task TSpell() {
 
     CallSFX(SND_PL_Y_SPELL1);
     
-    real radius = 0;
+    float radius = 0;
     TEffect();
 
     loop (220) {
@@ -167,7 +167,7 @@ task TSpell() {
     }
     loop (20) {
         ascent (i in 0..17) {
-            real angleT = 360/16 * i;
+            float angleT = 360/16 * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
         }
         radius -= 28/20;
@@ -177,8 +177,8 @@ task TSpell() {
     Obj_Delete(circle);
 
     task TEffect() {
-        real playerX = GetPlayerX();
-        real playerY = GetPlayerY();
+        float playerX = GetPlayerX();
+        float playerY = GetPlayerY();
         int circle = CreateCircle(playerX, playerY);
         int[] lines = [];
         loop (10) lines = lines ~ [CreateLine(playerX, playerY)];
@@ -186,13 +186,13 @@ task TSpell() {
         while (!Obj_IsDeleted(objManage)) {
             //circle
             ascent (i in 1..34) {
-                real angleT = 360/32 * i;
+                float angleT = 360/32 * i;
                 ObjPrim_SetVertexPosition(circle, i, playerX + radius*cos(angleT), playerY + radius*sin(angleT), 1);
             }
             ObjSpell_SetIntersectionCircle(circle, playerX, playerY, radius);
             //lines
             ascent (i in 0..5) {
-                real angleT;
+                float angleT;
                 angleT = rand(0, 3600) / 10;
                 ObjPrim_SetVertexPosition(lines[i], 1, playerX + radius*cos(angleT), playerY + radius*sin(angleT), 1);
                 angleT = rand(0, 3600) / 10;
@@ -209,7 +209,7 @@ task TSpell() {
         ascent (i in 0..10) Obj_Delete(lines[i]);
         Obj_Delete(circle);
 
-        function<int> CreateLine(real xPos_, real yPos_) {
+        function<int> CreateLine(float xPos_, float yPos_) {
             int line = InitPrim2D(PRIMITIVE_LINELIST, 2, RP_STG_EFF_SPELL);
             ObjPrim_SetVertexPosition(line, 0, xPos_, yPos_, 1);
             ObjPrim_SetVertexPosition(line, 1, xPos_, yPos_, 1);
@@ -218,7 +218,7 @@ task TSpell() {
             return line;
         }
 
-        function<int> CreateCircle(real xPos_, real yPos_) {
+        function<int> CreateCircle(float xPos_, float yPos_) {
             int circle = ObjSpell_Create();
             ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
             ObjSpell_SetDamage(circle, 5);

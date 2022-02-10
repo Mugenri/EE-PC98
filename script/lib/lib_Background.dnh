@@ -11,6 +11,7 @@ function<void> BG_Init(int index_) {
     _objShader = ObjShader_Create();
     ObjShader_SetShaderF(_objShader, HLSL_TRANSITION); //texture mask shader
     ObjShader_SetTexture(_objShader, "textureMask_", RT_TRANSITION); //set texture to the transition render target
+    ObjRender_SetTextureFilter(_objShader, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     ObjShader_SetTechnique(_objShader, "TecMask");
     //Required function by including library. Cuts to index_ background on startup
     BG_Update(index_, 0);
@@ -56,6 +57,7 @@ function<int> GetCanvas(bool useShader_) { //return a canvas with the correct re
     int canvas = ObjPrim_Create(OBJ_SPRITE_2D);
     if (useShader_) ObjShader_SetShaderO(canvas, _objShader); //apply shader if not cut transition
     ObjPrim_SetTexture(canvas, _priority == RP_STG_BG1 ? RT_BG1 : RT_BG2); //set texture to current priority range render target
+    ObjRender_SetTextureFilter(canvas, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     Obj_SetRenderPriorityI(canvas, RP_STG_BG); //render to background draw layer
     ObjSprite2D_SetSourceRect(canvas, 32, 16, 416, 384);
     ObjSprite2D_SetDestRect(canvas, 0, 0, MAX_X, MAX_Y);

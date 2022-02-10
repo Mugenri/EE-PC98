@@ -69,12 +69,12 @@ task TMain() {
 
 task TFire() {
     if (!_bossAlive) return;
-    real bossX = ObjMove_GetX(_objBoss);
-    real bossY = ObjMove_GetY(_objBoss);
+    float bossX = ObjMove_GetX(_objBoss);
+    float bossY = ObjMove_GetY(_objBoss);
 
     //yin yang ring
-    real angleT = rand(0, 360);
-    real numShot = [12, 12, 18][_diff];
+    float angleT = rand(0, 360);
+    float numShot = [12, 12, 18][_diff];
     loop (numShot) {
         int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
         if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
@@ -104,9 +104,9 @@ task TFire() {
 
     task TReflect(int obj_) {
         while (!Obj_IsDeleted(obj_) && _bossAlive) {
-            real xPos = ObjMove_GetX(obj_);
+            float xPos = ObjMove_GetX(obj_);
             if (xPos < MIN_X || xPos > MAX_X) {
-                real angleT = ObjMove_GetAngle(obj_);
+                float angleT = ObjMove_GetAngle(obj_);
                 ObjMove_SetX(obj_, clamp(xPos, MIN_X, MAX_X));
                 ObjMove_SetAngle(obj_, 180 - angleT);
                 ObjMove_AddPatternB2(obj_, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.05, NO_CHANGE, 2.75);
@@ -116,8 +116,8 @@ task TFire() {
         }
     }
 
-    task TAmuletLine(real angleMod_, real angleP_) {
-        real speedMod = [0.45, 0.45, 0.80][_diff];
+    task TAmuletLine(float angleMod_, float angleP_) {
+        float speedMod = [0.45, 0.45, 0.80][_diff];
         int color = SHOT_RED_INV;
         for (int i = 7 - angleMod_; i >= 0; i--) {
             if (!_bossAlive) return;

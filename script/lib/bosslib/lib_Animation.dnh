@@ -16,6 +16,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
     assert(bossID != "INVALID", "Invalid boss ID in animation library.");
 
     ObjPrim_SetTexture(objBoss_, GetBossSprite(bossID));
+    ObjRender_SetTextureFilter(objBoss_, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
 
     Animation_Damage(objBoss_);
@@ -32,8 +33,8 @@ function<void> Animation_DrawBoss(int objBoss_) {
     async {
         while (!Obj_IsDeleted(objBoss_)) {
             //get animation type
-            real speed = ObjMove_GetSpeed(objBoss_);
-            real dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
+            float speed = ObjMove_GetSpeed(objBoss_);
+            float dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
             //in order of precedence
             if (Obj_GetValueDI(objBoss_, ANIM_SPECIAL, false)) animType = ANIM_SPECIAL;
             else if (_spellBarrier || _isSurvival) {

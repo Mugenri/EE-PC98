@@ -13,12 +13,14 @@
     Ascii_InitSpell();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", GetOwnScriptID());
     SetItemRenderPriorityI(RP_STG_ITEM);
+    SetItemTextureFilter(FILTER_NONE, FILTER_NONE);
 	SetShotRenderPriorityI(RP_STG_SHOT);
+    SetShotTextureFilter(FILTER_NONE, FILTER_NONE);
     SetInvalidRenderPriorityA1(22, 26);
+    //SetIntersectionVisualization(true);
 
     SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
-    StartShotScript(GetCurrentScriptDirectory() ~ "ControlShot.dnh");
 }
 
 @Event {

@@ -18,11 +18,11 @@ bool _spellBarrier = false; //is spell barrier active
 
 bool _isSurvival = false; //survival spell
 
-real _bossLife; //current life
-real _previousLife = 0; //life of previous frame
+float _bossLife; //current life
+float _previousLife = 0; //life of previous frame
 
-real _intersectionShot = 28; //default intersection to shot
-real _intersectionPlayer = 20; //default intersection to player
+float _intersectionShot = 28; //default intersection to shot
+float _intersectionPlayer = 20; //default intersection to player
 
 //Initialize a boss scene
 function<void> Boss_Init(bool isVulnerable_) {
@@ -53,7 +53,7 @@ function<int> Boss_Create(string bossID_) {
     return objBoss;
 }
 //Initialize a boss object at a given coordinate
-function<int> Boss_Create(string bossID_, real x_, real y_) {
+function<int> Boss_Create(string bossID_, float x_, float y_) {
     Boss_SetInitPosition(bossID_, x_, y_);
     return Boss_Create(bossID_);
 }
@@ -96,8 +96,8 @@ function<void> Boss_Update(int objBoss_) {
 
 //Call at the end of a single
 function<void> Boss_Finalize(int obj_) {
-    real xPos = ObjMove_GetX(obj_);
-    real yPos = ObjMove_GetY(obj_);
+    float xPos = ObjMove_GetX(obj_);
+    float yPos = ObjMove_GetY(obj_);
     SetAreaCommonData(AREA_STAGE, "Pos_Bonus", [xPos, yPos]); //Spell bonus yellow ascii text position
 
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
@@ -109,7 +109,7 @@ function<void> Boss_Finalize(int obj_) {
     if (isCapture) Spell_Captured(currentStage, currentSpell);
 
     if (isFinal) {
-        ObjMove_AddPatternA1(obj_, 0, 0, NO_CHANGE); //stop movement if final spell/spell practice
+        ObjMove_CancelMovement(obj_); //stop movement if final spell/spell practice
         SetPlayerInvincibilityFrame(60);
         Particle_RandomExplosionBig(xPos, yPos); //this function is blocking
         Obj_SetVisible(obj_, false);
@@ -129,7 +129,7 @@ function<void> Boss_Finalize(int obj_) {
         int score = 10;
         int scoreBonus = 10;
         int numBullets = 0;
-        real radius = 200;
+        float radius = 200;
         loop (5) {
             for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
                 if (ObjMove_GetX(shot) < -16 || ObjMove_GetX(shot) > GetStgFrameWidth() + 16 || ObjMove_GetY(shot) < -16 || ObjMove_GetY(shot) > GetStgFrameHeight() + 16) {

@@ -9,11 +9,11 @@ function<string> Boss_GetID(int obj_) {
 }
 //Moves the boss object associated with bossID_ to the position it was located at the end of the last single.
 function<void> Boss_GetInitPosition(int obj_) {
-    real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [0, 0]);
+    float[] pos = GetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [0, 0]);
     ObjMove_SetPosition(obj_, pos[0], pos[1]);
 }
 //Sets the last position of the boss object associated with bossID OR uses bossID directly to be used in the next single.
-function<void> Boss_SetInitPosition(var obj_, real x_, real y_) {
+function<void> Boss_SetInitPosition(var obj_, float x_, float y_) {
     if (typeof(obj_) == VAR_STRING) SetAreaCommonData(AREA_STAGE, "Pos_" ~ obj_, [x_, y_]);
     else SetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [x_, y_]);
 }

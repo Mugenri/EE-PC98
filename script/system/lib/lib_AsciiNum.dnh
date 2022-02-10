@@ -4,16 +4,16 @@ int _asciiList; //item collect and boss spell bonus numbers
 int _spellList; //spell bonus and history numbers
 
 function<void> Ascii_Init() {
-    _asciiList = InitParticleList(IMG_SYSTEM_UI, RP_STG_TEXT, 72, 336, 80, 344);
+    _asciiList = InitParticleList(IMG_SYSTEM_UI, RP_STG_TEXT, [72, 336, 80, 344]);
     ParticleListShader(_asciiList, 8/256, 1);
 }
 function<void> Ascii_InitSpell() {
-    _spellList = InitParticleList(IMG_SYSTEM_UI, RP_STG_SPELLNUM, 72, 336, 80, 344);
+    _spellList = InitParticleList(IMG_SYSTEM_UI, RP_STG_SPELLNUM, [72, 336, 80, 344]);
     ParticleListShader(_spellList, 8/256, 1);
     ObjSprite2D_SetDestRect(_spellList, 0, 0, 8, 8);
 }
 
-function<void> Ascii_ScoreNum(real x_, real y_, int score_, int color_) {
+function<void> Ascii_ScoreNum(float x_, float y_, int score_, int color_) {
     int[] listNum = DigitToArray(score_);
     x_ -= 4 * length(listNum);
 
@@ -39,11 +39,11 @@ function<void> Ascii_ScoreNum(real x_, real y_, int score_, int color_) {
     }
 }
 
-function<void> Ascii_ScoreNum(real x_, real y_, int score_) { //if no color is provided, default to white
+function<void> Ascii_ScoreNum(float x_, float y_, int score_) { //if no color is provided, default to white
     Ascii_ScoreNum(x_, y_, score_, COLOR_WHITE);
 }
 
-function<void> Ascii_SpellNum(real x_, real y_, int num_) {
+function<void> Ascii_SpellNum(float x_, float y_, int num_) {
     int[] listNum = DigitToArray(num_);
     for (int i = 0; i < length(listNum); i++) {
         ObjParticleList_SetPosition(_spellList, x_ + 8 * i, y_, 1);

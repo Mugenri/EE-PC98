@@ -79,10 +79,10 @@ task TMain() {
 task TSlugShot() {
     //bullet move in sine wave but slow down and speed up, leave a trail of bullets
     if (!_bossAlive) return;
-    real radius = 270;
-    real angleT = GetAngleToPlayer(_objBoss) + rand(140, 220); //don't spawn directly behind the player
-    real xPos = MID_X + radius * cos(angleT);
-    real yPos = MID_Y + radius * sin(angleT);
+    float radius = 270;
+    float angleT = GetAngleToPlayer(_objBoss) + rand(140, 220); //don't spawn directly behind the player
+    float xPos = MID_X + radius * cos(angleT);
+    float yPos = MID_Y + radius * sin(angleT);
     angleT = dottheta(xPos, yPos, MID_X, MID_Y) - 30 + rand(-8, 8);
 
     int head = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY+BUTTERFLY, 0, SHOT_GRAY+CANCEL_32);
@@ -111,22 +111,22 @@ task TSlugShot() {
                 wait(rand_int(90, 155));
             }
         }
-        real accel = 0.11;
-        real wvel = 1.4;
+        float accel = 0.11;
+        float wvel = 1.4;
         int frame = 35;
         while (!Obj_IsDeleted(obj_)) {
-            ObjMove_AddPatternA2(obj_, 0, NO_CHANGE, NO_CHANGE, accel, 1, 1.8);
-            ObjMove_AddPatternA2(obj_, frame, NO_CHANGE, NO_CHANGE, -accel, NO_CHANGE, 0);
-            ObjMove_AddPatternA2(obj_, frame * 2, NO_CHANGE, NO_CHANGE, accel, -1, 1.8);
-            ObjMove_AddPatternA2(obj_, frame * 3, NO_CHANGE, NO_CHANGE, -accel, NO_CHANGE, 0);
+            ObjMove_AddPatternA2(obj_, 0, NO_CHANGE, NO_CHANGE, accel, 1.8, 1);
+            ObjMove_AddPatternA2(obj_, frame, NO_CHANGE, NO_CHANGE, -accel, 0, NO_CHANGE);
+            ObjMove_AddPatternA2(obj_, frame * 2, NO_CHANGE, NO_CHANGE, accel, 1.8, -1);
+            ObjMove_AddPatternA2(obj_, frame * 3, NO_CHANGE, NO_CHANGE, -accel, 0, NO_CHANGE);
             wait(frame * 4);
         }
     }
 }
 
 task TSkewer() {
-    real angleT = GetAngleToPlayer(_objBoss);
-    real modif = 0;
+    float angleT = GetAngleToPlayer(_objBoss);
+    float modif = 0;
     Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), angleT, 280, 45);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, 90, 37, 8, COLOR_BLACK);
     wait(8);

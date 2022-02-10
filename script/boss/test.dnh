@@ -14,17 +14,17 @@ int health = 3000;
 
 @Event {
     alternative (GetEventType())
-    case (EV_REQUEST_LIFE) {
-        SetScriptResult(health);
-        //3000 = 20 - 22 seconds, standard nonspell health
-        //3500 = 23 - 26 seconds, standard spell health
-        //4000 ~ 30 seconds without shotgunning, 15 - 25 with shotgunning, longer/slower/complex spell health
+        case (EV_REQUEST_LIFE) {
+            SetScriptResult(health);
+            //3000 = 20 - 22 seconds, standard nonspell health
+            //3500 = 23 - 26 seconds, standard spell health
+            //4000 ~ 30 seconds without shotgunning, 15 - 25 with shotgunning, longer/slower/complex spell health
 
-        //roughly 134 - 138 average dps
-    }
-    case (EV_REQUEST_TIMER) {
-        SetScriptResult(60 + absolute(_count / 60));
-    }
+            //roughly 134 - 138 average dps
+        }
+        case (EV_REQUEST_TIMER) {
+            SetScriptResult(60 + absolute(_count / 60));
+        }
 }
 
 @Initialize {
@@ -77,7 +77,7 @@ task TPatternA() {
     if (!_bossAlive) return;
     loop (3) {
         loop (5) {
-            real angleT = rand(0, 360);
+            float angleT = rand(0, 360);
             loop (25) {
                 if (!_bossAlive) return;
                 int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
@@ -91,18 +91,18 @@ task TPatternA() {
 }
 
 task TPatternB(int dir_) {
-    real angleT = 0;
+    float angleT = 0;
 
     loop (8) {
-        real x = ObjMove_GetX(_objBoss) + 30 * cos(angleT);
-        real y = ObjMove_GetY(_objBoss) + 30 * sin(angleT);
+        float x = ObjMove_GetX(_objBoss) + 30 * cos(angleT);
+        float y = ObjMove_GetY(_objBoss) + 30 * sin(angleT);
         int obj = CreateStraightLaserUA1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 550, 60, 0xFF00FF, 60);
         angleT += 45;
         TMove(obj);
     }
 
     task TMove(int laser_) {
-        real x = ObjMove_GetX(laser_);
+        float x = ObjMove_GetX(laser_);
         loop (50) {
             ObjMove_SetX(laser_, x);
             ObjStLaser_SetAngle(laser_, GetAngleToPlayer(laser_));
@@ -118,7 +118,7 @@ task TPatternB(int dir_) {
 }
 
 task TPatternC() {
-    real angle = 180;
+    float angle = 180;
     loop (11) {
         if (!_bossAlive) return;
         int dist = 25;
@@ -144,9 +144,9 @@ task TPatternD() {
 }
 
 task TPatternE() {
-    real angleT = round(rand(0, 360));
-    real xPos = rand(-15, 15);
-    real yPos = rand(-15, 15);
+    float angleT = round(rand(0, 360));
+    float xPos = rand(-15, 15);
+    float yPos = rand(-15, 15);
     int bSprite = round(rand(0, 1)) * 5;
     loop (32) {
         if (!_bossAlive) return;
@@ -156,8 +156,8 @@ task TPatternE() {
 }
 
 task TPatternF(int dir_) {
-    real angleT = 90 + 45 * dir_;
-    real increment = 0.05;
+    float angleT = 90 + 45 * dir_;
+    float increment = 0.05;
     
     loop (550) {
         if (!_bossAlive) return;
@@ -171,7 +171,7 @@ task TPatternF(int dir_) {
 }
 
 task TPatternG() {
-    CreateShotUA2(MID_X, MID_Y, 2, 90, 0.2, 10, SHOT_BLACK+BALL_S, 0, 0, 0);
+    CreateShotUA2(MID_X, MID_Y, 2, 90, 0.2, 10, 0, SHOT_BLACK+BALL_S, 0, 0, 0);
     wait(60);
     CreateShotUB1(MID_X, MID_Y, 1, 2, SHOT_BLACK+NEEDLES, 0, 0, 0);
     wait(60);
@@ -207,18 +207,18 @@ task TPatternI() {
     }
 
     function<void> SpawnShot(int obj_) {
-        real x = ObjMove_GetX(obj_);
-        real y = ObjMove_GetY(obj_);
+        float x = ObjMove_GetX(obj_);
+        float y = ObjMove_GetY(obj_);
         loop (20) {
-            real speed = rand(0.4, 0.9);
-            real angle = rand(0, 360);
+            float speed = rand(0.4, 0.9);
+            float angle = rand(0, 360);
             CreateShotUA1(x + speed * 5 * cos(angle), y + speed * 5 * sin(angle), speed, angle, SHOT_WHITE+NEEDLES, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_SPARKLE);
         }
     }
 }
 
 task TPatternJ() {
-    real angleT = 360 / 36;
+    float angleT = 360 / 36;
     loop {
         for (int i = 0; i <= 774; i++) {
             CreateShotA1(MID_X + 24*cos(angleT), MID_Y + 24*sin(angleT), 1, angleT, i, 0);
@@ -229,13 +229,13 @@ task TPatternJ() {
 }
 
 task TPatternK() { //Emerald Megalith
-    real x = rand(35, GetStgFrameWidth() - 35);
-    real y = rand(60, MID_Y - 65);
-    real speed = rand(1.4, 2.8);
+    float x = rand(35, GetStgFrameWidth() - 35);
+    float y = rand(60, MID_Y - 65);
+    float speed = rand(1.4, 2.8);
 
     ascent (i in 0..30) {
         int graphic = rand_int(0, 1) ? SHOT_GREEN+CRYSTAL_S : SHOT_GREEN+GEM;
-        real modif = rand(1, 1.3);
+        float modif = rand(1, 1.3);
         CreateShotA1(x, y, speed * modif, rand(0, 360), graphic, 0);
     }
 
@@ -245,7 +245,7 @@ task TPatternK() { //Emerald Megalith
 }
 
 task TPatternL() {
-    real angleT = 0;
+    float angleT = 0;
     int index = 0;
     loop {
         for (int i = index; i < 18; i++) {
@@ -288,7 +288,7 @@ task TPatternL() {
 }
 
 task TPatternM() { //Delete effects
-    real angleT = 0;
+    float angleT = 0;
     int i = 0;
     loop (72) {
         CreateShotUA1(MID_X + 72 * cos(angleT), MID_Y + 72 * sin(angleT), 0, angleT, PELLET+(i%18), 0, i);
@@ -320,14 +320,14 @@ task TPatternN() {
 task TPatternO() {
     CallSFX(SND_LASER1);
     int laser = CreateCurveLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 6, 180 - rand_int(0, 2) * 90, 16, COLOR_BLUE, 0);
-    ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, NO_CHANGE, 0);
-    ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, NO_CHANGE, 7.5);
+    ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, 0, NO_CHANGE);
+    ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, 7.5, NO_CHANGE);
     
     loop (240) {
         if (Obj_IsDeleted(laser)) break;
-        real angleL = ObjMove_GetAngle(laser);
-        real angleP = GetAngleToPlayer(laser);
-        real wvel = AngularDistance(angleL, angleP) > 0 ? 2.3 : -2.3;
+        float angleL = ObjMove_GetAngle(laser);
+        float angleP = GetAngleToPlayer(laser);
+        float wvel = AngularDistance(angleL, angleP) > 0 ? 2.3 : -2.3;
         ObjMove_SetAngularVelocity(laser, wvel);
         yield;
     }
@@ -335,9 +335,9 @@ task TPatternO() {
 }
 
 task TPatternP() {
-    real angleT = rand(0, 360);
-    real xPos = rand(-15, 15);
-    real yPos = rand(-15, 15);
+    float angleT = rand(0, 360);
+    float xPos = rand(-15, 15);
+    float yPos = rand(-15, 15);
     int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
     loop (32){
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);

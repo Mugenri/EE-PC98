@@ -151,10 +151,10 @@ task TPlayBGM(int trackID_, int fade_, int delay_) {
     }
     //fade out
     if (fade_ > 0 && !stop) { //only fade if track ended while actually playing, else skip
-        real volTimer = 0;
+        float volTimer = 0;
         while (volTimer < fade_) { //fade time is in frames
-            real volume = GetBGMVolume();
-            real volDecay = volTimer/fade_; //reduce volume linearly
+            float volume = GetBGMVolume();
+            float volDecay = volTimer/fade_; //reduce volume linearly
 
             ObjSound_SetVolumeRate(ID, volume - volDecay*volume);
 

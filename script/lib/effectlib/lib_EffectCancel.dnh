@@ -5,9 +5,9 @@ int _effectCancel32;
 int _effectCancel64;
 
 function<void> Cancel_Init() {
-    _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 0, 16, 16);
-    _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 256, 0, 288, 32);
-    _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, 0, 288, 64, 352);
+    _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [0, 0, 16, 16]);
+    _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [256, 0, 288, 32]);
+    _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [0, 288, 64, 352]);
     ParticleListShader(_effectCancel16, 16/512, 16/1024);
     ParticleListShader(_effectCancel32, 32/512, 32/1024);
     ParticleListShader(_effectCancel64, 64/512, 64/1024);
@@ -15,10 +15,10 @@ function<void> Cancel_Init() {
 
 function<void> Cancel_Shot(int obj_) { //Shot cancel effect
     if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return; //assume shot has a cancel effect
-    real x = ObjMove_GetX(obj_);
-    real y = ObjMove_GetY(obj_);
-    real speed = ObjMove_GetSpeed(obj_);
-    real angle = ObjMove_GetAngle(obj_);
+    float x = ObjMove_GetX(obj_);
+    float y = ObjMove_GetY(obj_);
+    float speed = ObjMove_GetSpeed(obj_);
+    float angle = ObjMove_GetAngle(obj_);
     int effect = Obj_GetValueDI(obj_, SHOT_EFFECT, -1);
     assert(effect >= 0, "Shot cancel effet not set.");
     //16 = 0-71
@@ -81,17 +81,17 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
 
 function<void> Cancel_Laser(int obj_) { //Laser cancel effect
     if (!Obj_GetValueDI(obj_, SHOT_CANCEL, true)) return;
-    real x = ObjMove_GetX(obj_);
-    real y = ObjMove_GetY(obj_);
-    real angle = ObjStLaser_GetAngle(obj_);
-    real len = ObjLaser_GetLength(obj_);
-    real speed = 4.5;
+    float x = ObjMove_GetX(obj_);
+    float y = ObjMove_GetY(obj_);
+    float angle = ObjStLaser_GetAngle(obj_);
+    float len = ObjLaser_GetLength(obj_);
+    float speed = 4.5;
 
     int deleteLine1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //clockwise to laser
     int deleteLine2 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //counterclockwise to laser
 
     async {
-        real dist = 0; //distance of delete line to the original laser center
+        float dist = 0; //distance of delete line to the original laser center
         loop (15) {
             ObjPrim_SetVertexPosition(deleteLine1, 0, x + dist * cos(angle + 90), y + dist * sin(angle + 90), 1);
             ObjPrim_SetVertexPosition(deleteLine1, 1, x + dist * cos(angle + 90) + len * cos(angle), y + dist * sin(angle + 90) + len * sin(angle), 1);

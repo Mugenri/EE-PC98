@@ -72,8 +72,8 @@ task TMain() {
 task TFire() {
     if (!_bossAlive) return;
     int[] shots = [];
-    real xPos = ObjMove_GetX(_objBoss);
-    real yPos = ObjMove_GetY(_objBoss);
+    float xPos = ObjMove_GetX(_objBoss);
+    float yPos = ObjMove_GetY(_objBoss);
 
     Primitive_ContractPolygon2D(xPos, yPos, 45, 100, 0, 20, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(3);
@@ -90,8 +90,8 @@ task TFire() {
         }
     }
 
-    real angleT = rand(0, 360);
-    real speed = [2.5, 2.5, 1.6][_diff];
+    float angleT = rand(0, 360);
+    float speed = [2.5, 2.5, 1.6][_diff];
     for (int i = 0; i < [32, 32, 16][_diff]; i++) { //spawn
         if (!_bossAlive) return;
         int shot = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
@@ -114,7 +114,7 @@ task TFire() {
 
     if (!_bossAlive) return;
     for each (shot in shots) { //slow
-        ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, -0.04, 0, 0);
+        ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, -0.04, 0, NO_CHANGE);
     }
 
     int firstLaser = CreateStraightLaserUA1(xPos, yPos, 0, 0, 5, COLOR_GRAY_L, 120);
@@ -129,12 +129,12 @@ task TFire() {
 
     loop (75) { //point at last index
         if (!_bossAlive) return;
-        real x1 = xPos;
-        real y1 = yPos;
-        real x2 = ObjMove_GetX(shot1);
-        real y2 = ObjMove_GetY(shot1);
-        real angle = dottheta(x1, y1, x2, y2);
-        real len = distance(x1, y1, x2, y2);
+        float x1 = xPos;
+        float y1 = yPos;
+        float x2 = ObjMove_GetX(shot1);
+        float y2 = ObjMove_GetY(shot1);
+        float angle = dottheta(x1, y1, x2, y2);
+        float len = distance(x1, y1, x2, y2);
         ObjStLaser_SetAngle(firstLaser, angle);
         ObjLaser_SetLength(firstLaser, len);
         yield;
@@ -148,12 +148,12 @@ task TFire() {
             if (!_bossAlive) return;
             shot1 = shot2;
             shot2 = shots[i - 1];
-            real x2 = ObjMove_GetX(shot1);
-            real y2 = ObjMove_GetY(shot1);
-            real x1 = ObjMove_GetX(shot2);
-            real y1 = ObjMove_GetY(shot2);
-            real angle = dottheta(x1, y1, x2, y2);
-            real len = distance(x1, y1, x2, y2);
+            float x2 = ObjMove_GetX(shot1);
+            float y2 = ObjMove_GetY(shot1);
+            float x1 = ObjMove_GetX(shot2);
+            float y1 = ObjMove_GetY(shot2);
+            float angle = dottheta(x1, y1, x2, y2);
+            float len = distance(x1, y1, x2, y2);
             CreateStraightLaserUA1(x1, y1, angle, len, 5, COLOR_GRAY_L, 45);
             ObjShot_SetDeleteFrame(shot1, 45);
             wait(2);
@@ -180,8 +180,8 @@ task TFire() {
     for (int i = length(shots) - 1; i >= 0; i--) {
         if (!_bossAlive) return;
         int shot = shots[i];
-        real x = ObjMove_GetX(shot);
-        real y = ObjMove_GetY(shot);
+        float x = ObjMove_GetX(shot);
+        float y = ObjMove_GetY(shot);
         angleT = rand(0, 360);
         loop (loopNum) {
             CreateShotUA1(x, y, [0.75, 0.75, 0.65][_diff], angleT, color+PELLET, 0, color+SPAWN_S+SIZE_8, color+CANCEL_BURST1);
@@ -192,8 +192,8 @@ task TFire() {
     }
 
     function<bool> Reflect(int obj_) {
-        real x = ObjMove_GetX(obj_);
-        real y = ObjMove_GetY(obj_);
+        float x = ObjMove_GetX(obj_);
+        float y = ObjMove_GetY(obj_);
         if (x < MIN_X || x > MAX_X) ObjMove_SetAngle(obj_, 180 - ObjMove_GetAngle(obj_));
         if (y < MIN_Y || y > MAX_Y) ObjMove_SetAngle(obj_, -ObjMove_GetAngle(obj_));
     }

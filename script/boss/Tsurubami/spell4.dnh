@@ -90,7 +90,7 @@ task TFire() {
 
     if (!_bossAlive) return;
 
-    real speed = [1.3, 1.3, 1.9][_diff];
+    float speed = [1.3, 1.3, 1.9][_diff];
     int bigShot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, rand(-25, 25) + 90, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
     ObjShot_SetSpellResist(bigShot, true);
     CallSFX(SND_SHOT4);
@@ -100,17 +100,17 @@ task TFire() {
     //get angle from big shot to selected point
     //spawn bullet, move to wall
 
-    real perim = MAX_X * 2 + MAX_Y * 2; //perimeter of screen
+    float perim = MAX_X * 2 + MAX_Y * 2; //perimeter of screen
     int minNum = [25, 25, 32][_diff];
     int maxNum = [30, 30, 38][_diff];
     int numPos = rand_int(minNum, maxNum); //possible points along perimeter to be selected
-    real[][] locations = []; //x, y coords of shot locations
+    float[][] locations = []; //x, y coords of shot locations
 
-    for (real i = 1; i <= numPos; i++) { //generate locations along perimeter
-        real xPos;
-        real yPos;
-        real angleT;
-        real linePos = Interpolate_Linear(0, perim, i / numPos);
+    for (float i = 1; i <= numPos; i++) { //generate locations along perimeter
+        float xPos;
+        float yPos;
+        float angleT;
+        float linePos = Interpolate_Linear(0, perim, i / numPos);
         if (linePos < MAX_X) { //top
             xPos = linePos;
             yPos = 0;
@@ -142,11 +142,11 @@ task TFire() {
     int waitTime = [5, 5, 3][_diff];
     for (int i = 0; i < length(locations); i++) {
         if (!_bossAlive) return;
-        real x = ObjMove_GetX(bigShot);
-        real y = ObjMove_GetY(bigShot);
-        real lX = locations[i][0];
-        real lY = locations[i][1];
-        real angleT = dottheta(x, y, lX, lY);
+        float x = ObjMove_GetX(bigShot);
+        float y = ObjMove_GetY(bigShot);
+        float lX = locations[i][0];
+        float lY = locations[i][1];
+        float angleT = dottheta(x, y, lX, lY);
         int shot = CreateShotUA1(x + 32 * cos(angleT), y + 32 * sin(angleT), 0, angleT, SHOT_GRAY+COIN, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
         ObjShot_SetSpellResist(shot, true);
         TCageShot(shot, lX, lY, locations[i][2]);
@@ -158,14 +158,14 @@ task TFire() {
     if (!_bossAlive) return;
 
 
-    real pX = ObjMove_GetX(_objPlayer);
-    real pY = ObjMove_GetY(_objPlayer);
-    real randX;
-    real randY;
+    float pX = ObjMove_GetX(_objPlayer);
+    float pY = ObjMove_GetY(_objPlayer);
+    float randX;
+    float randY;
 
-    real radius = 150;
+    float radius = 150;
     loop { //get location of safe zone
-        real angleT = rand(0, 360);
+        float angleT = rand(0, 360);
         randX = pX + radius * cos(angleT);
         randY = pY + radius * sin(angleT);
         if (randX > MIN_X && randX < MAX_X && randY > 80 && randY < MAX_Y) break;
@@ -189,15 +189,15 @@ task TFire() {
 
     CallSFX(SND_TRANSITION);
 
-    real accel = [0.1, 0.1, 0.5][_diff];
+    float accel = [0.1, 0.1, 0.5][_diff];
     for each (shot in shots) {
-        real x = ObjMove_GetX(shot);
-        real y = ObjMove_GetY(shot);
-        real angleT = dottheta(randX, randY, x, y);
-        ObjMove_AddPatternA2(shot, 0, 0, angleT, accel, rand_int(-1, 1), 6);
+        float x = ObjMove_GetX(shot);
+        float y = ObjMove_GetY(shot);
+        float angleT = dottheta(randX, randY, x, y);
+        ObjMove_AddPatternA2(shot, 0, 0, angleT, accel, 6, rand_int(-1, 1));
     }
 
-    task TCageShot(shot_, real x_, real y_, real angleT_) {
+    task TCageShot(shot_, float x_, float y_, float angleT_) {
         wait(20); //shot spawn animation
         int frames = [75, 75, 65][_diff];
         ObjMove_SetDestAtFrame(shot_, x_, y_, frames, LERP_LINEAR);
@@ -209,11 +209,11 @@ task TFire() {
         wait(45);
         int minShot = [16, 16, 19][_diff];
         int maxShot = [21, 21, 23][_diff];
-        real numShots = rand_int(minShot, maxShot);
+        float numShots = rand_int(minShot, maxShot);
         int waitTime = [4, 4, 1][_diff];
         for (int i = 1; i <= numShots; i++) {
             if (!_bossAlive) return;
-            real radius = Interpolate_Accelerate(0, 550, i / numShots);
+            float radius = Interpolate_Accelerate(0, 550, i / numShots);
             int newShot = CreateShotUA1(x_ + radius * cos(angleT_), y_ + radius * sin(angleT_), 0.12 * i / numShots, angleT_, SHOT_YELLOW+COIN, 0, SHOT_YELLOW+SPAWN_S+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE);
             shots = shots ~ [newShot];
             wait(waitTime);

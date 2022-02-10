@@ -10,6 +10,7 @@ function<void> Transition_ChangeBG(int index_, int transitionTime_) { //change b
 function<int> GetTransitionObject(bool useShader_) { //get a transition effect sprite object
     int transition = ObjPrim_Create(OBJ_SPRITE_2D);
     ObjPrim_SetTexture(transition, IMG_EFFECT_TRANSITION);
+    ObjRender_SetTextureFilter(transition, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     Obj_SetRenderPriorityI(transition, useShader_ ? RP_STG_TRANSITION1 : RP_STG_TRANSITION2);
     return transition;
 }

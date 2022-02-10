@@ -102,9 +102,7 @@ function<int> Dialogue_CreatePortrait(string characterID_, bool isBoss_) { //cre
     int xPos = isBoss_ ? 288 : 32;
     int yPos = isBoss_ ? 112 : 240;
 
-    int obj = ObjPrim_Create(OBJ_SPRITE_2D);
-    Obj_SetRenderPriorityI(obj, RP_UI_IMG);
-    ObjPrim_SetTexture(obj, GetBossPortrait(characterID_));
+    int obj = InitSprite2D(0, 0, 0, 0, GetBossPortrait(characterID_), RP_UI_IMG);
     ObjRender_SetPosition(obj, xPos, yPos, 1);
 
     return obj;

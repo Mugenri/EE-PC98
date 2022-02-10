@@ -10,10 +10,10 @@ bool _bonusDisplaying = false; //spell bonus banner is currently running (used t
 //Initialize Display
 //----------------------------------------------------
 function<void> Display_Init() {
-    _displayList = InitParticleList(IMG_SYSTEM_UI, RP_UI_TEXT, 0, 0, 16, 16);
+    _displayList = InitParticleList(IMG_SYSTEM_UI, RP_UI_TEXT, [0, 0, 16, 16]);
     ParticleListShader(_displayList, 16/256, 16/512);
     ObjSprite2D_SetDestRect(_displayList, 0, 0, 16, 16);
-    _scoreBonusList = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, 0, 0, 16, 16);
+    _scoreBonusList = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, [0, 0, 16, 16]);
     ParticleListShader(_scoreBonusList, 16/256, 16/512);
     ObjSprite2D_SetDestRect(_scoreBonusList, 0, 0, 16, 16);
     TIntro();   
@@ -65,7 +65,7 @@ task TIntro() {
     ObjRender_SetColor(objBG, COLOR_BLACK);
 
     //Fade square particle list
-    int objFade = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, 0, 256, 16, 272);
+    int objFade = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, [0, 256, 16, 272]);
     ObjParticleList_SetColor(objFade, COLOR_BLACK);
     //game logo
     int objLogo = InitSprite2D(0, 0, 323, 108, IMG_SYSTEM_LOGO, RP_STG_MAX);
@@ -76,13 +76,13 @@ task TIntro() {
         wait(60);
 
         ascent (i in 1..4) {
-            real alpha = 255/3 * i;
+            float alpha = 255/3 * i;
             ObjRender_SetAlpha(objLogo, alpha);
             wait(10);
         }
         wait(60);
         ascent (i in 1..4) {
-            real alpha = 255 - (255/3 * i);
+            float alpha = 255 - (255/3 * i);
             ObjRender_SetAlpha(objLogo, alpha);
             wait(10);
         }
@@ -158,37 +158,40 @@ task THighScore() {
     int defaultScore = GetGameMode() == GAME_MAIN ? 001000000 : 0;
     int highScore = HS_GetHighScore(defaultScore);
     int continues = 0;
+    int cPointer = LoadAreaCommonDataValuePointer(AREA_STAGE, "Continues", 0);
     
     int[] numList;
     bool newHS = false;
     loop {
         score = GetScore();
         highScore = HS_GetHighScore(defaultScore);
+        continues = GetCommonDataPtr(cPointer);
 
-        if (score < highScore) { //high score > score OR continues have been used. render high score as-is
-            continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
+        if (score < highScore || continues != 0) { //high score > score OR continues have been used. render high score as-is
             numList = DigitToArray(highScore, count);
-            while (score < highScore || continues != 0) {
+            while (score <= highScore || continues != 0) {
+                continues = GetCommonDataPtr(cPointer);
                 score = GetScore();
                 for (int i = 0; i < count; i++) {
                     ObjParticleList_SetPosition(_displayList, 440 + i * 16, 64, 1);
                     ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
                     ObjParticleList_AddInstance(_displayList);
                 }
-                yield;   
+                yield;
             }
             newHS = true; //GetScore() became higher than highScore, new high score
         } else { //score >= highscore, render current score
             if (newHS && continues == 0) TNewHighScore();
             while (continues == 0 && score >= highScore) {
                 score = GetScore();
+                continues = GetCommonDataPtr(cPointer);
                 numList = DigitToArray(scoreRender, count);
                 //Gradual increase of score counter
-                if (scoreRender < score) {
-                    scoreRender += round((score - scoreRender)/10);
+                if (scoreRender <= score) {
+                    scoreRender = round(Interpolate_Linear(scoreRender, score, 0.1));
                     scoreRender -= scoreRender % 10; //take off the last number
                     scoreRender += continues; //add number of continues to the end of the number
-                    if (score - scoreRender <= 10) scoreRender = score;
+                    if (score - scoreRender <= 100) scoreRender = score;
                 }
                 //render particle
                 for (int i = 0; i < count; i++) {
@@ -245,19 +248,19 @@ task TScore() {
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     loop {
         int score = GetScore();
-		int[] numList = DigitToArray(scoreRender, count);
 
         //Gradual increase of score counter
-        if (scoreRender < score) {
-            scoreRender += round((score - scoreRender)/10);
+        if (scoreRender <= score) {
+            scoreRender = round(Interpolate_Linear(scoreRender, score, 0.1));
             scoreRender -= scoreRender % 10; //take off the last number
             scoreRender += continues; //add number of continues to the end of the number
-            if (score - scoreRender <= 10) scoreRender = score;
-        } else if (scoreRender > score) { //score decreased through use of continues
+            if (score - scoreRender <= 100) scoreRender = score;
+        } else { //score decreased through use of continues
             scoreRender = score;
             continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
         }
         //render particle
+		int[] numList = DigitToArray(scoreRender, count);
         for (int i = 0; i < count; i++) {
             ObjParticleList_SetPosition(_displayList, 440 + i * 16, 96, 1);
             ObjParticleList_SetExtraData(_displayList, numList[i], 1, 0);
@@ -299,7 +302,7 @@ task TBossLife() {
     Obj_SetVisible(objMax, false);
 
 	int lastRemStep = -1;
-	real lifeRateRender = 0;
+	float lifeRateRender = 0;
 
 	loop {
 		if (_objScene != ID_INVALID) RenderLife();
@@ -346,9 +349,9 @@ task TBossLife() {
         }
 
 		//Life Display
-		real lifeTotalMax = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
-		real lifeTotal = round(ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE)); //step current health (rounded because of how invincibility is handled)
-		real lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
+		float lifeTotalMax = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_MAX_LIFE); //step max health
+		float lifeTotal = round(ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE)); //step current health (rounded because of how invincibility is handled)
+		float lifeRatio = min(lifeTotal / lifeTotalMax, lifeRateRender); //display the lower of the two
 		ObjPrim_SetVertexPosition(objLife, 0, 0, 0, 1);
         ObjPrim_SetVertexPosition(objLife, 1, 0, 8, 1);
         ObjPrim_SetVertexPosition(objLife, 2, 128 * lifeRatio, 0, 1);
@@ -398,8 +401,8 @@ task TBossTimer() {
 	}
 
 	function<void> RenderTimer() {
-		real timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
-        real timerTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ORGTIMERF);
+		float timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
+        float timerTotal = ObjEnemyBossScene_GetInfo(_objScene, INFO_ORGTIMERF);
         int bossLife = ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE);
 
         int timerColor = timer <= 600 ? COLOR_RED : COLOR_WHITE;
@@ -669,7 +672,7 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
     Obj_Delete(nameText);
     Obj_Delete(failText);
 
-    function<void> UpdateAsciiNum(real yPos_) {
+    function<void> UpdateAsciiNum(float yPos_) {
         if (!spellFailed) Ascii_SpellNum(232, yPos_ + 19, bonus); //Bonus number
         //captured
         if (captured < 100) {
@@ -690,7 +693,7 @@ task TSpellBonus(int score_) {
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
-    real[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
+    float[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
     while (tempScore > 10000) {
         Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), 10000, COLOR_YELLOW);
         tempScore -= 10000;
@@ -793,7 +796,7 @@ task TFPS() {
 	ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
 
 	loop {
-		real fps = GetCurrentFps();
+		float fps = GetCurrentFps();
 		string text = vtos("1.2f", fps) ~ "fps";
 		ObjText_SetText(objText, text);
 		yield;
@@ -819,7 +822,7 @@ task TReplayFPS() {
 	ObjRender_SetY(objText, py);
 
 	loop {
-		real fps = GetReplayFps();
+		float fps = GetReplayFps();
 		string text = vtos("02d", fps);
 		ObjText_SetText(objText, text);
 		yield;

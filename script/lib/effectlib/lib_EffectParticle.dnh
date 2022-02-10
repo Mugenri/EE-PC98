@@ -4,15 +4,15 @@ int _effectParticle16;
 int _effectParticle64;
 
 function<void> Particle_Init() {
-    _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 16, 16);
+    _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 16, 16]);
     ParticleListShader(_effectParticle16, 16/512, 16/512);
-    _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, 0, 0, 64, 64);
+    _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 64, 64]);
     ParticleListShader(_effectParticle64, 64/512, 64/512);
 }
 
-function<void> Particle_ContractRing(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int count_, int color_) {
+function<void> Particle_ContractRing(float x_, float y_, float angle_, float radius_, float rotation_, int frames_, int count_, int color_) {
     async {
-        real initRadius = radius_;
+        float initRadius = radius_;
         loop (frames_) {
             Particle_CreateRing(x_, y_, angle_, radius_, count_, color_);
             angle_ += rotation_ / frames_;
@@ -22,7 +22,7 @@ function<void> Particle_ContractRing(real x_, real y_, real angle_, real radius_
     }
 }
 
-function<void> Particle_CreateRing(real x_, real y_, real angle_, real radius_, int count_, int color_) {
+function<void> Particle_CreateRing(float x_, float y_, float angle_, float radius_, int count_, int color_) {
     loop (count_) {
         ObjParticleList_SetPosition(_effectParticle16, x_ + radius_ * cos(angle_), y_ + radius_ * sin(angle_), 1);
         ObjParticleList_SetColor(_effectParticle16, color_);
@@ -32,16 +32,16 @@ function<void> Particle_CreateRing(real x_, real y_, real angle_, real radius_, 
     }
 }
 
-function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real radiusH_, real angle_, int count_) {
-    real angleT = 0;
+function<void> Particle_ExplosionSmall(float x_, float y_, float radiusW_, float radiusH_, float angle_, int count_) {
+    float angleT = 0;
     int frame = 0;
     int frameRate = 5;
-    real xStep = radiusW_;
-    real yStep = radiusH_;
+    float xStep = radiusW_;
+    float yStep = radiusH_;
     async {
         while (frame < 8 * frameRate) {
             loop (count_) {
-                real[] pos = Rotate2D(radiusW_ * cos(angleT), radiusH_ * sin(angleT), angle_);
+                float[] pos = Rotate2D(radiusW_ * cos(angleT), radiusH_ * sin(angleT), angle_);
                 ObjParticleList_SetPosition(_effectParticle16, x_ + pos[0], y_ + pos[1], 0);
                 ObjParticleList_SetExtraData(_effectParticle16, frame / frameRate, 1, 0);
                 ObjParticleList_AddInstance(_effectParticle16);
@@ -56,12 +56,12 @@ function<void> Particle_ExplosionSmall(real x_, real y_, real radiusW_, real rad
     }
 }
 
-function<void> Particle_ExplosionBig(real x_, real y_) {
-    real angleT = 0;
+function<void> Particle_ExplosionBig(float x_, float y_) {
+    float angleT = 0;
     int frame = 0;
     int frameRate = 4;
-    real step = 10;
-    real radius = 0;
+    float step = 10;
+    float radius = 0;
     async {
         while (frame < 16 * frameRate) {
             loop (16) { //explosion ring
@@ -83,18 +83,18 @@ function<void> Particle_ExplosionBig(real x_, real y_) {
     }
 }
 
-function<void> Particle_RandomExplosionSmall(real x_, real y_) {
+function<void> Particle_RandomExplosionSmall(float x_, float y_) {
     int type = prand_int(0, 1);
     alternative (type)
     case (0) Particle_ExplosionSmall(x_, y_, 7.5, 7.5, 0, 64); //circle
     case (1) { //random ellipse
-        real angleT = prand_int(0, 3) * 45;
+        float angleT = prand_int(0, 3) * 45;
         Particle_ExplosionSmall(x_, y_, 10, 5, angleT, 64);
     }
     CallSFX(SND_EXPLOSION1);
 }
 
-function<void> Particle_RandomExplosionBig(real x_, real y_) { //each of these should take 40 frames before last explosion
+function<void> Particle_RandomExplosionBig(float x_, float y_) { //each of these should take 40 frames before last explosion
     int type = prand_int(0, 2);
     alternative (type)
     case (0) { //circle & vertical ellipses

@@ -3,30 +3,31 @@
 
 string _pathImg; //player sprite passed by player script
 string _pathShot; //player shot data passed by player script
-int _itemScope; //Player item collection radius
+int _itemScope; //Player unfocused item collection radius
+int _focusScope; //Player focused item collection radius
 
-int _particleFlake;
-int _particleShot;
+int _particleFlake; //graze, death, shot hit particle list
+int _particleShot; //player shot deletion particle list
 
-function<void> InitPlayer(string imageFile_, string shotFile_, real speed_, real focusSpeed_, int itemScope_, int focusScope_) {
+function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, float focusSpeed_, int itemScope_, int focusScope_) {
     Common_Init();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
-    _itemScope = focusScope_;
+    _itemScope = itemScope_;
+    _focusScope = focusScope_;
     TRender(GetPlayerObjectID());
     LoadPlayerShotData(_pathShot);
 
-    _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, 0, 32, 16, 48);
+    _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, [0, 32, 16, 48]);
     ParticleListShader(_particleFlake, 16/512, 1);
     
-    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, 0, 0, 16, 16);
+    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 16]);
     ParticleListShader(_particleShot, 16/256, 16/64);
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);
     SetPlayerRebirthFrame(18);
     SetPlayerClip(4, 8, GetStgFrameWidth() - 4, GetStgFrameHeight() - 8);
-    SetPlayerItemScope(itemScope_);
     SetPlayerInvincibleGraze(false);
     SetPlayerIntersectionEraseShot(false);
 
@@ -61,19 +62,19 @@ function<void> PlayerEvent() {
         
         for each (obj in objList) {
             int num = 0;
-            real x = GetEventArgument(2)[num][0];
-            real y = GetEventArgument(2)[num][1];
+            float x = GetEventArgument(2)[num][0];
+            float y = GetEventArgument(2)[num][1];
             if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) { //Get closest point to laser
-                real angleLaser = ObjStLaser_GetAngle(obj);
-                real anglePlayer = GetAngleToPlayer(obj);
-                real distPlayer = distance(x, y, GetPlayerX(), GetPlayerY());
+                float angleLaser = ObjStLaser_GetAngle(obj);
+                float anglePlayer = GetAngleToPlayer(obj);
+                float distPlayer = distance(x, y, GetPlayerX(), GetPlayerY());
 
                 if (distPlayer > ObjLaser_GetLength(obj)) { //Player is beyond tip of laser
-                    real len = ObjLaser_GetLength(obj);
+                    float len = ObjLaser_GetLength(obj);
                     x += len * cos(angleLaser);
                     y += len * sin(angleLaser);
                 } else if (absolute(anglePlayer - angleLaser) <= 90) { //Player not behind base of laser
-                    real distNearest = distPlayer * cos(anglePlayer - angleLaser);
+                    float distNearest = distPlayer * cos(anglePlayer - angleLaser);
                     x += distNearest * cos(angleLaser);
                     y += distNearest * sin(angleLaser);
                 } //else player is behind the base of the laser, particle spawns at original (x, y)
@@ -90,6 +91,7 @@ function<void> PlayerEvent() {
 task TRender(int ParentID_) {
     //player
 	ObjPrim_SetTexture(_objPlayer, _pathImg);
+    ObjRender_SetTextureFilter(_objPlayer, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
     ObjSprite2D_SetDestCenter(_objPlayer);
     Obj_SetRenderPriorityI(_objPlayer, RP_STG_PLAYER);
@@ -122,15 +124,15 @@ task THit() { //Player deathbomb window
     CallSFX(SND_PL_HIT);
     
     //Closing circle
-    real radius = 28;
+    float radius = 28;
     int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 18, RP_STG_EFF_MAX);
     for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
     int frames = 14;
-    for (real frame = 0; frame <= frames; frame++) {
+    for (float frame = 0; frame <= frames; frame++) {
         ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
         radius = Interpolate_Accelerate(28, 0, frame / frames);
         for (int i = 1; i < ObjPrim_GetVertexCount(circle); i++) {
-            real angleT = 360 / (ObjPrim_GetVertexCount(circle) - 2) * i;
+            float angleT = 360 / (ObjPrim_GetVertexCount(circle) - 2) * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
         }
         if (IsPlayerSpellActive()) break;
@@ -143,8 +145,8 @@ task TMiss() { //Player died
     SetForbidPlayerSpell(true);
     CancelCollectItems();
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
-    real xPos = GetPlayerX();
-    real yPos = GetPlayerY();
+    float xPos = GetPlayerX();
+    float yPos = GetPlayerY();
     CallSFX(SND_PL_MISS);
 
     TMissGlass();
@@ -157,12 +159,12 @@ task TMiss() { //Player died
         }
 
         task TGlassMovement() {
-            real x = xPos;
-            real y = yPos;
-            real angle = rand_int(0, 360);
-            real speed = rand(1.2, 2.8);
-            real xStep = speed * cos(angle);
-            real yStep = speed * sin(angle);
+            float x = xPos;
+            float y = yPos;
+            float angle = rand_int(0, 360);
+            float speed = rand(1.2, 2.8);
+            float xStep = speed * cos(angle);
+            float yStep = speed * sin(angle);
 
             int frame = 0;
             int frameRate = 2;
@@ -182,14 +184,14 @@ task TMiss() { //Player died
     }
 
     task TMissCircle() {
-        real radius = 0;
+        float radius = 0;
         int frames = 60;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
         for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
-        for (real frame = 1; frame <= frames; frame++) {
+        for (float frame = 1; frame <= frames; frame++) {
             radius = Interpolate_Decelerate(0, 72, frame / frames);
             for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) {
-                real angleT = 360/(ObjPrim_GetVertexCount(circle) - 1) * i;
+                float angleT = 360/(ObjPrim_GetVertexCount(circle) - 1) * i;
                 ObjPrim_SetVertexPosition(circle, i, xPos + radius*cos(angleT), yPos + radius*sin(angleT), 1);
             }
             yield;
@@ -222,12 +224,12 @@ task TRebirth() { //Player respawn
 
         //blue circle indicating vulnerability
         CallSFX(SND_PL_VULNERABLE);
-        real radius = 28;
+        float radius = 28;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
         ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
         loop (20) {
             ascent (i in 0..17) {
-                real angleT = 360/16 * i;
+                float angleT = 360/16 * i;
                 ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
             }
             radius -= 28/20;
@@ -237,11 +239,11 @@ task TRebirth() { //Player respawn
     }
 }
 
-task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
-    real speed = rand(1.2, 2.8);
-    real angle = rand_int(0, 360);
-    real xStep = speed * cos(angle);
-    real yStep = speed * sin(angle);
+task TGraze(float x_, float y_) { //Summon graze particle, add to particle list
+    float speed = rand(1.2, 2.8);
+    float angle = rand_int(0, 360);
+    float xStep = speed * cos(angle);
+    float yStep = speed * sin(angle);
 
     CallSFX(SND_PL_GRAZE);
     AddScore(1000);
@@ -262,11 +264,11 @@ task TGraze(real x_, real y_) { //Summon graze particle, add to particle list
     }
 }
 
-task TShotParticle(real x_, real y_) { //shot hit something, spawn shot flake particle
-    real speed = rand(4.5, 10);
-    real angle = rand(0, 360);
-    real xStep = speed * cos(angle);
-    real yStep = speed * sin(angle);
+task TShotParticle(float x_, float y_) { //shot hit something, spawn shot flake particle
+    float speed = rand(4.5, 10);
+    float angle = rand(0, 360);
+    float xStep = speed * cos(angle);
+    float yStep = speed * sin(angle);
 
     int frame = 0;
     int frameRate = 2;

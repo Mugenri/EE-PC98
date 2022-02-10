@@ -18,9 +18,20 @@
 
 @Event {
     alternative (GetEventType())
+    case (EV_DELETE_SHOT_IMMEDIATE) { //triggered by player bomb/death
+        int obj = GetEventArgument(0);
+        float[] pos = GetEventArgument(1);
+        int score = Obj_GetValueDI(obj, SHOT_SCORE, 0); //assume no score
+
+        //Delete effects
+        if (Obj_GetType(obj) == OBJ_SHOT) Cancel_Shot(obj);
+        else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
+        //score
+        AddScore(score);
+    }
     case (EV_DELETE_SHOT_TO_ITEM) { //triggered by clearing a boss spell, creates score text
         int obj = GetEventArgument(0);
-        real[] pos = GetEventArgument(1);
+        float[] pos = GetEventArgument(1);
         int score = Obj_GetValueDI(obj, SHOT_SCORE, 0); //assume all shots without an assigned score are no score
 
         //create item in place of bullet
@@ -37,7 +48,7 @@
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
         ObjMove_AddPatternB2(obj, 0, 0, -3.2, 0, 0.06, 0, 2.8);
-        ObjItem_SetAutoCollectEnable(obj, true);
+        ObjItem_SetAutoCollectEnableFlags(obj, ITEM_AUTOCOLLECT_PLAYER_SCOPE);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
     case (EV_GET_ITEM) {
@@ -52,7 +63,7 @@
             CallSFX(SND_ITEM);
         }
         case (ITEM_SCORE) {
-            AddPoint(1);
+            SetPoint(GetPoint() + 1);
             if (ObjRender_GetY(obj) < 128) {
                 score = 51200;
                 color = COLOR_YELLOW_L;
@@ -92,9 +103,7 @@
 }
 
 function<void> ScrollText(bool isExtend_) { //life/bomb extend notification
-    int objText = ObjPrim_Create(OBJ_SPRITE_2D);
-    ObjPrim_SetTexture(objText, IMG_SYSTEM_UI);
-    Obj_SetRenderPriorityI(objText, RP_STG_MAX);
+    int objText = InitSprite2D(0, 0, 0, 0, IMG_SYSTEM_UI, RP_STG_MAX);
     ObjRender_SetY(objText, isExtend_ ? 24 : 40); //32 + 8 accounts for setdestcenter
 
     if (isExtend_) ObjSprite2D_SetSourceRect(objText, 47, 432, 116, 448);

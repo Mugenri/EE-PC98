@@ -84,10 +84,10 @@ task TMain() {
 task TMovement(int obj_, int dir_) {
     while (_count < 0) yield;
     while (_bossAlive) {
-        real x = 0.5 + 0.5 * (-cos(_count));
-        real y = 0.5 + 0.5 * (sin(_count));
-        real xPos = Interpolate_Linear(MID_X - 150 * dir_, MID_X + 150 * dir_, x);
-        real yPos = Interpolate_Linear(MID_Y + 150 * dir_, MID_Y - 150 * dir_, y);
+        float x = 0.5 + 0.5 * (-cos(_count));
+        float y = 0.5 + 0.5 * (sin(_count));
+        float xPos = Interpolate_Linear(MID_X - 150 * dir_, MID_X + 150 * dir_, x);
+        float yPos = Interpolate_Linear(MID_Y + 150 * dir_, MID_Y - 150 * dir_, y);
         ObjMove_SetDestAtFrame(obj_, xPos, yPos, 1);
         yield;
     }
@@ -96,11 +96,11 @@ task TMovement(int obj_, int dir_) {
 task TBounds() {
     while (_count < 0) yield;
     while (_bossAlive) {
-        real x1 = ObjMove_GetX(_objBoss);
-        real y1 = ObjMove_GetY(_objBoss);
-        real angleT = dottheta(MID_X, MID_Y, x1, y1);
-        real x2 = MID_X + 150 * cos(angleT + 180);
-        real y2 = MID_Y + 150 * sin(angleT + 180);
+        float x1 = ObjMove_GetX(_objBoss);
+        float y1 = ObjMove_GetY(_objBoss);
+        float angleT = dottheta(MID_X, MID_Y, x1, y1);
+        float x2 = MID_X + 150 * cos(angleT + 180);
+        float y2 = MID_Y + 150 * sin(angleT + 180);
         CreateShotUA1(x1, y1, 1.0, angleT, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
         CreateShotUA1(x1, y1, 0.5, angleT + 12, SHOT_BLACK+TALISMAN_A, 2, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
         CreateShotUA1(x1, y1, 0.2, angleT + 90, SHOT_BLACK+TALISMAN_A, 4, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
@@ -147,16 +147,16 @@ task TFire() {
     int[] shots = [];
     
     //tsuru burst fire
-    real radius = rand(0, 5);
-    real angleT = ObjMove_GetAngle(_objBoss) + 90;
+    float radius = rand(0, 5);
+    float angleT = ObjMove_GetAngle(_objBoss) + 90;
     int waitTime = [0, 0, 1][_diff];
     int numShot = [12, 12, 64][_diff];
     int moveTime = [110, 110, 50][_diff];
     loop (numShot) {
         if (!_bossAlive) return;
-        real radius = 150;
-        real xPos = MID_X + radius * cos(angleT);
-        real yPos = MID_Y + radius * sin(angleT);
+        float radius = 150;
+        float xPos = MID_X + radius * cos(angleT);
+        float yPos = MID_Y + radius * sin(angleT);
         int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 0, SHOT_GRAY+PILL_A, 0, SHOT_GRAY+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
@@ -178,11 +178,11 @@ task TFire() {
     }
 
     task TLaser(int shot_, int sustain_, int delay_) { //draw laser from boss to shot
-        real bX = ObjMove_GetX(_objClone);
-        real bY = ObjMove_GetY(_objClone);
-        real sX = ObjMove_GetX(shot_);
-        real sY = ObjMove_GetY(shot_);
-        real angleT = dottheta(bX, bY, sX, sY);
+        float bX = ObjMove_GetX(_objClone);
+        float bY = ObjMove_GetY(_objClone);
+        float sX = ObjMove_GetX(shot_);
+        float sY = ObjMove_GetY(shot_);
+        float angleT = dottheta(bX, bY, sX, sY);
         int laser = CreateStraightLaserUA1(bX, bY, angleT, 500, sustain_, COLOR_GRAY, delay_);
 
         async {

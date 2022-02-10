@@ -75,7 +75,7 @@ task TFireA(int dir_) {
 
     for (int i = 1; i <= 22; i++) {
         if (!_bossAlive) return;
-        real angleT = 90 + 20 * dir_ + Interpolate_Decelerate(0, 320, i / 22) * dir_;
+        float angleT = 90 + 20 * dir_ + Interpolate_Decelerate(0, 320, i / 22) * dir_;
         int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 14, angleT, SHOT_BLACK+PILL_L, 0, SHOT_BLACK+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         TSpawnRing(shot, i);
@@ -88,7 +88,7 @@ task TFireA(int dir_) {
         wait(rand_int(2, 5));
         loop (3) {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
-            real angleT = rand_int(0, 10) * 10;
+            float angleT = rand_int(0, 10) * 10;
             int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
             for (int i = 0; i < 3; i++) {
                 CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(0.6, 0.8), angleT, color+KUNAI, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST1);

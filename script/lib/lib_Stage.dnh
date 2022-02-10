@@ -1,6 +1,6 @@
 //Stage function library
 bool _introPlaying = true; //assume screen is fading from black
-real[] tempSpeed = []; //store player speed to stop movement during intro fade
+float[] tempSpeed = []; //store player speed to stop movement during intro fade
 
 function<void> Stage_Init(int lives_, int bombs_) {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
@@ -33,7 +33,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
         SetPlayerLife(2); //TODO set this to initial lives config setting
         SetPlayerSpell(3);
 
-        AddScore(-GetScore() + GetAreaCommonData(AREA_STAGE, "Continues", 0));
+        SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
     }
     case (EV_PLAYER_SHOOTDOWN) CheckContinue(); //player out of lives
 }
@@ -58,7 +58,7 @@ function<void> Stage_SetBGMText(int index_, int delay_, int current_) { //newly 
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
     Obj_SetVisible(objText, false);
 
-    real width = ObjText_GetTotalWidth(objText);
+    float width = ObjText_GetTotalWidth(objText);
     int steps = (round(width / 16)); //number of particles to spawn
     int notePos = (MAX_X - width - 24); //x position of note graphic
 
@@ -68,7 +68,7 @@ function<void> Stage_SetBGMText(int index_, int delay_, int current_) { //newly 
     ObjRender_SetPosition(note, notePos, MAX_Y - 17, 1);
     Obj_SetVisible(note, false);
 
-    int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, 0, 192, 32, 224);
+    int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, [0, 192, 32, 224]);
     ParticleListShader(particles, 32/512, 32/512);
 
     int frame = 0;
@@ -133,7 +133,7 @@ function<void> Stage_SetIntroText(string header_, string subtitle_) { //stage na
     Obj_SetVisible(subtitle, false);
 
     //particle spawning info
-    real width = ObjText_GetTotalWidth(header);
+    float width = ObjText_GetTotalWidth(header);
     int stepHeader = (round(width / 16)); //number of particles to spawn
     int headerX = MID_X + 8 - round(stepHeader * 8);
 
@@ -141,7 +141,7 @@ function<void> Stage_SetIntroText(string header_, string subtitle_) { //stage na
     int stepSubtitle = (round(width / 16));
     int subtitleX = MID_X + 8 - round(stepSubtitle * 8);
 
-    int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, 0, 192, 32, 224);
+    int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, [0, 192, 32, 224]);
     ParticleListShader(particles, 32/512, 32/512);
 
     int frame = 0;
@@ -196,17 +196,17 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     SetForbidPlayerSpell(true);
 
     //SCORE VARIABLES ----------------------------------
-    real grazeBonus = min(GetGraze(), 9999) * 50;
-    real lifeBonus = GetPlayerLife() * 10000;
-    real pointCount = min(GetPoint(), 999);
+    float grazeBonus = min(GetGraze(), 9999) * 50;
+    float lifeBonus = GetPlayerLife() * 10000;
+    float pointCount = min(GetPoint(), 999);
     int missCount = GetAreaCommonData(AREA_STAGE, "Player_Miss", 0);
     int bombCount = GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0);
-    real noMissBonus = 500000;
-    real noBombBonus = 500000;
+    float noMissBonus = 500000;
+    float noBombBonus = 500000;
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
-    real[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
+    float[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
-    real[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
+    float[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
     string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Easy Extra", "Extra", "Absurdly Extra"];
     //TODO starting lives multiplier at some point maybe
 
@@ -249,7 +249,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
 
     //SCORE NUMBERS --------------------------------------
 
-    int endList = InitParticleList(IMG_SYSTEM_UI, RP_STG_END, 0, 0, 16, 16); //score number list
+    int endList = InitParticleList(IMG_SYSTEM_UI, RP_STG_END, [0, 0, 16, 16]); //score number list
     ParticleListShader(endList, 16/256, 16/512);
     ObjSprite2D_SetDestRect(endList, 0, 0, 16, 16);
 

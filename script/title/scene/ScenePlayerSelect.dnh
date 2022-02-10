@@ -94,7 +94,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         int radius = 241;
         TCircles();
         while (!exitFlag) {
-            real angleT = rand(-50, 50); //get angle from center to edge of circle that is on screen
+            float angleT = rand(-50, 50); //get angle from center to edge of circle that is on screen
             MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT), WINDOW_HEIGHT_MID + radius * sin(angleT), angleT);
             MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT + 180), WINDOW_HEIGHT_MID + radius * sin(angleT + 180), angleT + 180);
             yield;
@@ -107,12 +107,12 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
             int primCircle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG);
             int vertices = ObjPrim_GetVertexCount(primCircle);
 
-            real tempRadius = radius;
+            float tempRadius = radius;
             int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
             int frame = 0;
-            real frames = 120; //to avoid int division
+            float frames = 120; //to avoid int division
             while (!exitFlag) {
-                real angleT = 0;
+                float angleT = 0;
                 tempRadius = Interpolate_Decelerate(radius, 0, frame / frames);
                 for (int i = 0; i < ObjPrim_GetVertexCount(primCircle); i++) {
                     ObjPrim_SetVertexPosition(primCircle, i, WINDOW_WIDTH_MID + tempRadius * cos(angleT), WINDOW_HEIGHT_MID + tempRadius * sin(angleT), 1);
@@ -126,10 +126,10 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
             Obj_Delete(primCircle);
         }
 
-        task MoveParticle(real x_, real y_, real angle_) {
+        task MoveParticle(float x_, float y_, float angle_) {
             int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
-            real maxSpeed = rand(2, 3.4);
-            real speed = maxSpeed;
+            float maxSpeed = rand(2, 3.4);
+            float speed = maxSpeed;
             int frame = 0;
             int frameRate = 20;
             while (!exitFlag) {

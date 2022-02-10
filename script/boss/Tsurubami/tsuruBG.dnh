@@ -47,10 +47,10 @@ task TBackground(int index_, int priority_) {
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, priority_);
         ascent (i in 0..33) ObjPrim_SetVertexColor(circle, i, COLOR_GRAY_D);
 
-        real frames = 90;
+        float frames = 90;
         for (int i = 1; i <= frames; i++) {
             int radius = Interpolate_Accelerate(0, 275, i / frames);
-            real angle = 0;
+            float angle = 0;
             ascent (j in 0..33) {
                 ObjPrim_SetVertexPosition(circle, j, MID_X + radius * cos(angle), MID_Y + radius * sin(angle), 1);
                 angle += 360/32;

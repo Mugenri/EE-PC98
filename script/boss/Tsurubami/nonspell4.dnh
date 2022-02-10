@@ -64,8 +64,8 @@ task TMain() {
 
 task TFire() {
     if (!_bossAlive) return;
-    real speed = [3.8, 3.8, 5.2][_diff];
-    real modif = [5, 5, 4][_diff];
+    float speed = [3.8, 3.8, 5.2][_diff];
+    float modif = [5, 5, 4][_diff];
     int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, _count * modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjShot_SetSpellResist(amulet, true);
     Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), _count * modif, 550, 15);
@@ -74,15 +74,15 @@ task TFire() {
     wait(20);
     modif = [15, 15, 7][_diff];
     int waitTime = [18, 18, 11][_diff];
-    real accel = [0.025, 0.025, 0.04][_diff];
-    real maxSpeed = [2.0, 2.0, 2.4][_diff];
+    float accel = [0.025, 0.025, 0.04][_diff];
+    float maxSpeed = [2.0, 2.0, 2.4][_diff];
     while (!Obj_IsDeleted(amulet)) {
         if (!_bossAlive) return;
-        real xPos = ObjMove_GetX(amulet);
-        real yPos = ObjMove_GetY(amulet);
-        real angleT = ObjMove_GetAngle(amulet);
-        CreateShotUA2(xPos, yPos, 0, angleT + modif, accel, maxSpeed, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
-        CreateShotUA2(xPos, yPos, 0, angleT - modif, accel, maxSpeed, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
+        float xPos = ObjMove_GetX(amulet);
+        float yPos = ObjMove_GetY(amulet);
+        float angleT = ObjMove_GetAngle(amulet);
+        CreateShotUA2(xPos, yPos, 0, angleT + modif, accel, maxSpeed, 0, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
+        CreateShotUA2(xPos, yPos, 0, angleT - modif, accel, maxSpeed, 0, SHOT_GRAY_INV+TALISMAN_A, 0, SHOT_GRAY_INV+CANCEL_BURST1);
         wait(waitTime);
     }
 }
@@ -90,10 +90,10 @@ task TFire() {
 task TMovement() {
     while (_count < 0) yield;
     while (_bossAlive) {
-        real x = 0.5 + 0.5 * (-cos(_count));
-        real y = 0.5 + 0.5 * (sin(_count));
-        real xPos = Interpolate_Linear(30, MAX_X - 30, x);
-        real yPos = Interpolate_Linear(40, 100, y);
+        float x = 0.5 + 0.5 * (-cos(_count));
+        float y = 0.5 + 0.5 * (sin(_count));
+        float xPos = Interpolate_Linear(30, MAX_X - 30, x);
+        float yPos = Interpolate_Linear(40, 100, y);
         ObjMove_SetDestAtFrame(_objBoss, xPos, yPos, 1);
         yield;
     }

@@ -1,13 +1,13 @@
 //Primitives effect library
 
-function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real radius_, real maxRadius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+function<void> Primitive_ExpandPolygon2D(float x_, float y_, float angle_, float radius_, float maxRadius_, float rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, 0, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
     maxRadius_ -= radius_;
     async {
         loop (frames_) {
-            real angleT = angle_;
+            float angleT = angle_;
             for (int i = startVertex; i < vertices; i++) {
                 ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angleT), y_ + radius_ * sin(angleT), 1);
                 angleT += 360 / sides_;
@@ -20,14 +20,14 @@ function<void> Primitive_ExpandPolygon2D(real x_, real y_, real angle_, real rad
     }
 }
 
-function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real radius_, real rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
+function<void> Primitive_ContractPolygon2D(float x_, float y_, float angle_, float radius_, float rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, radius_, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
     async {
-        real initRadius = radius_;
+        float initRadius = radius_;
         loop (frames_) {
-            real angleT = angle_;
+            float angleT = angle_;
             for (int i = startVertex; i < vertices; i++) {
                 ObjPrim_SetVertexPosition(polygon, i, x_ + radius_ * cos(angleT), y_ + radius_ * sin(angleT), 1);
                 angleT += 360 / sides_;
@@ -40,7 +40,7 @@ function<void> Primitive_ContractPolygon2D(real x_, real y_, real angle_, real r
     }
 }
 
-function<int> Primitive_CreatePolygon2D(real x_, real y_, real angle_, real radius_, int sides_, int color_, bool solid_, int priority_) {
+function<int> Primitive_CreatePolygon2D(float x_, float y_, float angle_, float radius_, int sides_, int color_, bool solid_, int priority_) {
     int type = solid_ ? PRIMITIVE_TRIANGLEFAN : PRIMITIVE_LINESTRIP;
     int vertices = type == PRIMITIVE_TRIANGLEFAN ? sides_ + 2 : sides_ + 1;
     int startVertex = vertices == sides_ + 2 ? 1 : 0;
@@ -92,7 +92,7 @@ function<void> Primitive_ScreenFlashFinal() { //boss explosion screen flash
             }
             yield;
         }
-        real alpha = (255 * 0.5);
+        float alpha = (255 * 0.5);
         int frames = 5;
         loop (frames) {
             alpha -= 255 * 0.5 / frames;

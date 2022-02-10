@@ -1,4 +1,4 @@
 //Item event wrapper functions.
-function<void> CreateItem(real x_, real y_, int type_) {
+function<void> CreateItem(float x_, float y_, int type_) {
     NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", 0), EV_CREATE_ITEM, x_, y_, type_);
 }

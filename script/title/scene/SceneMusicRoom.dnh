@@ -109,7 +109,7 @@ function<void> SceneMusicRoom() {
             int lines = InitPrim2D(PRIMITIVE_LINELIST, 36, RP_UI_BG);
 
             int i = 0;
-            real dist = 90;
+            float dist = 90;
             loop (9) {
                 ObjPrim_SetVertexPosition(lines, i, 0, 200 + dist, 1);
                 ObjPrim_SetVertexPosition(lines, i + 1, 740, 200, 1);
@@ -129,7 +129,7 @@ function<void> SceneMusicRoom() {
             int lines = InitPrim2D(PRIMITIVE_LINELIST, 24, RP_UI_BG);
             
             int i = 0;
-            real time = 300;
+            float time = 300;
             async {
                 while (!exitFlag) {
                     for (int i = 0; i < 23; i += 2) {
@@ -143,7 +143,7 @@ function<void> SceneMusicRoom() {
             return lines;
 
             task TMoveLineV(int index_) {
-                real xPos;
+                float xPos;
                 ObjPrim_SetVertexColor(lines, index_, COLOR_GREEN_D);
                 ObjPrim_SetVertexColor(lines, index_ + 1, COLOR_GREEN_D);
                 for (int i = 1; i <= time; i++) {

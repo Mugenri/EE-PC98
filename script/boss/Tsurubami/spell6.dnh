@@ -66,9 +66,9 @@ task TKillAura() {
 
     //spawn animation
     for (int i = 1; i <= 60; i++) {
-        real x = ObjMove_GetX(_objBoss);
-        real y = ObjMove_GetY(_objBoss);
-        real angleT = 0;
+        float x = ObjMove_GetX(_objBoss);
+        float y = ObjMove_GetY(_objBoss);
+        float angleT = 0;
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
         for (int j = 0; j < 33; j++) {
             ObjPrim_SetVertexPosition(killAura3, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
@@ -80,9 +80,9 @@ task TKillAura() {
     //shrink animation
     async {
         for (int i = 1; i <= 60; i++) {
-            real x = ObjMove_GetX(_objBoss);
-            real y = ObjMove_GetY(_objBoss);
-            real angleT = 0;
+            float x = ObjMove_GetX(_objBoss);
+            float y = ObjMove_GetY(_objBoss);
+            float angleT = 0;
             int tempRad = Interpolate_Accelerate(radius, 0, i / 60);
             for (int j = 0; j < 33; j++) {
                 ObjPrim_SetVertexPosition(killAura3, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
@@ -96,9 +96,9 @@ task TKillAura() {
     async { //aura 2 loop
         while (_bossAlive) {
             for (int i = 1; i <= 60; i++) {
-                real x = ObjMove_GetX(_objBoss);
-                real y = ObjMove_GetY(_objBoss);
-                real angleT = 0;
+                float x = ObjMove_GetX(_objBoss);
+                float y = ObjMove_GetY(_objBoss);
+                float angleT = 0;
                 int tempRad = Interpolate_Decelerate(0, radius, i / 60);
                 for (int j = 0; j < 33; j++) {
                     ObjPrim_SetVertexPosition(killAura2, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
@@ -110,11 +110,11 @@ task TKillAura() {
     }
 
     while (_bossAlive) {
-        real x = ObjMove_GetX(_objBoss);
-        real y = ObjMove_GetY(_objBoss);
-        real pX = ObjMove_GetX(_objPlayer);
-        real pY = ObjMove_GetY(_objPlayer);
-        real angleT = 0;
+        float x = ObjMove_GetX(_objBoss);
+        float y = ObjMove_GetY(_objBoss);
+        float pX = ObjMove_GetX(_objPlayer);
+        float pY = ObjMove_GetY(_objPlayer);
+        float angleT = 0;
         //set position, check for player
         for (int i = 0; i < 33; i++) {
             ObjPrim_SetVertexPosition(killAura, i, x + radius * cos(angleT), y + radius * sin(angleT), 1);
@@ -124,10 +124,12 @@ task TKillAura() {
             cooldown--;
         }
         if (distance(x, y, pX, pY) < radius && cooldown == 0) {
-            real tempAngle = rand(-70, 70);
+            float tempAngle = rand(-70, 70);
             for (int i = 0; i < 16; i++) {
                 int shotH = CreateShotUA1(ObjMove_GetX(_objPlayer), ObjMove_GetY(_objPlayer), i * 1, tempAngle, SHOT_GRAY+PILL_S, 0, SHOT_GRAY+CANCEL_BURST1);
                 int shotV = CreateShotUA1(ObjMove_GetX(_objPlayer), ObjMove_GetY(_objPlayer), i * 0.4, tempAngle + 90, SHOT_GRAY+PILL_S, 0, SHOT_GRAY+CANCEL_BURST1);
+                ObjShot_SetGrazeFrame(shotH, 2); //don't graze this
+                ObjShot_SetGrazeFrame(shotV, 2);
                 ObjShot_SetDeleteFrame(shotH, 1);
                 ObjShot_SetDeleteFrame(shotV, 1);
                 tempAngle += 180;
@@ -160,13 +162,13 @@ task TFire(int dir_) {
     if (!_bossAlive) return;
 
     //move to position
-    real xDest = MID_X - 160 * dir_;
-    real yDest = MID_Y - 150;
+    float xDest = MID_X - 160 * dir_;
+    float yDest = MID_Y - 150;
     wait(60);
     ObjMove_SetDestAtFrame(_objBoss, xDest, yDest, 90, LERP_SMOOTHER);
 
     //spawn laser
-    real angleLaser = 90 - 90 * dir_;
+    float angleLaser = 90 - 90 * dir_;
     int mSpark = CreateMasterSpark(0, 0, angleLaser, 550, 140, 160, COLOR_GRAY, COLOR_GRAY_L, 100);
     CallSFX(SND_CHARGE1);
 
@@ -184,14 +186,14 @@ task TFire(int dir_) {
     if (!_bossAlive) return;
 
     int loopNum = [2, 2, 3][_diff];
-    real maxYSpeed = [3.1, 3.1, 2.5][_diff];
+    float maxYSpeed = [3.1, 3.1, 2.5][_diff];
     async { //bullets at edge of screen
         int color = 0;
         while (_bossAlive && !Obj_IsDeleted(mSpark)) {
             int tempColor = [SHOT_GRAY, SHOT_WHITE, SHOT_BLUE][color % 3];
-            real angleT = ObjStLaser_GetAngle(mSpark) + rand(-7, 7);
-            real xPos = xDest + 525 * cos(angleT);
-            real yPos = yDest + 525 * sin(angleT);
+            float angleT = ObjStLaser_GetAngle(mSpark) + rand(-7, 7);
+            float xPos = xDest + 525 * cos(angleT);
+            float yPos = yDest + 525 * sin(angleT);
             xPos = clamp(xPos, MIN_X, MAX_X);
             yPos = clamp(yPos, MIN_Y, MAX_Y);
             loop (loopNum) {
@@ -204,8 +206,8 @@ task TFire(int dir_) {
     }
 
     async { //laser movement
-        real min = 90 - 90 * dir_;
-        real max = 90 - 20 * dir_;
+        float min = 90 - 90 * dir_;
+        float max = 90 - 20 * dir_;
         for (int i = 1; i <= 160; i++) {
             if (!_bossAlive || Obj_IsDeleted(mSpark)) return;
             ObjStLaser_SetAngle(mSpark, Interpolate_Accelerate(min, max, i / 160));

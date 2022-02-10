@@ -40,7 +40,7 @@ task TTitleScene(int preloadIndex_) {
     ObjRender_SetColor(testBG, COLOR_RED); //its a bigass red rectangle
 
     //title particle effect list
-    _titleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_UI_PARTICLE, 0, 0, 16, 16);
+    _titleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_UI_PARTICLE, [0, 0, 16, 16]);
     ParticleListShader(_titleList, 16/512, 16/512);
 
     StartBGM(0, 60, 30);
