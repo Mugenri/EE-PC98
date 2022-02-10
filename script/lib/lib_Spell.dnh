@@ -56,7 +56,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (27, 28)       { return "Senri Technique \"Ink Projection Youkai Seal\""; }    //EZ, EX
         case (29)           { return "Forbidden Art \"Dual Youkai Annihilation Seal\""; }   //ABEX
         case (30, 31, 32)   { return "Nonspell 6"; }
-        case (33, 34, 35)   { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
+        case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
         case (35)           { return "Severing Card \"Unconventional Grave-Digger\""; }     //ABEX
         others { return "INVALID"; }
     }
