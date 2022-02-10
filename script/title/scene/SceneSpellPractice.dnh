@@ -30,6 +30,11 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         int spellID = selectedDefault_[3];
         int spellIndex = GetIndexFromSpellID(stageIndex, spellID);
         indexCurrent = [stageIndex, spellIndex];
+        for (int subIndex = MENU_STAGE; subIndex <= MENU_SPELL; subIndex++) {
+            if (indexCurrent[subIndex] > indexListSize[subIndex]) {
+                indexListTop[subIndex] = indexCurrent[subIndex] - indexListSize[subIndex];
+            }
+        }
         subIndex = MENU_SPELL;
     }
 
@@ -436,6 +441,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                 if (Spell_GetHistory(GAME_MAIN, playerType, indexCurrent[MENU_STAGE], spellID)[0] > 0) isUnlock = true;
             }
         }
+        if (DEBUG_MODE == true) isUnlock = true;
         return isUnlock;
     }
 

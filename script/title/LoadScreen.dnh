@@ -9,7 +9,7 @@ function<void> Load_Init() {
 task TLoadScene() { //loading screen
 
     //Disable fast forward
-    SetSkipModeKey(KEY_INVALID);
+    if (!DEBUG_MODE) SetSkipModeKey(KEY_INVALID);
 
     //initialize user render targets
     CreateRenderTarget(RT_SCREENSHOT);
