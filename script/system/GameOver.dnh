@@ -113,15 +113,19 @@ task TMenu() { //Create pause menu
 
         //letter g move
         for (int i = 0; i <= 60; i++) {
+            if (GetVirtualKeyState(VK_OK) == KEY_HOLD) break;
             ObjRender_SetPosition(objText, Interpolate_Overshoot(MAX_X + 16, MID_X - 32, 3, i/60), MID_Y + 8, 1);
             yield;
         }
         //spell word
         for (int i = 1; i < length(word); i++) {
+            if (GetVirtualKeyState(VK_OK) == KEY_HOLD) break;
             ObjText_SetText(objText, ObjText_GetText(objText) ~ ToString(word[i]));
             yield;
         }
         //wait
+        ObjRender_SetPosition(objText, MID_X - 32, MID_Y + 8, 1);
+        ObjText_SetText(objText, word);
         while (GetVirtualKeyState(VK_OK) != KEY_PUSH) yield;
         Obj_Delete(objText);
     }
