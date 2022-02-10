@@ -167,6 +167,7 @@ task TSpell() {
 
     //vulnerability indicator
     CallSFX(SND_PL_VULNERABLE);
+    SetForbidPlayerSpell(false);
     real radius = 28;
     int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
     ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
@@ -180,7 +181,6 @@ task TSpell() {
     }
 
     Obj_Delete(circle);
-    SetForbidPlayerSpell(false);
 
     task TEffect() {
         real radius = 0;

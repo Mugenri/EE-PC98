@@ -42,6 +42,7 @@ function<void> PlayerEvent() {
 			SetPlayerSpell(spell - 1);
             //increment total bomb count for stage (for scoring and fun stats)
             SetAreaCommonData(AREA_STAGE, "Player_Bomb", GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0) + 1);
+            SetPlayerInvincibilityFrame(0);
 			TSpell(); //THIS MUST BE DEFINED BY THE PLAYER SCRIPT
 		} else SetScriptResult(false);
 	}
@@ -206,11 +207,13 @@ task TRebirth() { //Player respawn
     DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
 
     TRebirthEffect();
-    wait(240);
+    wait(60);
     SetForbidPlayerSpell(false);
+    wait(180);
 
     task TRebirthEffect() {
         loop (55) { //blink red
+            if (IsPlayerSpellActive()) return;
             ObjRender_SetColor(_objPlayer, COLOR_RED);
             yield;
             ObjRender_SetColor(_objPlayer, COLOR_WHITE);
