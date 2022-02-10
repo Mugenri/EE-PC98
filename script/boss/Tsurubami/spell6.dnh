@@ -60,8 +60,9 @@ task TKillAura() {
     while (_count < -60) yield;
     int killAura = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, false, RP_STG_EFF_LO);
     int killAura2 = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, false, RP_STG_EFF_LO);
+    int killAura3 = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_RED, true, RP_STG_EFF_LO);
     int radius = [175, 175, 270][_diff];
-    int cooldown = 30;
+    int cooldown = 60;
 
     //spawn animation
     for (int i = 1; i <= 60; i++) {
@@ -70,13 +71,29 @@ task TKillAura() {
         real angleT = 0;
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
         for (int j = 0; j < 33; j++) {
-            ObjPrim_SetVertexPosition(killAura, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
+            ObjPrim_SetVertexPosition(killAura3, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
             angleT += 360 / 32;
         }
         yield;
     }
 
+    //shrink animation
     async {
+        for (int i = 1; i <= 60; i++) {
+            real x = ObjMove_GetX(_objBoss);
+            real y = ObjMove_GetY(_objBoss);
+            real angleT = 0;
+            int tempRad = Interpolate_Accelerate(radius, 0, i / 60);
+            for (int j = 0; j < 33; j++) {
+                ObjPrim_SetVertexPosition(killAura3, j, x + tempRad * cos(angleT), y + tempRad * sin(angleT), 1);
+                angleT += 360 / 32;
+            }
+            yield;
+        }
+        Obj_Delete(killAura3);
+    }
+
+    async { //aura 2 loop
         while (_bossAlive) {
             for (int i = 1; i <= 60; i++) {
                 real x = ObjMove_GetX(_objBoss);
