@@ -3,9 +3,8 @@
 #include "./../lib/lib_TitleUtil.dnh"
 #include "./../../lib/lib_HighScore.dnh"
 
+int _stageEvent;
 bool _pauseEnable;
-bool _dialogueRunning;
-bool _gameOver;
 string _dialoguePath;
 
 @Initialize {
@@ -17,31 +16,30 @@ string _dialoguePath;
 
 @Event {
     alternative (GetEventType())
-    case (EV_DIALOGUE_START) {
-        _dialogueRunning = true;
-        _dialoguePath =  GetEventArgument(0);
-    }
     case (EV_PAUSE_ENABLE) {
         _pauseEnable = GetEventArgument(0);
     }
-    case (EV_CONTINUE) { //bring up the gameover menu, if continue is used then notify stage level script
-        _gameOver = true;
+    case (EV_STAGE_EVENT) {
+        int event = GetEventArgument(0);
+        alternative (event)
+        case (STAGE_DIALOGUE) {
+            _stageEvent = event;
+            _dialoguePath = GetEventArgument(1);
+        }
+        others { _stageEvent = GetEventArgument(0); }
     }
 }
 
 @MainLoop { yield; }
 
-task TStageScene() { //TODO serious refactoring
+task TStageScene() {
     int gameMode        = GetGameMode();
-    int playerType      = GetPlayerType();
+    string pathPlayer   = SCRIPT_PLAYERS[GetPlayerType()];
     int stageIndex      = GetStageIndex();
-    int rank            = GetDifficulty();
-    string replayPath   = GetAreaCommonData(AREA_TITLE, "ReplayPath", "");
-    string pathPlayer   = SCRIPT_PLAYERS[playerType];
+    string replayPath   = GetAreaCommonData(AREA_TITLE, "ReplayPath", ""); //TODO replay pathing
 
+    _stageEvent = STAGE_NONE;
     _pauseEnable = false;
-    _dialogueRunning = false;
-    _gameOver = false;
     _dialoguePath = "";
 
     //reset common data areas before running a new stage
@@ -63,53 +61,49 @@ task TStageScene() { //TODO serious refactoring
 
     loop {
         //--------------------------------------------------------------------
-        //Pause Menu
+        //Stage Event Handling
         //--------------------------------------------------------------------
-        if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH && _pauseEnable) {
-            int pauseResult = PauseMenu();
-            alternative (pauseResult)
-            case (RESULT_RETRY) {
-                //Retry Stage
-                if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing through continue use
-                    HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
-                }
-                TerminateStageScene();
-                TStageScene();
-                return;
-            }
-            case (RESULT_END) {
-                //Stop stage script
-                TerminateStageScene();
-            }
+        //Player pause
+        if (GetVirtualKeyState(VK_PAUSE) == KEY_PUSH && _pauseEnable && _stageEvent == STAGE_NONE) {
+            alternative (gameMode)
+            case (GAME_MAIN) _stageEvent = STAGE_PAUSE;
+            case (GAME_SPELL) _stageEvent = STAGE_PAUSE_SPELL;
         }
-        //--------------------------------------------------------------------
-        //Dialogue Scene
-        //--------------------------------------------------------------------
-        if (_dialogueRunning) RunDialogue(_dialoguePath);
-        //--------------------------------------------------------------------
-        //Gameover/Continue Menu
-        //--------------------------------------------------------------------
-        if (_gameOver) {
-            _gameOver = false;
-            int gameOverResult = GameOver();
-            if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing through continue use
-                HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
+        //stage event
+        if (_stageEvent != STAGE_NONE) {
+            alternative (_stageEvent)
+            case (STAGE_PAUSE, STAGE_PAUSE_SPELL, STAGE_VICTORY_SPELL, STAGE_GAMEOVER, STAGE_GAMEOVER_SPELL) { //pause menus
+                int menuResult = StageMenu(_stageEvent);
+                alternative (menuResult)
+                case (RESULT_CANCEL) {
+                    ResumeBGM();
+                    PauseStageScene(false);
+                }
+                case (RESULT_RETRY) {
+                    if (gameMode == GAME_MAIN) ClearBGM();
+                    if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by restart
+                        HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
+                    }
+                    TerminateStageScene();
+                    TStageScene();
+                    return;
+                }
+                case (RESULT_CONTINUE) {
+                    if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by continue
+                        HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
+                    }
+                    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
+                    PauseStageScene(false);
+                }
+                case (RESULT_END) {
+                    wait(60);
+                    TerminateStageScene();
+                }
             }
-            alternative (gameOverResult)
-            case (RESULT_RETRY) {
-                //Retry (spell practice)
-                TerminateStageScene();
-                TStageScene();
-                return;
+            case (STAGE_DIALOGUE) {
+                RunDialogue(_dialoguePath);
             }
-            case (RESULT_CONTINUE) {
-                NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
-                PauseStageScene(false);
-            }
-            case (RESULT_END) {
-                wait(210);
-                TerminateStageScene();
-            }
+            _stageEvent = STAGE_NONE;
         }
         //--------------------------------------------------------------------
         //Stage Result Upon Ending
@@ -129,7 +123,7 @@ task TStageScene() { //TODO serious refactoring
                 break;
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
-                WriteLog("break off"); //need some way to differentiate between quit from pause and quit from continue
+                WriteLog("break off"); //TODO need some way to differentiate between quit from pause and quit from continue
                 break;
             }
         }
@@ -144,8 +138,8 @@ task TStageScene() { //TODO serious refactoring
         StartStageScene();
     }
 
-    function<int> PauseMenu() {
-        if (gameMode == GAME_MAIN) StopBGM(); //pause music
+    function<int> StageMenu(_menuType) {
+        if (gameMode == GAME_MAIN && _menuType == STAGE_PAUSE) StopBGM(); //pause music
         SetTransitionTexture(); //save current frame as pause bg
         PauseStageScene(true); //pause stage
         
@@ -153,16 +147,12 @@ task TStageScene() { //TODO serious refactoring
         
         //Run pause script
         int idScript = LoadScript(pathScript);
+        SetScriptArgument(idScript, 0, _menuType);
         StartScript(idScript);
         
-        while (!IsCloseScript(idScript)) {
-            yield;
-        }
-        
-        //resume stage
-        PauseStageScene(false);
-        int res = GetScriptResult(idScript);
-        return res;
+        while (!IsCloseScript(idScript)) yield;
+
+        return GetScriptResult(idScript);
     }
 
     function<void> RunDialogue(string path_) {
@@ -176,26 +166,9 @@ task TStageScene() { //TODO serious refactoring
         while (!IsCloseScript(idScript)) yield;
 
         //resume
-        _dialogueRunning = false;
         PauseStageScene(false);
         UnloadScriptFromCache(path_);
         return;
-    }
-
-    function<int> GameOver() {
-        SetTransitionTexture();
-        PauseStageScene(true);
-
-        string pathScript = GetCurrentScriptDirectory() ~ "../../system/GameOver.dnh";
-        //TODO something for spell practice
-
-        //Gameover script
-        int idScript = LoadScript(pathScript);
-        StartScript(idScript);
-
-        while (!IsCloseScript(idScript)) yield;
-
-        return GetScriptResult(idScript);
     }
 }
 
@@ -204,20 +177,12 @@ function<void> SetTransitionTexture() { //saves the current frame to be used as 
     RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
 }
 
-function<void> SetDefault() { //Reset Game Common Data
-	SetAreaCommonData(AREA_TITLE, "ReplayPath", "");
-	SetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
-	SetAreaCommonData(AREA_TITLE, "PlayerType", PLAYER_YABUSAME);
-	SetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-	SetAreaCommonData(AREA_TITLE, "StageIndex", 0);
-}
-
 function<void> TReturnToTitle() { //Run title screen
     //TODO check if a replay just played
     int gameMode = GetGameMode(); //before clearing common data, get game mode
 
     if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) {
-        HS_SetHighScore(GetScore(), gameMode == GAME_MAIN ? 001000000 : 0);
+        HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
     }
     //save data
     CD_SaveScore();
@@ -226,7 +191,6 @@ function<void> TReturnToTitle() { //Run title screen
     //reset relevant common data
     ClearAreaCommonData(AREA_STAGE);
     ClearAreaCommonData(AREA_SYSTEM);
-    //SetDefault();
 
     //run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";

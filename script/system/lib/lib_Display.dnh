@@ -111,7 +111,7 @@ task TIntro() {
     
     Obj_Delete(objFade);
 
-    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE"), EV_STAGE_START, 0); //used by stage script to start plurals/dialogue
+    NotifyEvent(GetStageScriptID(), EV_STAGE_START, 0); //used by stage script to start plurals/dialogue
 
     function<void> AddParticles() { //creates matrix of black squares
         int x = 0;
@@ -155,7 +155,7 @@ task THighScore() {
     int scoreRender = 0;
     //scores and continues
     int score = GetScore();
-    int defaultScore = GetGameMode() == GAME_MAIN ? 001000000 : 0;
+    int defaultScore = HS_GetDefaultScore(GetGameMode());
     int highScore = HS_GetHighScore(defaultScore);
     int continues = 0;
     int cPointer = LoadAreaCommonDataValuePointer(AREA_STAGE, "Continues", 0);

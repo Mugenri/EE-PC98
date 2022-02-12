@@ -37,7 +37,7 @@ task TStage() {
     StartDialogueScript(dialoguePath);
     yield; //this is fine
     StartScript(ID);
-    StartBGM(1, 300, 0);
+    StartBGM(1, 180, 0);
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
         yield;
     }

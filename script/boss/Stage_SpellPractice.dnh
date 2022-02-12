@@ -45,12 +45,8 @@ task TStage() {
     ObjEnemyBossScene_Regist(_objScene);
     while (!Obj_IsDeleted(_objScene)) yield;
 
-    wait(120);
-    //TODO change to a pause screen and reload
-    ClearBGM();
-    wait(300);
-    CloseScript(bgID);
-    CloseStgScene();
+    wait(150); //wait for all point items to exit the screen
+    SpellPractice_End();
 }
 
 function<string> SpellPractice_GetBackground(int stageIndex_) {
@@ -89,4 +85,10 @@ function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
+}
+
+function<void> SpellPractice_End() {
+    NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_VICTORY_SPELL);
+    yield;
+    CloseStgScene();
 }

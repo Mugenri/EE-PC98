@@ -16,7 +16,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     int subIndex = 0; //current submenu
     int selectedPlayer = returnData[0];
     int selectedDiff = returnData[1];
-    //arrays of info for each submenu 
+    //arrays of info for each submenu
     int[] selectMax = [0, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
     int[] indexListSize = [7, 4]; //max number of items on screen (0 indexed)
     int[] indexListTop = [0, 0]; //index at top of list
@@ -26,6 +26,8 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     TCreateMenuGraphicsSpell();
 
     if (autoSelect_) {
+        //fade in
+        ScreenBlackout(0, 0, 15, COLOR_BLACK);
         int stageIndex = selectedDefault_[2];
         int spellID = selectedDefault_[3];
         int spellIndex = GetIndexFromSpellID(stageIndex, spellID);

@@ -35,12 +35,14 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
 
         SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
     }
-    case (EV_PLAYER_SHOOTDOWN) CheckContinue(); //player out of lives
+    case (EV_PLAYER_SHOOTDOWN) CheckGameOver(); //player out of lives
 }
 
-function<void> CheckContinue() {
+function<void> CheckGameOver() { //no lives left, game over menu
     if (GetPlayerLife() < 0) {
-        NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
+        alternative (GetGameMode())
+        case (GAME_MAIN) { NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_GAMEOVER); }
+        case (GAME_SPELL) { NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_GAMEOVER_SPELL); }
     }
 }
 

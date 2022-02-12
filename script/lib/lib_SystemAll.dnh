@@ -14,7 +14,7 @@ function<int> GetSpellPracticeID() { return(GetAreaCommonData(AREA_TITLE, "Spell
 function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
 function<void> SetPauseEnable(bool enable_) { NotifyEvent(GetPackageStageScriptID(), EV_PAUSE_ENABLE, enable_); }
-function<void> StartDialogueScript(string path_) { NotifyEvent(GetPackageStageScriptID(), EV_DIALOGUE_START, path_); }
+function<void> StartDialogueScript(string path_) { NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_DIALOGUE, path_); }
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------
@@ -29,7 +29,7 @@ function<void> StartBGM(int trackID_, int fade_, int delay_) {
 //Pause track
 function<void> StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
-function<void> RestartBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
+function<void> ResumeBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
 //Reset track
 function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, -1, 0, 0); }
 

@@ -20,6 +20,7 @@ const string HEADER_FONT_PATH = GetCurrentScriptDirectory() ~ "./../img/system/f
 const int EV_STAGE_START        = EV_USER_STAGE + 1;    //Starts the dialogue/plural scripts after the stage intro animation completes
 const int EV_STAGE_INTRO_START  = EV_USER_STAGE + 2;    //Stage intro fade begins and player can move/shoot/pause the game
 const int EV_CHANGE_BG          = EV_USER_STAGE + 3;    //Change background index number, pass (index, transitionTime)
+const int EV_CONTINUE           = EV_USER_STAGE + 4;    //Player used a continue
 
 //System Constants
 const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1;   //Create Item, pass (x, y, TYPE_CONSTANT)
@@ -32,10 +33,24 @@ const int EV_GET_ACHIEVEMENT    = EV_USER_PACKAGE + 3;  //unlock specified achie
 const int EV_STOP_BGM           = EV_USER_PACKAGE + 4;  //pass true to pause, pass false to resume
 const int EV_PLAY_SFX           = EV_USER_PACKAGE + 5;  //Play sfx from audio script. pass (sfxID) 
 const int EV_TITLE_END          = EV_USER_PACKAGE + 6;  //End title screen script
-const int EV_DIALOGUE_START     = EV_USER_PACKAGE + 7;  //Called to start a dialogue sequence. pass (scriptPath)
+const int EV_STAGE_EVENT        = EV_USER_PACKAGE + 7;  //Package stage script local event. pass (STAGE_EVENT) or option arguments
 const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 8;  //returns an array of [name, comment]. pass (bgmID)
 const int EV_STOP_SFX           = EV_USER_PACKAGE + 9;  //Stop currently playing sfx
-const int EV_CONTINUE           = EV_USER_PACKAGE + 10; //Player used a continue
+
+//----------------------------------------------------
+//PACKAGE STAGE CONSTANTS
+//----------------------------------------------------
+//stage event constants
+const int STAGE_NONE            = 0; //No event
+const int STAGE_PAUSE           = 1; //Main game pause
+const int STAGE_PAUSE_SPELL     = 2; //Spell practice pause
+const int STAGE_VICTORY_SPELL   = 3; //Spell practice victory
+const int STAGE_GAMEOVER        = 4; //Main game gameover
+const int STAGE_GAMEOVER_SPELL  = 5; //Spell practice gameover
+const int STAGE_DIALOGUE        = 6; //start dialogue (pass with path)
+
+//Script Result Constants
+const int RESULT_CONTINUE = 0; //player used a continue (game over menu)
 
 //----------------------------------------------------
 //GAME CONSTANTS
@@ -63,8 +78,6 @@ const int GAME_NONE     = 0; //None
 const int GAME_MAIN     = 1; //Normal Game
 const int GAME_SPELL    = 2; //Spell Practice Mode
 
-//Script Result Constants
-const int RESULT_CONTINUE = 0; //player used a continue (game over menu)
 
 //----------------------------------------------------
 //SOUND CONSTANTS
