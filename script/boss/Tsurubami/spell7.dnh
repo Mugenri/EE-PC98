@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
-int _loopTime = [130, 110, 85][_diff];
+int _loopTime = [110, 110, 85][_diff];
 _spellID = 36 + _diff;
 
 @Event {
@@ -64,6 +64,8 @@ task TMain() {
             async {
                 TScales();
                 _loopTime = max(85, (_loopTime - 1));
+                _count = 0; //prevents spawn time weirdness
+                WriteLog(_loopTime);
             }
         }
         yield;
@@ -75,44 +77,51 @@ task TMaze() {
     int radiusMax = 280; //distance from center
     int closeTime = [1100, 850, 750][_diff]; //frames from max radius to center
     int numShot = 72;
-    int minRange = [60, 120, 160][_diff];
-    int maxRange = [300, 240, 200][_diff];
+    int minRange = [105, 130, 160][_diff];
+    int maxRange = [255, 230, 200][_diff];
 
     while (_count < 0) yield;
 
-    while (_bossAlive) {
-        SpawnWall(exitAngle);
+    for (int i = 0; i < 10; i++) {
+        SpawnWall(exitAngle, i);
         exitAngle += rand(minRange, maxRange);
-        loop (40) {
-            closeTime = max(800, closeTime - 3);
-            wait(7);
+        loop (35) {
+            closeTime = max(700, closeTime - 1);
+            wait(8);
         }
     }
 
-    task SpawnWall(float angle_) {
+    task SpawnWall(float angle_, int wallNum_) {
         int[] wallShot = [];
         int color = SHOT_GREEN_INV;
+        int increment = numShot + 10;
+        if (wallNum_ == 9) { //last, close circle
+            increment = numShot;
+            color = SHOT_BLACK;
+        }
         for (int i = 0; i < numShot; i++) {
-            if (i == numShot - 1) color = SHOT_GREEN_INV; //last shot
+            if (i == numShot - 1 && wallNum_ < 9) color = SHOT_GREEN_INV; //last shot
             int shot = CreateShotUA1(MID_X + radiusMax * cos(angle_), MID_Y + radiusMax * sin(angle_), 0, angle_, color+BALL_L, 0, color+CANCEL_32);
             ObjShot_SetSpellResist(shot, true);
             ObjShot_SetAutoDelete(shot, false);
             wallShot ~= [shot];
-            angle_ += 360 / (numShot + 10);
-            color = SHOT_GREEN;
+            angle_ += 360 / increment;
+            if (wallNum_ < 9) color = SHOT_GREEN;
         }
 
         //movement
         float radius;
         float modif = rand(0, 360);
+        int modAdd = 20;
         int shift = [1, 2, 3][_diff];
+        if (wallNum_ == 9) shift = 6;
         for (float i = 0; i < closeTime; i++) {
             radius = Interpolate_Linear(radiusMax, 0, i / closeTime);
             modif += shift;
             for each (shot in wallShot) {
                 float angleT = dottheta(MID_X, MID_Y, ObjMove_GetX(shot), ObjMove_GetY(shot));
                 ObjMove_SetPosition(shot, MID_X + ((radius + 8 * sin(modif)) * cos(angleT)), MID_Y + ((radius + 8 * sin(modif)) * sin(angleT)));
-                modif += 20;
+                modif += modAdd;
             }
             yield;
         }
@@ -123,8 +132,8 @@ task TMaze() {
 }
 
 task TScales() {
-    int numShot = [6, 10, 11][_diff];
-    float speed = [1.1, 0.9, 0.6][_diff];
+    int numShot = [8, 10, 11][_diff];
+    float speed = [1.0, 0.8, 0.6][_diff];
 
     float angleT = rand(0, 360);
     for (int i = 0; i < numShot; i++) {

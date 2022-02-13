@@ -108,7 +108,7 @@ task TSlugShot() {
             while (!Obj_IsDeleted(obj_) && _bossAlive) {
                 int objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) + 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
                 objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) - 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
-                wait(rand_int(90, 155));
+                wait(rand_int(110, 155));
             }
         }
         float accel = 0.11;
