@@ -33,8 +33,6 @@ function<void> Boss_Init(bool isVulnerable_) {
 
     _isSpellVulnerable = isVulnerable_;
 
-    //if spell practice, set variables (drop no items)
-    //else ?
     _isSurvival = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_DURABLE_SPELL);
 
     if (_isSurvival) _isSpellVulnerable = false; //just in case
@@ -123,13 +121,13 @@ function<void> Boss_Finalize(int obj_) {
 
     //Items and Bullet Cancel score values (only for spell cards)
     int scoreTotal = 0;
-    if (isCapture && isSpell && !_isSurvival) { //spell capture on non-survival spells
+    if (isCapture && isSpell) { //spell capture
         int score = 10;
         int scoreBonus = 10;
         int numBullets = 0;
         float radius = 200;
         loop (5) {
-            for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) {
+            for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) { //TODO maybe change to boss location?
                 if (ObjMove_GetX(shot) < -16 || ObjMove_GetX(shot) > GetStgFrameWidth() + 16 || ObjMove_GetY(shot) < -16 || ObjMove_GetY(shot) > GetStgFrameHeight() + 16) {
                     continue; //no items spawn off screen
                 } else if (radius == 600) { //assign shot score bonus, only runs on final loop

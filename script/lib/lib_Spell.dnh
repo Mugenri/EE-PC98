@@ -58,6 +58,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (30, 31, 32)   { return "Nonspell 6"; }
         case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
         case (35)           { return "Severing Card \"Unconventional Grave-Digger\""; }     //ABEX
+        case (36, 37)       { return "\"Orochi Labyrinth\""; }                              //EZ, EX
+        case (38)           { return "\"Super Ouroboros\""; }                               //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

@@ -6,7 +6,7 @@
 #include "./../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty - D_EASYEX;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
 int _loopTime = 240;
 _spellID = 999;
@@ -66,6 +66,7 @@ task TMain() {
                 //TPatternB(1);
                 //TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
+                TPatternQ();
             }
         }
         yield;
@@ -344,4 +345,12 @@ task TPatternP() {
         angleT += 360/32;
     }
     CallSFX(SND_SHOT1);
+}
+
+task TPatternQ() {
+    int pattern = ObjPatternShot_Create();
+    ObjPatternShot_SetShotType(pattern, OBJ_SHOT);
+    ObjPatternShot_SetGraphic(pattern, SHOT_BLACK+PELLET);
+    ObjPatternShot_SetPatternType(PATTERN_FAN);
+    ObjPatternShot_Fire(pattern);
 }

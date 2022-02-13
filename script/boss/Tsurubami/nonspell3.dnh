@@ -6,7 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty - D_EASYEX;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
 int _loopTime = [180, 180, 42][_diff];
 _spellID = 12 + _diff;
@@ -94,8 +94,8 @@ task TFireA(int dir_) {
     if (!_bossAlive) return;
 
     //aimed circles
-    speed = [9, 9, 14.5][_diff];
-    int numShot = [64, 64, 72][_diff];
+    speed = [7.2, 9, 14.5][_diff];
+    int numShot = [48, 64, 72][_diff];
     angleT = GetAngleToPlayer(_objBoss) + [0, 0, 360 / numShot][_diff];
     for (int i = 0; i < numShot; i++) {
         int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
@@ -112,10 +112,10 @@ task TFireA(int dir_) {
         float bossX = ObjMove_GetX(_objBoss);
         float bossY = ObjMove_GetY(_objBoss);
         int delayTime = [128, 128, 64][_diff];
-        int waitTime = [8, 8, 5][_diff];
+        int waitTime = [16, 8, 5][_diff];
         float accel = [0.01, 0.01, 0.04][_diff];
         float maxSpeed = [2, 2, 3][_diff];
-        int shotNum = [4, 4, 8][_diff];
+        int shotNum = [3, 4, 8][_diff];
 
         wait(20);
 

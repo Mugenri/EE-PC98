@@ -7,7 +7,7 @@
 
 int _objClone; //second hitbox
 int _objBoss;
-int _diff = GetDifficulty - D_EASYEX;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -360;
 int _loopTime = [210, 210, 200][_diff];
 _spellID = 27 + _diff;
@@ -69,8 +69,8 @@ task TMain() {
     TSplit();
     while (_count < -30) yield;
     while (_bossAlive) {
-        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
-        Boss_SetIntersection(_objBoss, _objClone, _intersectionShot, _intersectionPlayer);
+        Boss_SetIntersection(_objBoss, _intersectionShot, 8);
+        Boss_SetIntersection(_objBoss, _objClone, _intersectionShot, 8);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 wait(90);
@@ -95,6 +95,7 @@ task TMovement(int obj_, int dir_) {
 
 task TBounds() {
     while (_count < 0) yield;
+    int waitTime = [10, 6, 5][_diff];
     while (_bossAlive) {
         float x1 = ObjMove_GetX(_objBoss);
         float y1 = ObjMove_GetY(_objBoss);
@@ -108,7 +109,7 @@ task TBounds() {
         CreateShotUA1(x2, y2, 0.5, angleT + 12 + 180, SHOT_GRAY+TALISMAN_A, 2, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
         CreateShotUA1(x2, y2, 0.2, angleT + 90 + 180, SHOT_GRAY+TALISMAN_A, 4, SHOT_GRAY+SPAWN_E+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
         CallSFX(SND_SHOT1);
-        wait(6);
+        wait(waitTime);
     }
 }
 
@@ -150,8 +151,8 @@ task TFire() {
     float radius = rand(0, 5);
     float angleT = ObjMove_GetAngle(_objBoss) + 90;
     int waitTime = [0, 0, 1][_diff];
-    int numShot = [12, 12, 64][_diff];
-    int moveTime = [110, 110, 50][_diff];
+    int numShot = [8, 12, 64][_diff];
+    int moveTime = [125, 110, 50][_diff];
     loop (numShot) {
         if (!_bossAlive) return;
         float radius = 150;
@@ -170,7 +171,7 @@ task TFire() {
     if (!_bossAlive) return;
 
     //clone lasers
-    int sustain = [45, 45, 10][_diff];
+    int sustain = [30, 45, 10][_diff];
     int delay = [70, 70, 50][_diff];
     for each (shot in shots) { //create straight laser for each shot
         TLaser(shot, sustain, delay);

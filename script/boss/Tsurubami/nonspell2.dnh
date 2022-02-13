@@ -86,13 +86,14 @@ task TFireA(int dir_) {
 
     task TSpawnRing(int obj_, int modif_) {
         wait(rand_int(2, 5));
+        int numShot = [2, 3, 3][_diff];
         loop (3) {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             float angleT = rand_int(0, 10) * 10;
             int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < numShot; i++) {
                 CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), rand(0.6, 0.8), angleT, color+KUNAI, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST1);
-                angleT += 360 / 3;
+                angleT += 360 / numShot;
             }
             wait (7);
         }

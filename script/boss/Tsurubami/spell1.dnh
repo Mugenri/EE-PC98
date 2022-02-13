@@ -6,7 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty - D_EASYEX;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
 int _loopTime = [310, 310, 180][_diff];
 _spellID = 3 + _diff;
@@ -101,7 +101,7 @@ task TFireA() {
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
 
-    numShot = [16, 16, 20][_diff];
+    numShot = [12, 16, 20][_diff];
     for (int i = 1; i <= 3; i++) { //blue bursts
         if (!_bossAlive) return;
         float angleT = rand(0, 360);
@@ -117,6 +117,7 @@ task TFireA() {
 
     task TRain(int obj_, int modif_) { //rain bullets
         int color = [SHOT_GRAY, SHOT_GRAY, SHOT_WHITE][_diff];
+        int waitBase = [20, 12, 12][_diff];
         wait(45);
         while (_bossAlive && !Obj_IsDeleted(obj_)) {
             float xPos = ObjMove_GetX(obj_);
@@ -126,7 +127,7 @@ task TFireA() {
             loop (3) CreateShotUA1(xPos, yPos, rand(4, 4.5), angleT + 180 + rand(-22, 22), SHOT_BLACK+FIRE_S, 0, SHOT_BLACK+CANCEL_BURST1);
             int rainShot = CreateShotUA1(xPos, yPos, rand(3, 3.5), angleT + 180 + rand(-5, 5), color+FIRE_S, 0, color+CANCEL_BURST1);
             ObjMove_AddPatternB2(rainShot, 20, NO_CHANGE, NO_CHANGE, 0, 0.1, 0, rand(2.5, 3.1));
-            wait(12 + modif_);
+            wait(waitBase + modif_);
         }
     }
 }

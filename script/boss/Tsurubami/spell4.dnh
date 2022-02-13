@@ -6,7 +6,7 @@
 #include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
-int _diff = GetDifficulty - D_EASYEX;
+int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
 int _loopTime = [620, 620, 560][_diff];
 _spellID = 21 + _diff;
@@ -101,8 +101,8 @@ task TFire() {
     //spawn bullet, move to wall
 
     float perim = MAX_X * 2 + MAX_Y * 2; //perimeter of screen
-    int minNum = [25, 25, 32][_diff];
-    int maxNum = [30, 30, 38][_diff];
+    int minNum = [16, 25, 32][_diff];
+    int maxNum = [20, 30, 38][_diff];
     int numPos = rand_int(minNum, maxNum); //possible points along perimeter to be selected
     float[][] locations = []; //x, y coords of shot locations
 
@@ -139,7 +139,7 @@ task TFire() {
         locations[j] = temp;
     }
 
-    int waitTime = [5, 5, 3][_diff];
+    int waitTime = [6, 5, 3][_diff];
     for (int i = 0; i < length(locations); i++) {
         if (!_bossAlive) return;
         float x = ObjMove_GetX(bigShot);
@@ -171,7 +171,7 @@ task TFire() {
         if (randX > MIN_X && randX < MAX_X && randY > 80 && randY < MAX_Y) break;
     }
 
-    radius = [32, 32, 24][_diff];
+    radius = [48, 32, 24][_diff];
     DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, randX, randY, radius);
 
     //display safe zone
@@ -189,7 +189,7 @@ task TFire() {
 
     CallSFX(SND_TRANSITION);
 
-    float accel = [0.1, 0.1, 0.5][_diff];
+    float accel = [0.08, 0.1, 0.5][_diff];
     for each (shot in shots) {
         float x = ObjMove_GetX(shot);
         float y = ObjMove_GetY(shot);
@@ -199,7 +199,7 @@ task TFire() {
 
     task TCageShot(shot_, float x_, float y_, float angleT_) {
         wait(20); //shot spawn animation
-        int frames = [75, 75, 65][_diff];
+        int frames = [85, 75, 65][_diff];
         ObjMove_SetDestAtFrame(shot_, x_, y_, frames, LERP_LINEAR);
         wait(frames);
         if (!_bossAlive || Obj_IsDeleted(shot_)) return;
@@ -207,10 +207,10 @@ task TFire() {
         angleT_ += rand(-5, 5);
         Laser_WarningLine(x_, y_, angleT_, 550, 80);
         wait(45);
-        int minShot = [16, 16, 19][_diff];
-        int maxShot = [21, 21, 23][_diff];
+        int minShot = [14, 16, 19][_diff];
+        int maxShot = [17, 21, 23][_diff];
         float numShots = rand_int(minShot, maxShot);
-        int waitTime = [4, 4, 1][_diff];
+        int waitTime = [6, 4, 1][_diff];
         for (int i = 1; i <= numShots; i++) {
             if (!_bossAlive) return;
             float radius = Interpolate_Accelerate(0, 550, i / numShots);

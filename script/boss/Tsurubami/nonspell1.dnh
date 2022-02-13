@@ -82,8 +82,8 @@ task TFireA(int dir_) {
     CallSFX(SND_SHOT3);
 
     wait(20);
-    int spawnNum = [12, 12, 24][_diff];
-    int waitTime = [6, 6, 3][_diff];
+    int spawnNum = [8, 12, 24][_diff];
+    int waitTime = [9, 6, 3][_diff];
     for (int i = 0; i < spawnNum; i++) {
         if (!_bossAlive || Obj_IsDeleted(amulet)) return;
         float x = ObjMove_GetX(amulet);
@@ -142,7 +142,7 @@ task TFireB() {
 
     task TGravityShot(int obj_) {
         wait(20);
-        int waitTime = [8, 8, 6][_diff];
+        int waitTime = [12, 8, 6][_diff];
         loop {
             if (!_bossAlive || Obj_IsDeleted(obj_)) return;
             loop (2) {

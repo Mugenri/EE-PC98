@@ -12,6 +12,7 @@
     LoadItemData(GetCurrentScriptDirectory() ~ "/lib/dat_ItemData.dnh");
     Cancel_Init();
     Ascii_Init();
+    TCheckScoreExtend();
 }
 
 @MainLoop { yield; }
@@ -65,10 +66,10 @@
         case (ITEM_SCORE) {
             SetPoint(GetPoint() + 1);
             if (ObjRender_GetY(obj) < 128) {
-                score = 51200;
+                score = 25600;
                 color = COLOR_YELLOW_L;
             } else {
-                score = 25600 - 25600*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
+                score = 12800 - 12800*((ObjRender_GetY(obj) - 128)/GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
             }
             CallSFX(SND_ITEM);
@@ -100,9 +101,26 @@
         AddScore(score);
         Ascii_ScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
     }
+    case (EV_SCORE_EXTEND) {
+        SetPlayerLife(GetPlayerLife() + 1);
+        CallSFX(SND_EXTEND);
+        ScrollText(true);
+    }
 }
 
-function<void> ScrollText(bool isExtend_) { //life/bomb extend notification
+task TCheckScoreExtend() {
+    if (GetGameMode() == GAME_SPELL) return; //no score extends in spell practice
+    while (GetScore() < 010_000_000) yield;
+    NotifyEventOwn(EV_SCORE_EXTEND, 0);
+    while (GetScore() < 020_000_000) yield;
+    NotifyEventOwn(EV_SCORE_EXTEND, 0);
+    while (GetScore() < 040_000_000) yield;
+    NotifyEventOwn(EV_SCORE_EXTEND, 0);
+    while (GetScore() < 080_000_000) yield;
+    NotifyEventOwn(EV_SCORE_EXTEND, 0);
+}
+
+function<void> ScrollText(bool isExtend_) { //life/bomb extend notification TODO move this to some general event display so it doesnt render over spell cap text
     int objText = InitSprite2D(0, 0, 0, 0, IMG_SYSTEM_UI, RP_STG_MAX);
     ObjRender_SetY(objText, isExtend_ ? 24 : 40); //32 + 8 accounts for setdestcenter
 
