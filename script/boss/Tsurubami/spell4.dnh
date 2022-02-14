@@ -207,13 +207,13 @@ task TFire() {
         angleT_ += rand(-5, 5);
         Laser_WarningLine(x_, y_, angleT_, 550, 80);
         wait(45);
-        int minShot = [14, 16, 19][_diff];
-        int maxShot = [17, 21, 23][_diff];
+        int minShot = [14, 17, 18][_diff];
+        int maxShot = [17, 21, 22][_diff];
         float numShots = rand_int(minShot, maxShot);
         int waitTime = [6, 4, 1][_diff];
         for (int i = 1; i <= numShots; i++) {
             if (!_bossAlive) return;
-            float radius = Interpolate_Accelerate(0, 550, i / numShots);
+            float radius = Interpolate_Linear(0, 550, i / numShots);
             int newShot = CreateShotUA1(x_ + radius * cos(angleT_), y_ + radius * sin(angleT_), 0.12 * i / numShots, angleT_, SHOT_YELLOW+COIN, 0, SHOT_YELLOW+SPAWN_S+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE);
             shots = shots ~ [newShot];
             wait(waitTime);
