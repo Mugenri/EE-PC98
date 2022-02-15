@@ -166,6 +166,7 @@ task TFire(int dir_) {
     float xDest = MID_X - 160 * dir_;
     float yDest = MID_Y - 150;
     wait(60);
+    if (!_bossAlive) return;
     ObjMove_SetDestAtFrame(_objBoss, xDest, yDest, 90, LERP_SMOOTHER);
 
     //spawn laser
