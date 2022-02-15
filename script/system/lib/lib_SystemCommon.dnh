@@ -4,3 +4,10 @@
 function<void> System_Init() {
     Common_Init();
 }
+
+function<void> System_CallBanner(int type_, int row_, int score_) {
+    NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_SYSTEM", 0), EV_BANNER, type_, row_, score_);
+}
+function<void> System_CallBanner(int type_, int row_) {
+    System_CallBanner(type_, row_, -1);
+}

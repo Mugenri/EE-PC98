@@ -39,6 +39,12 @@
         int score = GetEventArgument(0);
         TCancelBonus(score);
     }
+    case (EV_BANNER) {
+        int type = GetEventArgument(0);
+        int row = GetEventArgument(1);
+        int score = GetEventArgument(2);
+        TBannerDisplay(type, row, score);
+    }
 }
 
 @MainLoop {

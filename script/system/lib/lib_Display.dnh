@@ -4,7 +4,7 @@
 int _displayList; //UI display numbers/icons
 int _scoreBonusList; //Spell bonus/cancel bonus numbers on spell banner
 bool _bonusIsReady = false; //used to sync the appearance of the spell bonus/cancel bonus effects
-bool _bonusDisplaying = false; //spell bonus banner is currently running (used to delay high score notification)
+bool[] _bannerDisplaying = [false, false]; //row 1 and 2 of banner display occupied
 
 //----------------------------------------------------
 //Initialize Display
@@ -26,6 +26,7 @@ function<void> Display_Init() {
     TPlayerSpell();
     TGraze();
     TPointItem();
+    TShotCounter();
     if (!IsReplay()) TFPS();
     else TReplayFPS();
 }
@@ -181,7 +182,7 @@ task THighScore() {
             }
             newHS = true; //GetScore() became higher than highScore, new high score
         } else { //score >= highscore, render current score
-            if (newHS && continues == 0) TNewHighScore();
+            if (newHS && continues == 0) System_CallBanner(BANNER_HIGHSCORE, 0);
             while (continues == 0 && score >= highScore) {
                 score = GetScore();
                 continues = GetCommonDataPtr(cPointer);
@@ -202,34 +203,6 @@ task THighScore() {
                 yield;
             }
         }
-    }
-
-    task TNewHighScore() { //new high score notification
-        while (_bonusDisplaying) yield; //wait for bonus text to finish its animation
-        newHS = false;
-        CallSFX(SND_EXTEND);
-        //Spell Bonus Text
-        int objText = InitSprite2D(0, 416, 128, 432, IMG_SYSTEM_UI, RP_STG_MAX);
-        ObjRender_SetY(objText, 32);
-
-        //move text
-        for (int i = 39; i >= 0; i--) {
-            if (_bonusDisplaying) break;
-            ObjRender_SetX(objText, (MID_X + i * 8) - 64);
-            yield;
-        }
-        //hold position
-        loop (60) {
-            if (_bonusDisplaying) break;
-            yield;
-        }
-        //move text
-        for (int i = 0; i < 40; i++) {
-            if (_bonusDisplaying) break;
-            ObjRender_SetX(objText, (MID_X - i * 8) - 64);
-            yield;
-        }
-        Obj_Delete(objText);
     }
 }
 
@@ -689,7 +662,6 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
 task TSpellBonus(int score_) {
     while (!_bonusIsReady) yield; //has to yield until bonusReady for multiple things (ascii score text position esp.)
     _bonusIsReady = false;
-    _bonusDisplaying = true;
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
@@ -700,42 +672,7 @@ task TSpellBonus(int score_) {
     }
     if (tempScore > 0) Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
 
-    //Spell Bonus Text
-    int objText = InitSprite2D(39, 368, 148, 384, IMG_SYSTEM_UI, RP_STG_MAX);
-    ObjRender_SetY(objText, 32);
-
-    //get length of score number
-    int numLength = GetDigitLength(score_);
-    int[] numList = DigitToArray(score_, min(numLength, 9));
-
-    //move text
-    for (int i = 39; i >= 0; i--) {
-        ObjRender_SetX(objText, (97 + i * 8) - 47); //align with cancel bonus text
-        yield;
-    }
-    //hold position
-    loop (120) {
-        UpdateList(304);
-        yield;
-    }
-    //move text
-    for (int i = 0; i < 40; i++) {
-        ObjRender_SetX(objText, (97 - i * 8) - 47);
-        UpdateList(304 + i * 8);
-        yield;
-    }
-    Obj_Delete(objText);
-    _bonusDisplaying = false;
-
-    function<void> UpdateList(int x_) {
-        //draws from right to left
-        for (int i = 0; i < length(numList); i++) {
-            int num = numList[length(numList) - i - 1];
-            ObjParticleList_SetPosition(_scoreBonusList, x_ - i * 16, 32, 1);
-            ObjParticleList_SetExtraData(_scoreBonusList, num, 1, 0);
-            ObjParticleList_AddInstance(_scoreBonusList);
-        }
-    }
+    System_CallBanner(BANNER_BONUS_SPELL, 2, score_);
 }
 
 //----------------------------------------------------
@@ -743,47 +680,26 @@ task TSpellBonus(int score_) {
 //----------------------------------------------------
 task TCancelBonus(int score_) {
     _bonusIsReady = true;
-    //Bonus!! Text
-    int objText = InitSprite2D(65, 352, 127, 368, IMG_SYSTEM_UI, RP_STG_MAX);
-    ObjRender_SetY(objText, 16);
-    //Bonus fail text & no score
     if (score_ == -1) {
-        ObjSprite2D_SetSourceRect(objText, 0, 384, 127, 400);
-        ObjSprite2D_SetDestRect(objText, 0, 0, 127, 16);
+        System_CallBanner(BANNER_BONUS_FAIL, 1, score_);
+    } else {
+        System_CallBanner(BANNER_BONUS_CANCEL, 1, score_);
     }
-    
-    //get length of score number
-    int numLength = score_ == -1 ? 0 : GetDigitLength(score_);
-    int[] numList = [];
-    if (numLength > 0) numList = DigitToArray(score_, min(numLength, 9));
+}
 
-    //move text
-    for (int i = 39; i >= 0; i--) {
-        ObjRender_SetX(objText, 97 + i * 8);
-        yield;
-    }
-    //hold position
-    loop (120) {
-        UpdateList(304);
-        yield;
-    }
-    //move text
-    for (int i = 0; i < 40; i++) {
-        ObjRender_SetX(objText, 97 - i * 8);
-        UpdateList(304 + i * 8);
-        yield;
-    }
-    Obj_Delete(objText);
+//----------------------------------------------------
+//Shot Count Display
+//----------------------------------------------------
+task TShotCounter() {
+    int objText = CreateText(0, WINDOW_HEIGHT - 36, RP_UI_MAX, "", COLOR_WHITE);
+	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+	ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
 
-    function<void> UpdateList(int x_) {
-        //draws from right to left
-        for (int i = 0; i < length(numList); i++) {
-            int num = numList[length(numList) - i - 1];
-            ObjParticleList_SetPosition(_scoreBonusList, x_ - i * 16, 16, 1);
-            ObjParticleList_SetExtraData(_scoreBonusList, num, 1, 0);
-            ObjParticleList_AddInstance(_scoreBonusList);
-        }
-    }
+	loop {
+		float shot = GetShotCount(TARGET_ENEMY);
+		ObjText_SetText(objText, IntToString(shot));
+		yield;
+	}
 }
 
 //----------------------------------------------------
@@ -831,6 +747,79 @@ task TReplayFPS() {
 //----------------------------------------------------
 //Utility
 //----------------------------------------------------
-function<void> NotificationText(int type_) { //runs a notification across the top of the screen
+task TBannerDisplay(int type_, int row_, int score_) {
+    //if row not explicitly assigned, auto assign to whichever row opens first
+    while (row_ == 0) {
+        for (int i = 0; i < length(_bannerDisplaying); i++) {
+            if (_bannerDisplaying[i] == false) { //found open slot
+                _bannerDisplaying[i] = true; //reserve slot
+                row_ = i + 1;
+                break;
+            }
+        }
+        yield;
+    }
 
+    int xDest = MID_X; //center of object moves to this location
+    int yPos = (row_ * 16) + 8;
+
+    int[] scoreList = [];
+    if (score_ != -1) scoreList = DigitToArray(score_, min(GetDigitLength(score_), 9));
+
+    int[] bounds;
+    alternative (type_)
+    case (BANNER_BONUS_SPELL) {
+        bounds = [39, 368, 149, 384];
+        xDest = 105;
+    }
+    case (BANNER_BONUS_CANCEL) {
+        bounds = [86, 368, 148, 384];
+        xDest = 128;
+    }
+    case (BANNER_BONUS_FAIL) {
+        bounds = [0, 384, 128, 400];
+    }
+    case (BANNER_EXTEND) {
+        bounds = [46, 432, 116, 448];
+    }
+    case (BANNER_EXTEND_SPELL) {
+        bounds = [0, 432, 116, 448];
+    }
+    case (BANNER_HIGHSCORE) {
+        bounds = [0, 416, 128, 432];
+        //CallSFX(SND_HIGHSCORE); TODO?
+    }
+
+    int bannerText = InitSprite2D(bounds[0], bounds[1], bounds[2], bounds[3], IMG_SYSTEM_UI, RP_STG_MAX);
+    ObjRender_SetY(bannerText, yPos);
+    ObjSprite2D_SetDestCenter(bannerText);
+
+    //animation
+    for (int i = 0; i <= 40; i++) { //enter
+        ObjRender_SetX(bannerText, Interpolate_Linear(xDest + 320, xDest, i / 40));
+        yield;
+    }
+    loop (120) { //hold
+        if (length(scoreList) > 0) UpdateList(304, yPos, scoreList);
+        yield;
+    }
+    for (int i = 0; i <= 40; i++) { //exit
+        ObjRender_SetX(bannerText, Interpolate_Linear(xDest, xDest - 320, i / 40));
+        if (length(scoreList) > 0) UpdateList(304 + i * 8, yPos, scoreList); //40 * 8 == 320
+        yield;
+    }
+
+    //open banner slot
+    _bannerDisplaying[row_ - 1] = false;
+    Obj_Delete(bannerText);
+
+    function<void> UpdateList(int x_, int y_, int[] numList_) { //bonus numbers
+        //draws from right to left
+        for (int i = 0; i < length(numList_); i++) {
+            int num = numList_[length(numList_) - i - 1];
+            ObjParticleList_SetPosition(_scoreBonusList, x_ - i * 16, y_ - 8, 1);
+            ObjParticleList_SetExtraData(_scoreBonusList, num, 1, 0);
+            ObjParticleList_AddInstance(_scoreBonusList);
+        }
+    }
 }

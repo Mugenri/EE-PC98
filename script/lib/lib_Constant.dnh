@@ -26,6 +26,7 @@ const int EV_CONTINUE           = EV_USER_STAGE + 4;    //Player used a continue
 const int EV_CREATE_ITEM        = EV_USER_SYSTEM + 1;   //Create Item, pass (x, y, TYPE_CONSTANT)
 const int EV_CANCEL_BONUS       = EV_USER_SYSTEM + 2;   //Bullet cancel score bonus text, pass (score)
 const int EV_SCORE_EXTEND       = EV_USER_SYSTEM + 3;   //Give the player an extra life without using a life item
+const int EV_BANNER             = EV_USER_SYSTEM + 4;   //Display banner text across top, pass (type, row, score)
 
 //Package Constants
 const int EV_PLAY_BGM           = EV_USER_PACKAGE + 1;  //Stops current track, plays new track. pass (trackID, fade, delay)
@@ -52,6 +53,17 @@ const int STAGE_DIALOGUE        = 6; //start dialogue (pass with path)
 
 //Script Result Constants
 const int RESULT_CONTINUE = 0; //player used a continue (game over menu)
+
+//----------------------------------------------------
+//SYSTEM CONSTANTS
+//----------------------------------------------------
+//spell cap, bullet cancel, life, bomb, highscore
+const int BANNER_BONUS_SPELL    = 0;
+const int BANNER_BONUS_CANCEL   = 1;
+const int BANNER_BONUS_FAIL     = 2;
+const int BANNER_EXTEND         = 3;
+const int BANNER_EXTEND_SPELL   = 4;
+const int BANNER_HIGHSCORE      = 5;
 
 //----------------------------------------------------
 //GAME CONSTANTS

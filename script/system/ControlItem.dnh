@@ -90,13 +90,13 @@
             score = 1000;
             SetPlayerSpell(GetPlayerSpell() + 1);
             CallSFX(SND_EXTEND);
-            ScrollText(false);
+            System_CallBanner(BANNER_EXTEND_SPELL, 0);
         }
         case (ITEM_EXTEND) {
             score = 1000;
             SetPlayerLife(GetPlayerLife() + 1);
             CallSFX(SND_EXTEND);
-            ScrollText(true);
+            System_CallBanner(BANNER_EXTEND, 0);
         }
         AddScore(score);
         Ascii_ScoreNum(ObjRender_GetX(obj), ObjRender_GetY(obj), score, color);
@@ -104,7 +104,7 @@
     case (EV_SCORE_EXTEND) {
         SetPlayerLife(GetPlayerLife() + 1);
         CallSFX(SND_EXTEND);
-        ScrollText(true);
+        System_CallBanner(BANNER_EXTEND, 0);
     }
 }
 
@@ -118,31 +118,4 @@ task TCheckScoreExtend() {
     NotifyEventOwn(EV_SCORE_EXTEND, 0);
     while (GetScore() < 080_000_000) yield;
     NotifyEventOwn(EV_SCORE_EXTEND, 0);
-}
-
-function<void> ScrollText(bool isExtend_) { //life/bomb extend notification TODO move this to some general event display so it doesnt render over spell cap text
-    int objText = InitSprite2D(0, 0, 0, 0, IMG_SYSTEM_UI, RP_STG_MAX);
-    ObjRender_SetY(objText, isExtend_ ? 24 : 40); //32 + 8 accounts for setdestcenter
-
-    if (isExtend_) ObjSprite2D_SetSourceRect(objText, 47, 432, 116, 448);
-    else ObjSprite2D_SetSourceRect(objText, 0, 432, 116, 448);
-    ObjSprite2D_SetDestCenter(objText);
-
-    async {
-        //move text
-        for (int i = 39; i >= 0; i--) {
-            ObjRender_SetX(objText, MID_X + i * 8);
-            yield;
-        }
-        //hold position
-        loop (60) {
-            yield;
-        }
-        //move text
-        for (int i = 0; i < 40; i++) {
-            ObjRender_SetX(objText, MID_X - i * 8);
-            yield;
-        }
-        Obj_Delete(objText);
-    }
 }
