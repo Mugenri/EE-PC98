@@ -67,7 +67,8 @@ function<void> Boss_Update(int objBoss_) {
 
     if (_bossLife < _previousLife) { //damage check
         if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
-            CallSFX(SND_DAMAGE);
+            if (_bossLife > 400) CallSFX(SND_DAMAGE);
+            else CallSFX(SND_DAMAGE_LOW);
             _isDamaged = true;
             AddScore(10 * (round (_previousLife - _bossLife))); //~10 points per point of boss health
         } else {

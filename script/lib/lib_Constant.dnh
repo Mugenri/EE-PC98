@@ -127,6 +127,7 @@ const int SND_BANG1         = 0;
 const int SND_BANG2         = 1;
 const int SND_ITEM          = 7;
 const int SND_DAMAGE        = 28;
+const int SND_DAMAGE_LOW    = 36;
 const int SND_INVINCIBLE    = 6;
 const int SND_TRANSITION    = 27;
 const int SND_EXTEND        = 29;
