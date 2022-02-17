@@ -49,8 +49,24 @@
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
         ObjMove_AddPatternB2(obj, 0, 0, -3.2, 0, 0.06, 0, 2.8);
-        ObjItem_SetAutoCollectEnableFlags(obj, ITEM_AUTOCOLLECT_PLAYER_SCOPE);
+        ObjItem_SetAutoCollectEnableFlags(obj, ITEM_AUTOCOLLECT_PLAYER_SCOPE | ITEM_AUTOCOLLECT_COLLECT_ALL);
         ObjItem_SetRenderScoreEnable(obj, false);
+    }
+    case (EV_COLLECT_ITEM) {
+        int obj = GetEventArgument(0);
+        int type = GetEventArgument(1);
+        int colType = GetEventArgument(2);
+
+        if (colType == 3) { //via collect all items through thrill gauge
+            Obj_SetValueI(obj, ITEM_AUTOCOLLECT, true);
+        }
+    }
+    case (EV_CANCEL_ITEM) {
+        int obj = GetEventArgument(0);
+        int type = GetEventArgument(1);
+        int cancelType = GetEventArgument(2);
+
+        Obj_SetValueI(obj, ITEM_AUTOCOLLECT, false); //cancel autocollect
     }
     case (EV_GET_ITEM) {
         int type = GetEventArgument(0);
@@ -65,7 +81,7 @@
         }
         case (ITEM_SCORE) {
             SetPoint(GetPoint() + 1);
-            if (ObjRender_GetY(obj) < 128) {
+            if (ObjRender_GetY(obj) < 128 || Obj_GetValueDI(obj, ITEM_AUTOCOLLECT, false)) {
                 score = 25600;
                 color = COLOR_YELLOW_L;
             } else {

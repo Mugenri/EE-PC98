@@ -9,13 +9,16 @@ int _focusScope; //Player focused item collection radius
 int _particleFlake; //graze, death, shot hit particle list
 int _particleShot; //player shot deletion particle list
 
+int thrillLevel = 0; //# of bullets grazed in period of time
+
 function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, float focusSpeed_, int itemScope_, int focusScope_) {
     Common_Init();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
     _itemScope = itemScope_;
     _focusScope = focusScope_;
-    TRender(GetPlayerObjectID());
+    TRender();
+    TThrillGauge();
     LoadPlayerShotData(_pathShot);
 
     _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, [0, 32, 16, 48]);
@@ -52,6 +55,7 @@ function<void> PlayerEvent() {
         //increment total miss count for stage (for scoring and fun stats)
         SetAreaCommonData(AREA_STAGE, "Player_Miss", GetAreaCommonData(AREA_STAGE, "Player_Miss", 0) + 1);
         SetPlayerRebirthPosition(GetPlayerX(), GetPlayerY());
+        thrillLevel = 0;
         if (GetPlayerLife() >= 0) TMiss();
     }
 	case (EV_PLAYER_REBIRTH) {
@@ -59,6 +63,7 @@ function<void> PlayerEvent() {
     }
     case (EV_GRAZE) {
         int[] objList = GetEventArgument(1); //list of bullets grazed in last frame
+        thrillLevel += length(objList); //increase thrill gauge by number of bullets grazed
         
         for each (obj in objList) {
             int num = 0;
@@ -88,7 +93,7 @@ function<void> PlayerEvent() {
     }
 }
 
-task TRender(int ParentID_) {
+task TRender() {
     //player
 	ObjPrim_SetTexture(_objPlayer, _pathImg);
     ObjRender_SetTextureFilter(_objPlayer, FILTER_NONE, FILTER_NONE, FILTER_NONE);
@@ -101,7 +106,7 @@ task TRender(int ParentID_) {
     int frame = 0;
     int frameRate = 6;
 
-	while (!Obj_IsDeleted(ParentID_)) {
+	while (!Obj_IsDeleted(_objPlayer)) {
         int leftState = GetVirtualKeyState(VK_LEFT);
         int rightState = GetVirtualKeyState(VK_RIGHT);
 		if (leftState == KEY_PUSH || leftState == KEY_HOLD && rightState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);
@@ -116,6 +121,36 @@ task TRender(int ParentID_) {
         if (frame >= 6 * frameRate) frame = 0;
 		yield;
 	}
+}
+
+task TThrillGauge() {
+    int thrillPrevious = 0; //thrill level previous frame
+    int thrillMax = 50; //number of bullets to fill the gauge
+    int timer = 0; //time until thrillLevel is reset
+    int timerMax = 180; //max timer level upon grazing
+
+    SetAreaCommonData(AREA_SYSTEM, "Thrill Max", thrillMax);
+    SetAreaCommonData(AREA_SYSTEM, "Thrill Timer Max", timerMax);
+
+    int thrillPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Level", 0);
+    int timerPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Timer", 0);
+
+    while (!Obj_IsDeleted(_objPlayer)) {
+        if (thrillLevel > thrillPrevious) timer = timerMax; //grazed
+        thrillLevel = clamp(thrillLevel, 0, thrillMax);
+        
+        if (thrillLevel == thrillMax) CollectAllItems(); //gauge max
+        if (timer > 0) {
+            if (thrillLevel == 0) timer = 0;
+            else timer--;
+        }
+        if (timer == 0 && thrillLevel > 0) thrillLevel = 0; //ran out of time
+        thrillPrevious = thrillLevel;
+
+        SetCommonDataPtr(thrillPtr, thrillLevel);
+        SetCommonDataPtr(timerPtr, timer);
+        yield;
+    }
 }
 
 task THit() { //Player deathbomb window

@@ -26,6 +26,7 @@ function<void> Display_Init() {
     TPlayerSpell();
     TGraze();
     TPointItem();
+    TThrillGauge();
     TShotCounter();
     if (!IsReplay()) TFPS();
     else TReplayFPS();
@@ -542,6 +543,71 @@ task TPointItem() {
 }
 
 //----------------------------------------------------
+//Thrill Gauge Display
+//----------------------------------------------------
+task TThrillGauge() {
+    int gaugeBar = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_UI_IMG);
+    ObjPrim_SetTexture(gaugeBar, IMG_SYSTEM_UI);
+    ObjRender_SetPosition(gaugeBar, 405, 391, 1);
+    ObjPrim_SetVertexPosition(gaugeBar, 0, 0, 0, 1);
+    ObjPrim_SetVertexPosition(gaugeBar, 1, 0, 5, 1);
+    ObjPrim_SetVertexPosition(gaugeBar, 2, 0, 0, 1);
+    ObjPrim_SetVertexPosition(gaugeBar, 3, 0, 5, 1);
+
+    int gaugeTimer = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_UI_IMG);
+    ObjRender_SetPosition(gaugeTimer, 405, 397, 1);
+    ObjPrim_SetVertexPosition(gaugeTimer, 0, 0, 0, 1);
+    ObjPrim_SetVertexPosition(gaugeTimer, 1, 0, 2, 1);
+    ObjPrim_SetVertexPosition(gaugeTimer, 2, 0, 0, 1);
+    ObjPrim_SetVertexPosition(gaugeTimer, 3, 0, 2, 1);
+
+    int gaugeFrame = InitSprite2D(160, 294, 224, 304, IMG_SYSTEM_UI, RP_UI_IMG);
+    ObjRender_SetPosition(gaugeFrame, 353, 390, 1);
+
+    int thrillMax = -1;
+    while (thrillMax == -1) { //waiting for player script to determine a default thrillmax
+        thrillMax = GetAreaCommonData(AREA_SYSTEM, "Thrill Max", -1);
+        yield;
+    }
+    int timerMax = GetAreaCommonData(AREA_SYSTEM, "Thrill Timer Max", 0);
+
+    int thrillPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Level", 0);
+    int timerPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Timer", 0);
+
+    int animFrame = 0;
+
+    loop {
+        //update variables
+        int thrillLevel = GetCommonDataPtr(thrillPtr, 0);
+        int timer = GetCommonDataPtr(timerPtr, 0);
+        //bar fill level
+        int thrillX = Interpolate_Linear(0, 50, thrillLevel / as_float(thrillMax));
+        int timerX = Interpolate_Linear(0, 46, timer / as_float(timerMax));
+        //thrill bar
+        ObjPrim_SetVertexPosition(gaugeBar, 2, -thrillX, 0, 1);
+        ObjPrim_SetVertexPosition(gaugeBar, 3, -thrillX, 5, 1);
+        if (thrillLevel == thrillMax) {
+            ObjPrim_SetVertexUVT(gaugeBar, 0, 162 + thrillX + animFrame, 278);
+            ObjPrim_SetVertexUVT(gaugeBar, 1, 162 + thrillX + animFrame, 283);
+            ObjPrim_SetVertexUVT(gaugeBar, 2, 162 + animFrame, 278);
+            ObjPrim_SetVertexUVT(gaugeBar, 3, 162 + animFrame, 283);
+        } else {
+            ObjPrim_SetVertexUVT(gaugeBar, 0, 162 + thrillX + animFrame, 272);
+            ObjPrim_SetVertexUVT(gaugeBar, 1, 162 + thrillX + animFrame, 277);
+            ObjPrim_SetVertexUVT(gaugeBar, 2, 162 + animFrame, 272);
+            ObjPrim_SetVertexUVT(gaugeBar, 3, 162 + animFrame, 277);
+        }
+        //timer bar
+        ObjPrim_SetVertexPosition(gaugeTimer, 2, -timerX, 0, 1);
+        ObjPrim_SetVertexPosition(gaugeTimer, 3, -timerX, 2, 1);
+
+        animFrame++;
+        if (animFrame > 16) animFrame = 0;
+        yield;
+    }
+}
+
+//----------------------------------------------------
 //Active Spell Banner and Spell History Display
 //----------------------------------------------------
 task TSpellDisplay(int stageIndex_, int spellID_) {
@@ -759,6 +825,8 @@ task TBannerDisplay(int type_, int row_, int score_) {
         }
         yield;
     }
+
+    _bannerDisplaying[row_ - 1] = true; //reserve slot
 
     int xDest = MID_X; //center of object moves to this location
     int yPos = (row_ * 16) + 8;

@@ -221,6 +221,8 @@ const int BOSS_ID           = 4; //Boss ID string constant
 const int BOSS_DAMAGE       = 5; //Boss took damage this frame
 // const int ANIM_CHARGE       = 6; //value reserved for animation library
 // const int ANIM_SPECIAL      = 7; //value reserved for animation library
+//Item
+const int ITEM_AUTOCOLLECT  = 8; //Item was autocollected
 
 //----------------------------------------------------
 //COLOR CONSTANTS
