@@ -106,7 +106,7 @@ function<void> Particle_RandomExplosionBig(float x_, float y_) { //each of these
         CallSFX(SND_EXPLOSION1);
         wait(20);
         Particle_ExplosionBig(x_, y_);
-        CallSFX(SND_EXPLOSION3);
+        CallSFX(SND_EXPLOSION2);
     }
     case (1) { //crosses
         Particle_ExplosionSmall(x_, y_, 10, 5, 90, 64);
@@ -118,7 +118,7 @@ function<void> Particle_RandomExplosionBig(float x_, float y_) { //each of these
         CallSFX(SND_EXPLOSION1);
         wait(20);
         Particle_ExplosionBig(x_, y_);
-        CallSFX(SND_EXPLOSION3);
+        CallSFX(SND_EXPLOSION2);
     }
     case (2) { //fast triple
         Particle_ExplosionSmall(x_, y_, 10, 5, 45, 64);
@@ -131,7 +131,7 @@ function<void> Particle_RandomExplosionBig(float x_, float y_) { //each of these
         CallSFX(SND_EXPLOSION1);
         wait(20);
         Particle_ExplosionBig(x_, y_);
-        CallSFX(SND_EXPLOSION3);
+        CallSFX(SND_EXPLOSION2);
     }
 
     Primitive_ScreenFlashFinal();

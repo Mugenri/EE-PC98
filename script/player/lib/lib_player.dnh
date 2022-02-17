@@ -139,7 +139,10 @@ task TThrillGauge() {
         if (thrillLevel > thrillPrevious) timer = timerMax; //grazed
         thrillLevel = clamp(thrillLevel, 0, thrillMax);
         
-        if (thrillLevel == thrillMax) CollectAllItems(); //gauge max
+        if (thrillLevel == thrillMax) {
+            CollectAllItems(); //gauge max
+            if (thrillPrevious < thrillLevel) CallSFX(SND_GAUGE_FULL); //just filled
+        }
         if (timer > 0) {
             if (thrillLevel == 0) timer = 0;
             else timer--;
