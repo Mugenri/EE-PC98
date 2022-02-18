@@ -1,6 +1,6 @@
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
-#Title["spell4"]
+#Title["Spell 4"]
 #System["./../../system/System.dnh"]
 
 #include "./../../lib/lib_Boss.dnh"

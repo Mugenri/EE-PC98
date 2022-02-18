@@ -1,6 +1,6 @@
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
-#Title["nonspell6"]
+#Title["Nonspell 6"]
 #System["./../../system/System.dnh"]
 
 #include "./../../lib/lib_Boss.dnh"
