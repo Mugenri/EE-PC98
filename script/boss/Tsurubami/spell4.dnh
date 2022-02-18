@@ -200,10 +200,10 @@ task TFire() {
     task TCageShot(shot_, float x_, float y_, float angleT_) {
         wait(20); //shot spawn animation
         int frames = [85, 75, 65][_diff];
-        ObjMove_SetDestAtFrame(shot_, x_, y_, frames, LERP_LINEAR);
+        ObjMove_AddPatternD2(shot_, 1, x_, y_, frames, LERP_LINEAR);
         wait(frames);
         if (!_bossAlive || Obj_IsDeleted(shot_)) return;
-        ObjShot_SetDeleteFrame(shot_, 0);
+        ObjShot_SetDeleteFrame(shot_, 45);
         angleT_ += rand(-5, 5);
         Laser_WarningLine(x_, y_, angleT_, 550, 80);
         wait(45);

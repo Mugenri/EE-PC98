@@ -348,9 +348,6 @@ task TPatternP() {
 }
 
 task TPatternQ() {
-    int pattern = ObjPatternShot_Create();
-    ObjPatternShot_SetShotType(pattern, OBJ_SHOT);
-    ObjPatternShot_SetGraphic(pattern, SHOT_BLACK+PELLET);
-    ObjPatternShot_SetPatternType(PATTERN_FAN);
-    ObjPatternShot_Fire(pattern);
+    int shot = CreateShotC1(MID_X, MID_Y, 0.5, 1, 90, SHOT_RED+PELLET, 0);
+    ObjMove_AddPatternC2(shot, 30, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 90, 1);
 }

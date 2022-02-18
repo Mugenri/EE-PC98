@@ -54,7 +54,9 @@ task TMain() {
     while (_bossAlive) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
-            TFireA();
+            async {
+                TFireA();
+            }
         }
         yield;
     }

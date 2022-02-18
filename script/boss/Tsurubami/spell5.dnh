@@ -160,7 +160,8 @@ task TFire() {
         float yPos = MID_Y + radius * sin(angleT);
         int shot = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 0, SHOT_GRAY+PILL_A, 0, SHOT_GRAY+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
-        ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
+        //ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
+        ObjMove_AddPatternD2(shot, 0, xPos, yPos, moveTime, LERP_ACCELERATE);
         shots = shots ~ [shot];
         CallSFX(SND_SHOT3);
         angleT -= 360 / numShot;
