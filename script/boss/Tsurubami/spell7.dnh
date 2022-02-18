@@ -52,6 +52,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
@@ -83,7 +84,7 @@ task TMaze() {
     while (_count < 0) yield;
 
     for (int i = 0; i < 10; i++) {
-        SpawnWall(exitAngle, i);
+        TSpawnWall(exitAngle, i);
         exitAngle += rand(minRange, maxRange);
         loop (35) {
             closeTime = max(700, closeTime - 1);
@@ -91,7 +92,7 @@ task TMaze() {
         }
     }
 
-    task SpawnWall(float angle_, int wallNum_) {
+    task TSpawnWall(float angle_, int wallNum_) {
         int[] wallShot = [];
         int color = SHOT_GREEN_INV;
         int increment = numShot + 10;

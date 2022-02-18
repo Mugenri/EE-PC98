@@ -163,10 +163,10 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         ObjRender_SetPosition(logo4, WINDOW_WIDTH, 3, 1);
 
         //anim
-        MoveLogo(logo1, 0);
-        MoveLogo(logo2, 8);
-        MoveLogo(logo3, 16);
-        MoveLogo(logo4, 24);
+        TMoveLogo(logo1, 0);
+        TMoveLogo(logo2, 8);
+        TMoveLogo(logo3, 16);
+        TMoveLogo(logo4, 24);
 
         //player input to skip intro
         async {
@@ -207,7 +207,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
 
         if (!Obj_IsDeleted(objWhite)) Obj_Delete(objWhite);
 
-        task MoveLogo(int obj_, int wait_) {
+        task TMoveLogo(int obj_, int wait_) {
             wait(wait_);
             float frames = 40;
             for (int i = 1; i <= 40; i++) {

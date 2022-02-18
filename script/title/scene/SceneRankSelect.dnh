@@ -77,8 +77,8 @@ function<int> SceneRankSelect(int selectedDefault_) {
         TCircles();
         while (!exitFlag) {
             float angleT = rand(0, 360);
-            MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT), WINDOW_HEIGHT_MID + radius * sin(angleT), angleT);
-            MoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT + 180), WINDOW_HEIGHT_MID + radius * sin(angleT + 180), angleT + 180);
+            TMoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT), WINDOW_HEIGHT_MID + radius * sin(angleT), angleT);
+            TMoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT + 180), WINDOW_HEIGHT_MID + radius * sin(angleT + 180), angleT + 180);
             yield;
         }
         Obj_Delete(bg);
@@ -108,7 +108,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
             Obj_Delete(primCircle);
         }
 
-        task MoveParticle(float x_, float y_, float angle_) {
+        task TMoveParticle(float x_, float y_, float angle_) {
             int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
             float maxSpeed = rand(2, 3.4);
             float speed = maxSpeed;
