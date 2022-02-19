@@ -1,0 +1,116 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 8"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = [25, 15, 10][_diff];
+_spellID = 42 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(1);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(50 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(300000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TMovement();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(1, 0);
+    CallSFX(SND_TRANSITION);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TLaser();
+            }
+        }
+        yield;
+    }
+}
+
+task TMovement() {
+    int moveTime = 90;
+    while (_count < 0) yield;
+    while (_bossAlive) {
+        float xPos = MID_X - 112 * sin(_count * 0.7);
+        ObjMove_SetDestAtFrame(_objBoss, xPos, 60, 1);
+        yield;
+    }
+}
+
+task TLaser() {
+    if (!_bossAlive) return;
+
+    int xPos = ObjMove_GetX(_objBoss);
+    int width = [50, 45, 40][_diff];
+    int moveTime = [200, 170, 60][_diff];
+    int waitTime = [85, 60, 40][_diff];
+    int numShot = [3, 5, 8][_diff];
+    float accel = [0.005, 0.005, 0.012][_diff];
+
+    
+    int laserL = CreateStraightLaserUA1(xPos - width, -20, 180, MAX_X, moveTime, COLOR_BLACK, 0);
+    int laserR = CreateStraightLaserUA1(xPos + width, -20, 0, MAX_X, moveTime, COLOR_BLACK, 0);
+    ObjShot_SetSpellResist(laserL, true);
+    ObjShot_SetSpellResist(laserR, true);
+    ObjMove_AddPatternD2(laserL, 0, xPos - width, MAX_Y + 10, moveTime, LERP_LINEAR);
+    ObjMove_AddPatternD2(laserR, 0, xPos + width, MAX_Y + 10, moveTime, LERP_LINEAR);
+
+    wait(rand_int(0, waitTime));
+
+    while (!Obj_IsDeleted(laserL) && !Obj_IsDeleted(laserR)) {
+        if (!_bossAlive) return;
+        int dir = cos(ObjMove_GetAngle(_objBoss)) > 0 ? -1 : 1;
+        float angle = 0;
+        for (int i = 0; i < numShot; i++) {
+            float xPos = MID_X + (MID_X * dir);
+            float yPos = ObjMove_GetY(laserL);
+            CreateShotUA2(xPos, yPos, 0, dottheta(xPos, yPos, GetPlayerX(), GetPlayerY()) + angle, accel, rand(3.5, 5.7), 0, SHOT_BLACK+SWORD_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+            angle += 360 / numShot;
+        }
+        CallSFX(SND_SHOT1);
+        wait(waitTime);
+    }
+}
