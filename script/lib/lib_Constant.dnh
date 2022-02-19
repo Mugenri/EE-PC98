@@ -215,15 +215,16 @@ const int ITEM_EXTEND   = 7; //Life
 //Shot
 const int SHOT_SCORE        = 0; //How much score the bullet should give
 const int SHOT_DROP_ITEM    = 1; //If the bullet spawns a point item when cancelled
-const int SHOT_CANCEL       = 2; //If the bullet/laser should be given a cancel effect
-const int SHOT_EFFECT       = 3; //Key field for bullet deletion effect
+const int SHOT_SCORE_TEXT   = 2; //If the bullet gets score ascii text
+const int SHOT_CANCEL       = 3; //If the bullet/laser should be given a cancel effect
+const int SHOT_EFFECT       = 4; //Key field for bullet deletion effect
 //Boss
-const int BOSS_ID           = 4; //Boss ID string constant
-const int BOSS_DAMAGE       = 5; //Boss took damage this frame
+const int BOSS_ID           = 5; //Boss ID string constant
 // const int ANIM_CHARGE       = 6; //value reserved for animation library
 // const int ANIM_SPECIAL      = 7; //value reserved for animation library
+const int BOSS_DAMAGE       = 8; //Boss took damage this frame
 //Item
-const int ITEM_AUTOCOLLECT  = 8; //Item was autocollected
+const int ITEM_AUTOCOLLECT  = 9; //Item was autocollected
 
 //----------------------------------------------------
 //COLOR CONSTANTS

@@ -36,14 +36,13 @@
         int score = Obj_GetValueDI(obj, SHOT_SCORE, 0); //assume all shots without an assigned score are no score
 
         //create item in place of bullet
-        if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEvent(GetOwnScriptID(), EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
+        if (Obj_GetValueDI(obj, SHOT_DROP_ITEM, false)) NotifyEventOwn(EV_CREATE_ITEM, pos[0], pos[1], ITEM_SCORE);
         //Text and delete effects
         if (Obj_GetType(obj) == OBJ_SHOT) {
-            if (score != 0) Ascii_ScoreNum(pos[0], pos[1], score);
+            if (Obj_GetValueDI(obj, SHOT_SCORE_TEXT, 0)) Ascii_ScoreNum(pos[0], pos[1], score);
             Cancel_Shot(obj);
         } else if (Obj_GetType(obj) == OBJ_STRAIGHT_LASER) Cancel_Laser(obj);
         //score
-        if (score == 0) score = 100; //minimum shot score
         AddScore(score);
     }
     case (EV_CREATE_ITEM) {
