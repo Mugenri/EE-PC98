@@ -70,7 +70,7 @@ function<void> Boss_Update(int objBoss_) {
             if (_bossLife > 400) CallSFX(SND_DAMAGE);
             else CallSFX(SND_DAMAGE_LOW);
             _isDamaged = true;
-            AddScore(10 * (round (_previousLife - _bossLife))); //~10 points per point of boss health
+            AddScore(10 * (round(_previousLife - _bossLife))); //~10 points per point of boss health
         } else {
             CallSFX(SND_INVINCIBLE);
             ObjEnemy_SetLife(objBoss_, ceil(_bossLife)); //accounts for how invincibility is handled

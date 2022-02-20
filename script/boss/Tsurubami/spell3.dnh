@@ -96,7 +96,7 @@ task TFire() {
         if (!_bossAlive) return;
         int shot = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
         ObjShot_SetSpellResist(shot, true);
-        shots = shots ~ [shot];
+        shots ~= [shot];
         angleT += rand(90, 120);
         CallSFX(SND_SHOT1);
         wait(2);

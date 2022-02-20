@@ -8,9 +8,9 @@ function<void> Cancel_Init() {
     _effectCancel16 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [0, 0, 16, 16]);
     _effectCancel32 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [256, 0, 288, 32]);
     _effectCancel64 = InitParticleList(IMG_EFFECT_CANCEL, RP_STG_SHOT, [0, 288, 64, 352]);
-    ParticleListShader(_effectCancel16, 16/512, 16/1024);
-    ParticleListShader(_effectCancel32, 32/512, 32/1024);
-    ParticleListShader(_effectCancel64, 64/512, 64/1024);
+    ParticleListShader(_effectCancel16, 16 / 512, 16 / 1024);
+    ParticleListShader(_effectCancel32, 32 / 512, 32 / 1024);
+    ParticleListShader(_effectCancel64, 64 / 512, 64 / 1024);
 }
 
 function<void> Cancel_Shot(int obj_) { //Shot cancel effect

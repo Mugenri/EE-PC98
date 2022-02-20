@@ -5,9 +5,9 @@ int _effectParticle64;
 
 function<void> Particle_Init() {
     _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 16, 16]);
-    ParticleListShader(_effectParticle16, 16/512, 16/512);
+    ParticleListShader(_effectParticle16, 16 / 512, 16 / 512);
     _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 64, 64]);
-    ParticleListShader(_effectParticle64, 64/512, 64/512);
+    ParticleListShader(_effectParticle64, 64 / 512, 64 / 512);
 }
 
 function<void> Particle_ContractRing(float x_, float y_, float angle_, float radius_, float rotation_, int frames_, int count_, int color_) {
@@ -46,7 +46,7 @@ function<void> Particle_ExplosionSmall(float x_, float y_, float radiusW_, float
                 ObjParticleList_SetExtraData(_effectParticle16, frame / frameRate, 1, 0);
                 ObjParticleList_AddInstance(_effectParticle16);
 
-                angleT += 360/count_;
+                angleT += 360 / count_;
             }
             radiusW_ += xStep;
             radiusH_ += yStep;

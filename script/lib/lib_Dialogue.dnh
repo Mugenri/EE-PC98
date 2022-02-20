@@ -60,7 +60,7 @@ task TCreateTextBoxes() {
     Obj_Delete(enemyBox);
 
     function<void> ChangeFrame(int obj_, int frame_, bool isBoss_) {
-        ObjSprite2D_SetSourceRect(obj_, 0, 0 + 48*frame_, 320, 48 + 48*frame_);
+        ObjSprite2D_SetSourceRect(obj_, 0, 0 + 48 * frame_, 320, 48 + 48 * frame_);
         ObjSprite2D_SetDestRect(obj_, 0, 0, 320, 48);
     }
 
@@ -163,7 +163,7 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
     }
     ascent (i in 0..length(tempStrings)) { //list of substrings
         ascent (j in 0..length(tempStrings[i])) { //for each character in a substring
-            tempString = tempString ~ [tempStrings[i][j]];
+            tempString ~= [tempStrings[i][j]];
             lastChar = tempString[-1];
             ObjText_SetText(obj_, tempString);
             if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
@@ -177,7 +177,7 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
                 }
             }
         }
-        tempString = tempString ~ ['[','r',']']; //append a newline after each substring
+        tempString ~= ['[','r',']']; //append a newline after each substring
     }
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) SetVirtualKeyState(VK_OK, KEY_FREE); //Prevents the keystate from carrying over to the reading check in WaitForInput()
     _reading = false;
@@ -185,7 +185,7 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
     function<int> GetWaitTime() {
         if (!isSpeech_) return 5;
         alternative (lastChar)
-        case ('.', '!', '?') { return 10; } //end of sentence
+        case ('.', '!', '?', '~') { return 10; } //end of sentence
         case (' ') { return 3; }
         others { return 1; }
     }
@@ -230,20 +230,19 @@ function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, stri
     ObjRender_SetPosition(whiteout, 32, 16, 1); //corner of stg window
 
     //animation
-    descent (i in 0..fadeIn_) {
-        int alpha = 255 - (i+1)/fadeIn_*255;
-        ObjRender_SetAlpha(whiteout, alpha);
+    for (int i = 1; i <= fadeIn_; i++) {
+        ObjRender_SetAlpha(whiteout, Interpolate_Linear(0, 255, i / as_float(fadeIn_)));
         yield;
     }
-    ObjRender_SetAlpha(whiteout, 255);
+
     Obj_SetVisible(bossSprite, true);
     ObjRender_SetPosition(bossSprite, xPos_ + 32, yPos_ + 16, 1); //shifted to align with stg window coordinates
-
     wait(between_);
-    ascent (i in 0..fadeOut_) {
-        int alpha = 255 - (i+1)/fadeOut_*255;
-        ObjRender_SetAlpha(whiteout, alpha);
+
+    for (int i = 1; i <= fadeIn_; i++) {
+        ObjRender_SetAlpha(whiteout, Interpolate_Linear(255, 0, i / as_float(fadeIn_)));
         yield;
     }
+
     Obj_Delete(whiteout);
 }

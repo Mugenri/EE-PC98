@@ -155,9 +155,9 @@ task TPlayBGM(int trackID_, int fade_, int delay_) {
         float volTimer = 0;
         while (volTimer < fade_) { //fade time is in frames
             float volume = GetBGMVolume();
-            float volDecay = volTimer/fade_; //reduce volume linearly
+            float volDecay = volTimer / fade_; //reduce volume linearly
 
-            ObjSound_SetVolumeRate(ID, volume - volDecay*volume);
+            ObjSound_SetVolumeRate(ID, volume - volDecay * volume);
 
             volTimer += 1; //1 frame
             yield;

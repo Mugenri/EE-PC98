@@ -41,7 +41,7 @@ task TTitleScene(int preloadIndex_) {
 
     //title particle effect list
     _titleList = InitParticleList(IMG_EFFECT_PARTICLE, RP_UI_PARTICLE, [0, 0, 16, 16]);
-    ParticleListShader(_titleList, 16/512, 16/512);
+    ParticleListShader(_titleList, 16 / 512, 16 / 512);
 
     StartBGM(0, 60, 30);
     TMainMenu(true, INDEX_EXTRA, preloadIndex_);

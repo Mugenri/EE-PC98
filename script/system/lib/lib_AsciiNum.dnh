@@ -5,11 +5,11 @@ int _spellList; //spell bonus and history numbers
 
 function<void> Ascii_Init() {
     _asciiList = InitParticleList(IMG_SYSTEM_UI, RP_STG_TEXT, [72, 336, 80, 344]);
-    ParticleListShader(_asciiList, 8/256, 1);
+    ParticleListShader(_asciiList, 8 / 256, 1);
 }
 function<void> Ascii_InitSpell() {
     _spellList = InitParticleList(IMG_SYSTEM_UI, RP_STG_SPELLNUM, [72, 336, 80, 344]);
-    ParticleListShader(_spellList, 8/256, 1);
+    ParticleListShader(_spellList, 8 / 256, 1);
     ObjSprite2D_SetDestRect(_spellList, 0, 0, 8, 8);
 }
 
@@ -23,7 +23,7 @@ function<void> Ascii_ScoreNum(float x_, float y_, int score_, int color_) {
             yield;
         }
         loop (16) {
-            y_ -= 1/2;
+            y_ -= 0.5;
             WriteNum();
             yield;
         }

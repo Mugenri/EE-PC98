@@ -209,10 +209,10 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
 
         task TMoveLogo(int obj_, int wait_) {
             wait(wait_);
-            float frames = 40;
-            for (int i = 1; i <= 40; i++) {
+            int frames = 40;
+            for (int i = 1; i <= frames; i++) {
                 if (Obj_IsDeleted(obj_)) return;
-                ObjRender_SetPosition(obj_, Interpolate_Accelerate(WINDOW_WIDTH, 5, i / frames), 3, 1);
+                ObjRender_SetPosition(obj_, Interpolate_Accelerate(WINDOW_WIDTH, 5, i / as_float(frames)), 3, 1);
                 yield;
             }
         }

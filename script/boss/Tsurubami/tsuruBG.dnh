@@ -45,15 +45,15 @@ task TBackground(int index_, int priority_) {
 
     task TCircle() {
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, priority_);
-        ascent (i in 0..33) ObjPrim_SetVertexColor(circle, i, COLOR_GRAY_D);
+        ObjRender_SetColor(circle, COLOR_GRAY_D);
 
-        float frames = 90;
+        int frames = 90;
         for (int i = 1; i <= frames; i++) {
-            int radius = Interpolate_Accelerate(0, 275, i / frames);
+            int radius = Interpolate_Accelerate(0, 275, i / as_float(frames));
             float angle = 0;
-            ascent (j in 0..33) {
+            for (int j = 0; j < 33; j++) {
                 ObjPrim_SetVertexPosition(circle, j, MID_X + radius * cos(angle), MID_Y + radius * sin(angle), 1);
-                angle += 360/32;
+                angle += 360 / 32;
             }
             if (!exitFlag) yield;
         }
@@ -97,7 +97,7 @@ task TSpellBackground(int index_, int priority_) {
         if (count >= 209) increment = false;
         else if (count < 30) increment = true;
 
-        color = truncate(count/60) * 6;
+        color = trunc(count / 60) * 6;
         yield;
     }
 
@@ -141,12 +141,10 @@ task TSpellBackground(int index_, int priority_) {
             int[][] positions = [];
 
             int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
-            ascent (i in 0..points_) {
+            for (int i = 0; i < points_; i++) {
                 ObjPrim_SetVertexColor(line, i, COLOR_GRAY_D);
-            }
-            ascent (i in 0..points_) {
                 ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);
-                positions = positions ~ [[xStart_, yStart_]];
+                positions ~= [[xStart_, yStart_]];
                 if (vertical_) yStart_ += step_;
                 else xStart_ += step_;
             }

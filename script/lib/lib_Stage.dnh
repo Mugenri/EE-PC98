@@ -71,7 +71,7 @@ function<void> Stage_SetBGMText(int index_, int delay_, int current_) { //newly 
     Obj_SetVisible(note, false);
 
     int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, [0, 192, 32, 224]);
-    ParticleListShader(particles, 32/512, 32/512);
+    ParticleListShader(particles, 32 / 512, 32 / 512);
 
     int frame = 0;
     int frameRate = 4;
@@ -144,7 +144,7 @@ function<void> Stage_SetIntroText(string header_, string subtitle_) { //stage na
     int subtitleX = MID_X + 8 - round(stepSubtitle * 8);
 
     int particles = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_MAX, [0, 192, 32, 224]);
-    ParticleListShader(particles, 32/512, 32/512);
+    ParticleListShader(particles, 32 / 512, 32 / 512);
 
     int frame = 0;
     int frameRate = 4;
@@ -252,7 +252,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     //SCORE NUMBERS --------------------------------------
 
     int endList = InitParticleList(IMG_SYSTEM_UI, RP_STG_END, [0, 0, 16, 16]); //score number list
-    ParticleListShader(endList, 16/256, 16/512);
+    ParticleListShader(endList, 16 / 256, 16 / 512);
     ObjSprite2D_SetDestRect(endList, 0, 0, 16, 16);
 
     //number arrays

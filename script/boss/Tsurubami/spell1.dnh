@@ -108,7 +108,7 @@ task TFireA() {
         float angleT = rand(0, 360);
         for (int j = 0; j < numShot * i; j++) {
             CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), rand(4.8, 5) / i, angleT, SHOT_BLUE_INV+FIRE_S, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST1);
-            angleT += 360/(numShot*i);
+            angleT += 360 / (numShot * i);
         }
         CallSFX(SND_SHOT1);
         wait(6);

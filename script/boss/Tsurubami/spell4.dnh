@@ -128,7 +128,7 @@ task TFire() {
             yPos = linePos - (MAX_X * 2 + MAX_Y);
             angleT = 0;
         }
-        locations = locations ~ [[xPos, yPos, angleT]];
+        locations ~= [[xPos, yPos, angleT]];
     }
 
     //shuffle array
@@ -215,7 +215,7 @@ task TFire() {
             if (!_bossAlive) return;
             float radius = Interpolate_Linear(0, 550, i / numShots);
             int newShot = CreateShotUA1(x_ + radius * cos(angleT_), y_ + radius * sin(angleT_), 0.12 * i / numShots, angleT_, SHOT_YELLOW+COIN, 0, SHOT_YELLOW+SPAWN_S+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE);
-            shots = shots ~ [newShot];
+            shots ~= [newShot];
             wait(waitTime);
         }
     }

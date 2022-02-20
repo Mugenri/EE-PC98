@@ -4,10 +4,10 @@
 function<int[]> DigitToArray(int digit_, int count_) {
 	int[] res = [];
 	loop {
-		int tnum = truncate(digit_ % 10);
+		int tnum = trunc(digit_ % 10);
 		digit_ /= 10;
 		res = [tnum] ~ res;
-		if (truncate(digit_) == 0) break;
+		if (trunc(digit_) == 0) break;
 	}
 	loop (max(0, count_ - length(res))) {
 		res = [0] ~ res;
@@ -17,12 +17,12 @@ function<int[]> DigitToArray(int digit_, int count_) {
 //Doesn't pad with 0's
 function<int[]> DigitToArray(int digit_) {
 	int[] res = [];
-	digit_ = truncate(digit_);
+	digit_ = trunc(digit_);
 	loop {
-		int tnum = truncate(digit_ % 10);
+		int tnum = trunc(digit_ % 10);
 		digit_ /= 10;
 		res = [tnum] ~ res;
-		if (truncate(digit_) == 0) break;
+		if (trunc(digit_) == 0) break;
 	}
 	return res;
 }

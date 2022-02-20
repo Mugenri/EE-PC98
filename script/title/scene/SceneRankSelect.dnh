@@ -92,13 +92,13 @@ function<int> SceneRankSelect(int selectedDefault_) {
             float tempRadius = radius;
             int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
             int frame = 0;
-            float frames = 120; //to avoid int division
+            int frames = 120;
             while (!exitFlag) {
                 float angleT = 0;
-                tempRadius = Interpolate_Decelerate(radius, 0, frame / frames);
+                tempRadius = Interpolate_Decelerate(radius, 0, frame / as_float(frames));
                 for (int i = 0; i < ObjPrim_GetVertexCount(primCircle); i++) {
                     ObjPrim_SetVertexPosition(primCircle, i, WINDOW_WIDTH_MID + tempRadius * cos(angleT), WINDOW_HEIGHT_MID + tempRadius * sin(angleT), 1);
-                    ObjPrim_SetVertexColor(primCircle, i, color[frame * 4 ~/ frames]);
+                    ObjPrim_SetVertexColor(primCircle, i, color[frame * 4 / frames]);
                     angleT += 360 / (vertices - 1);
                 }
                 frame++;

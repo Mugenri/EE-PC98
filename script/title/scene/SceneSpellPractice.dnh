@@ -143,7 +143,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
         int[] forbidden = [];
         for (int i = 0; i < length(flags); i++) {
-            if (!flags[i]) forbidden = forbidden ~ [i];
+            if (!flags[i]) forbidden ~= [i];
         }
         selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSUBAKURA, forbidden);
     }
@@ -219,11 +219,10 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         }
         angleT = -90;
         int cLines = InitPrim2D(PRIMITIVE_LINELIST, spokes * 2, RP_UI_BG); //spokes
+        ObjRender_SetColor(cLines, COLOR_PURPLE_D);
         for (int i = 0; i < spokes * 2; i += 2) {
             ObjPrim_SetVertexPosition(cLines, i, x1 + rad1 * cos(angleT), y1 + rad1 * sin(angleT), 1);
             ObjPrim_SetVertexPosition(cLines, i + 1, x2 + rad2 * cos(angleT), y2 + rad2 * sin(angleT), 1);
-            ObjPrim_SetVertexColor(cLines, i, COLOR_PURPLE_D);
-            ObjPrim_SetVertexColor(cLines, i + 1, COLOR_PURPLE_D);
             angleT += 360 / spokes;
         }
 
@@ -238,7 +237,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                 ObjPrim_SetVertexPosition(cLines, i + 1, x2 + rad2 * cos(angleT), y2 + rad2 * sin(angleT), 1);
                 angleT += 360 / spokes;
             }
-            count += 1/4;
+            count += 0.25;
             yield;
         }
 
@@ -277,21 +276,19 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         }
 
         task TMove() {
-            while(!exitFlag) {
+            while (!exitFlag) {
                 async {
                     int prim = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_UI_BG); //moving circle
                     int vertices = ObjPrim_GetVertexCount(prim);
-                    for (int i = 0; i < vertices; i++) {
-                        ObjPrim_SetVertexColor(prim, i, COLOR_PURPLE_D);
-                    }
+                    ObjRender_SetColor(prim, COLOR_PURPLE_D);
                     float angleT = -90;
-                    float frames = 180; //anim time
+                    int frames = 180;
 
                     for (int frame = 1; frame <= frames; frame++) {
                         if (exitFlag) break;
                         for (int i = 0; i < vertices; i++) {
-                            float x = Interpolate_Accelerate(x1 + rad1 * cos(angleT), x2 + rad2 * cos(angleT), frame / frames);
-                            float y = Interpolate_Accelerate(y1 + rad1 * sin(angleT), y2 + rad2 * sin(angleT), frame / frames);
+                            float x = Interpolate_Accelerate(x1 + rad1 * cos(angleT), x2 + rad2 * cos(angleT), frame / as_float(frames));
+                            float y = Interpolate_Accelerate(y1 + rad1 * sin(angleT), y2 + rad2 * sin(angleT), frame / as_float(frames));
                             ObjPrim_SetVertexPosition(prim, i, x, y, 1);
                             angleT += 360 / (vertices - 1);
                         }
@@ -376,7 +373,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
 
         Obj_Delete(objText);
 
-        function UpdateListItem() {
+        function<void> UpdateListItem() {
             realID = indexListTop[subIndex_] + index_;
             currDiff = selectedDiff;
             numDiff = length(GetDifficultyList(indexCurrent[MENU_STAGE]));

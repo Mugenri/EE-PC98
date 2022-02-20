@@ -82,7 +82,7 @@ task TPatternA() {
             loop (25) {
                 if (!_bossAlive) return;
                 int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
-                angleT += 360/25;
+                angleT += 360 / 25;
             }
             wait(100);
         }
@@ -152,7 +152,7 @@ task TPatternE() {
     loop (32) {
         if (!_bossAlive) return;
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
-        angleT += 360/32;
+        angleT += 360 / 32;
     }
 }
 
@@ -222,7 +222,7 @@ task TPatternJ() {
     float angleT = 360 / 36;
     loop {
         for (int i = 0; i <= 774; i++) {
-            CreateShotA1(MID_X + 24*cos(angleT), MID_Y + 24*sin(angleT), 1, angleT, i, 0);
+            CreateShotA1(MID_X + 24 * cos(angleT), MID_Y + 24 * sin(angleT), 1, angleT, i, 0);
             angleT += 360 / 18;
             yield;
         }
@@ -293,17 +293,17 @@ task TPatternM() { //Delete effects
     int i = 0;
     loop (72) {
         CreateShotUA1(MID_X + 72 * cos(angleT), MID_Y + 72 * sin(angleT), 0, angleT, PELLET+(i%18), 0, i);
-        angleT += 360/72;
+        angleT += 360 / 72;
         i++;
     }
     loop (18) {
         CreateShotUA1(MID_X + 92 * cos(angleT), MID_Y + 92 * sin(angleT), 0, angleT, BALL_L+(i%18), 0, i);
-        angleT += 360/18;
+        angleT += 360 / 18;
         i++;
     }
     loop (18) {
         CreateShotUA1(MID_X + 145 * cos(angleT), MID_Y + 145 * sin(angleT), 0, angleT, BUBBLE+(i%18), 0, i);
-        angleT += 360/18;
+        angleT += 360 / 18;
         i++;
     }
 }
@@ -342,7 +342,7 @@ task TPatternP() {
     int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
     loop (32){
         CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
-        angleT += 360/32;
+        angleT += 360 / 32;
     }
     CallSFX(SND_SHOT1);
 }

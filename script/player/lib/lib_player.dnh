@@ -22,10 +22,10 @@ function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, flo
     LoadPlayerShotData(_pathShot);
 
     _particleFlake = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, [0, 32, 16, 48]);
-    ParticleListShader(_particleFlake, 16/512, 1);
+    ParticleListShader(_particleFlake, 16 / 512, 1);
     
     _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 16]);
-    ParticleListShader(_particleShot, 16/256, 16/64);
+    ParticleListShader(_particleShot, 16 / 256, 16 / 64);
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);
@@ -164,11 +164,11 @@ task THit() { //Player deathbomb window
     //Closing circle
     float radius = 28;
     int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 18, RP_STG_EFF_MAX);
-    for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
+    ObjRender_SetColor(circle, COLOR_ICE);
     int frames = 14;
-    for (float frame = 0; frame <= frames; frame++) {
+    for (int frame = 0; frame <= frames; frame++) {
         ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
-        radius = Interpolate_Accelerate(28, 0, frame / frames);
+        radius = Interpolate_Accelerate(28, 0, frame / as_float(frames));
         for (int i = 1; i < ObjPrim_GetVertexCount(circle); i++) {
             float angleT = 360 / (ObjPrim_GetVertexCount(circle) - 2) * i;
             ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
@@ -225,12 +225,12 @@ task TMiss() { //Player died
         float radius = 0;
         int frames = 60;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
-        for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
-        for (float frame = 1; frame <= frames; frame++) {
-            radius = Interpolate_Decelerate(0, 72, frame / frames);
+        ObjRender_SetColor(circle, COLOR_ICE);
+        for (int frame = 1; frame <= frames; frame++) {
+            radius = Interpolate_Decelerate(0, 72, frame / as_float(frames));
             for (int i = 0; i < ObjPrim_GetVertexCount(circle); i++) {
-                float angleT = 360/(ObjPrim_GetVertexCount(circle) - 1) * i;
-                ObjPrim_SetVertexPosition(circle, i, xPos + radius*cos(angleT), yPos + radius*sin(angleT), 1);
+                float angleT = 360 / (ObjPrim_GetVertexCount(circle) - 1) * i;
+                ObjPrim_SetVertexPosition(circle, i, xPos + radius * cos(angleT), yPos + radius * sin(angleT), 1);
             }
             yield;
         }
@@ -264,13 +264,13 @@ task TRebirth() { //Player respawn
         CallSFX(SND_PL_VULNERABLE);
         float radius = 28;
         int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
-        ascent (i in 0..17) ObjPrim_SetVertexColor(circle, i, COLOR_ICE);
+        ObjRender_SetColor(circle, COLOR_ICE);
         loop (20) {
             ascent (i in 0..17) {
-                float angleT = 360/16 * i;
-                ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius*cos(angleT), GetPlayerY() + radius*sin(angleT), 1);
+                float angleT = 360 / 16 * i;
+                ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
             }
-            radius -= 28/20;
+            radius -= 28 / 20;
             yield;
         }
         Obj_Delete(circle);

@@ -11,10 +11,10 @@ bool[] _bannerDisplaying = [false, false]; //row 1 and 2 of banner display occup
 //----------------------------------------------------
 function<void> Display_Init() {
     _displayList = InitParticleList(IMG_SYSTEM_UI, RP_UI_TEXT, [0, 0, 16, 16]);
-    ParticleListShader(_displayList, 16/256, 16/512);
+    ParticleListShader(_displayList, 16 / 256, 16 / 512);
     ObjSprite2D_SetDestRect(_displayList, 0, 0, 16, 16);
     _scoreBonusList = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, [0, 0, 16, 16]);
-    ParticleListShader(_scoreBonusList, 16/256, 16/512);
+    ParticleListShader(_scoreBonusList, 16 / 256, 16 / 512);
     ObjSprite2D_SetDestRect(_scoreBonusList, 0, 0, 16, 16);
     TIntro();   
     Difficulty();
@@ -77,19 +77,18 @@ task TIntro() {
     if (GetGameMode() == GAME_MAIN) { //only play logo display in main game
         wait(60);
 
-        ascent (i in 1..4) {
-            float alpha = 255/3 * i;
-            ObjRender_SetAlpha(objLogo, alpha);
+        for (int i = 1; i <= 3; i++) {
+            ObjRender_SetAlpha(objLogo, Interpolate_Linear(0, 255, i / 3));
             wait(10);
         }
         wait(60);
-        ascent (i in 1..4) {
-            float alpha = 255 - (255/3 * i);
-            ObjRender_SetAlpha(objLogo, alpha);
+        for (int i = 1; i <= 3; i++) {
+            ObjRender_SetAlpha(objLogo, Interpolate_Linear(255, 0, i / 3));
             wait(10);
         }
     }
-        Obj_Delete(objLogo);
+    
+    Obj_Delete(objLogo);
 
     wait(10);
 
@@ -341,8 +340,8 @@ task TBossLife() {
         else if (lifeRatio <= 0.75) color = COLOR_TEAL;
         else if (lifeRatio < 1) color = COLOR_YELLOW;
 
-        ascent (i in 0..4) ObjPrim_SetVertexColor(objLife, i, color);
-        ascent (i in 0..2) ObjPrim_SetVertexColor(objLine, i, color);
+        ObjRender_SetColor(objLife, color);
+        ObjRender_SetColor(objLine, color);
         ObjRender_SetColor(objIcon, color);
 
         //attempt to increase health render bar until it reaches max
@@ -384,12 +383,11 @@ task TBossTimer() {
         if (bossLife <= 0) timer = 0;
 
         ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 1, 128 * (timer/timerTotal) , 0, 1);
-        ObjPrim_SetVertexColor(obj, 0, timerColor);
-        ObjPrim_SetVertexColor(obj, 1, timerColor);
+        ObjPrim_SetVertexPosition(obj, 1, 128 * (timer / timerTotal) , 0, 1);
+        ObjRender_SetColor(obj, timerColor);
 
         //icon stuff
-        ObjRender_SetPosition(icon, 445 + 128 * (timer/timerTotal), 158, 0);
+        ObjRender_SetPosition(icon, 445 + 128 * (timer / timerTotal), 158, 0);
         Obj_SetVisible(icon, timer > 0);
         ObjRender_SetColor(icon, timerColor);
 
@@ -683,7 +681,7 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
     }
 
     for (int i = 1; i <= 60; i++) { //entry animation
-        yPos = Interpolate_Overshoot(-32, 0, 2, i/60);
+        yPos = Interpolate_Overshoot(-32, 0, 2, i / 60);
         ObjRender_SetPosition(banner, 176, yPos, 1);
         ObjRender_SetPosition(nameText, 0, yPos, 1);
         ObjRender_SetPosition(failText, 232, yPos + 19, 1);
@@ -699,7 +697,7 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
         yield;
     }
     for (int i = 1; i <= 60; i++) { //exit animation
-        yPos = Interpolate_Accelerate(0, -32, i/60);
+        yPos = Interpolate_Accelerate(0, -32, i / 60);
         ObjRender_SetPosition(banner, 176, yPos, 1);
         ObjRender_SetPosition(nameText, 0, yPos, 1);
         ObjRender_SetPosition(failText, 232, yPos + 19, 1);

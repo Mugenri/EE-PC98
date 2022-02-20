@@ -105,7 +105,7 @@ task TFireA(int dir_) {
         if (!Obj_IsDeleted(objShotA)) Obj_Delete(objShotA);
 
         loop (7) { //ring of bullets
-            float speedMod = rand (-0.2, 0.2);
+            float speedMod = rand(-0.2, 0.2);
             CreateShotUA1(x, y, 0.9 + speedMod, angle, SHOT_GRAY+PILL_S, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
             angle += 360 / 7;
         }

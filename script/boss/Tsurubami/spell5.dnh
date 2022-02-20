@@ -162,7 +162,7 @@ task TFire() {
         ObjShot_SetSpellResist(shot, true);
         //ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
         ObjMove_AddPatternD2(shot, 0, xPos, yPos, moveTime, LERP_ACCELERATE);
-        shots = shots ~ [shot];
+        shots ~= [shot];
         CallSFX(SND_SHOT3);
         angleT -= 360 / numShot;
         wait(waitTime);
