@@ -38,16 +38,11 @@ task TStage() {
     yield; //this is fine
     StartScript(ID);
     StartBGM(1, 180, 0);
-    while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) {
-        yield;
-    }
+    while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
     wait(120); //last explosion & spell bonus numbers
     //dialoguePath = dir ~ "dialogueIntro.dnh"; //TODO change to end dialogue
     //StartDialogueScript(dialoguePath);
     //yield;
     Stage_EndScreen(10000);
-    ClearBGM();
-    wait(300); //TOOD temporary probably get rid of this entirely, handle this from package
-    CloseScript(bgID);
-    CloseStgScene();
+    Stage_End();
 }

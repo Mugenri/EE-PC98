@@ -92,6 +92,4 @@ function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
 
 function<void> SpellPractice_End() {
     NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_VICTORY_SPELL);
-    yield;
-    CloseStgScene();
 }

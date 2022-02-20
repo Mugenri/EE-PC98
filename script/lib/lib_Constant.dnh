@@ -50,6 +50,7 @@ const int STAGE_VICTORY_SPELL   = 3; //Spell practice victory
 const int STAGE_GAMEOVER        = 4; //Main game gameover
 const int STAGE_GAMEOVER_SPELL  = 5; //Spell practice gameover
 const int STAGE_DIALOGUE        = 6; //start dialogue (pass with path)
+const int STAGE_VICTORY         = 7; //normal game mode stage victory
 
 //Script Result Constants
 const int RESULT_CONTINUE = 0; //player used a continue (game over menu)
@@ -181,6 +182,7 @@ const string RT_BG1         = GetReservedRenderTargetName(0); //background layer
 const string RT_BG2         = GetReservedRenderTargetName(1); //background layer 2 (24-25)
 const string RT_TRANSITION  = GetReservedRenderTargetName(2); //transition layer (26)
 const string RT_SCREENSHOT  = "RT_SCREENSHOT"; //layers 0-21, 27-100
+const string RT_ENDSCREEN   = "RT_ENDSCREEN"; //layer 78
 
 //----------------------------------------------------
 //POSITION CONSTANTS

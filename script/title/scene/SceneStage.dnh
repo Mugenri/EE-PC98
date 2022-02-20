@@ -103,6 +103,10 @@ task TStageScene() {
             case (STAGE_DIALOGUE) {
                 RunDialogue(_dialoguePath);
             }
+            case (STAGE_VICTORY) {
+                EndStage();
+                wait(60);
+            }
             _stageEvent = STAGE_NONE;
         }
         //--------------------------------------------------------------------
@@ -169,6 +173,30 @@ task TStageScene() {
         PauseStageScene(false);
         UnloadScriptFromCache(path_);
         return;
+    }
+
+    function<void> EndStage() { //fade to black, dim music
+        SetTransitionTexture();
+        RenderToTextureA1(RT_ENDSCREEN, RP_STG_END, RP_STG_END, true);
+        TerminateStageScene();
+        ClearBGM();
+
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_BG);
+        int objBlack = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_UI_IMG);
+        int objText = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_ENDSCREEN, RP_UI_IMG);
+        ObjRender_SetColor(objBlack, COLOR_BLACK);
+        ObjRender_SetPosition(objBlack, 32, 16, 1); //offset to cover game window
+
+        int fadeTime = 180;
+        for (int i = 1; i <= fadeTime; i++) {
+            ObjRender_SetAlpha(objBlack, Interpolate_Linear(0, 255, i / as_float(fadeTime)));
+            yield;
+        }
+
+        wait(30);
+        Obj_Delete(bg);
+        Obj_Delete(objBlack);
+        Obj_Delete(objText);
     }
 }
 

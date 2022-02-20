@@ -275,20 +275,26 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int noBombLength = length(noBombList);
     int totalLength = length(totalList);
 
-    //wait for input
-    while (GetVirtualKeyState(VK_SHOT) != KEY_PUSH) {
-        UpdateList(stageList, stageLength, ObjRender_GetY(stageText)); //stage bonus
-        UpdateList(grazeList, grazeLength, ObjRender_GetY(grazeText)); //graze bonus
-        UpdateList(livesList, livesLength, ObjRender_GetY(livesText)); //lives bonus
-        UpdateList(pointList, pointLength, ObjRender_GetY(pointText)); //point items
-        if (missCount == 0) UpdateList(noMissList, noMissLength, ObjRender_GetY(noMissText)); //no miss bonus
-        if (bombCount == 0) UpdateList(noBombList, noBombLength, ObjRender_GetY(noBombText)); //no bomb bonus
-        if (continues > 0) UpdateListDecimal(continueList, ObjRender_GetY(continueText), COLOR_RED); //continue multiplier
-        UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN_L); //difficulty multiplier
-        UpdateList(totalList, totalLength, ObjRender_GetY(totalText)); //total score
-        yield;
-        
+    //update particle lists
+    async {
+        loop {
+            UpdateList(stageList, stageLength, ObjRender_GetY(stageText)); //stage bonus
+            UpdateList(grazeList, grazeLength, ObjRender_GetY(grazeText)); //graze bonus
+            UpdateList(livesList, livesLength, ObjRender_GetY(livesText)); //lives bonus
+            UpdateList(pointList, pointLength, ObjRender_GetY(pointText)); //point items
+            if (missCount == 0) UpdateList(noMissList, noMissLength, ObjRender_GetY(noMissText)); //no miss bonus
+            if (bombCount == 0) UpdateList(noBombList, noBombLength, ObjRender_GetY(noBombText)); //no bomb bonus
+            if (continues > 0) UpdateListDecimal(continueList, ObjRender_GetY(continueText), COLOR_RED); //continue multiplier
+            UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN_L); //difficulty multiplier
+            UpdateList(totalList, totalLength, ObjRender_GetY(totalText)); //total score
+            yield;
+        }
     }
+
+    //wait for input
+    while (GetVirtualKeyState(VK_SHOT) != KEY_PUSH) yield;
+
+    Obj_Delete(objBlack);
 
     function<void> UpdateList(int[] list_, int listLength_, int y_) { //draw score number right to left
         for (int i = 0; i < listLength_; i++) {
@@ -313,4 +319,8 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
         ObjParticleList_AddInstance(endList);
         ObjParticleList_SetColor(endList, COLOR_WHITE);
     }
+}
+
+function<void> Stage_End() {
+    NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_VICTORY);
 }

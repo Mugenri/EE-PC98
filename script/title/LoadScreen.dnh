@@ -13,6 +13,7 @@ task TLoadScene() { //loading screen
 
     //initialize user render targets
     CreateRenderTarget(RT_SCREENSHOT);
+    CreateRenderTarget(RT_ENDSCREEN);
 
     //Preload textures
     Texture_Init();
