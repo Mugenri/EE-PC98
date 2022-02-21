@@ -254,18 +254,18 @@ task TBossLife() {
     Obj_SetVisible(objText, false);
 
     //Lifebar
-    int objLife = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_UI_TEXT);
+    int objLife = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_UI_IMG);
     ObjRender_SetPosition(objLife, 448, 148, 1);
 
     //Lifebar underline
-    int objLine = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT);
+    int objLine = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_IMG);
     ObjRender_SetPosition(objLine, 448, 156, 1);
     ObjPrim_SetVertexPosition(objLine, 0, 0, 0, 1);
     ObjPrim_SetVertexPosition(objLine, 1, 128, 0, 1);
     Obj_SetVisible(objLine, false);
 
     //lifebar heart icon
-    int objIcon = InitSprite2D(52, 339, 62, 348, IMG_SYSTEM_UI, RP_UI_TEXT);
+    int objIcon = InitSprite2D(52, 339, 62, 348, IMG_SYSTEM_UI, RP_UI_IMG);
     ObjRender_SetPosition(objIcon, 567, 147, 1);
     Obj_SetVisible(objIcon, false);
 
@@ -318,6 +318,16 @@ task TBossLife() {
                 ObjParticleList_SetColor(_displayList, COLOR_INDIGO_L);
                 ObjParticleList_AddInstance(_displayList);
                 ObjParticleList_SetColor(_displayList, COLOR_WHITE);
+            }
+        }
+
+        //Step Division Display
+        float[] stepDivisions = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_LIFE_RATE_LIST);
+        if (length(stepDivisions) > 1) { //more than 1 attack this step
+            for (int i = 0; i < length(stepDivisions) - 1; i++) {
+                ObjParticleList_SetPosition(_displayList, 576 - 1 - (128 * stepDivisions[i]), 148, 1); // -1 so the spells end immediately when the health bar is no longer visible
+                ObjParticleList_SetExtraData(_displayList, 14, 18, 0);
+                ObjParticleList_AddInstance(_displayList);
             }
         }
 
