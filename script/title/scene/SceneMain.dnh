@@ -11,12 +11,12 @@ const int INDEX_OPTION  = 6;
 const int INDEX_QUIT    = 7;
 
 task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
+    CD_SaveAll(); //write data to save file
     if (preloadIndex_ >= 0) {
         SelectItem(preloadIndex_, true);
         return;
     }
     bool exitFlag = false; //deletes certain things upon leaving this menu
-    CD_SaveAll(); //write data to save file
 
     int selectMax = INDEX_QUIT;
     int indexCurrent = selectedDefault_;
