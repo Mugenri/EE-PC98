@@ -85,6 +85,7 @@ function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
         case (36, 37, 38)   { return dir ~ "spell7.dnh"; }      //13
         case (39, 40, 41)   { return dir ~ "nonspell7.dnh"; }   //14
         case (42, 43, 44)   { return dir ~ "spell8.dnh"; }      //15
+        case (45, 46, 47)   { return dir ~ "nonspell8.dnh"; }   //16
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
