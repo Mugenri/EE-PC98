@@ -36,6 +36,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
         SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
     }
     case (EV_PLAYER_SHOOTDOWN) CheckGameOver(); //player out of lives
+    case (EV_STAGE_VICTORY) CloseStgScene(); //stage cleared
 }
 
 function<void> CheckGameOver() { //no lives left, game over menu

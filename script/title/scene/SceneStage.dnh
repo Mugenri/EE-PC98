@@ -26,7 +26,7 @@ string _dialoguePath;
             _stageEvent = event;
             _dialoguePath = GetEventArgument(1);
         }
-        others { _stageEvent = GetEventArgument(0); }
+        others { _stageEvent = event; }
     }
 }
 
@@ -69,65 +69,68 @@ task TStageScene() {
             case (GAME_MAIN) _stageEvent = STAGE_PAUSE;
             case (GAME_SPELL) _stageEvent = STAGE_PAUSE_SPELL;
         }
-        //stage event
+        //stage event (any event that results in termination shouldn't reset _stageEvent)
         if (_stageEvent != STAGE_NONE) {
             alternative (_stageEvent)
-            case (STAGE_PAUSE, STAGE_PAUSE_SPELL, STAGE_VICTORY_SPELL, STAGE_GAMEOVER, STAGE_GAMEOVER_SPELL) { //pause menus
+            case (STAGE_PAUSE, STAGE_PAUSE_SPELL, STAGE_GAMEOVER) { //pause and continue menus
                 int menuResult = StageMenu(_stageEvent);
-                alternative (menuResult)
-                case (RESULT_CANCEL) {
-                    ResumeBGM();
-                    PauseStageScene(false);
-                }
-                case (RESULT_RETRY) {
-                    if (gameMode == GAME_MAIN) ClearBGM();
-                    if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by restart
-                        HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
-                    }
-                    TerminateStageScene();
-                    TStageScene();
-                    return;
-                }
-                case (RESULT_CONTINUE) {
-                    if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by continue
-                        HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
-                    }
-                    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
-                    PauseStageScene(false);
-                }
-                case (RESULT_END) {
-                    wait(60);
-                    TerminateStageScene();
-                }
+                HandleMenuResult(menuResult, false);
+                if (menuResult == RESULT_RETRY) return;
             }
             case (STAGE_DIALOGUE) {
                 RunDialogue(_dialoguePath);
+                _stageEvent = STAGE_NONE;
             }
             case (STAGE_VICTORY) {
                 EndStage();
-                wait(60);
             }
-            _stageEvent = STAGE_NONE;
+            case (STAGE_VICTORY_SPELL) {
+                SetTransitionTexture();
+                StageCleared();
+            }
+            case (STAGE_GAMEOVER_SPELL) {
+                SetTransitionTexture();
+                TerminateStageScene();
+            }
         }
         //--------------------------------------------------------------------
-        //Stage Result Upon Ending
+        //Stage Result
         //--------------------------------------------------------------------
         int stageState = GetStageSceneState();
         if (stageState == STAGE_STATE_FINISHED) {
-            int stageResult = GetStageSceneResult();
+            //FinalizeStageScene(); WHY DO YOU CRASH AFTER RESTARTS
 
+            //TODO handle if replay
+            int stageResult = GetStageSceneResult();
             alternative (stageResult)
             case (STAGE_RESULT_CLEARED) { //Game Won
                 WriteLog("won");
-                //TODO screen cap and fade out for 300 frames. might have to put elsewhere?
-                break;
-            }
-            case (STAGE_RESULT_PLAYER_DOWN) { //Game Over (likely does not trigger ever)
-                WriteLog("game over");
+                alternative(_stageEvent)
+                case (STAGE_VICTORY) { //game clear
+                    //TODO ending cutscene, credits, tsuba unlock etc.
+                    WriteLog("stage victory");
+                }
+                case (STAGE_VICTORY_SPELL) { //spell practice clear
+                    WriteLog("stage victory spell");
+                    int menuResult = StageMenu(_stageEvent);
+                    HandleMenuResult(menuResult, true);
+                    if (menuResult == RESULT_RETRY) return;
+                }
                 break;
             }
             case (STAGE_RESULT_BREAK_OFF) { //Exit Game
-                WriteLog("break off"); //TODO need some way to differentiate between quit from pause and quit from continue
+                WriteLog("break off");
+                alternative (_stageEvent)
+                case (STAGE_GAMEOVER) { //quit from continue prompt
+                    //ask to save replay OR get replay save confirmation from previous menu?
+                    WriteLog("stage gameover");
+                }
+                case (STAGE_GAMEOVER_SPELL) { //spell practice fail
+                    WriteLog("stage gameover spell");
+                    int menuResult = StageMenu(_stageEvent);
+                    HandleMenuResult(menuResult, true);
+                    if (menuResult == RESULT_RETRY) return;
+                }
                 break;
             }
         }
@@ -143,11 +146,11 @@ task TStageScene() {
     }
 
     function<int> StageMenu(_menuType) {
-        if (gameMode == GAME_MAIN && _menuType == STAGE_PAUSE) StopBGM(); //pause music
+        if (_menuType == STAGE_PAUSE) StopBGM(); //pause music
         SetTransitionTexture(); //save current frame as pause bg
         PauseStageScene(true); //pause stage
         
-        string pathScript = GetCurrentScriptDirectory() ~ "../../system/Pause.dnh";
+        string pathScript = GetCurrentScriptDirectory() ~ "../../system/StageMenu.dnh";
         
         //Run pause script
         int idScript = LoadScript(pathScript);
@@ -157,6 +160,38 @@ task TStageScene() {
         while (!IsCloseScript(idScript)) yield;
 
         return GetScriptResult(idScript);
+    }
+
+    function<void> HandleMenuResult(int menuResult_, bool isStageEnd_) {
+        alternative (menuResult_)
+        case (RESULT_CANCEL) {
+            ResumeBGM();
+            PauseStageScene(false);
+            _stageEvent = STAGE_NONE;
+        }
+        case (RESULT_RETRY) {
+            if (gameMode == GAME_MAIN) ClearBGM();
+            if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by restart
+                HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
+            }
+            if (!isStageEnd_) TerminateStageScene();
+            TStageScene();
+        }
+        case (RESULT_CONTINUE) {
+            if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by continue
+                HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
+            }
+            NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
+            PauseStageScene(false);
+            _stageEvent = STAGE_NONE;
+        }
+        case (RESULT_SAVE_REPLAY) {
+            //replay save scene toggle
+        }
+        case (RESULT_END) {
+            if (!isStageEnd_) TerminateStageScene();
+            wait(60);
+        }
     }
 
     function<void> RunDialogue(string path_) {
@@ -178,7 +213,7 @@ task TStageScene() {
     function<void> EndStage() { //fade to black, dim music
         SetTransitionTexture();
         RenderToTextureA1(RT_ENDSCREEN, RP_STG_END, RP_STG_END, true);
-        TerminateStageScene();
+        StageCleared();
         ClearBGM();
 
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_BG);
@@ -197,7 +232,12 @@ task TStageScene() {
         Obj_Delete(bg);
         Obj_Delete(objBlack);
         Obj_Delete(objText);
+        wait(60);
     }
+}
+
+function<void> StageCleared() {
+    NotifyEvent(GetStageScriptID(), EV_STAGE_VICTORY, 0);
 }
 
 function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens

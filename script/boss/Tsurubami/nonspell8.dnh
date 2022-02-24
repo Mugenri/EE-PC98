@@ -133,8 +133,8 @@ task TFire(int dir_) {
             int color = [SHOT_GRAY, SHOT_BLACK, SHOT_RED_INV][loopCount % 3];
             float angleT = GetAngleToPlayer(_objBoss);
             loop (way) {
-                CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
                 CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT - 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+                CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
                 CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT + 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
                 angleT += 360 / way;
             }

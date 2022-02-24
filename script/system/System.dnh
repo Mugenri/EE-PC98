@@ -19,7 +19,6 @@
     SetInvalidRenderPriorityA1(22, 26);
     //SetIntersectionVisualization(true);
 
-    SetPauseScriptPath(GetCurrentScriptDirectory() ~ "Pause.dnh");
     StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
 }
 
