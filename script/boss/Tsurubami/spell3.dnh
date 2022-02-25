@@ -31,6 +31,7 @@ _spellID = 15 + _diff;
     TInitialize();
     TFinalize();
     TMain();
+    TWalls();
 }
 
 @MainLoop {
@@ -69,12 +70,50 @@ task TMain() {
     }
 }
 
+task TWalls() {
+    while (_count < 0) yield;
+
+    int laserL = CreateStraightLaserUA1(32, 0, 180, MAX_Y + 40, 60 * 60, COLOR_GRAY_L, 60);
+    int laserR = CreateStraightLaserUA1(MAX_X - 32, 0, 0, MAX_Y + 40, 60 * 60, COLOR_GRAY_L, 60);
+    ObjShot_SetSpellResist(laserL, true);
+    ObjShot_SetSpellResist(laserR, true);
+
+    wait(60);
+    CallSFX(SND_LASER1);
+
+    int frames = 120;
+    for (int i = 1; i <= frames; i++) {
+        ObjStLaser_SetAngle(laserL, Interpolate_Decelerate(180, 80, i / as_float(frames)));
+        ObjStLaser_SetAngle(laserR, Interpolate_Decelerate(0, 100, i / as_float(frames)));
+        yield;
+    }
+
+    while(_bossAlive) {
+        for (int i = 1; i <= frames; i++) {
+            if (!_bossAlive) break;
+            ObjStLaser_SetAngle(laserL, Interpolate_Smoother(80, 100, i / as_float(frames)));
+            ObjStLaser_SetAngle(laserR, Interpolate_Smoother(100, 80, i / as_float(frames)));
+            yield;
+        }
+        for (int i = 1; i <= frames; i++) {
+            if (!_bossAlive) break;
+            ObjStLaser_SetAngle(laserL, Interpolate_Smoother(100, 80, i / as_float(frames)));
+            ObjStLaser_SetAngle(laserR, Interpolate_Smoother(80, 100, i / as_float(frames)));
+            yield;
+        }
+    }
+
+    Obj_Delete(laserL);
+    Obj_Delete(laserR);
+}
+
 task TFire() {
     if (!_bossAlive) return;
     int[] shots = [];
     float xPos = ObjMove_GetX(_objBoss);
     float yPos = ObjMove_GetY(_objBoss);
 
+    Animation_Charge(_objBoss, true);
     Primitive_ContractPolygon2D(xPos, yPos, 45, 100, 0, 20, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(3);
     Particle_ContractRing(xPos, yPos, 0, 100, 90, 20, 8, COLOR_GRAY_L);
@@ -91,7 +130,7 @@ task TFire() {
     }
 
     float angleT = rand(0, 360);
-    float speed = [2.2, 2.5, 1.6][_diff];
+    float speed = [2.2, 2.5, 1.4][_diff];
     for (int i = 0; i < [32, 32, 16][_diff]; i++) { //spawn
         if (!_bossAlive) return;
         int shot = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
@@ -102,6 +141,8 @@ task TFire() {
         wait(2);
     }
 
+    Animation_Charge(_objBoss, false);
+
     //shuffle indices
     for (int i = 0; i < length(shots); i++) {
         int j = rand_int(0, length(shots) - 1);
@@ -110,7 +151,8 @@ task TFire() {
         shots[j] = temp;
     }
 
-    wait(90);
+    int waitTime = [90, 90, 120][_diff];
+    wait(waitTime);
 
     if (!_bossAlive) return;
     for each (shot in shots) { //slow
