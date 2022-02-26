@@ -132,7 +132,7 @@ task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot del
     }
 }
 
-task TSpell() { //TODO redo this shit entirely
+task TSpell() {
     int objManage = GetSpellManageObject();
 
     SetForbidPlayerShot(true);
@@ -140,16 +140,9 @@ task TSpell() { //TODO redo this shit entirely
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
     SetPlayerSpeed(1.53, 1.53);
 
-    CallSFX(SND_PL_Y_SPELL1);
-    
-    float radius = 0;
     TEffect();
 
-    loop (220) {
-        radius += 4;
-        yield;
-    }
-    wait(140);
+    wait(320);
 
     SetForbidPlayerSpell(true);
     SetForbidPlayerShot(false);
@@ -160,7 +153,7 @@ task TSpell() { //TODO redo this shit entirely
     //vulnerability indicator
     CallSFX(SND_PL_VULNERABLE);
     SetForbidPlayerSpell(false);
-    radius = 28;
+    float radius = 28;
     int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 17, RP_STG_EFF_PLR_HI);
     ObjRender_SetColor(circle, COLOR_ICE);
     loop (20) {
@@ -175,57 +168,158 @@ task TSpell() { //TODO redo this shit entirely
     Obj_Delete(circle);
 
     task TEffect() {
-        float playerX = GetPlayerX();
-        float playerY = GetPlayerY();
-        int circle = CreateCircle(playerX, playerY);
-        int[] lines = [];
-        loop (10) lines ~= [CreateLine(playerX, playerY)];
+        int flash = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_STG_EFF_MAX);
+        CallSFX(SND_PL_SPELL);
 
-        while (!Obj_IsDeleted(objManage)) {
-            //circle
-            ascent (i in 1..34) {
-                float angleT = 360 / 32 * i;
-                ObjPrim_SetVertexPosition(circle, i, playerX + radius * cos(angleT), playerY + radius * sin(angleT), 1);
-            }
-            ObjSpell_SetIntersectionCircle(circle, playerX, playerY, radius);
-            //lines
-            ascent (i in 0..5) {
-                float angleT;
-                angleT = rand(0, 3600) / 10;
-                ObjPrim_SetVertexPosition(lines[i], 1, playerX + radius * cos(angleT), playerY + radius * sin(angleT), 1);
-                angleT = rand(0, 3600) / 10;
-                ObjPrim_SetVertexPosition(lines[i + 5], 1, playerX + radius / 2 * cos(angleT), playerY + radius / 2 * sin(angleT), 1);
-            }
-            DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, playerX, playerY, radius);
+        int frames = 20;
+        for (int i = 1; i <= frames; i++) {
+            ObjRender_SetAlpha(flash, Interpolate_Linear(196, 0, i / as_float(frames)));
             yield;
         }
 
-        ObjRender_SetColor(circle, COLOR_WHITE);
-        CallSFX(SND_PL_Y_SPELL2);
-        yield;
+        int circle = ObjSpell_Create();
+        ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLESTRIP);
+        ObjSpell_SetEraseShot(circle, true);
+        ObjPrim_SetVertexCount(circle, 34);
+        Obj_SetRenderPriorityI(circle, RP_STG_EFF_SPELL);
+        ObjRender_SetColor(circle, COLOR_BLACK);
+        ObjSpell_Regist(circle);
 
-        ascent (i in 0..10) Obj_Delete(lines[i]);
-        Obj_Delete(circle);
+        int vertices = ObjPrim_GetVertexCount(circle);
 
-        function<int> CreateLine(float xPos_, float yPos_) {
-            int line = InitPrim2D(PRIMITIVE_LINELIST, 2, RP_STG_EFF_SPELL);
-            ObjPrim_SetVertexPosition(line, 0, xPos_, yPos_, 1);
-            ObjPrim_SetVertexPosition(line, 1, xPos_, yPos_, 1);
-            ObjRender_SetColor(line, COLOR_BLACK);
-            return line;
+        int lines = InitPrim2D(PRIMITIVE_LINELIST, vertices, RP_STG_EFF_SPELL); //spokes
+        ObjRender_SetColor(lines, COLOR_GREEN_L);
+
+        int cRim = InitPrim2D(PRIMITIVE_LINESTRIP, (vertices / 2), RP_STG_EFF_SPELL); //edge highliight
+        ObjRender_SetColor(cRim, COLOR_GREEN_L);
+
+        float angleT = 0;
+        float rad = 275;
+        frames = 90;
+        for (int i = 0; i < vertices; i += 2) { //init
+            ObjPrim_SetVertexPosition(circle, i, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+            ObjPrim_SetVertexPosition(lines, i, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+            angleT += 360 / ((vertices / 2) - 1);
         }
 
-        function<int> CreateCircle(float xPos_, float yPos_) {
-            int circle = ObjSpell_Create();
-            ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
-            ObjSpell_SetDamage(circle, 5);
-            ObjSpell_SetEraseShot(circle, false);
-            ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFF_SPELL);
-            ObjPrim_SetVertexPosition(circle, 0, xPos_, yPos_, 1);
-            ObjRender_SetColor(circle, COLOR_YELLOW_D);
-            ObjSpell_Regist(circle);
-            return circle;
+        CallSFX(SND_TRANSITION);
+
+        for (int i = 1; i <= frames; i++) { //close anim (90 frames)
+            rad = Interpolate_Accelerate(300, 0, i / as_float(frames));
+            angleT = 0;
+            for (int j = 0; j < vertices; j += 2) {
+                float xPos = MID_X + rad * cos(angleT);
+                float yPos = MID_Y + rad * sin(angleT);
+                ObjPrim_SetVertexPosition(circle, j + 1, xPos, yPos, 1);
+                if (rad > 48) {
+                    ObjPrim_SetVertexPosition(lines, j + 1, xPos, yPos, 1);
+                    ObjPrim_SetVertexPosition(cRim, j ~/ 2, xPos, yPos, 1);
+                }
+                ObjSpell_SetIntersectionLine(circle, xPos, yPos, MID_X + 300 * cos(angleT), MID_Y + 300 * sin(angleT), 100);
+                angleT += 360 / ((vertices / 2) - 1);
+            }
+            yield;
+        }
+
+
+        async {
+            loop (15) {
+                TCircle();
+                wait(10);
+            }
+        }
+
+        async {
+            ObjSpell_SetDamage(circle, 9);
+            loop (190) {
+                ObjSpell_SetIntersectionCircle(circle, MID_X, MID_Y, 270);
+                yield;
+            }
+        }
+
+        wait(40);
+
+        TParticles(150); //remaining frames in animaion
+        TLines(150);
+
+        wait(30);
+        CallSFX(SND_CHARGE1);
+        wait(30);
+        for (int i = 1; i <= frames; i++) { //color shift
+            int color = Interpolate_Linear(0, 255, i / as_float(frames));
+            ObjRender_SetColor(circle, color, color, color);
+            yield;
+        }
+
+        CallSFX(SND_BANG2);
+
+        Obj_Delete(circle);
+        Obj_Delete(lines);
+        Obj_Delete(cRim);
+
+        frames = 20;
+        for (int i = 1; i <= frames; i++) { //screen flash
+            ObjRender_SetAlpha(flash, Interpolate_Linear(255, 0, i / as_float(frames)));
+            yield;
+        }
+
+        Obj_Delete(flash);
+
+        task TCircle() {
+            int circle2 = InitPrim2D(PRIMITIVE_LINESTRIP, (vertices / 2), RP_STG_EFF_SPELL);
+            ObjRender_SetColor(circle2, COLOR_GREEN_L);
+
+            float angleT = 0;
+            int frames = 40;
+            for (int i = 1; i <= frames; i++) {
+                for (int j = 0; j < ObjPrim_GetVertexCount(circle2); j++) {
+                    int rad = Interpolate_Accelerate(300, 54, i / as_float(frames));
+                    ObjPrim_SetVertexPosition(circle2, j, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+                    angleT += 360 / (ObjPrim_GetVertexCount(circle2) - 1);
+                }
+                yield;
+            }
+            Obj_Delete(circle2);
+        }
+
+        task TParticles(int frames_) {
+            float[][] particleData = [];
+            int frameRate = 15;
+            loop (frames_) {
+                loop (3){
+                    particleData ~= [[MID_X, MID_Y, rand(-5, 5), rand(-5, 5), 0]];
+                }
+                for (int i = 0; i < length(particleData); i++) {
+                    if (particleData[i][4] > 40) continue;
+                    ObjParticleList_SetPosition(_particleEffect, particleData[i][0], particleData[i][1], 1);
+                    ObjParticleList_SetExtraData(_particleEffect, 3 - particleData[i][4] ~/ frameRate, 0, 0);
+                    ObjParticleList_SetColor(_particleEffect, COLOR_WHITE);
+                    ObjParticleList_AddInstance(_particleEffect);
+                    particleData[i][0] += particleData[i][2];
+                    particleData[i][1] += particleData[i][3];
+                    particleData[i][4]++;
+                }
+                CallSFX(SND_SHOT2);
+                yield;
+            }
+        }
+
+        task TLines(int frames_) {
+            int lines2 = InitPrim2D(PRIMITIVE_LINELIST, 10, RP_STG_EFF_SPELL);
+            int vertices = ObjPrim_GetVertexCount(lines2);
+            ObjRender_SetColor(lines2, COLOR_BLACK);
+
+            for (int i = 1; i <= frames_; i++) {
+                int rad = Interpolate_Linear(0, 300, i / as_float(frames_));
+                for (int i = 0; i < vertices; i += 2) {
+                    float angleT = rand(0, 360);
+                    ObjPrim_SetVertexPosition(lines2, i, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+                    ObjPrim_SetVertexPosition(lines2, i + 1, MID_X - (rad * cos(angleT) / 2), MID_Y - (rad * sin(angleT) / 2), 1);
+                }
+                yield;
+            }
+
+            Obj_Delete(lines2);
         }
     }
 }

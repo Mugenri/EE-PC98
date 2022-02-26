@@ -13,14 +13,16 @@ const string[] SOUNDS = [
     DIR_SE ~ "seBang1.wav",         //0
     DIR_SE ~ "seBang2.wav",
     DIR_SE ~ "seCharge1.wav",
+    DIR_SE ~ "seCharge2.wav",
     DIR_SE ~ "seExplosion1.wav",
     DIR_SE ~ "seExplosion2.wav",
     DIR_SE ~ "seGaugeFull.wav",
     DIR_SE ~ "seInvincible.wav",
     DIR_SE ~ "seItem.wav",
     DIR_SE ~ "seLaser1.wav",
-    DIR_SE ~ "seLaser2.wav",
-    DIR_SE ~ "seMenuCancel.wav",    //10
+    DIR_SE ~ "seLaser2.wav",        //10
+    DIR_SE ~ "seMasterSpark.wav",
+    DIR_SE ~ "seMenuCancel.wav",
     DIR_SE ~ "seMenuDecide.wav",
     DIR_SE ~ "seMenuSelect.wav",
     DIR_SE ~ "sePlayerGraze.wav",
@@ -28,25 +30,18 @@ const string[] SOUNDS = [
     DIR_SE ~ "sePlayerMiss.wav",
     DIR_SE ~ "sePlayerShot.wav",
     DIR_SE ~ "sePlayerVulnerable.wav",
+    DIR_SE ~ "sePlayerSpell.wav",   //20
     DIR_SE ~ "seShot1.wav",
     DIR_SE ~ "seShot2.wav",
-    DIR_SE ~ "seShot3.wav",         //20
-    DIR_SE ~ "seSpellTsuba1.wav",
-    DIR_SE ~ "seSpellTsuba2.wav",
-    DIR_SE ~ "seSpellTsuba3.wav",
-    DIR_SE ~ "seSpellTsuba4.wav",
-    DIR_SE ~ "seSpellYabu1.wav",
-    DIR_SE ~ "seSpellYabu2.wav",
+    DIR_SE ~ "seShot3.wav",
+    DIR_SE ~ "seShot4.wav",
     DIR_SE ~ "seTransition.wav",
     DIR_SE ~ "seDamage.wav",
+    DIR_SE ~ "seDamageLow.wav",
     DIR_SE ~ "seExtend.wav",
-    DIR_SE ~ "seTimer.wav",         //30
-    DIR_SE ~ "seCharge2.wav",
-    DIR_SE ~ "seShot4.wav",
-    DIR_SE ~ "seMasterSpark.wav",
-    DIR_SE ~ "seTalk.wav",
-    DIR_SE ~ "seBossTitle.wav",
-    DIR_SE ~ "seDamageLow.wav"
+    DIR_SE ~ "seTimer.wav",
+    DIR_SE ~ "seTalk.wav",          //30
+    DIR_SE ~ "seBossTitle.wav"
 ];
 
 @Initialize {
