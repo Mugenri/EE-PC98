@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
-int _loopTime = 240;
+int _loopTime = 700;
 _spellID = 999;
 int health = 3000;
 
@@ -66,7 +66,7 @@ task TMain() {
                 //TPatternB(1);
                 //TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
-                TPatternQ();
+                TPatternR();
             }
         }
         yield;
@@ -350,4 +350,15 @@ task TPatternP() {
 task TPatternQ() {
     int shot = CreateShotC1(MID_X, MID_Y, 0.5, 1, 90, SHOT_RED+PELLET, 0);
     ObjMove_AddPatternC2(shot, 30, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 90, 1);
+}
+
+task TPatternR() { // all shots
+    int maxShot = 774;
+
+    float angleT = 90;
+    for (int i = 1; i <= maxShot; i++) {
+        CreateShotUA1(MID_X, MID_Y, 1.5, angleT, i, 0, SHOT_RED+CANCEL_BURST1);
+        angleT += 10;
+        if (i % 2 == 0) yield;
+    }
 }
