@@ -34,6 +34,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
         SetPlayerSpell(3);
 
         SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
+        NotifyEvent(GetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", 0), EV_CONTINUE, 0); //reset score extends
     }
     case (EV_PLAYER_SHOOTDOWN) CheckGameOver(); //player out of lives
     case (EV_STAGE_VICTORY) CloseStgScene(); //stage cleared

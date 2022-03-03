@@ -4,6 +4,7 @@
 #include "./../lib/effectlib/lib_EffectCancel.dnh"
 
 int baseScore = [12800, 12800, 25600, 51200, 12800, 25600, 51200][GetDifficulty()];
+bool resetScoreExtend = false;
 
 @Initialize {
     System_Init();
@@ -123,16 +124,22 @@ int baseScore = [12800, 12800, 25600, 51200, 12800, 25600, 51200][GetDifficulty(
         CallSFX(SND_EXTEND);
         System_CallBanner(BANNER_EXTEND, 0);
     }
+    case (EV_CONTINUE) {
+        resetScoreExtend = true;
+        TCheckScoreExtend();
+    }
 }
 
-task TCheckScoreExtend() { //TODO rework for continues
+task TCheckScoreExtend() {
     if (GetGameMode() == GAME_SPELL) return; //no score extends in spell practice
-    while (GetScore() < 010_000_000) yield;
-    NotifyEventOwn(EV_SCORE_EXTEND, 0);
-    while (GetScore() < 020_000_000) yield;
-    NotifyEventOwn(EV_SCORE_EXTEND, 0);
-    while (GetScore() < 040_000_000) yield;
-    NotifyEventOwn(EV_SCORE_EXTEND, 0);
-    while (GetScore() < 080_000_000) yield;
-    NotifyEventOwn(EV_SCORE_EXTEND, 0);
+
+    resetScoreExtend = false;
+
+    int extendThreshold = 010_000_000;
+    loop {
+        while (GetScore() < extendThreshold && !resetScoreExtend) yield;
+        if (resetScoreExtend) return;
+        NotifyEventOwn(EV_SCORE_EXTEND, 0);
+        extendThreshold *= 2;
+    }
 }
