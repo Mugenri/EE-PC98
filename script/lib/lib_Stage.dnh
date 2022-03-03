@@ -220,7 +220,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     if (bombCount == 0) totalScore += noBombBonus;
     totalScore *= multContinue[continues];
     totalScore *= multDifficulty[difficulty];
-    totalScore = min(totalScore, 99999999); //cap to 100 million
+    totalScore = min(totalScore, 999_999_999); //cap to 1 billion
     AddScore(totalScore);
 
     //TEXT SETUP --------------------------------------
