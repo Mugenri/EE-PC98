@@ -44,7 +44,7 @@ function<void> CD_Init() { //creates common data areas, loads data from files
 }
 
 function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from file, otherwise create file. also supports resetting options with loadDefault_
-    bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG); //TODO wtf is this saved_config shit just use config
+    bool saveFile = LoadCommonDataAreaA2("SAVED_CONFIG", SAVE_COMMON_CONFIG);
     if (IsCommonDataAreaExists(AREA_CONFIG)) ClearAreaCommonData(AREA_CONFIG);
     if (loadDefault_) saveFile = false;
     if (saveFile) { //load from save file
