@@ -122,20 +122,19 @@ function<void> Boss_Finalize(int obj_) {
 
     //Items and Bullet Cancel score values (only for spell cards)
     int scoreTotal = 0;
+    int score = isSpell ? 1000 : 500; //starting score for scaling
     if (isCapture && isSpell) { //spell capture
-        int score = 10;
-        int scoreBonus = 10;
+        int scoreBonus = 100; //adiitonal score per bullet on top of starting score
         int numBullets = 0;
         float radius = 200;
         loop (5) {
-            for each (shot in GetShotIdInCircleA2(MID_X, MID_Y - GetStgFrameHeight() / 2, radius, TARGET_ENEMY)) { //TODO maybe change to boss location?
+            for each (shot in GetShotIdInCircleA2(GetPlayerX(), GetPlayerY(), radius, TARGET_ENEMY)) {
                 if (ObjMove_GetX(shot) < MIN_X || ObjMove_GetX(shot) > MAX_X || ObjMove_GetY(shot) < MIN_Y || ObjMove_GetY(shot) > MAX_Y) continue; //no items spawn off screen
                 else if (radius == 600 && Obj_GetType(shot) == OBJ_SHOT) { //assign shot score bonus, only runs on final loop
                     Obj_SetValueI(shot, SHOT_SCORE, score);
                     Obj_SetValueI(shot, SHOT_SCORE_TEXT, true);
                     scoreTotal += score;
                     score += scoreBonus;
-                    scoreBonus += 10;
                     score = clamp(score, 0, 12800);
                 }
                 if (numBullets < 35 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 35 bullets drop point items
@@ -148,7 +147,7 @@ function<void> Boss_Finalize(int obj_) {
     } else if (!isCapture || !isSpell) { //spell capture fail or nonspell
         for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 600, TARGET_ENEMY)) {
             if (ObjMove_GetX(shot) < MIN_X || ObjMove_GetX(shot) > MAX_X || ObjMove_GetY(shot) < MIN_Y || ObjMove_GetY(shot) > MAX_Y) continue; //no score for bullets offscreen
-            else if (Obj_GetType(shot) == OBJ_SHOT) Obj_SetValueI(shot, SHOT_SCORE, 100); //default score for non/spell bullet cancel
+            else if (Obj_GetType(shot) == OBJ_SHOT) Obj_SetValueI(shot, SHOT_SCORE, score);
         }
         scoreTotal = -1;
     }

@@ -21,7 +21,7 @@ _spellID = 27 + _diff;
         SetScriptResult(50 + absolute(_count / 60));
     }
     case (EV_REQUEST_SPELL_SCORE) {
-        SetScriptResult(350000);
+        SetScriptResult(1000000);
     }
 }
 
