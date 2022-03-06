@@ -2,6 +2,7 @@
 #include "./../lib/lib_TitleCommon.dnh"
 #include "./../lib/lib_TitleUtil.dnh"
 #include "./../../lib/lib_HighScore.dnh"
+#include "./../../lib/lib_Result.dnh"
 
 int _stageEvent;
 bool _pauseEnable;
@@ -108,6 +109,7 @@ task TStageScene() {
                 alternative(_stageEvent)
                 case (STAGE_VICTORY) { //game clear
                     //TODO ending cutscene, credits, tsuba unlock etc.
+                    //TODO Score entry scene goes here
                     WriteLog("stage victory");
                 }
                 case (STAGE_VICTORY_SPELL) { //spell practice clear
@@ -123,6 +125,7 @@ task TStageScene() {
                 alternative (_stageEvent)
                 case (STAGE_GAMEOVER) { //quit from continue prompt
                     //ask to save replay OR get replay save confirmation from previous menu?
+                    //TODO score entry scene goes here
                     WriteLog("stage gameover");
                 }
                 case (STAGE_GAMEOVER_SPELL) { //spell practice fail
@@ -181,6 +184,9 @@ task TStageScene() {
             if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by continue
                 HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
             }
+            //save continue score to result menu
+            Result_AddNew("Continue", GetScore(), "Continue");
+            //use continue
             NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
             PauseStageScene(false);
             _stageEvent = STAGE_NONE;

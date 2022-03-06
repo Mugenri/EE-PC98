@@ -1,0 +1,62 @@
+//Player Score History Library
+//fields are PLAYER_DIFF_INDEX
+//values are string arrays of [name, score, date, time, clearstatus]
+
+const int RESULT_MAX = 8; //max number of entries allowed for result storage per character/difficulty combination
+
+function<string[]> Result_GetList(int player_, int diff_, int index_) { //get the result list from the given player, diff, and list index
+    return GetAreaCommonData(AREA_RESULT, Result_GetFieldName(player_, diff_, index_), Result_GetDefaultList(index_));
+}
+
+function<void> Result_SetList(int player_, int diff_, int index_, string[] data_) { //set the result list in the given area to the array data_
+    SetAreaCommonData(AREA_RESULT, Result_GetFieldName(player_, diff_, index_), data_);
+}
+
+function<string> Result_GetFieldName(int player_, int diff_, int index_) { //build a field name
+    return IntToString(player_) ~ "_" ~ IntToString(diff_) ~ "_" ~ IntToString(index_);
+}
+
+function<void> Result_AddNew(string name_, int score_, string clearStatus_) { //place a new entry if possible, shift old entries down
+    int player = GetPlayerType();
+    int diff = GetDifficulty();
+    int index = Result_CheckNew(player, diff, score_);
+    if (index != -1) {
+        string[] dateTime = Result_FormatDateTime(GetCurrentDateTimeS());
+        Result_ShiftDown(player, diff, index);
+        Result_SetList(player, diff, index, [name_, IntToString(score_), dateTime[0], dateTime[1], clearStatus_]);
+    }
+}
+
+function<int> Result_CheckNew(int player_, int diff_, int score_) { //check if the given score can be added to the result list, return index
+    for (int i = 0; i < RESULT_MAX; i++) {
+        int checkScore = atoi(Result_GetList(player_, diff_, i)[1]);
+        if (score_ > checkScore) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+function<void> Result_ShiftDown(int player_, int diff_, int index_) { //move all entries down an index, including index_
+    string[] currData = Result_GetList(player_, diff_, index_);
+    string[] tempData = [];
+    for (int i = index_; i < RESULT_MAX - 1; i++) {
+        tempData = Result_GetList(player_, diff_, i + 1);
+        Result_SetList(player_, diff_, i + 1, currData);
+        currData = tempData;
+    }
+}
+
+function<string[]> Result_FormatDateTime(string time_) { //insert formatting symbols and split date/time string
+    time_ = insert(time_, 10, ':'); //time split
+    time_ = insert(time_, 6, '/'); //month / day split
+    time_ = insert(time_, 4, '/'); //year / month split
+    string date = time_[0..10];
+    string time = time_[10..15];
+    return [date, time];
+}
+
+function<string[]> Result_GetDefaultList(int index_) { //list of default strings for name, score, date, time, clearstatus
+    int defaultScore = 1000000 - (100000 * index_); //descend from 1mil
+    return ["--------", IntToString(defaultScore), "----/--/--", "--:--", "--------"];
+}

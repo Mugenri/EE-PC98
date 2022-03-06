@@ -51,6 +51,7 @@ function<string[]> GetImgTitle() { //returns title image paths (lib_TitleCommon.
         IMG_TT_PLAYER1,
         IMG_TT_PLAYER2,
         IMG_TT_SPELL,
+        IMG_TT_RESULT,
         IMG_TT_MUSIC,
         IMG_TT_CURSOR
     ];

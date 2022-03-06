@@ -27,6 +27,7 @@ const string IMG_TT_PLAYER2     = DIR_IMG_TITLE ~ "playerSelectTsuba.png";
 
 //Others
 const string IMG_TT_SPELL       = DIR_IMG_TITLE ~ "spellPractice.png";
+const string IMG_TT_RESULT      = DIR_IMG_TITLE ~ "scoreRoom.png";
 const string IMG_TT_MUSIC       = DIR_IMG_TITLE ~ "musicRoom.png";
 const string IMG_TT_CURSOR      = DIR_IMG_TITLE ~ "selectCursor.png";
 

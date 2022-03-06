@@ -1,0 +1,192 @@
+//Player Score Screen
+#include "./../../lib/lib_Result.dnh"
+
+function<void> SceneResult() {
+    bool exitFlag = false;
+
+    int selectedPlayer = PLAYER_YABUSAME;
+    int selectedDiff = D_EXTRA;
+
+    TCreateMenuGraphicsResult();
+
+    int menuX = 16;
+    int menuY = 128;
+    int yOff = 24;
+    for (int i = 0; i < RESULT_MAX; i++) {
+        TCreateMenuItemResult(i, menuX, menuY);
+        menuY += yOff;
+    }
+
+    wait(15); //wait for screen fade from previous menu to clear
+    WaitKeysFree([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_SLOWMOVE, VK_OK, VK_CANCEL, VK_PAUSE]);
+    loop {
+        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        alternative (userKey)
+        case (VK_UP, VK_DOWN) {
+            int increment = userKey == VK_UP ? -1 : 1;
+            CallSFX(SND_TT_SELECT);
+            selectedPlayer = IncrementIndex(selectedPlayer, increment, PLAYER_YABUSAME, PLAYER_TSUBAKURA);
+        }
+        case (VK_LEFT, VK_RIGHT) {
+            int increment = userKey == VK_LEFT ? -1 : 1;
+            CallSFX(SND_TT_SELECT);
+            selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX);
+        }
+        case (VK_OK, VK_CANCEL, VK_PAUSE) {
+            CallSFX(SND_TT_CANCEL);
+            ScreenBlackout(10, 5, 10, COLOR_BLACK);
+            wait(10);
+            break;
+        }
+    }
+
+    exitFlag = true;
+    return;
+
+    task TCreateMenuGraphicsResult() {
+        TPlayerDisplay();
+        TDiffDisplay();
+
+        int bg = InitSprite2D(0, 0, 640, 400, IMG_TT_RESULT, RP_UI_BG);
+        int sceneSprites = InitSpriteList2D(IMG_TT_RESULT, RP_UI_IMG);
+
+        //header
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 640, 0, 976, 64);
+        ObjRender_SetPosition(sceneSprites, 157, 16, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //left flair
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 640, 64, 704, 112);
+        ObjRender_SetPosition(sceneSprites, 94, 18, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //right flair
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 704, 64, 768, 112);
+        ObjRender_SetPosition(sceneSprites, 487, 18, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //tl corner
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 768, 64, 848, 144);
+        ObjRender_SetPosition(sceneSprites, 0, 0, 1);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //tr corner
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 768, 64, 848, 144);
+        ObjRender_SetPosition(sceneSprites, 639, 0, 1);
+        ObjRender_SetAngleZ(sceneSprites, 90);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //bl corner
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 768, 64, 848, 144);
+        ObjRender_SetPosition(sceneSprites, 0, 399, 1);
+        ObjRender_SetAngleZ(sceneSprites, 270);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+        //br corner
+        ObjSpriteList2D_SetSourceDestRect(sceneSprites, 768, 64, 848, 144);
+        ObjRender_SetPosition(sceneSprites, 639, 399, 1);
+        ObjRender_SetAngleZ(sceneSprites, 180);
+        ObjSpriteList2D_AddVertex(sceneSprites);
+
+        ObjSpriteList2D_CloseVertex(sceneSprites);
+
+        while (!exitFlag) {
+            loop (rand_int(5, 45)) {
+                if (exitFlag) break;
+                yield;
+            }
+            TWave();
+        }
+
+        Obj_Delete(bg);
+        Obj_Delete(sceneSprites);
+
+        task TWave() {
+            //particle rings
+            int wave = InitPrim2D(PRIMITIVE_POINT_LIST, rand_int(45, 90), RP_UI_PARTICLE);
+            ObjRender_SetColor(wave, COLOR_WATER);
+
+            float rad = 0;
+            float maxRad = ObjPrim_GetVertexCount(wave) * 3.5;
+            float frames = maxRad;
+            int xPos = rand_int(0, 640);
+            int yPos = rand_int(0, 400);
+
+            for (int i = 0; i < maxRad; i++) {
+                if (exitFlag) break;
+                float angleT = rand(0, 360);
+                for (int j = 0; j < ObjPrim_GetVertexCount(wave); j++) {
+                    float[] pos = Rotate2D(xPos + rad * cos(angleT), yPos + (rad * 0.8) * sin(angleT), -27, xPos, yPos);
+                    ObjPrim_SetVertexPosition(wave, j, pos[0], pos[1], 1);
+                    angleT += 360 / ObjPrim_GetVertexCount(wave);
+                }
+                rad = Interpolate_Decelerate(0, maxRad, i / as_float(frames + 40));
+                yield;
+            }
+
+            Obj_Delete(wave);
+        }
+
+        task TPlayerDisplay() {
+            int playerText = InitSprite2D(640, 144 + selectedPlayer * 18, 896, 144 + (selectedPlayer + 1) * 18, IMG_TT_RESULT, RP_UI_TEXT);
+            ObjRender_SetPosition(playerText, 32, 95, 1);
+            int currPlayer = -1;
+
+            while (!exitFlag) {
+                if (currPlayer != selectedPlayer) {
+                    currPlayer = selectedPlayer;
+                    ObjSprite2D_SetSourceRect(playerText, 640, 144 + currPlayer * 18, 896, 144 + (currPlayer + 1) * 18);
+                }
+                yield;
+            }
+            Obj_Delete(playerText);
+        }
+
+        task TDiffDisplay() {
+            int diffText = InitSprite2D(0, 386 + selectedDiff * 18, 225, 386 + (selectedDiff + 1) * 18, IMG_TT_RANK, RP_UI_TEXT);
+            ObjRender_SetPosition(diffText, 368, 95, 1);
+            int currDiff = -1;
+            
+            while (!exitFlag) {
+                if (currDiff != selectedDiff) {
+                    currDiff = selectedDiff;
+                    ObjSprite2D_SetSourceRect(diffText, 0, 386 + currDiff * 18, 225, 386 + (currDiff + 1) * 18);
+                }
+                yield;
+            }
+            Obj_Delete(diffText);
+        }
+    }
+
+    task TCreateMenuItemResult(int index_, int xPos_, int yPos_) {
+        //text object with number
+        int entryNum = CreateText(xPos_, yPos_, RP_UI_TEXT, IntToString(index_ + 1), COLOR_WHITE);
+        ObjText_SetFontType(entryNum, HEADER_FONT);
+
+        int entryText = CreateText(xPos_ + 32, yPos_, RP_UI_TEXT, "ERR", COLOR_WHITE);
+
+        int currPlayer = selectedPlayer;
+        int currDiff = selectedDiff;
+
+        //initial creation
+        ObjText_SetText(entryText, UpdateEntry());
+
+        while (!exitFlag) {
+            if (currPlayer != selectedPlayer || currDiff != selectedDiff) {
+                currPlayer = selectedPlayer;
+                currDiff = selectedDiff;
+                ObjText_SetText(entryText, UpdateEntry());
+            }
+            yield;
+        }
+
+        Obj_Delete(entryNum);
+        Obj_Delete(entryText);
+
+        function<string> UpdateEntry() {
+            string[] resultList = Result_GetList(selectedPlayer, selectedDiff, index_);
+            return StringFormat("%-8s   %9s   %10s   %5s   %8s",
+                "sssss",
+                resultList[0],
+                resultList[1],
+                resultList[2],
+                resultList[3],
+                resultList[4]
+            );
+        }
+    }
+}

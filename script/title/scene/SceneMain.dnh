@@ -4,7 +4,7 @@
 const int INDEX_EXTRA   = 0;
 const int INDEX_PRACTICE= 1;
 const int INDEX_REPLAY  = 2;
-const int INDEX_SCORE   = 3;
+const int INDEX_RESULT   = 3;
 const int INDEX_MUSIC   = 4;
 const int INDEX_SOUND   = 5;
 const int INDEX_OPTION  = 6;
@@ -109,13 +109,13 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
             }
             TSelectReplay();
         }
-        case (INDEX_SCORE) {
+        case (INDEX_RESULT) {
             //Result
             if (!isPreload_) {
                 ScreenBlackout(10, 5, 10, COLOR_BLACK);
                 wait(10);
             }
-            TSelectScore();
+            TSelectResult();
         }
         case (INDEX_MUSIC) {
             //Music Room
@@ -368,12 +368,12 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         TMainMenu(false, INDEX_REPLAY, -1);
     }
 
-    task TSelectScore() {
+    task TSelectResult() {
         exitFlag = true;
-        //SceneScore();
+        SceneResult();
 
         //Exited player score menu
-        TMainMenu(false, INDEX_SCORE, -1);
+        TMainMenu(false, INDEX_RESULT, -1);
     }
 
     task TSelectMusic() {

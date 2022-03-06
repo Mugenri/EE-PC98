@@ -37,7 +37,7 @@ function<void> CD_Init() { //creates common data areas, loads data from files
     LoadCommonDataAreaA2(AREA_HIGHSCORE, SAVE_COMMON_SCORE);
 
     //load in result (player score list)
-    //LoadCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
+    LoadCommonDataAreaA2(AREA_RESULT, SAVE_COMMON_RESULT);
 
     //Unlock Extra for Yabusame. This is specific to this game only. Delete this for other projects.
     CD_SetExtraStageFlag(PLAYER_YABUSAME);
