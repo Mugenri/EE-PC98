@@ -1,4 +1,5 @@
 //Stage Control Script
+#include "./SceneResult.dnh"
 #include "./../lib/lib_TitleCommon.dnh"
 #include "./../lib/lib_TitleUtil.dnh"
 #include "./../../lib/lib_HighScore.dnh"
@@ -60,6 +61,9 @@ task TStageScene() {
 
     StartStage();
 
+    //TODO check if replay
+    Result_AddPlayCount(GetPlayerType(), GetDifficulty());
+
     loop {
         //--------------------------------------------------------------------
         //Stage Event Handling
@@ -109,7 +113,8 @@ task TStageScene() {
                 alternative(_stageEvent)
                 case (STAGE_VICTORY) { //game clear
                     //TODO ending cutscene, credits, tsuba unlock etc.
-                    //TODO Score entry scene goes here
+                    Result_AddClearCount(GetPlayerType(), GetDifficulty());
+                    ScoreEntryScreen("Cleared");
                     WriteLog("stage victory");
                 }
                 case (STAGE_VICTORY_SPELL) { //spell practice clear
@@ -125,7 +130,7 @@ task TStageScene() {
                 alternative (_stageEvent)
                 case (STAGE_GAMEOVER) { //quit from continue prompt
                     //ask to save replay OR get replay save confirmation from previous menu?
-                    //TODO score entry scene goes here
+                    ScoreEntryScreen("Failed");
                     WriteLog("stage gameover");
                 }
                 case (STAGE_GAMEOVER_SPELL) { //spell practice fail
@@ -185,7 +190,7 @@ task TStageScene() {
                 HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
             }
             //save continue score to result menu
-            Result_AddNew("Continue", GetScore(), "Continue");
+            Result_AddNew(GetScore(), GetCurrentDateTimeS(), "Continue");
             //use continue
             NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", 0), EV_CONTINUE, 0);
             PauseStageScene(false);
@@ -246,6 +251,11 @@ function<void> StageCleared() {
     NotifyEvent(GetStageScriptID(), EV_STAGE_VICTORY, 0);
 }
 
+function<void> ScoreEntryScreen(string status_) {
+    ScreenBlackout(0, 5, 10, COLOR_BLACK);
+    SceneResult(GetScore(), status_);
+}
+
 function<void> SetTransitionTexture() { //saves the current frame to be used as the background for pause/dialogue screens
 	RenderToTextureA1(RT_SCREENSHOT, RP_UI_MIN, RP_STG_BG, false);
     RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
@@ -255,8 +265,13 @@ function<void> TReturnToTitle() { //Run title screen
     //TODO check if a replay just played
     int gameMode = GetGameMode(); //before clearing common data, get game mode
 
+    //check highscore
     if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) {
         HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
+    }
+    //add playtime
+    if (gameMode == GAME_MAIN) {
+        Result_AddPlayTime(GetPlayerType(), GetDifficulty(), GetStageTime());
     }
     //save data
     CD_SaveScore();

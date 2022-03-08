@@ -1,11 +1,19 @@
 //Player Score Screen
 #include "./../../lib/lib_Result.dnh"
 
-function<void> SceneResult() {
+function<void> SceneResult(int score_, string clearStatus_) {
     bool exitFlag = false;
 
     int selectedPlayer = PLAYER_YABUSAME;
     int selectedDiff = D_EXTRA;
+
+    int newIndex = -1;
+
+    if (score_ >= 0) { //add new entry
+        selectedPlayer = GetPlayerType();
+        selectedDiff = GetDifficulty();
+        newIndex = Result_AddNew(score_, GetCurrentDateTimeS(), clearStatus_);
+    }
 
     TCreateMenuGraphicsResult();
 
@@ -19,24 +27,34 @@ function<void> SceneResult() {
 
     wait(15); //wait for screen fade from previous menu to clear
     WaitKeysFree([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_SLOWMOVE, VK_OK, VK_CANCEL, VK_PAUSE]);
-    loop {
-        int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
-        alternative (userKey)
-        case (VK_UP, VK_DOWN) {
-            int increment = userKey == VK_UP ? -1 : 1;
-            CallSFX(SND_TT_SELECT);
-            selectedPlayer = IncrementIndex(selectedPlayer, increment, PLAYER_YABUSAME, PLAYER_TSUBAKURA);
-        }
-        case (VK_LEFT, VK_RIGHT) {
-            int increment = userKey == VK_LEFT ? -1 : 1;
-            CallSFX(SND_TT_SELECT);
-            selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX);
-        }
-        case (VK_OK, VK_CANCEL, VK_PAUSE) {
+    if (score_ >= 0) { //after game, quit on input
+        loop {
+            int userKey = CheckKeyPressed([VK_OK, VK_CANCEL, VK_PAUSE]);
             CallSFX(SND_TT_CANCEL);
-            ScreenBlackout(10, 5, 10, COLOR_BLACK);
-            wait(10);
+            ScreenBlackout(60, 5, 0, COLOR_BLACK);
+            wait(60);
             break;
+        }
+    } else { //from title screen, display stats
+        loop {
+            int userKey = CheckKeyPressed([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+            alternative (userKey)
+            case (VK_UP, VK_DOWN) {
+                int increment = userKey == VK_UP ? -1 : 1;
+                CallSFX(SND_TT_SELECT);
+                selectedPlayer = IncrementIndex(selectedPlayer, increment, PLAYER_YABUSAME, PLAYER_TSUBAKURA);
+            }
+            case (VK_LEFT, VK_RIGHT) {
+                int increment = userKey == VK_LEFT ? -1 : 1;
+                CallSFX(SND_TT_SELECT);
+                selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX);
+            }
+            case (VK_OK, VK_CANCEL, VK_PAUSE) {
+                CallSFX(SND_TT_CANCEL);
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+                break;
+            }
         }
     }
 
@@ -46,6 +64,9 @@ function<void> SceneResult() {
     task TCreateMenuGraphicsResult() {
         TPlayerDisplay();
         TDiffDisplay();
+
+        if (score_ >= 0) TInputPromptDisplay(newIndex == 0); //post game
+        else TPlayTimeDisplay(); //from title
 
         int bg = InitSprite2D(0, 0, 640, 400, IMG_TT_RESULT, RP_UI_BG);
         int sceneSprites = InitSpriteList2D(IMG_TT_RESULT, RP_UI_IMG);
@@ -150,10 +171,57 @@ function<void> SceneResult() {
             }
             Obj_Delete(diffText);
         }
+
+        task TInputPromptDisplay(bool isNewHighScore_) {
+            int highScoreText = CreateText(0, 336, RP_UI_TEXT, "ERR", COLOR_WHITE);
+            ObjText_SetFontType(highScoreText, HEADER_FONT);
+            ObjText_SetMaxWidth(highScoreText, 640);
+            ObjText_SetHorizontalAlignment(highScoreText, ALIGNMENT_CENTER);
+
+            if (isNewHighScore_) ObjText_SetText(highScoreText, "New High Score!!");
+            else ObjText_SetText(highScoreText, "Press SHOT to continue...");
+
+            while (!exitFlag) {
+                ObjText_SetVertexColor(highScoreText, 0xFF000000 + COLOR_WHITE);
+                loop (30) {
+                    if (exitFlag) break;
+                    yield;
+                }
+                if (isNewHighScore_) ObjText_SetVertexColor(highScoreText, 0xFF000000 + COLOR_YELLOW);
+                loop (30) {
+                    if (exitFlag) break;
+                    yield;
+                }
+            }
+        }
+
+        task TPlayTimeDisplay() {
+            int playText = CreateText(0, 336, RP_UI_TEXT, "ERR", COLOR_WHITE);
+            ObjText_SetMaxWidth(playText, 640);
+            ObjText_SetHorizontalAlignment(playText, ALIGNMENT_CENTER);
+
+            int currPlayer = -1;
+            int currDiff = -1;
+
+            while (!exitFlag) {
+                if (currPlayer != selectedPlayer || currDiff != selectedDiff) {
+                    string temp = StringFormat(
+                        "Play Time: %8s[r]Play Count: %3d[r]Clear Count: %3d",
+                        "sdd",
+                        Result_FormatPlayTime(Result_GetPlayTime(selectedPlayer, selectedDiff)),
+                        Result_GetPlayCount(selectedPlayer, selectedDiff),
+                        Result_GetClearCount(selectedPlayer, selectedDiff)
+                    );
+                    ObjText_SetText(playText, temp);
+                }
+                yield;
+            }
+            Obj_Delete(playText);
+        }
     }
 
     task TCreateMenuItemResult(int index_, int xPos_, int yPos_) {
-        //text object with number
+        //text object with number and name
         int entryNum = CreateText(xPos_, yPos_, RP_UI_TEXT, IntToString(index_ + 1), COLOR_WHITE);
         ObjText_SetFontType(entryNum, HEADER_FONT);
 
@@ -161,6 +229,11 @@ function<void> SceneResult() {
 
         int currPlayer = selectedPlayer;
         int currDiff = selectedDiff;
+
+        if (index_ == newIndex) { //new entry
+            ObjText_SetVertexColor(entryNum, 0xFF000000 + COLOR_YELLOW);
+            ObjText_SetVertexColor(entryText, 0xFF000000 + COLOR_YELLOW);
+        }
 
         //initial creation
         ObjText_SetText(entryText, UpdateEntry());
@@ -179,13 +252,22 @@ function<void> SceneResult() {
 
         function<string> UpdateEntry() {
             string[] resultList = Result_GetList(selectedPlayer, selectedDiff, index_);
-            return StringFormat("%-8s   %9s   %10s   %5s   %8s",
-                "sssss",
-                resultList[0],
+            //commas
+            string scoreNum = resultList[0];
+            int scoreLen = length(scoreNum);
+            if (scoreLen > 6) {
+                scoreNum = insert(scoreNum, scoreLen - 3, ',');
+                scoreNum = insert(scoreNum, scoreLen - 6, ',');
+            } else if (scoreLen > 3) {
+                scoreNum = insert(scoreNum, scoreLen - 3, ',');
+            }
+
+            return StringFormat("%11s   %10s   %5s   %-8s",
+                "ssss",
+                scoreNum,
                 resultList[1],
                 resultList[2],
-                resultList[3],
-                resultList[4]
+                resultList[3]
             );
         }
     }

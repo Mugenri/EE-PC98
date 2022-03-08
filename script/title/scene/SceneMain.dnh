@@ -171,7 +171,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         //player input to skip intro
         async {
             loop (125) { //animation time
-                if (GetVirtualKeyState(VK_OK) == KEY_PUSH) {
+                if (GetVirtualKeyState(VK_OK) == KEY_PUSH || GetVirtualKeyState(VK_CANCEL) == KEY_PUSH || GetVirtualKeyState(VK_PAUSE) == KEY_PUSH) {
                     skipIntro = true;
                     break;
                 }
@@ -370,7 +370,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
 
     task TSelectResult() {
         exitFlag = true;
-        SceneResult();
+        SceneResult(-1, "");
 
         //Exited player score menu
         TMainMenu(false, INDEX_RESULT, -1);

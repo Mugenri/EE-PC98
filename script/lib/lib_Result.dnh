@@ -1,9 +1,10 @@
 //Player Score History Library
 //fields are PLAYER_DIFF_INDEX
-//values are string arrays of [name, score, date, time, clearstatus]
+//values are string arrays of [score, date, time, clearstatus]
 
 const int RESULT_MAX = 8; //max number of entries allowed for result storage per character/difficulty combination
 
+//Result Field Functions
 function<string[]> Result_GetList(int player_, int diff_, int index_) { //get the result list from the given player, diff, and list index
     return GetAreaCommonData(AREA_RESULT, Result_GetFieldName(player_, diff_, index_), Result_GetDefaultList(index_));
 }
@@ -12,24 +13,25 @@ function<void> Result_SetList(int player_, int diff_, int index_, string[] data_
     SetAreaCommonData(AREA_RESULT, Result_GetFieldName(player_, diff_, index_), data_);
 }
 
-function<string> Result_GetFieldName(int player_, int diff_, int index_) { //build a field name
+function<string> Result_GetFieldName(int player_, int diff_, int index_) { //build a result data field name
     return IntToString(player_) ~ "_" ~ IntToString(diff_) ~ "_" ~ IntToString(index_);
 }
 
-function<void> Result_AddNew(string name_, int score_, string clearStatus_) { //place a new entry if possible, shift old entries down
+function<int> Result_AddNew(int score_, string dateTime_, string clearStatus_) { //place a new entry if possible, shift old entries down
     int player = GetPlayerType();
     int diff = GetDifficulty();
     int index = Result_CheckNew(player, diff, score_);
     if (index != -1) {
-        string[] dateTime = Result_FormatDateTime(GetCurrentDateTimeS());
+        string[] dateTime = Result_FormatDateTime(dateTime_);
         Result_ShiftDown(player, diff, index);
-        Result_SetList(player, diff, index, [name_, IntToString(score_), dateTime[0], dateTime[1], clearStatus_]);
+        Result_SetList(player, diff, index, [IntToString(score_), dateTime[0], dateTime[1], clearStatus_]);
     }
+    return index;
 }
 
 function<int> Result_CheckNew(int player_, int diff_, int score_) { //check if the given score can be added to the result list, return index
     for (int i = 0; i < RESULT_MAX; i++) {
-        int checkScore = atoi(Result_GetList(player_, diff_, i)[1]);
+        int checkScore = atoi(Result_GetList(player_, diff_, i)[0]);
         if (score_ > checkScore) {
             return i;
         }
@@ -37,7 +39,7 @@ function<int> Result_CheckNew(int player_, int diff_, int score_) { //check if t
     return -1;
 }
 
-function<void> Result_ShiftDown(int player_, int diff_, int index_) { //move all entries down an index, including index_
+function<void> Result_ShiftDown(int player_, int diff_, int index_) { //move all entries down an index, including index_ (duplicates index_)
     string[] currData = Result_GetList(player_, diff_, index_);
     string[] tempData = [];
     for (int i = index_; i < RESULT_MAX - 1; i++) {
@@ -56,7 +58,24 @@ function<string[]> Result_FormatDateTime(string time_) { //insert formatting sym
     return [date, time];
 }
 
-function<string[]> Result_GetDefaultList(int index_) { //list of default strings for name, score, date, time, clearstatus
+function<string[]> Result_GetDefaultList(int index_) { //list of default strings for score, date, time, clearstatus
     int defaultScore = 1000000 - (100000 * index_); //descend from 1mil
-    return ["--------", IntToString(defaultScore), "----/--/--", "--:--", "--------"];
+    return [IntToString(defaultScore), "----/--/--", "--:--", "--------"];
+}
+
+//Play time/amount Field Functions
+function<int> Result_GetPlayTime(int player_, int diff_) { return GetAreaCommonData(AREA_RESULT, "PLAYTIME_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), 0); } //in ms
+function<void> Result_AddPlayTime(int player_, int diff_, int ms_) { CD_AddAreaCommonData(AREA_RESULT, "PLAYTIME_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), ms_, 0); } //in ms
+function<int> Result_GetPlayCount(int player_, int diff_) { return GetAreaCommonData(AREA_RESULT, "PLAYCOUNT_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), 0); }
+function<void> Result_AddPlayCount(int player_, int diff_) { CD_AddAreaCommonData(AREA_RESULT, "PLAYCOUNT_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), 1, 0); }
+function<int> Result_GetClearCount(int player_, int diff_) { return GetAreaCommonData(AREA_RESULT, "CLEARCOUNT_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), 0); }
+function<void> Result_AddClearCount(int player_, int diff_) { CD_AddAreaCommonData(AREA_RESULT, "CLEARCOUNT_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), 1, 0); }
+
+function<string> Result_FormatPlayTime(int ms_) { //hh:mm:ss from milliseconds
+    if (ms_ == 0) return "00:00:00";
+    int hour = min((ms_ / 3600000), 99);
+    int minute = (ms_ / 60000) % 60;
+    int second = (ms_ / 1000) % 60;
+
+    return StringFormat("%02d:%02d:%02d", "ddd", hour, minute, second);
 }
