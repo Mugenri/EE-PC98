@@ -17,7 +17,7 @@ function<void> SceneResult(int score_, string clearStatus_) {
 
     TCreateMenuGraphicsResult();
 
-    int menuX = 16;
+    int menuX = 100;
     int menuY = 128;
     int yOff = 24;
     for (int i = 0; i < RESULT_MAX; i++) {
@@ -221,19 +221,14 @@ function<void> SceneResult(int score_, string clearStatus_) {
     }
 
     task TCreateMenuItemResult(int index_, int xPos_, int yPos_) {
-        //text object with number and name
-        int entryNum = CreateText(xPos_, yPos_, RP_UI_TEXT, IntToString(index_ + 1), COLOR_WHITE);
-        ObjText_SetFontType(entryNum, HEADER_FONT);
-
-        int entryText = CreateText(xPos_ + 32, yPos_, RP_UI_TEXT, "ERR", COLOR_WHITE);
+        int entryText = CreateText(0, yPos_, RP_UI_TEXT, "ERR", COLOR_WHITE);
+        ObjText_SetHorizontalAlignment(entryText, ALIGNMENT_CENTER);
+        ObjText_SetMaxWidth(entryText, 640);
 
         int currPlayer = selectedPlayer;
         int currDiff = selectedDiff;
 
-        if (index_ == newIndex) { //new entry
-            ObjText_SetVertexColor(entryNum, 0xFF000000 + COLOR_YELLOW);
-            ObjText_SetVertexColor(entryText, 0xFF000000 + COLOR_YELLOW);
-        }
+        if (index_ == newIndex) ObjText_SetVertexColor(entryText, 0xFF000000 + COLOR_YELLOW);
 
         //initial creation
         ObjText_SetText(entryText, UpdateEntry());
@@ -247,7 +242,6 @@ function<void> SceneResult(int score_, string clearStatus_) {
             yield;
         }
 
-        Obj_Delete(entryNum);
         Obj_Delete(entryText);
 
         function<string> UpdateEntry() {
@@ -262,7 +256,7 @@ function<void> SceneResult(int score_, string clearStatus_) {
                 scoreNum = insert(scoreNum, scoreLen - 3, ',');
             }
 
-            return StringFormat("%11s   %10s   %5s   %-8s",
+            return StringFormat("%-11s   %10s   %5s   %-8s",
                 "ssss",
                 scoreNum,
                 resultList[1],
