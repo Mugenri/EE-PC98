@@ -62,7 +62,9 @@ task TStageScene() {
     StartStage();
 
     //TODO check if replay
-    Result_AddPlayCount(GetPlayerType(), GetDifficulty());
+    if (gameMode == GAME_MAIN) {
+        Result_AddPlayCount(GetPlayerType(), GetDifficulty());
+    }
 
     loop {
         //--------------------------------------------------------------------
