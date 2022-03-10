@@ -48,7 +48,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (11)           { return "Snare Card \"Indiscriminate Hunter\""; }              //ABEX
         case (12, 13, 14)   { return "Nonspell 3"; }
         case (15, 16)       { return "Reflection Card \"Moonlight Lattice\""; }             //EZ, EX
-        case (17)           { return "Reflection Card \"Moonbeam Massacre\""; }             //ABEX
+        case (17)           { return "Refraction Card \"Moonbeam Massacre\""; }             //ABEX
         case (18, 19, 20)   { return "Nonspell 4"; }
         case (21, 22)       { return "Senri Technique \"Donation Overflow\""; }             //EZ, EX
         case (23)           { return "Forbidden Art \"Tax Evasion\""; }                     //ABEX
@@ -62,8 +62,10 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (38)           { return "\"Super Ouroboros\""; }                               //ABEX
         case (39, 40, 41)   { return "Nonspell 7"; }
         case (42, 43)       { return "Disembodiment Card \"Inversion of Being\""; }         //EZ, EX
-        case (44)           { return "Disembodiment Card \"Negative Chronology\""; }        //ABEX
+        case (44)           { return "Dismemberment Card \"Negative Chronology\""; }        //ABEX
         case (45, 46, 47)   { return "Nonspell 8"; }
+        case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //EZ, EX
+        case (50)           { return "Constellation Card \"Speed-of-Light Rodeo\""; }       //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
