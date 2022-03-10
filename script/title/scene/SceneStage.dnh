@@ -283,6 +283,8 @@ function<void> TReturnToTitle() { //Run title screen
     ClearAreaCommonData(AREA_STAGE);
     ClearAreaCommonData(AREA_SYSTEM);
 
+    //TODO uncache scripts
+
     //run title screen
     string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
     int ID = LoadScript(path);

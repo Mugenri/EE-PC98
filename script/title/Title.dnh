@@ -18,8 +18,6 @@ int _titleList; //particles
 @Initialize {
     SetAutoDeleteObject(true);
     SetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", GetOwnScriptID());
-    //TODO unload/uncache all scripts that were created during the stage, perhaps with a stage management script
-    //this should probably go in the stage script
     int preloadIndex = GetScriptArgument(0);
     TTitleScene(preloadIndex);
 }
