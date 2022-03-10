@@ -56,7 +56,7 @@ task TFinalize() {
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
-    if (GetGameMode == GAME_MAIN) CreateItem(MID_X, MID_Y, ITEM_EXTEND);
+    if (GetGameMode() == GAME_MAIN) CreateItem(MID_X, 60, ITEM_EXTEND);
 }
 
 task TMain() {
