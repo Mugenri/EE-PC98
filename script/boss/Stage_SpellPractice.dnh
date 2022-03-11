@@ -36,7 +36,6 @@ task TStage() {
     _objScene = ObjEnemyBossScene_Create();
     ObjEnemyBossScene_Add(_objScene, 0, pathSingle);
     ObjEnemyBossScene_LoadInThread(_objScene);
-    ObjEnemyBossScene_SetUnloadCache(_objScene, true);
 
     while (!_start) yield;
 

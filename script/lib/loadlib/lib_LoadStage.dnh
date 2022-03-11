@@ -1,0 +1,135 @@
+//Stage texture/script loading/unloading library
+
+//TEXTURES
+//Stage Textures
+function<void> Load_LoadTextureStage(int stageIndex_) {
+    for each (img in Load_GetTextureStage(stageIndex_)) {
+        LoadTexture(img);
+    }
+}
+
+function<void> Load_UnloadTextureStage(int stageIndex_) {
+    for each (img in Load_GetTextureStage(stageIndex_)) {
+        RemoveTexture(img);
+    }
+}
+
+function<string[]> Load_GetTextureStage(int stageIndex_) {
+    string[] texture = [];
+
+    alternative (stageIndex_)
+    case (0) { //Tsurubami
+        texture ~= [
+            IMG_STG_TSURUBAMI,
+            IMG_BG_TSURUBAMI
+        ];
+    }
+
+    return texture;
+}
+
+//Dialogue Textures
+function<void> Load_LoadTextureDialogue(int stageIndex_, int playerType_) {
+    for each (img in Load_GetTextureDialogue(stageIndex_, playerType_)) {
+        LoadTexture(img);
+    }
+}
+
+function<void> Load_UnloadTextureDialogue(int stageIndex_, int playerType_) {
+    for each (img in Load_GetTextureDialogue(stageIndex_, playerType_)) {
+        RemoveTexture(img);
+    }
+}
+
+function<string[]> Load_GetTextureDialogue(int stageIndex_, int playerType_) {
+    string[] texture = [IMG_SYSTEM_TEXTBOX]; //dialogue textbox
+
+    alternative (stageIndex_)
+    case (0, 1) { texture ~= [IMG_PORTRAIT_TSURUBAMI]; }
+
+    alternative (playerType_)
+    case (PLAYER_YABUSAME)  { texture ~= [IMG_PORTRAIT_YABUSAME]; }
+    case (PLAYER_TSUBAKURA) { texture ~= [IMG_PORTRAIT_TSUBAKURA]; }
+
+    return texture;
+}
+
+//Player Textures
+function<void> Load_LoadTexturePlayer(int playerType_) {
+    for each (img in Load_GetTexturePlayer(playerType_)) {
+        LoadTexture(img);
+    }
+}
+
+function<void> Load_UnloadTexturePlayer(int playerType_) {
+    for each (img in Load_GetTexturePlayer(playerType_)) {
+        RemoveTexture(img);
+    }
+}
+
+function<string[]> Load_GetTexturePlayer(int playerType_) {
+    string[] texture = [];
+
+    alternative (playerType_)
+    case (PLAYER_YABUSAME) { texture ~= [IMG_PLR_YABUSAME]; }
+    case (PLAYER_TSUBAKURA) { texture ~= [IMG_PLR_TSUBAKURA]; }
+
+    return texture;
+}
+
+//SCRIPT CACHING
+function<void> Load_UncacheScripts(int stageIndex_, int playerType_, int gameMode_) {
+    for each (scriptPath in Load_GetStageScriptPath(stageIndex_, playerType_, gameMode_)) {
+        UnloadScriptFromCache(scriptPath);
+    }
+}
+
+function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int gameMode_) {
+    string dir = GetModuleDirectory() ~ "script/system/";
+    //System scripts
+    string[] scriptPath = [
+        dir ~ "System.dnh",
+        dir ~ "ControlItem.dnh",
+        dir ~ "StageMenu.dnh"
+    ];
+
+    //Stage scripts
+    alternative (stageIndex_)
+    case (0) { //Tsurubami
+        dir = DIR_STG ~ "tsurubami/";
+        scriptPath ~= [
+            dir ~ "dialogueIntro.dnh",
+            dir ~ "nonspell1.dnh",
+            dir ~ "nonspell2.dnh",
+            dir ~ "nonspell3.dnh",
+            dir ~ "nonspell4.dnh",
+            dir ~ "nonspell5.dnh",
+            dir ~ "nonspell6.dnh",
+            dir ~ "nonspell7.dnh",
+            dir ~ "nonspell8.dnh",
+            dir ~ "spell1.dnh",
+            dir ~ "spell2.dnh",
+            dir ~ "spell3.dnh",
+            dir ~ "spell4.dnh",
+            dir ~ "spell5.dnh",
+            dir ~ "spell6.dnh",
+            dir ~ "spell7.dnh",
+            dir ~ "spell8.dnh",
+            dir ~ "spell9.dnh",
+            dir ~ "tsuruBG.dnh",
+            dir ~ "tsuruPlural.dnh",
+            dir ~ "tsuruStage.dnh"
+        ];
+    }
+
+    //Player scripts
+    alternative (playerType_)
+    case (PLAYER_YABUSAME) { scriptPath ~= [DIR_PLR ~ "Yabusame.dnh"]; }
+    case (PLAYER_TSUBAKURA) { scriptPath ~= [DIR_PLR ~ "Tsubakura.dnh"]; }
+
+    //Spell practice stage script
+    alternative (gameMode_)
+    case (GAME_SPELL) { scriptPath ~= [DIR_STG ~ "Stage_SpellPractice.dnh"]; }
+
+    return scriptPath;
+}

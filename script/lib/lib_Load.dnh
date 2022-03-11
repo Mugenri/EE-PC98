@@ -1,0 +1,54 @@
+//Script/Texture Loading and Unloading Library
+
+#include "./loadlib/lib_LoadStage.dnh"
+
+function<void> Load_LoadTextureBase() { //load universal textures (generic textures used in all stages)
+    for each (img in Load_GetTextureBase()) {
+        LoadTexture(img);
+    }
+}
+
+function<string[]> Load_GetTextureBase() {
+    return [
+        //effect
+        IMG_EFFECT_CANCEL,
+        IMG_EFFECT_PARTICLE,
+        IMG_EFFECT_SPAWN,
+        IMG_EFFECT_TRANSITION,
+        //system
+        IMG_SYSTEM_FRAME,
+        IMG_SYSTEM_ITEM,
+        IMG_SYSTEM_LOGO,
+        IMG_SYSTEM_SHOT,
+        IMG_SYSTEM_UI,
+        //player
+        IMG_PLR_HITBOX
+    ];
+}
+
+function<void> Load_LoadTextureTitle() { //load textures used in the title screen
+    for each (img in Load_GetTextureTitle()) {
+        LoadTexture(img);
+    }
+}
+
+function<void> Load_UnloadTextureTitle() { //unload textures used in the title screen
+    for each (img in Load_GetTextureTitle()) {
+        RemoveTexture(img);
+    }
+}
+
+function<string[]> Load_GetTextureTitle() { //list of title textures
+    return [
+        IMG_TT_BG,
+        IMG_TT_LOGO,
+        IMG_TT_RANK,
+        IMG_TT_PLAYERBG,
+        IMG_TT_PLAYER1,
+        IMG_TT_PLAYER2,
+        IMG_TT_SPELL,
+        IMG_TT_RESULT,
+        IMG_TT_MUSIC,
+        IMG_TT_CURSOR
+    ];
+}

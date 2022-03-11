@@ -1,30 +1,16 @@
 //Character sprite library
 //Returns sprite sheets based on character ID found in lib_SystemAll.dnh
 
-//arrays containing different images for each character
-const string[] IMG_CHARA_YABUSAME = [
-    IMG_PORTRAIT_YABUSAME //dialogue portrait
-    ];
-
-const string[] IMG_CHARA_TSUBAKURA = [
-    IMG_PORTRAIT_TSUBAKURA //dialogue portrait
-    ];
-
-const string[] IMG_CHARA_TSURUBAMI = [
-    IMG_PORTRAIT_TSURUBAMI, //dialogue portrait
-    IMG_STG_TSURUBAMI //boss sprite
-    ];
-
 function<string> GetBossSprite(string bossID_) { //Returns boss stg sprite sheet
     alternative (bossID_)
-    case (BOSS_ID_TSURUBAMI) return IMG_CHARA_TSURUBAMI[1];
+    case (BOSS_ID_TSURUBAMI) return IMG_STG_TSURUBAMI;
     others assert(false, IntToString(bossID_) ~ " is an invalid boss sprite ID.");
 }
 
 function<string> GetBossPortrait(string bossID_) { //Returns character dialogue portrait sheet
     alternative (bossID_)
-    case (BOSS_ID_YABUSAME) return IMG_CHARA_YABUSAME[0];
-    case (BOSS_ID_TSUBAKURA) return IMG_CHARA_TSUBAKURA[0];
-    case (BOSS_ID_TSURUBAMI) return IMG_CHARA_TSURUBAMI[0];
+    case (BOSS_ID_YABUSAME) return IMG_PORTRAIT_YABUSAME;
+    case (BOSS_ID_TSUBAKURA) return IMG_PORTRAIT_TSUBAKURA;
+    case (BOSS_ID_TSURUBAMI) return IMG_PORTRAIT_TSURUBAMI;
     others assert(false, IntToString(bossID_) ~ " is an invalid boss portrait ID.");
 }

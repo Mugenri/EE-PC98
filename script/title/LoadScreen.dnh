@@ -1,5 +1,5 @@
 #include "./lib/lib_TitleCommon.dnh"
-#include "./lib/lib_LoadTexture.dnh"
+#include "./../lib/lib_Load.dnh"
 
 function<void> Load_Init() {
     CD_Init();
@@ -15,13 +15,14 @@ task TLoadScene() { //loading screen
     CreateRenderTarget(RT_SCREENSHOT);
     CreateRenderTarget(RT_ENDSCREEN);
 
-    //Preload textures
-    Texture_Init();
+    //Preload Universal textures
+    Load_LoadTextureBase();
 
     { //load audio manager
         string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
         int id = LoadScript(path);
         StartScript(id);
+        UnloadScriptFromCache(path);
     }
 
     InstallFont(SYS_FONT_PATH); //pc9800 font
@@ -29,6 +30,7 @@ task TLoadScene() { //loading screen
 
     //load achievement script if i make one
 
+    //TODO actual load screen and fangame disclaimer
     wait(60); //Give loading screen time to run
 
     { //Run title screen
@@ -36,5 +38,6 @@ task TLoadScene() { //loading screen
         int id = LoadScript(path);
         SetScriptArgument(id, 0, -1); //no preload
         StartScript(id);
+        UnloadScriptFromCache(path);
     }
 }

@@ -278,6 +278,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
                 int idScript = LoadScript(pathScript);
                 StartScript(idScript);
+                UnloadScriptFromCache(pathScript);
                 return;
             }
         }
@@ -316,6 +317,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
                 int idScript = LoadScript(pathScript);
                 StartScript(idScript);
+                UnloadScriptFromCache(pathScript);
                 NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
                 return;
             }
@@ -352,6 +354,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
             string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
             int idScript = LoadScript(pathScript);
             StartScript(idScript);
+            UnloadScriptFromCache(pathScript);
             NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
             return;
         }
