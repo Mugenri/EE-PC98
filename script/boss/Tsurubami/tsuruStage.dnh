@@ -25,6 +25,7 @@ task TStage() {
     string bgPath = dir ~ "tsuruBG.dnh";
     int bgID = LoadScript(bgPath);
     StartScript(bgID);
+    
     //preload plural
     string path = dir ~ "tsuruPlural.dnh";
     int ID = LoadScriptInThread(path);
@@ -35,14 +36,16 @@ task TStage() {
     
     string dialoguePath = dir ~ "dialogueIntro.dnh";
     StartDialogueScript(dialoguePath);
-    yield; //this is fine
+
     StartScript(ID);
     StartBGM(1, 180, 0);
+
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
     wait(120); //last explosion & spell bonus numbers
+
     //dialoguePath = dir ~ "dialogueIntro.dnh"; //TODO change to end dialogue
     //StartDialogueScript(dialoguePath);
-    //yield;
+
     Stage_EndScreen(10000);
     Stage_End();
 }

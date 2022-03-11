@@ -14,7 +14,10 @@ function<int> GetSpellPracticeID() { return(GetAreaCommonData(AREA_TITLE, "Spell
 function<int> GetDifficulty() { return(GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY)); }
 
 function<void> SetPauseEnable(bool enable_) { NotifyEvent(GetPackageStageScriptID(), EV_PAUSE_ENABLE, enable_); }
-function<void> StartDialogueScript(string path_) { NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_DIALOGUE, path_); }
+function<void> StartDialogueScript(string path_) {
+    NotifyEvent(GetPackageStageScriptID(), EV_STAGE_EVENT, STAGE_DIALOGUE, path_);
+    yield; //bgm will play if called immediate after this function without this yield
+}
 //----------------------------------------------------
 //MUSIC AND SOUND FUNCTIONS
 //----------------------------------------------------
