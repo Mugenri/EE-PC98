@@ -167,7 +167,7 @@ task TStageScene() {
         SetTransitionTexture(); //save current frame as pause bg
         PauseStageScene(true); //pause stage
         
-        string pathScript = GetCurrentScriptDirectory() ~ "../../system/StageMenu.dnh";
+        string pathScript = GetModuleDirectory() ~ "script/system/StageMenu.dnh";
         
         //Run pause script
         int idScript = LoadScript(pathScript);
@@ -303,7 +303,7 @@ function<void> TReturnToTitle() { //Run title screen
     }
 
     //run title screen
-    string path = GetCurrentScriptDirectory() ~ "../Title.dnh";
+    string path = GetModuleDirectory() ~ "script/title/Title.dnh";
     int ID = LoadScript(path);
     int preloadIndex = -1;
     if (gameMode == GAME_SPELL) preloadIndex = 1; //preload spell practice

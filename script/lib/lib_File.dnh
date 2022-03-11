@@ -1,9 +1,9 @@
 //File path constant library
-const string DIR_IMG	= GetCurrentScriptDirectory() ~ "../img/";
-const string DIR_PLR    = GetCurrentScriptDirectory() ~ "../player/";
-const string DIR_STG	= GetCurrentScriptDirectory() ~ "../boss/";
-const string DIR_HLSL   = GetCurrentScriptDirectory() ~ "hlsl/";
-const string DIR_SE     = GetCurrentScriptDirectory() ~ "../se/";
+const string DIR_IMG	= GetModuleDirectory() ~ "script/img/";
+const string DIR_PLR    = GetModuleDirectory() ~ "script/player/";
+const string DIR_STG	= GetModuleDirectory() ~ "script/boss/";
+const string DIR_HLSL   = GetModuleDirectory() ~ "script/lib/hlsl/";
+const string DIR_SE     = GetModuleDirectory() ~ "script/se/";
 
 //file path constants
 //Title specific images in script/title/lib/lib_TitleCommon.dnh
@@ -41,6 +41,3 @@ const string IMG_BG_TSURUBAMI       = DIR_IMG ~ "stg/tsurubamiBG.png";
 const string HLSL_PARTICLE          = DIR_HLSL ~ "TexParticle.hlsl";
 const string HLSL_WHITE             = DIR_HLSL ~ "TexWhite.hlsl";
 const string HLSL_TRANSITION        = DIR_HLSL ~ "TexTransition.hlsl";
-
-//Text files
-const string FILE_SPELL             = GetCurrentScriptDirectory() ~ "spellName.txt";

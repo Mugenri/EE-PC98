@@ -10,7 +10,7 @@ const string AREA_HIGHSCORE = "HighScore"; //High Score Values
 const string AREA_RESULT    = "Result"; //Player Score Records
 
 //Data File Directories
-const string DIR_SAVE = GetCurrentScriptDirectory() ~ "../data/";
+const string DIR_SAVE = GetModuleDirectory() ~ "script/data/";
 const string SAVE_COMMON_SAVE   = DIR_SAVE ~ "save.dat";
 const string SAVE_COMMON_CONFIG = DIR_SAVE ~ "config.dat";
 const string SAVE_COMMON_SCORE  = DIR_SAVE ~ "score.dat";

@@ -9,7 +9,7 @@ const string[] SCRIPT_PLAYERS = [
 ];
 
 // --- Title Specific Images List --- //
-const string DIR_IMG_TITLE = GetCurrentScriptDirectory() ~ "../../img/title/";
+const string DIR_IMG_TITLE = GetModuleDirectory() ~ "script/img/title/";
 
 //Loading Screen
 
@@ -35,4 +35,3 @@ const string IMG_TT_CURSOR      = DIR_IMG_TITLE ~ "selectCursor.png";
 //Intro Scene
 
 //Stage Select?
-

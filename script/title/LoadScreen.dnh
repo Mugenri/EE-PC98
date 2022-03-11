@@ -19,7 +19,7 @@ task TLoadScene() { //loading screen
     Load_LoadTextureBase();
 
     { //load audio manager
-        string path = GetCurrentScriptDirectory() ~ "ControlAudio.dnh";
+        string path = GetModuleDirectory() ~ "script/title/ControlAudio.dnh";
         int id = LoadScript(path);
         StartScript(id);
         UnloadScriptFromCache(path);
@@ -34,7 +34,7 @@ task TLoadScene() { //loading screen
     wait(60); //Give loading screen time to run
 
     { //Run title screen
-        string path = GetCurrentScriptDirectory() ~ "Title.dnh";
+        string path = GetModuleDirectory() ~ "script/title/Title.dnh";
         int id = LoadScript(path);
         SetScriptArgument(id, 0, -1); //no preload
         StartScript(id);

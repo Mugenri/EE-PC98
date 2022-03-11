@@ -11,7 +11,7 @@ function<int[]> BGM_GetSample(int bgmID_) {
 
 //Returns path to specified track
 function<string> BGM_GetPath(int bgmID_) {
-    string musicDir = GetCurrentScriptDirectory() ~ "./../../bgm/";
+    string musicDir = GetModuleDirectory() ~ "script/bgm/";
     alternative (bgmID_)
     case (0) return (musicDir ~ "title.ogg"); //To the Village that isn't Real ~ Chain Link?
     case (1) return (musicDir ~ "tsurubami1.ogg"); //Eternal Dance Engine
