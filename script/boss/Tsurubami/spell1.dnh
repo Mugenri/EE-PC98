@@ -71,7 +71,6 @@ task TMain() {
 
 task TFireA() {
     if (!_bossAlive) return;
-    Animation_Charge(_objBoss, true);
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(3);
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90, 30, 8, COLOR_GRAY_L);
@@ -79,6 +78,7 @@ task TFireA() {
     wait(30);
     async {
         wait(150);
+        Animation_Charge(_objBoss, true);
         if (_bossAlive) CallSFX(SND_CHARGE1);
     }
     int numShot = 30;
