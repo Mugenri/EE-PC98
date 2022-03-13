@@ -49,7 +49,7 @@ task TInitialize() {
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 30, LERP_DECELERATE);
     ObjMove_SetDestAtFrame(_objClone, MID_X, MID_Y, 30, LERP_DECELERATE);
     wait(30);
-    Transition_Rise(1, 0);
+    Transition_Rise(5, 0);
     CallSFX(SND_TRANSITION);
     wait(330);
     Boss_SetVulnerable(_objBoss, true);
