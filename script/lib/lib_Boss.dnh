@@ -125,7 +125,7 @@ function<void> Boss_Finalize(int obj_) {
     int score = isSpell ? 1000 : 500; //starting score for scaling
     if (isCapture && isSpell) { //spell capture
         int scoreBonus = 100; //adiitonal score per bullet on top of starting score
-        int numBullets = 0;
+        int numBullets = 0; //bullets to become items
         float radius = 200;
         loop (5) {
             for each (shot in GetShotIdInCircleA2(GetPlayerX(), GetPlayerY(), radius, TARGET_ENEMY)) {
@@ -136,8 +136,14 @@ function<void> Boss_Finalize(int obj_) {
                     scoreTotal += score;
                     score += scoreBonus;
                     score = clamp(score, 0, 12800);
+
+                    //assign item to bullets if below cap
+                    if (numBullets < 35 && !Obj_GetValueDI(shot, SHOT_DROP_ITEM, false)) {
+                        Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
+                        numBullets++;
+                    }
                 }
-                if (numBullets < 35 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1) { //random <= 35 bullets drop point items
+                if (numBullets < 35 && Obj_GetType(shot) == OBJ_SHOT && rand_int(1, 4) == 1 && !Obj_GetValueDI(shot, SHOT_DROP_ITEM, false)) { //random 35 bullets drop point items
                     Obj_SetValueI(shot, SHOT_DROP_ITEM, true);
                     numBullets++;
                 }
