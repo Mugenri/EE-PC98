@@ -66,6 +66,8 @@ task TMain() {
 task TFire(int dir_) {
     if (!_bossAlive) return;
 
+    Animation_Charge(_objBoss, true);
+
     CallSFX(SND_CHARGE1);
     Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 40, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(5);
@@ -80,6 +82,8 @@ task TFire(int dir_) {
     Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 360 * dir_, 40, 8, COLOR_GRAY);
     wait(40);
     if (!_bossAlive) return;
+    
+    Animation_Charge(_objBoss, false);
 
     int moveTime = 60;
     bool moving = true;
@@ -108,9 +112,9 @@ task TFire(int dir_) {
     loop (2) {
         float angleT = 90;
         loop (shotNum) {
-            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax - 0.8, angleT + (90 * dir_) + 45, -0.06, 2.8, 0, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
-            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax - 0.4, angleT + (90 * dir_) + 45, -0.06, 3.0, 0, SHOT_RED+TALISMAN_A, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
-            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax, angleT + (90 * dir_) + 45, -0.06, 3.2, 0, SHOT_RED_INV+TALISMAN_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
+            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax - 0.8, angleT + (90 * dir_) + 45, -0.08, 2.8, 0, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax - 0.4, angleT + (90 * dir_) + 45, -0.08, 3.0, 0, SHOT_RED+TALISMAN_A, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
+            CreateShotUA2(ObjMove_GetX(_objBoss) + 60 * cos(angleT), ObjMove_GetY(_objBoss) + 60 * sin(angleT), baseMax, angleT + (90 * dir_) + 45, -0.08, 3.2, 0, SHOT_RED_INV+TALISMAN_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
             angleT += 360 / shotNum;
         }
         dir_ *= -1;
