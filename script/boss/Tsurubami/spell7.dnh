@@ -96,7 +96,7 @@ task TMaze() {
     task TSpawnWall(float angle_, int wallNum_) {
         int[] wallShot = [];
         int color = SHOT_GREEN_INV;
-        int increment = numShot + 10;
+        int increment = numShot + [10, 5, 3][_diff];
         if (wallNum_ == 9) { //last, close circle
             increment = numShot;
             color = SHOT_BLACK;
