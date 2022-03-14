@@ -51,7 +51,9 @@ bool resetScoreExtend = false;
     case (EV_CREATE_ITEM) {
         int obj = CreateItemU1(GetEventArgument(2), GetEventArgument(0), GetEventArgument(1), 0);
         ObjMove_AddPatternB2(obj, 0, 0, -3.2, 0, 0.06, 0, 2.8);
+        ObjMove_SetAngle(obj, 270);
         ObjItem_SetAutoCollectEnableFlags(obj, ITEM_AUTOCOLLECT_PLAYER_SCOPE | ITEM_AUTOCOLLECT_COLLECT_ALL);
+        ObjItem_SetDefaultCollectMovement(obj, false);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
     case (EV_COLLECT_ITEM) {
@@ -59,9 +61,17 @@ bool resetScoreExtend = false;
         int type = GetEventArgument(1);
         int colType = GetEventArgument(2);
 
-        if (colType == 3) { //via collect all items through thrill gauge
-            Obj_SetValueI(obj, ITEM_AUTOCOLLECT, true);
+        alternative (colType)
+        case (0) {      //player item scope
+            TScopeCollect(obj);
         }
+        case (1) {}     //autocollect line
+        case (2) {}     //CollectItemsInCircle()
+        case (3) {      //CollectAllItems() i.e. thrill gauge
+            Obj_SetValueI(obj, ITEM_AUTOCOLLECT, true); //give max score value
+            TThrillCollect(obj);
+        }
+        case (4) {}     //ObjItem_SetMoveToPlayer()
     }
     case (EV_CANCEL_ITEM) {
         int obj = GetEventArgument(0);
@@ -128,6 +138,40 @@ bool resetScoreExtend = false;
         resetScoreExtend = true;
         TCheckScoreExtend();
     }
+}
+
+task TScopeCollect(int item_) { //player item scope autocollect
+    ObjMove_CancelMovement(item_);
+    while (!Obj_IsDeleted(item_) && GetPlayerState() == STATE_NORMAL) {
+        float angle = GetAngleToPlayer(item_);
+        ObjMove_SetSpeed(item_, 5.5);
+        ObjMove_SetAngle(item_, angle);
+        yield;
+    }
+    if (!Obj_IsDeleted(item_)) ObjMove_AddPatternB2(item_, 0, 0, 0, 0, 0.06, 0, 2.8); //resume normal movement
+}
+
+task TThrillCollect(int item_) { //thrill gauge fill item autocollect
+    while (sin(ObjMove_GetAngle(item_)) < 0) { //item is rising
+        if (!Obj_GetValueDI(item_, ITEM_AUTOCOLLECT, false)) break;
+        yield;
+    }
+
+    ObjMove_CancelMovement(item_);
+
+    //accelerate toward player
+    float speed = 0;
+    float accel = 0.15;
+    float maxSpeed = 10;
+    while (!Obj_IsDeleted(item_) && Obj_GetValueDI(item_, ITEM_AUTOCOLLECT, false)) {
+        float angle = GetAngleToPlayer(item_);
+        ObjMove_SetSpeed(item_, speed);
+        ObjMove_SetAngle(item_, angle);
+
+        speed = min(speed + accel, maxSpeed);
+        yield;
+    }
+    if (!Obj_IsDeleted(item_)) ObjMove_AddPatternB2(obj, 0, 0, 0, 0, 0.06, 0, 2.8); //resume normal movement
 }
 
 task TCheckScoreExtend() {
