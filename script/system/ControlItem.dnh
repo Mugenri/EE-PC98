@@ -3,8 +3,9 @@
 #include "./lib/lib_AsciiNum.dnh"
 #include "./../lib/effectlib/lib_EffectCancel.dnh"
 
-int baseScore = [12800, 12800, 25600, 51200, 12800, 25600, 51200][GetDifficulty()];
-bool resetScoreExtend = false;
+int _baseScore = [12800, 12800, 25600, 51200, 12800, 25600, 51200][GetDifficulty()];
+bool _autoCollect = false;
+bool _resetScoreExtend = false;
 
 @Initialize {
     System_Init();
@@ -15,6 +16,7 @@ bool resetScoreExtend = false;
     LoadItemData(GetCurrentScriptDirectory() ~ "/lib/dat_ItemData.dnh");
     Cancel_Init();
     Ascii_Init();
+    TCheckThrillGauge();
     TCheckScoreExtend();
 }
 
@@ -53,6 +55,7 @@ bool resetScoreExtend = false;
         ObjMove_AddPatternB2(obj, 0, 0, -3.2, 0, 0.06, 0, 2.8);
         ObjMove_SetAngle(obj, 270);
         ObjItem_SetAutoCollectEnableFlags(obj, ITEM_AUTOCOLLECT_PLAYER_SCOPE | ITEM_AUTOCOLLECT_COLLECT_ALL);
+        Obj_SetValueI(obj, ITEM_AUTOCOLLECT, _autoCollect); //give max score value?
         ObjItem_SetDefaultCollectMovement(obj, false);
         ObjItem_SetRenderScoreEnable(obj, false);
     }
@@ -94,10 +97,10 @@ bool resetScoreExtend = false;
         case (ITEM_SCORE) {
             AddPoint(1);
             if (ObjRender_GetY(obj) < 128 || Obj_GetValueDI(obj, ITEM_AUTOCOLLECT, false)) {
-                score = baseScore;
+                score = _baseScore;
                 color = COLOR_YELLOW_L;
             } else {
-                score = (baseScore / 2) - (baseScore / 2) * ((ObjRender_GetY(obj) - 128) / GetStgFrameHeight());
+                score = (_baseScore / 2) - (_baseScore / 2) * ((ObjRender_GetY(obj) - 128) / GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
             }
             CallSFX(SND_ITEM);
@@ -135,19 +138,21 @@ bool resetScoreExtend = false;
         System_CallBanner(BANNER_EXTEND, 0);
     }
     case (EV_CONTINUE) {
-        resetScoreExtend = true;
+        _resetScoreExtend = true;
         TCheckScoreExtend();
     }
 }
 
 task TScopeCollect(int item_) { //player item scope autocollect
     ObjMove_CancelMovement(item_);
+
     while (!Obj_IsDeleted(item_) && GetPlayerState() == STATE_NORMAL) {
         float angle = GetAngleToPlayer(item_);
         ObjMove_SetSpeed(item_, 5.5);
         ObjMove_SetAngle(item_, angle);
         yield;
     }
+
     if (!Obj_IsDeleted(item_)) ObjMove_AddPatternB2(item_, 0, 0, 0, 0, 0.06, 0, 2.8); //resume normal movement
 }
 
@@ -171,18 +176,36 @@ task TThrillCollect(int item_) { //thrill gauge fill item autocollect
         speed = min(speed + accel, maxSpeed);
         yield;
     }
-    if (!Obj_IsDeleted(item_)) ObjMove_AddPatternB2(obj, 0, 0, 0, 0, 0.06, 0, 2.8); //resume normal movement
+
+    if (!Obj_IsDeleted(item_)) ObjMove_AddPatternB2(item_, 0, 0, 0, 0, 0.06, 0, 2.8); //resume normal movement
+}
+
+task TCheckThrillGauge() {
+    int thrillMax = -1;
+    while (thrillMax == -1) { //waiting for player script to determine a default thrillmax
+        thrillMax = GetAreaCommonData(AREA_SYSTEM, "Thrill Max", -1);
+        yield;
+    }
+    
+    int thrillPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Level", 0);
+
+    loop {
+        int thrillLevel = GetCommonDataPtr(thrillPtr, 0);
+        if (thrillLevel == thrillMax) _autoCollect = true;
+        else _autoCollect = false;
+        yield;
+    }
 }
 
 task TCheckScoreExtend() {
     if (GetGameMode() == GAME_SPELL) return; //no score extends in spell practice
 
-    resetScoreExtend = false;
+    _resetScoreExtend = false;
 
     int extendThreshold = 010_000_000;
     loop {
-        while (GetScore() < extendThreshold && !resetScoreExtend) yield;
-        if (resetScoreExtend) return;
+        while (GetScore() < extendThreshold && !_resetScoreExtend) yield;
+        if (_resetScoreExtend) return;
         NotifyEventOwn(EV_SCORE_EXTEND, 0);
         extendThreshold *= 2;
     }
