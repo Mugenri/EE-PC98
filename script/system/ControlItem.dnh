@@ -191,8 +191,7 @@ task TCheckThrillGauge() {
 
     loop {
         int thrillLevel = GetCommonDataPtr(thrillPtr, 0);
-        if (thrillLevel == thrillMax) _autoCollect = true;
-        else _autoCollect = false;
+        _autoCollect = thrillLevel == thrillMax;
         yield;
     }
 }
