@@ -3,11 +3,8 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     bool exitFlag = false;
     int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
     int selectedDifficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", D_EASY);
-    
-    //Player Icons
-    string[] imgPlayerPortrait = [IMG_TT_PLAYER1, IMG_TT_PLAYER2];
 
-    int selectMax = length(imgPlayerPortrait) - 1;
+    int selectMax = 0;
     int resultIndex = -1;
 
     int indexCurrent = selectedDefault_;
@@ -39,8 +36,8 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     TCreateMenuGraphicsPlayer();
 
     //Create Menu Items
-    int menuX = WINDOW_WIDTH / 2 - 128;
-    int menuY = WINDOW_HEIGHT / 2;
+    int menuX = 36;
+    int menuY = 164;
     ascent (i in 0..selectMax + 1) {
         TCreateMenuItemPlayer(i, menuX, menuY);
         menuX = WINDOW_WIDTH / 2 + 128;
@@ -86,9 +83,9 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     task TCreateMenuGraphicsPlayer() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
-        int circleOut = InitSprite2D(486, 0, 1017, 400, IMG_TT_PLAYERBG, RP_UI_BG);
+        int circleOut = InitSprite2D(486, 0, 1017, 400, IMG_TT_PLAYER, RP_UI_BG);
         ObjRender_SetPosition(circleOut, 55, 0, 1);
-        int circleIn = InitSprite2D(0, 0, 486, 400, IMG_TT_PLAYERBG, RP_UI_IMG);
+        int circleIn = InitSprite2D(0, 0, 486, 400, IMG_TT_PLAYER, RP_UI_IMG);
         ObjRender_SetPosition(circleIn, 78, 0, 1);
 
         int radius = 241;
@@ -150,27 +147,18 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     }
 
     task TCreateMenuItemPlayer(int index_, int x_, int y_) {
-        int objPlayerShadow = InitSprite2D(0, 160, 224, 320, imgPlayerPortrait[index_], RP_UI_IMG);
-        ObjSprite2D_SetDestCenter(objPlayerShadow);
-        ObjRender_SetPosition(objPlayerShadow, x_, y_, 1);
+        int objPlayerImg = InitSprite2D(0, 400, 112, 640, IMG_TT_PLAYER, RP_UI_IMG);
+        ObjRender_SetPosition(objPlayerImg, x_, y_, 1);
 
-        int objPlayerBack = InitSprite2D(224, 0, 448, 160, imgPlayerPortrait[index_], RP_UI_IMG);
-        ObjSprite2D_SetDestCenter(objPlayerBack);
-        ObjRender_SetPosition(objPlayerBack, x_, y_, 1);
-
-        int objPlayerFront = InitSprite2D(0, 0, 224, 160, imgPlayerPortrait[index_], RP_UI_IMG);
-        ObjSprite2D_SetDestCenter(objPlayerFront);
-        ObjRender_SetPosition(objPlayerFront, x_ - 8, y_ - 8, 1);
+        int objPlayerUnselect = InitSprite2D(112, 400, 224, 640, IMG_TT_PLAYER, RP_UI_IMG);
+        ObjRender_SetPosition(objPlayerUnselect, x_, y_, 1);
 
         while (!exitFlag) {
-            Obj_SetVisible(objPlayerFront, index_ == indexCurrent);
-            Obj_SetVisible(objPlayerBack, index_ != indexCurrent);
+            Obj_SetVisible(objPlayerUnselect, index_ != indexCurrent);
             yield;
-            if (index_ == resultIndex) ObjSprite2D_SetSourceRect(objPlayerFront, 224, 160, 448, 320);
         }
-        Obj_Delete(objPlayerFront);
-        Obj_Delete(objPlayerBack);
-        Obj_Delete(objPlayerShadow);
+        Obj_Delete(objPlayerImg);
+        Obj_Delete(objPlayerUnselect);
     }
 }
 
