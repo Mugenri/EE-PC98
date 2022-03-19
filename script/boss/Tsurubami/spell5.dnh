@@ -203,6 +203,7 @@ task TFire() {
 
         if (Obj_IsDeleted(shot_) || !_bossAlive) return;
         wait(delay_); //laser expand animation
+        if (Obj_IsDeleted(shot_) || !_bossAlive) return;
         CallSFX(SND_LASER2);
         wait(sustain_);
         ObjShot_SetDeleteFrame(shot_, 0);

@@ -91,9 +91,11 @@ task TFire(int dir_) {
     ObjMove_SetDestAtFrame(_objBoss, MID_X + ((MID_X + 32) * dir_) , 60, moveTime, LERP_ACCELERATE);
     TTrail();
     wait(moveTime);
+    if (!_bossAlive) return;
     ObjMove_SetPosition(_objBoss, MID_X + ((MID_X + 32) * -dir_), 60);
 
     while (moveTime > 10) {
+        if (!_bossAlive) return;
         ObjMove_SetDestAtFrame(_objBoss, MID_X + ((MID_X + 32) * dir_) , 60, moveTime, LERP_LINEAR);
         wait(moveTime);
         if (!_bossAlive) return;
@@ -101,6 +103,7 @@ task TFire(int dir_) {
         moveTime *= 0.7;
     }
 
+    if (!_bossAlive) return;
     ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-80, 80), 60, 8, LERP_LINEAR);
     wait(8);
     if (!_bossAlive) return;
