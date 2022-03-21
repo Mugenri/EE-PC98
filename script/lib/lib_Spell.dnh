@@ -66,6 +66,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (45, 46, 47)   { return "Nonspell 8"; }
         case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //EZ, EX
         case (50)           { return "Constellation Card \"Speed-of-Light Rodeo\""; }       //ABEX
+        case (51, 52, 53)   { return "Nonspell 9"; }
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
