@@ -57,9 +57,20 @@ function<bool> CheckForbidden(int index_, int[] forbidden_) {
     }
     return false;
 }
-//Initializes a 2D primitive object
+//Initializes a 2D primitive object texture
+function<int> InitPrim2D(int primType_, int vertices_, string texPath_, int priority_) {
+    int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjRender_SetTextureFilter(obj, FILTER_NONE, FILTER_NONE, FILTER_NONE);
+    ObjPrim_SetPrimitiveType(obj, primType_);
+    ObjPrim_SetVertexCount(obj, vertices_);
+    Obj_SetRenderPriorityI(obj, priority_);
+    ObjPrim_SetTexture(obj, texPath_);
+    return obj;
+}
+//Initializes a 2D primitive object without a texture
 function<int> InitPrim2D(int primType_, int vertices_, int priority_) {
     int obj = ObjPrim_Create(OBJ_PRIMITIVE_2D);
+    ObjRender_SetTextureFilter(obj, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     ObjPrim_SetPrimitiveType(obj, primType_);
     ObjPrim_SetVertexCount(obj, vertices_);
     Obj_SetRenderPriorityI(obj, priority_);

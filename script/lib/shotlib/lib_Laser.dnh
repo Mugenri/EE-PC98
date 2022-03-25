@@ -6,7 +6,8 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     //Object Creation
     //Hitbox and position/angle
     int time = 550 / speed_ + maxLength_ / speed_; //rough amount of frames it will take the laser to leave the screen (550px is hypotenuse of stg window)
-    int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 12, time, 1, delay_);
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 16, time + delay_, 1, 0);
+    ObjShot_SetIntersectionEnable(hitbox, false);
     Obj_SetValueI(hitbox, SHOT_CANCEL, true);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
@@ -30,6 +31,8 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
         float y = ObjMove_GetY(hitbox);
         float angle = ObjStLaser_GetAngle(hitbox);
         bool full = false;
+
+        ObjShot_SetIntersectionEnable(hitbox, true);
 
         while (!Obj_IsDeleted(hitbox)) {
             x = ObjMove_GetX(hitbox);
@@ -110,7 +113,7 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
 function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float length_, float sustain_, int color_, int delay_) {
     //Object Creation
     //Hitbox and position/angle
-    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 16, sustain_ + delay_, 1, 0);
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, length_, 24, sustain_ + delay_, 1, 0);
     ObjShot_SetIntersectionEnable(hitbox, false);
     Obj_SetValueI(hitbox, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
@@ -257,8 +260,9 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
     //Object Creation
     //Hitbox and position/angle
     int controller = CreateStraightLaserA1(x_, y_, angle_, length_, 0, sustain_ + 50, 1, delay_);
+
+    ObjShot_SetSpellResist(controller, true);
     Obj_SetValueI(controller, SHOT_CANCEL, false);
-    ObjLaser_SetInvalidLength(controller, 0, 0);
     Obj_SetVisible(controller, false);
     //colorOut
     int circle1 = CreateCircle(colorOut_);
@@ -387,6 +391,52 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
         ObjRender_SetColor(obj, color_);
         return obj;
     }
+}
+
+function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, int color_) {
+    //Object Creation
+    //Hitbox and position/angle
+    if (color_ == SHOT_BLACK) color_ = 9;
+    int controller = CreateStraightLaserA1(x_, y_, angle_, 0, 64, sustain_, 1, 0);
+
+    ObjShot_SetSpellResist(controller, true);
+    Obj_SetValueI(controller, SHOT_CANCEL, true);
+    Obj_SetVisible(controller, false);
+
+    int laser = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 6, IMG_SYSTEM_SHOT, RP_STG_LASER);
+
+    int yOff = 16 * color_;
+    ObjPrim_SetVertexUVT(laser, 0, 1008, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 1, 1008, 16 + yOff);
+    ObjPrim_SetVertexUVT(laser, 2, 1009, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 3, 1009, 16 + yOff);
+    ObjPrim_SetVertexUVT(laser, 4, 1024, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 5, 1024, 16 + yOff);
+
+    async {
+        while (!Obj_IsDeleted(controller)) {
+            UpdatePosition();
+            yield;
+        }
+
+        Obj_Delete(laser);
+
+        function<void> UpdatePosition() {
+            float x_ = ObjMove_GetX(controller);
+            float y_ = ObjMove_GetY(controller);
+            float angle_ = ObjStLaser_GetAngle(controller);
+            float len = ObjLaser_GetLength(controller);
+
+            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * cos(angle_ - 90), y_ + 8 * sin(angle_ - 90), 1);
+            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * cos(angle_ + 90), y_ + 8 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * cos(angle_ - 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len - 7) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * cos(angle_ + 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len - 7) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * cos(angle_ - 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len + 8) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * cos(angle_ + 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len + 8) * sin(angle_), 1);
+        }
+    }
+
+    return controller;
 }
 
 function<int> Laser_WarningLine(float x_, float y_, float angle_, int length_, int time_) {
