@@ -150,6 +150,9 @@ task TRing(int dir_) {
     float rad = 0;
     float radMax = [125, 150, 150][_diff];
 
+    int frame = 0;
+    int frames = 120;
+
     while (!Obj_IsDeleted(core)) {
         float coreX = ObjMove_GetX(core);
         float coreY = ObjMove_GetY(core);
@@ -169,8 +172,9 @@ task TRing(int dir_) {
             ObjMove_SetAngle(inner[i], angleT - (90 * dir_));
         }
 
-        rad = min(rad + 1.5, radMax);
+        rad = Interpolate_Decelerate(0, radMax, frame / as_float(frames));
         rotCount += rotSpeed * dir_;
+        if (frame < frames) frame++;
         yield;
     }
     
