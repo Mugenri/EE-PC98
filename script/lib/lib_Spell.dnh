@@ -69,6 +69,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (51, 52, 53)   { return "Nonspell 9"; }
         case (54, 55)       { return "Senri Technique \"Spirit Crossroads\""; }             //EZ, EX
         case (56)           { return "Forbidden Art \"Soulstream\""; }                      //ABEX
+        case (57, 58, 59)   { return "Nonspell 10"; }
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

@@ -1,0 +1,125 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 10"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = [80, 60, 60][_diff];
+_spellID = 57 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(35 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TFireA();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(180);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        yield;
+    }
+}
+
+task TFireA() {
+    while (_count <= 0) yield;
+
+    //vfx
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_GRAY_L);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_GRAY_L);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_GRAY);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_GRAY);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_BLACK);
+    wait(2);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_BLACK);
+    wait(100);
+
+    int pointNum = [5, 7, 5][_diff];
+    int loopNum = [3, 3, 5][_diff];
+    float speed = [1.7, 1.8, 2.5][_diff];
+    int waitTime = [20, 20, 12][_diff];
+
+    for (int i = 0; i < pointNum; i++) {
+        TKnives(i);
+    }
+
+    task TKnives(float arcAdd_) {
+        arcAdd_ = 360 / pointNum * arcAdd_; //extra distance along full rotation
+
+        int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+        ObjPrim_SetVertexPosition(line, 0, _bossX, _bossY, 1);
+
+        int loopCount = 0;
+        while (_bossAlive) {
+            float xPos = MID_X + MID_X * sin(_count / 1.5 + arcAdd_);
+            ObjPrim_SetVertexPosition(line, 1, xPos, 0, 1);
+            if (_count % _loopTime == 0) {
+                int color = [SHOT_BLACK, SHOT_GRAY][loopCount % 2];
+                async {
+                    loop (loopNum) {
+                        if (!_bossAlive) break;
+                        CreateShotUA1(xPos, 0, speed, 90, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+                        CreateShotUA1(xPos, 0, speed, 75, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+                        CreateShotUA1(xPos, 0, speed, 105, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+                        if ((|xPos - MID_X|) > 140) { //edge protection
+                            CreateShotUA1(xPos, 0, speed, 93, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+                            CreateShotUA1(xPos, 0, speed, 87, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+                        }
+                        CallSFX(SND_SHOT1);
+                        wait(waitTime);
+                    }
+                }
+                loopCount++;
+            }
+            yield;
+        }
+
+        Obj_Delete(line);
+    }
+}

@@ -98,6 +98,9 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
     case (0) { //Tsurubami
         dir = DIR_STG ~ "tsurubami/";
         scriptPath ~= [
+            dir ~ "tsuruStage.dnh",
+            dir ~ "tsuruBG.dnh",
+            dir ~ "tsuruPlural.dnh",
             dir ~ "dialogueIntro.dnh",
             dir ~ "nonspell1.dnh",
             dir ~ "nonspell2.dnh",
@@ -108,6 +111,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "nonspell7.dnh",
             dir ~ "nonspell8.dnh",
             dir ~ "nonspell9.dnh",
+            dir ~ "nonspell10.dnh",
             dir ~ "spell1.dnh",
             dir ~ "spell2.dnh",
             dir ~ "spell3.dnh",
@@ -117,10 +121,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "spell7.dnh",
             dir ~ "spell8.dnh",
             dir ~ "spell9.dnh",
-            dir ~ "spell10.dnh",
-            dir ~ "tsuruBG.dnh",
-            dir ~ "tsuruPlural.dnh",
-            dir ~ "tsuruStage.dnh"
+            dir ~ "spell10.dnh"
         ];
     }
 
