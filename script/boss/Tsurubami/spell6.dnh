@@ -67,8 +67,8 @@ task TKillAura() {
 
     //spawn animation
     for (int i = 1; i <= 60; i++) {
-        float x = ObjMove_GetX(_objBoss);
-        float y = ObjMove_GetY(_objBoss);
+        float x = _bossX;
+        float y = _bossY;
         float angleT = 0;
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
         for (int j = 0; j < 33; j++) {
@@ -81,8 +81,8 @@ task TKillAura() {
     //shrink animation
     async {
         for (int i = 1; i <= 60; i++) {
-            float x = ObjMove_GetX(_objBoss);
-            float y = ObjMove_GetY(_objBoss);
+            float x = _bossX;
+            float y = _bossY;
             float angleT = 0;
             int tempRad = Interpolate_Accelerate(radius, 0, i / 60);
             for (int j = 0; j < 33; j++) {
@@ -97,8 +97,8 @@ task TKillAura() {
     async { //aura 2 loop
         while (_bossAlive) {
             for (int i = 1; i <= 60; i++) {
-                float x = ObjMove_GetX(_objBoss);
-                float y = ObjMove_GetY(_objBoss);
+                float x = _bossX;
+                float y = _bossY;
                 float angleT = 0;
                 int tempRad = Interpolate_Decelerate(0, radius, i / 60);
                 for (int j = 0; j < 33; j++) {
@@ -111,8 +111,8 @@ task TKillAura() {
     }
 
     while (_bossAlive) {
-        float x = ObjMove_GetX(_objBoss);
-        float y = ObjMove_GetY(_objBoss);
+        float x = _bossX;
+        float y = _bossY;
         float pX = ObjMove_GetX(_objPlayer);
         float pY = ObjMove_GetY(_objPlayer);
         float angleT = 0;
@@ -176,7 +176,7 @@ task TFire(int dir_) {
 
     loop (100) {
         if (!_bossAlive) return;
-        ObjMove_SetPosition(mSpark, ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss));
+        ObjMove_SetPosition(mSpark, _bossX, _bossY);
         yield;
     }
 

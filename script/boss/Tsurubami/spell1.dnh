@@ -71,10 +71,10 @@ task TMain() {
 
 task TFireA() {
     if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, -90, 30, 8, COLOR_GRAY_L);
     wait(30);
     async {
         wait(150);
@@ -88,18 +88,18 @@ task TFireA() {
         if (!_bossAlive) return;
         float xSpeed = rand(1, 2.5);
         xSpeed = rand_int(0, 1) == 0 ? xSpeed : xSpeed * -1;
-        int shot = CreateShotUB2(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), xSpeed, -yMax, 0, yAccel, 0, yMax, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+SPAWN_E+SIZE_32, SHOT_GRAY_INV+CANCEL_32);
+        int shot = CreateShotUB2(_bossX, _bossY, xSpeed, -yMax, 0, yAccel, 0, yMax, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+SPAWN_E+SIZE_32, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         TRain(shot, i);
         CallSFX(SND_SHOT3);
         wait([numShot - i, numShot - i, 10][_diff]);
     }
 
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 160, 0, 18, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(6);
 
     numShot = [12, 16, 20][_diff];
@@ -107,7 +107,7 @@ task TFireA() {
         if (!_bossAlive) return;
         float angleT = rand(0, 360);
         for (int j = 0; j < numShot * i; j++) {
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), rand(4.8, 5) / i, angleT, SHOT_BLUE_INV+FIRE_S, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST1);
+            CreateShotUA1(_bossX, _bossY, rand(4.8, 5) / i, angleT, SHOT_BLUE_INV+FIRE_S, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST1);
             angleT += 360 / (numShot * i);
         }
         CallSFX(SND_SHOT1);

@@ -127,14 +127,14 @@ task TSlugShot() {
 task TSkewer() {
     float angleT = GetAngleToPlayer(_objBoss);
     float modif = 0;
-    Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), angleT, 280, 45);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, 90, 37, 8, COLOR_BLACK);
+    Laser_WarningLine(_bossX, _bossY, angleT, 280, 45);
+    Particle_ContractRing(_bossX, _bossY, 0, 32, 90, 37, 8, COLOR_BLACK);
     wait(8);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 32, -90, 37, 8, COLOR_GRAY_D);
+    Particle_ContractRing(_bossX, _bossY, 0, 32, -90, 37, 8, COLOR_GRAY_D);
     wait(37);
     if (!_bossAlive) return;
     for (int i = 0; i < 15; i++) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 12 - Interpolate_Decelerate(0, 12, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
+        CreateShotUA1(_bossX, _bossY, 12 - Interpolate_Decelerate(0, 12, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
         if ([false, false, true][_diff]) modif = rand(-5, 5);
     }
     CallSFX(SND_SHOT1);

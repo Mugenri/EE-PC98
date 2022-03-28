@@ -69,14 +69,12 @@ task TMain() {
 
 task TFire() {
     if (!_bossAlive) return;
-    float bossX = ObjMove_GetX(_objBoss);
-    float bossY = ObjMove_GetY(_objBoss);
 
     //yin yang ring
     float angleT = rand(0, 360);
     float numShot = [8, 12, 18][_diff];
     loop (numShot) {
-        int orbShot = CreateShotUA1(bossX, bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
+        int orbShot = CreateShotUA1(_bossX, _bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
         if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
         ObjShot_SetSpellResist(orbShot, true);
         TReflect(orbShot);
@@ -88,7 +86,7 @@ task TFire() {
     for (int i = 0; i < 3; i++) {
         angleT = rand(0, 360);
         loop (numShot) {
-            int shot = CreateShotUA1(bossX, bossY, rand(1.3, 1.55) + 0.4 * i, angleT, SHOT_GRAY+RING_S, i * 4, SHOT_GRAY+CANCEL_BURST2);
+            int shot = CreateShotUA1(_bossX, _bossY, rand(1.3, 1.55) + 0.4 * i, angleT, SHOT_GRAY+RING_S, i * 4, SHOT_GRAY+CANCEL_BURST2);
             angleT += 360 / numShot;
         }
     }
@@ -121,8 +119,8 @@ task TFire() {
         int color = SHOT_RED_INV;
         for (int i = 7 - angleMod_; i >= 0; i--) {
             if (!_bossAlive) return;
-            CreateShotUA1(bossX, bossY, 2 + speedMod * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
-            CreateShotUA1(bossX, bossY, 2 + speedMod * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(_bossX, _bossY, 2 + speedMod * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(_bossX, _bossY, 2 + speedMod * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
             color = SHOT_BLACK;
         }
     }

@@ -71,13 +71,13 @@ task TMain() {
 
 task TFireA(int dir_) {
     if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(30);
 
     if (!_bossAlive) return;
-    int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 + 50 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    int amulet = CreateShotUA1(_bossX, _bossY, 5, 90 + 50 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjShot_SetSpellResist(amulet, true);
     ObjMove_SetAngularVelocity(amulet, -0.4 * dir_);
     CallSFX(SND_SHOT3);
@@ -123,16 +123,16 @@ task TFireA(int dir_) {
 
 task TFireB() {
     if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, 90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, -90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, -15, 100, -90, 30, 8, COLOR_GRAY_L);
     wait(30);
 
     if (!_bossAlive) return;
     int dir = 1;
     loop (2) {
-        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, 90 - 80 * dir, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        int amulet = CreateShotUA1(_bossX, _bossY, 5, 90 - 80 * dir, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);
         ObjMove_SetAngularVelocity(amulet, 4 * dir);
         ObjMove_AddPatternA2(amulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);

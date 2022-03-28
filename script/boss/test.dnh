@@ -60,7 +60,7 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                //int objspark = MasterSpark(MID_X, ObjMove_GetY(_objBoss), 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
+                //int objspark = MasterSpark(MID_X, _bossY, 90, 400, 336, 60, COLOR_BLUE, COLOR_INDIGO_L, 90);
                 //TPatternA();
                 //ObjMove_SetDestAtFrame(_objBoss, rand(MID_Y - 10, MID_Y + 10), rand(30, 90), 60, LERP_SMOOTHER);
                 //TPatternB(1);
@@ -81,7 +81,7 @@ task TPatternA() {
             float angleT = rand(0, 360);
             loop (25) {
                 if (!_bossAlive) return;
-                int obj = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 1.2, angleT, 1, 0, 2000, 0);
+                int obj = CreateShotUA1(_bossX, _bossY, 1.2, angleT, 1, 0, 2000, 0);
                 angleT += 360 / 25;
             }
             wait(100);
@@ -95,8 +95,8 @@ task TPatternB(int dir_) {
     float angleT = 0;
 
     loop (8) {
-        float x = ObjMove_GetX(_objBoss) + 30 * cos(angleT);
-        float y = ObjMove_GetY(_objBoss) + 30 * sin(angleT);
+        float x = _bossX + 30 * cos(angleT);
+        float y = _bossY + 30 * sin(angleT);
         int obj = CreateStraightLaserUA1(x, y, dottheta(x, y, GetPlayerX(), GetPlayerY()), 550, 60, 0xFF00FF, 60);
         angleT += 45;
         TMove(obj);
@@ -123,7 +123,7 @@ task TPatternC() {
     loop (11) {
         if (!_bossAlive) return;
         int dist = 25;
-        int obj = CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
+        int obj = CreateLooseLaserUA1(_bossX + dist * cos(angle), _bossY + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle -= 18;
         wait(5);
     }
@@ -131,7 +131,7 @@ task TPatternC() {
     loop (11) {
         if (!_bossAlive) return;
         int dist = 15;
-        CreateLooseLaserUA1(ObjMove_GetX(_objBoss) + dist * cos(angle), ObjMove_GetY(_objBoss) + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
+        CreateLooseLaserUA1(_bossX + dist * cos(angle), _bossY + dist * sin(angle), 4.5, angle, 120, 0x444444, 0);
         angle += 18;
         wait(5);
     }
@@ -139,7 +139,7 @@ task TPatternC() {
 
 task TPatternD() {
     loop (40) {
-        CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 5, GetAngleToPlayer(_objBoss), SHOT_WHITE+NEEDLES, 0, 0, 0);
+        CreateShotUA1(_bossX, _bossY, 5, GetAngleToPlayer(_objBoss), SHOT_WHITE+NEEDLES, 0, 0, 0);
         wait(2);
     }
 }
@@ -151,7 +151,7 @@ task TPatternE() {
     int bSprite = round(rand(0, 1)) * 5;
     loop (32) {
         if (!_bossAlive) return;
-        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
+        CreateShotUA1(_bossX + xPos, _bossY + yPos, 5, angleT, 4 + bSprite, 0, 0, 0);
         angleT += 360 / 32;
     }
 }
@@ -184,20 +184,20 @@ task TPatternH() {
 }
 
 task TPatternI() {
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 0, 100, 30, 32, COLOR_WHITE, false, RP_STG_EFF_LO);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 0, 100, 30, 32, COLOR_WHITE, false, RP_STG_EFF_LO);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(_bossX, _bossY, -15, 100, 90, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, -90, 30, 8, COLOR_GRAY);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, -90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, -15, 100, 90, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 100, 90, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, -15, 100, 90, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, -90, 30, 8, COLOR_GRAY_L);
     wait(20);
     if (!_bossAlive) return;
-    int shot1 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
-    int shot2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 10, 130, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
+    int shot1 = CreateShotUA1(_bossX, _bossY, 10, 50, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
+    int shot2 = CreateShotUA1(_bossX, _bossY, 10, 130, SHOT_BLACK+PILL_S, 0, SHOT_BLACK+CANCEL_BURST1);
     ObjShot_SetSpellResist(shot1, true);
     ObjShot_SetSpellResist(shot2, true);
     loop (3) {
@@ -311,8 +311,8 @@ task TPatternM() { //Delete effects
 task TPatternN() {
     loop (14) {
         ascent (i in 0..8) {
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) + 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
-            CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 3 + i / 3, GetAngleToPlayer(_objBoss) - 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
+            CreateShotUA1(_bossX, _bossY, 3 + i / 3, GetAngleToPlayer(_objBoss) + 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
+            CreateShotUA1(_bossX, _bossY, 3 + i / 3, GetAngleToPlayer(_objBoss) - 2.5, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
         }
         wait(4);
     }
@@ -320,7 +320,7 @@ task TPatternN() {
 
 task TPatternO() {
     CallSFX(SND_LASER1);
-    int laser = CreateCurveLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 6, 180 - rand_int(0, 2) * 90, 16, COLOR_BLUE, 0);
+    int laser = CreateCurveLaserUA1(_bossX, _bossY, 6, 180 - rand_int(0, 2) * 90, 16, COLOR_BLUE, 0);
     ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, 0, NO_CHANGE);
     ObjMove_AddPatternA2(laser, 65, NO_CHANGE, NO_CHANGE, 0.1, 7.5, NO_CHANGE);
     
@@ -341,7 +341,7 @@ task TPatternP() {
     float yPos = rand(-15, 15);
     int graphic = rand_int(0, 1) == 0 ? SHOT_BLUE+BALL_S : SHOT_BLUE+PELLET;
     loop (32){
-        CreateShotUA1(ObjMove_GetX(_objBoss) + xPos, ObjMove_GetY(_objBoss) + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
+        CreateShotUA1(_bossX + xPos, _bossY + yPos, 6, angleT, graphic, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST1);
         angleT += 360 / 32;
     }
     CallSFX(SND_SHOT1);

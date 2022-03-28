@@ -83,7 +83,7 @@ task TMovement() {
 task TLaser() {
     if (!_bossAlive) return;
 
-    int xPos = ObjMove_GetX(_objBoss);
+    int xPos = _bossX;
     int width = [50, 45, 40][_diff];
     int moveTime = [200, 170, 60][_diff];
     int waitTime = [85, 60, 40][_diff];

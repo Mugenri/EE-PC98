@@ -81,8 +81,8 @@ task TNoCheese() {
 
         if (cheese) { // :)
             float angle = rand(0, 360);
-            float xPos = ObjMove_GetX(_objBoss) + rand(-40, 40);
-            float yPos = ObjMove_GetY(_objBoss) + rand(-40, 40);
+            float xPos = _bossX + rand(-40, 40);
+            float yPos = _bossY + rand(-40, 40);
             int graphic = rand_int(0, 1) == 0 ? SHOT_GRAY+BALL_S : SHOT_GRAY+PELLET;
             loop (32) {
                 CreateShotUA1(xPos, yPos, 6, angle, graphic, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST1);
@@ -98,7 +98,7 @@ task TNoCheese() {
 task TFireA(int dir_) {
     if (!_bossAlive) return;
 
-    int amulet = CreateShotUA2(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 8, 90 - 80 * dir_, -1.2, 1.5, 3.6 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    int amulet = CreateShotUA2(_bossX, _bossY, 8, 90 - 80 * dir_, -1.2, 1.5, 3.6 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjMove_AddPatternA2(amulet, 50, NO_CHANGE, NO_CHANGE, 0.15, 8, 0);
     ObjShot_SetSpellResist(amulet, true);
     CallSFX(SND_SHOT3);
@@ -125,9 +125,9 @@ task TFireA(int dir_) {
 task TFireB(int dir_) {
     if (!_bossAlive) return;
 
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, -90 * dir_, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, -90 * dir_, 30, 8, COLOR_GRAY);
 
     int laserNum = [6, 8, 16][_diff];
     float speed = [9.5, 12.5, 14][_diff];
@@ -144,8 +144,8 @@ task TFireB(int dir_) {
     }
 
     task TLaser(float angle_) {
-        int warning = Laser_WarningLine(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), angle_, 400, delay);
-        int laser = CreateLooseLaserUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angle_, laserLength, COLOR_BLACK, delay);
+        int warning = Laser_WarningLine(_bossX, _bossY, angle_, 400, delay);
+        int laser = CreateLooseLaserUA1(_bossX, _bossY, speed, angle_, laserLength, COLOR_BLACK, delay);
         wait(delay);
         if (!_bossAlive) return;
         CallSFX(SND_LASER2);

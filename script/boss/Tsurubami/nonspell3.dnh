@@ -71,11 +71,11 @@ task TMain() {
 
 task TFireA(int dir_) {
     if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(30);
 
     if (!_bossAlive) return;
@@ -83,7 +83,7 @@ task TFireA(int dir_) {
     float angleT = 90;
     float speed = [3.2, 3.2, 5.2][_diff];
     loop (12) {
-        int amulet = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        int amulet = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);
         TCommands(amulet);
         angleT += 360 / 12;
@@ -98,7 +98,7 @@ task TFireA(int dir_) {
     int numShot = [48, 64, 72][_diff];
     angleT = GetAngleToPlayer(_objBoss) + [0, 0, 360 / numShot][_diff];
     for (int i = 0; i < numShot; i++) {
-        int amulet2 = CreateShotUA1(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
+        int amulet2 = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet2, 12, NO_CHANGE, NO_CHANGE, -1, 1, NO_CHANGE);
         angleT += 360 / numShot;
         if (i % 2 == 1) ObjShot_SetDeleteFrame(amulet2, 40);
@@ -109,8 +109,8 @@ task TFireA(int dir_) {
         ObjMove_SetAngularVelocity(parent_, 1.8 * dir_);
         ObjMove_AddPatternA2(parent_, 45, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 1 * dir_);
         ObjMove_AddPatternA2(parent_, 90, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.2 * dir_);
-        float bossX = ObjMove_GetX(_objBoss);
-        float bossY = ObjMove_GetY(_objBoss);
+        float bossX = _bossX;
+        float bossY = _bossY;
         int delayTime = [128, 128, 64][_diff];
         int waitTime = [16, 8, 5][_diff];
         float accel = [0.01, 0.01, 0.04][_diff];

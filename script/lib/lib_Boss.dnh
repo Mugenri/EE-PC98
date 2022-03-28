@@ -18,6 +18,10 @@ bool _spellBarrier = false; //is spell barrier active
 
 bool _isSurvival = false; //survival spell
 
+//position of boss
+float _bossX = 0;
+float _bossY = 0;
+
 float _bossLife; //current life
 float _previousLife = 0; //life of previous frame
 
@@ -57,6 +61,9 @@ function<int> Boss_Create(string bossID_, float x_, float y_) {
 }
 //update function to be run in mainloop of single TODO test double bosses with two health pools
 function<void> Boss_Update(int objBoss_) {
+    _bossX = ObjMove_GetX(objBoss_);
+    _bossY = ObjMove_GetY(objBoss_);
+
     _isDamaged = false;
     _bossLife = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 

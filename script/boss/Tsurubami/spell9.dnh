@@ -79,23 +79,23 @@ task TSpokes() {
 
     CallSFX(SND_CHARGE1);
 
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(30);
 
     //origin position
@@ -166,15 +166,15 @@ task TFire(int dir_) {
     float maxSpeed = [2.8, 3, 3.8][_diff];
     float angleT = rand(0, 360);
 
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW);
     wait(3);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW_D);
+    Particle_ContractRing(_bossX, _bossY, 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW_D);
     wait(30);
 
     for (int i = 0; i < stack; i++) {
         for (int j = 0; j < way; j++) {
             if (!_bossAlive) return;
-            CreateShotUA2(ObjMove_GetX(_objBoss) + 32 * cos(angleT), ObjMove_GetY(_objBoss) + 64 * sin(angleT), speed, angleT + (160 * dir_), accel, maxSpeed, 0.12 * dir_, SHOT_YELLOW_INV+STAR_S, 0, SHOT_YELLOW_INV+SPAWN_S+SIZE_8, SHOT_YELLOW_INV+CANCEL_BURST1);
+            CreateShotUA2(_bossX + 32 * cos(angleT), _bossY + 64 * sin(angleT), speed, angleT + (160 * dir_), accel, maxSpeed, 0.12 * dir_, SHOT_YELLOW_INV+STAR_S, 0, SHOT_YELLOW_INV+SPAWN_S+SIZE_8, SHOT_YELLOW_INV+CANCEL_BURST1);
             angleT += 360 / way;
         }
         CallSFX(SND_SHOT1);

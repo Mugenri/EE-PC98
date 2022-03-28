@@ -104,11 +104,11 @@ task TRing(int dir_) {
 
     Animation_Charge(_objBoss, true);
 
-    Primitive_ContractPolygon2D(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 45, 100, 0, 20, 32, COLOR_INDIGO, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 20, 32, COLOR_INDIGO, false, RP_STG_EFF_MID);
     wait(5);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, -90 * dir_, 20, innerCount, COLOR_BLUE);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 20, innerCount, COLOR_BLUE);
     wait(5);
-    Particle_ContractRing(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), 0, 100, 90 * dir_, 20, outerCount, COLOR_INDIGO_L);
+    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 20, outerCount, COLOR_INDIGO_L);
     wait(20);
 
     Animation_Charge(_objBoss, false);
@@ -122,7 +122,7 @@ task TRing(int dir_) {
     float ySpeed = -3;
     float yMax = 1.6;
 
-    int core = CreateShotUB2(ObjMove_GetX(_objBoss), ObjMove_GetY(_objBoss), xSpeed, ySpeed, -0.05 * dir_, 0.1, 0.001, yMax, SHOT_BLUE+FIRE_A, 0, SHOT_BLUE+SPAWN_S+SIZE_32, SHOT_BLUE+CANCEL_32);
+    int core = CreateShotUB2(_bossX, _bossY, xSpeed, ySpeed, -0.05 * dir_, 0.1, 0.001, yMax, SHOT_BLUE+FIRE_A, 0, SHOT_BLUE+SPAWN_S+SIZE_32, SHOT_BLUE+CANCEL_32);
     ObjShot_SetSpellResist(core, true);
     ObjShot_SetAutoDelete(core, false);
     CallSFX(SND_SHOT2);
