@@ -107,7 +107,7 @@ task TLaser() {
         for (int i = 0; i < numShot; i++) {
             float xPos = MID_X + (MID_X * dir);
             float yPos = ObjMove_GetY(laserL);
-            CreateShotUA2(xPos, yPos, 0, dottheta(xPos, yPos, GetPlayerX(), GetPlayerY()) + angle, accel, rand(3.5, 5.7), 0, SHOT_BLACK+SWORD_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+            CreateShotUA2(xPos, yPos, 0, dottheta(xPos, yPos, GetPlayerX(), GetPlayerY()) + angle, accel, rand(3.5, 5.7), 0, SHOT_RED_INV+SWORD_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
             angle += 360 / numShot;
         }
         CallSFX(SND_SHOT1);
