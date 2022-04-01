@@ -17,7 +17,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
 
     ObjPrim_SetTexture(objBoss_, GetBossSprite(bossID));
     ObjRender_SetTextureFilter(objBoss_, FILTER_NONE, FILTER_NONE, FILTER_NONE);
-    Obj_SetRenderPriorityI(objBoss_, RP_STG_ENEMY);
+    Obj_SetRenderPriorityI(objBoss_, RP_STG_BOSS);
 
     Animation_Damage(objBoss_);
 

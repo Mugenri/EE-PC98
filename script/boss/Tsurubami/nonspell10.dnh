@@ -17,7 +17,7 @@ _spellID = 57 + _diff;
         SetScriptResult(3000);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(35 + absolute(_count / 60));
+        SetScriptResult(40 + absolute(_count / 60));
     }
 }
 
@@ -44,7 +44,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (_bossAlive) yield;
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MAX_Y - 32, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
