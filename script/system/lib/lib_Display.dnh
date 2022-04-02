@@ -826,13 +826,10 @@ task TReplayFPS() {
 //Utility
 //----------------------------------------------------
 task TBannerDisplay(int type_, int row_, int score_) {
+    //prevents extend text from overlapping spell bonus text if both are called at the same time
+    if (type_ > 2 && (_bannerDisplaying[0] == true || _bannerDisplaying[1] == true)) wait(5);
+
     //if row not explicitly assigned, auto assign to whichever row opens first
-    if (type_ != BANNER_BONUS_SPELL || type_ != BANNER_BONUS_CANCEL || type_ != BANNER_BONUS_FAIL) {
-        //okay this is a fucking stupid solution but its all i can think of
-        //in the very very likely event that a spell capture and a new highscore/score extend happen on the same frame
-        //this keeps the text from overlapping
-        yield;
-    }
     while (row_ == 0) {
         for (int i = 0; i < length(_bannerDisplaying); i++) {
             if (_bannerDisplaying[i] == false) { //found open slot
