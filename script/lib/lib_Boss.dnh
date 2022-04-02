@@ -12,7 +12,6 @@
 int _spellID = -1; // currently running spell
 
 bool _bossAlive = true; //boss health > 0
-bool _isDamaged = false; //used for damage animation
 bool _isSpellVulnerable = true; //is vulnerable to bomb damage
 bool _spellBarrier = false; //is spell barrier active
 
@@ -64,7 +63,7 @@ function<void> Boss_Update(int objBoss_) {
     _bossX = ObjMove_GetX(objBoss_);
     _bossY = ObjMove_GetY(objBoss_);
 
-    _isDamaged = false;
+    Obj_SetValueI(objBoss_, BOSS_DAMAGED, false);
     _bossLife = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 
     if (_bossLife <= 0) {
@@ -76,7 +75,7 @@ function<void> Boss_Update(int objBoss_) {
         if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
             if (_bossLife > 400) CallSFX(SND_DAMAGE);
             else CallSFX(SND_DAMAGE_LOW);
-            _isDamaged = true;
+            Obj_SetValueI(objBoss_, BOSS_DAMAGED, true);
             AddScore(10 * (round(_previousLife - _bossLife))); //~10 points per point of boss health
         } else {
             CallSFX(SND_INVINCIBLE);

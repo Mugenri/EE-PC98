@@ -222,7 +222,7 @@ const int SHOT_EFFECT       = 4; //Key field for bullet deletion effect
 const int BOSS_ID           = 5; //Boss ID string constant
 // const int ANIM_CHARGE       = 6; //value reserved for animation library
 // const int ANIM_SPECIAL      = 7; //value reserved for animation library
-const int BOSS_DAMAGE       = 8; //Boss took damage this frame
+const int BOSS_DAMAGED      = 8; //Boss took damage this frame
 //Item
 const int ITEM_AUTOCOLLECT  = 9; //Item was autocollected
 

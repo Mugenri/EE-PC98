@@ -19,14 +19,19 @@ function<void> Animation_DrawBoss(int objBoss_) {
     ObjRender_SetTextureFilter(objBoss_, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     Obj_SetRenderPriorityI(objBoss_, RP_STG_BOSS);
 
-    Animation_Damage(objBoss_);
+    //damage animation
+    ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
+    ObjShader_SetTechnique(objBoss_, "TecWhite");
+    bool isFlashing = false;
 
+    //animation data
     int[] wh = Animation_GetWidthHeight(bossID);
     int width = wh[0];
     int height = wh[1];
     int[][] frameData = Animation_GetFrameData(bossID);
     int animType = ANIM_IDLE;
     int previousType = ANIM_IDLE;
+    //frames
     int frame = 0;
     int frameRate = 6;
 
@@ -51,19 +56,40 @@ function<void> Animation_DrawBoss(int objBoss_) {
                     else animType = ANIM_RIGHT;
                 }
             }
+            CheckDamage();
             SetFrame();
             previousType = animType;
             yield;
+        }
+        ObjShader_SetFloat(objBoss_, "enable_", 0);
+    }
+
+    function<void> CheckDamage() {
+        if (isFlashing == false && Obj_GetValueDI(objBoss_, BOSS_DAMAGED, false)) {
+            async {
+                isFlashing = true;
+                loop (3) {
+                    if (Obj_IsDeleted(objBoss_)) break;
+                    ObjShader_SetFloat(objBoss_, "enable_", 1);
+                    yield;
+                    if (Obj_IsDeleted(objBoss_)) break;
+                    ObjShader_SetFloat(objBoss_, "enable_", 0);
+                    wait(3);
+                }
+                isFlashing = false;
+            }
         }
     }
 
     //fetches the sprite frame given the parameters of the sheet
     function<void> SetFrame() {
+        int frames = frameData[animType][0] * frameRate; //total amount of in-game frames
         int x = frameData[animType][1];
         int y = frameData[animType][2];
-        int frames = frameData[animType][0] * frameRate;
+        bool isLooping = frameData[animType][3];
         if (previousType == animType && frames > frameRate) { //sprite has animation frames
-            if (frame >= frames) frame = 0;
+            if (isLooping && frame >= frames) frame = 0;            //looping animation
+            else if (!isLooping) frame = min(frame, frames - 1);    //not looping animation
             int temp = frame / frameRate * width; //frame of animation of the current animation type
             ObjSprite2D_SetSourceRect(objBoss_, x + temp, y, x + width + temp, y + height);
             frame++;
@@ -80,7 +106,7 @@ function<void> Animation_Charge(int obj_, bool active_) {
     Obj_SetValueI(obj_, ANIM_CHARGE, active_);
 }
 function<void> Animation_Special(int obj_, bool active_) {
-    Obj_SetValue(obj_, ANIM_SPECIAL, active_);
+    Obj_SetValueI(obj_, ANIM_SPECIAL, active_);
 }
 
 //----------------------------------------------------
@@ -92,34 +118,11 @@ function<int[]> Animation_GetWidthHeight(string bossID_) {
     //alternative (bossID_) no actual edge cases yet
     return wh;
 }
-//returns an array of [frames, x, y] in each animation type
+//returns an array of [frames, x, y, isLooping] in each animation type (0 == false, 1 == true)
 function<int[][]> Animation_GetFrameData(string bossID_) {
-    int[][] data = [[1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0], [1, 0, 0]]; //assume 1 frame for each animation
+    int[][] data = [[1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1]]; //assume 1 frame for each animation
     alternative (bossID_)
-    case (BOSS_ID_TSURUBAMI) data = [[1, 0, 0], [1, 64, 0], [1, 128, 0], [1, 192, 0], [1, 256, 0], [1, 320, 0], [4, 0, 64], [0, 0, 0]];
+    case (BOSS_ID_TSURUBAMI) data = [[1, 0, 0, 1], [1, 64, 0, 1], [1, 128, 0, 1], [1, 192, 0, 1], [1, 256, 0, 1], [1, 320, 0, 1], [4, 0, 64, 1], [0, 0, 0, 1]];
     others assert(false, "No animation data for provided bossID.");
     return data;
-}
-//white flash upon being damaged
-function<void> Animation_Damage(int objBoss_) {
-    ObjShader_SetShaderF(objBoss_, HLSL_WHITE);
-    ObjShader_SetTechnique(objBoss_, "TecWhite");
-    bool isFlashing = false;
-    async {
-        while (!Obj_IsDeleted(objBoss_)) {
-            if (isFlashing == false && _isDamaged) {
-                isFlashing = true;
-                loop (3) {
-                    if (Obj_IsDeleted(objBoss_)) break;
-                    ObjShader_SetFloat(objBoss_, "enable_", 1);
-                    yield;
-                    if (Obj_IsDeleted(objBoss_)) break;
-                    ObjShader_SetFloat(objBoss_, "enable_", 0);
-                    wait(3);
-                }
-                isFlashing = false;
-            } else yield;
-        }
-        ObjShader_SetFloat(objBoss_, "enable_", 0);
-    }
 }
