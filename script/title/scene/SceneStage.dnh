@@ -112,7 +112,7 @@ task TStageScene() {
         //--------------------------------------------------------------------
         int stageState = GetStageSceneState();
         if (stageState == STAGE_STATE_FINISHED) {
-            //FinalizeStageScene(); WHY DO YOU CRASH AFTER RESTARTS
+            FinalizeStageScene();
 
             //TODO handle if replay
             int stageResult = GetStageSceneResult();
@@ -191,7 +191,11 @@ task TStageScene() {
             if (GetAreaCommonData(AREA_STAGE, "Continues", 0) == 0) { //set high score before erasing by restart
                 HS_SetHighScore(GetScore(), HS_GetDefaultScore(gameMode));
             }
-            if (!isStageEnd_) TerminateStageScene();
+            if (!isStageEnd_) {
+                TerminateStageScene();
+                yield;
+                FinalizeStageScene();
+            }
             TStageScene();
         }
         case (RESULT_CONTINUE) {
