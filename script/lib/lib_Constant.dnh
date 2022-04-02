@@ -3,7 +3,7 @@ const bool DEBUG_MODE = true;
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
-const string GAME_VERSION = "0.31a";
+const string GAME_VERSION = "0.32a";
 
 //----------------------------------------------------
 //FONT CONSTANTS
