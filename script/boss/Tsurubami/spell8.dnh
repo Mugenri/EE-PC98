@@ -72,9 +72,10 @@ task TMain() {
 
 task TMovement() {
     int moveTime = 90;
+    float speedMod = [0.7, 0.8, 1.0][_diff];
     while (_count < 0) yield;
     while (_bossAlive) {
-        float xPos = MID_X - 112 * sin(_count * 0.7);
+        float xPos = MID_X - 112 * sin(_count * speedMod);
         ObjMove_SetDestAtFrame(_objBoss, xPos, 60, 1);
         yield;
     }
@@ -86,13 +87,13 @@ task TLaser() {
     int xPos = _bossX;
     int width = [50, 45, 40][_diff];
     int moveTime = [200, 170, 60][_diff];
-    int waitTime = [85, 60, 40][_diff];
-    int numShot = [3, 5, 8][_diff];
-    float accel = [0.005, 0.005, 0.012][_diff];
+    int waitTime = [85, 60, 48][_diff];
+    int numShot = [3, 5, 6][_diff];
+    float accel = [0.005, 0.006, 0.033][_diff];
 
-    
-    int laserL = CreateStraightLaserUA1(xPos - width, -20, 180, MAX_X, moveTime, COLOR_BLACK, 0);
-    int laserR = CreateStraightLaserUA1(xPos + width, -20, 0, MAX_X, moveTime, COLOR_BLACK, 0);
+    int color = [COLOR_BLACK, COLOR_BLACK, COLOR_RED][_diff];
+    int laserL = CreateStraightLaserUA1(xPos - width, -20, 180, MAX_X, moveTime, color, 0);
+    int laserR = CreateStraightLaserUA1(xPos + width, -20, 0, MAX_X, moveTime, color, 0);
     ObjShot_SetSpellResist(laserL, true);
     ObjShot_SetSpellResist(laserR, true);
     ObjMove_AddPatternD2(laserL, 0, xPos - width, MAX_Y + 10, moveTime, LERP_LINEAR);

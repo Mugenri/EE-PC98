@@ -61,8 +61,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (36, 37)       { return "\"Orochi Labyrinth\""; }                              //EZ, EX
         case (38)           { return "\"Super Ouroboros\""; }                               //ABEX
         case (39, 40, 41)   { return "Nonspell 7"; }
-        case (42, 43)       { return "Disembodiment Card \"Inversion of Being\""; }         //EZ, EX
-        case (44)           { return "Dismemberment Card \"Negative Chronology\""; }        //ABEX
+        case (42, 43)       { return "Disembodiment Card \"Bonerot\""; }                    //EZ, EX
+        case (44)           { return "Dismemberment Card \"Spine Ripper\""; }               //ABEX
         case (45, 46, 47)   { return "Nonspell 8"; }
         case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //EZ, EX
         case (50)           { return "Constellation Card \"Speed-of-Light Rodeo\""; }       //ABEX
