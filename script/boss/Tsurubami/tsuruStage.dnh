@@ -9,7 +9,7 @@
 bool _start = false;
 
 @Initialize {
-    Stage_Init(2, 3);
+    Stage_Init(GetStartingLives(), 3);
     TStage();
 }
 

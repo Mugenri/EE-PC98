@@ -3,9 +3,10 @@ function<void> SceneOption() {
     //Menu Indices
     const int INDEX_VOLUME_BGM = 0;
     const int INDEX_VOLUME_SFX = 1;
+    const int INDEX_STARTING_LIVES = 2;
     
-    const int INDEX_DEFAULT = 2;
-    const int INDEX_QUIT = 3;
+    const int INDEX_DEFAULT = 3;
+    const int INDEX_QUIT = 4;
 
     bool exitFlag = false;
 
@@ -15,12 +16,12 @@ function<void> SceneOption() {
     TCreateMenuGraphicsOption();
 
     //Set up the menu
-    string[] commonName = ["BGM_Volume", "SFX_Volume"]; //common data field names
+    string[] commonName = ["BGM_Volume", "SFX_Volume", "StartingLives"]; //common data field names
     {
         int menuX = 504;
         int menuY = 24;
         int yOffset = 15;
-        string[] texts = ["BGM Volume    ", "SFX Volume    ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
+        string[] texts = ["BGM Volume    ", "SFX Volume    ", "Lives  ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
         ascent (i in 0..selectMax + 1) {
             TCreateMenuItemOption(i, menuX, menuY, 0, yOffset, texts[i]);
             menuY += yOffset;
@@ -42,13 +43,19 @@ function<void> SceneOption() {
         }
         case (VK_LEFT) {
             if (indexCurrent == INDEX_VOLUME_BGM || indexCurrent == INDEX_VOLUME_SFX) {
-                IncrementVolume(indexCurrent, -5);
+                IncrementValue(indexCurrent, -5, 0, 100);
+                CallSFX(SND_TT_SELECT);
+            } else if (indexCurrent == INDEX_STARTING_LIVES) {
+                IncrementValue(indexCurrent, -1, 0, 7);
                 CallSFX(SND_TT_SELECT);
             }
         }
         case (VK_RIGHT) {
             if (indexCurrent == INDEX_VOLUME_BGM || indexCurrent == INDEX_VOLUME_SFX) {
-                IncrementVolume(indexCurrent, 5);
+                IncrementValue(indexCurrent, 5, 0, 100);
+                CallSFX(SND_TT_SELECT);
+            } else if (indexCurrent == INDEX_STARTING_LIVES) {
+                IncrementValue(indexCurrent, 1, 0, 7);
                 CallSFX(SND_TT_SELECT);
             }
         }
@@ -89,9 +96,9 @@ function<void> SceneOption() {
         ObjRender_SetX(objText, ObjRender_GetX(objText) - ObjText_GetTotalWidth(objText) / 2);
         ObjRender_SetX(objCursor, ObjRender_GetX(objCursor) - ObjText_GetTotalWidth(objText) / 2);
 
-        if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) TCreateOptionSlider(index_);
-
-        //Additional options would go here
+        //option types
+        if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) TCreateOptionSlider(index_, 100);
+        else if (index_ == INDEX_STARTING_LIVES) TCreateOptionSlider(index_, 2);
 
         while (!exitFlag) {
             ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
@@ -101,11 +108,12 @@ function<void> SceneOption() {
         Obj_Delete(objText);
         Obj_Delete(objCursor);
 
-        task TCreateOptionSlider(int index_) {
-            int objSlider = CreateText(x_ + 8 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", COLOR_INDIGO_L);
+        task TCreateOptionSlider(int index_, int default_) {
+            int objSlider = CreateText(x_ + 4 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", COLOR_INDIGO_L);
+            if (GetAreaCommonData(AREA_CONFIG, commonName[index_], default_) == default_) SetAreaCommonData(AREA_CONFIG, commonName[index_], default_);
             
             while (!exitFlag) {
-                ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100)));
+                ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], default_)));
                 ObjText_SetVertexColor(objSlider, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
                 yield;
             }
@@ -113,8 +121,8 @@ function<void> SceneOption() {
         }
     }
 
-    function<void> IncrementVolume(int index_, int value_) {
-        int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], 100) + value_, 0, 100);
+    function<void> IncrementValue(int index_, int value_, int min_, int max_) {
+        int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], max_) + value_, min_, max_);
         SetAreaCommonData(AREA_CONFIG, commonName[index_], newValue);
     }
 

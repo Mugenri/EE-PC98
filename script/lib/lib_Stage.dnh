@@ -30,7 +30,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
     case (EV_CONTINUE) { ///used a continue
         CD_AddAreaCommonData(AREA_STAGE, "Continues", 1, 0);
 
-        SetPlayerLife(2); //TODO set this to initial lives config setting
+        SetPlayerLife(GetStartingLives());
         SetPlayerSpell(3);
 
         SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
@@ -209,17 +209,19 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     float noBombBonus = 500000;
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     float[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
+    int initLives = GetStartingLives();
+    float[] multLives = [1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5];
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     float[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
     string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Easy Extra", "Extra", "Absurdly Extra"];
-    //TODO starting lives multiplier at some point maybe
 
     //SCORE CALCULATION ----------------------------------
-    //stage bonus + graze * 50 + (lives * 10000) * point items + nomiss + nobomb * continue mult * diff mult = total
+    //stage bonus + graze * 50 + (lives * 10000) * point items + nomiss + nobomb * continue mult * starting lives mult * diff mult = total
     int totalScore = (stageBonus_ + grazeBonus + lifeBonus) * pointCount;
     if (missCount == 0) totalScore += noMissBonus;
     if (bombCount == 0) totalScore += noBombBonus;
     totalScore *= multContinue[continues];
+    totalScore *= multLives[initLives];
     totalScore *= multDifficulty[difficulty];
     totalScore = min(totalScore, 999_999_999); //cap to 1 billion
     totalScore -= totalScore % 10; //round down
@@ -234,20 +236,23 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int headerText = InitSprite2D(0, 352, 128, 368, IMG_SYSTEM_UI, RP_STG_END);
     ObjRender_SetPosition(headerText, 128, 48, 1);
     //score bonuses
-    int stageText = CreateText(16, 112, RP_STG_END, "All Clear:", COLOR_WHITE);
-    int grazeText = CreateText(16, 144, RP_STG_END, "Graze Count x 50:", COLOR_WHITE);
-    int livesText = CreateText(16, 176, RP_STG_END, "Lives Remaining x 10000:", COLOR_WHITE);
-    int pointText = CreateText(16, 208, RP_STG_END, "  x   Point Items Collected:", COLOR_WHITE);
+    int stageText = CreateText(16, 96, RP_STG_END, "All Clear:", COLOR_WHITE);
+    int grazeText = CreateText(16, 128, RP_STG_END, "Graze Count x 50:", COLOR_WHITE);
+    int livesText = CreateText(16, 160, RP_STG_END, "Lives Remaining x 10000:", COLOR_WHITE);
+    int pointText = CreateText(16, 192, RP_STG_END, "  x   Point Items Collected:", COLOR_WHITE);
     //conditional
-    int noMissText = CreateText(16, 240, RP_STG_END, "  +   No Miss Bonus:", COLOR_TEAL);
-    int noBombText = CreateText(16, 256, RP_STG_END, "  +   No Bomb Bonus:", COLOR_TEAL);
+    int noMissText = CreateText(16, 224, RP_STG_END, "  +   No Miss Bonus:", COLOR_TEAL);
+    int noBombText = CreateText(16, 240, RP_STG_END, "  +   No Bomb Bonus:", COLOR_TEAL);
     Obj_SetVisible(noMissText, missCount == 0);
     Obj_SetVisible(noBombText, bombCount == 0);
     //multipliers
     string tempText = " Continues";
     if (continues == 1) tempText = " Continue";
-    int continueText = CreateText(16, 288, RP_STG_END, IntToString(continues) ~ tempText ~ " Used:", COLOR_RED);
+    int continueText = CreateText(16, 272, RP_STG_END, IntToString(continues) ~ tempText ~ " Used:", COLOR_RED);
     Obj_SetVisible(continueText, continues > 0);
+    tempText = "Lives";
+    if (initLives == 1) tempText = "Life";
+    int initLivesText = CreateText(16, 288, RP_STG_END, IntToString(initLives) ~ " Initial " ~ tempText ~ ":", initLives <= 2 ? COLOR_GREEN_L : COLOR_RED);
     int difficultyText = CreateText(16, 304, RP_STG_END, difficultyTexts[difficulty] ~ " Rank:", COLOR_GREEN_L);
     //total
     int totalText = CreateText(16, 320, RP_STG_END, "Total:", COLOR_WHITE);
@@ -266,7 +271,8 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int[] noMissList = DigitToArray(noMissBonus);
     int[] noBombList = DigitToArray(noBombBonus);
     int[] continueList = DigitToArray(multContinue[continues] * 10, 2); // *10 to get a whole number, put a . between them. always has 2 digits
-    int[] difficultyList = DigitToArray(multDifficulty[difficulty] * 10, 2); // same as above
+    int[] initLivesList = DigitToArray(multLives[initLives] * 10, 2);
+    int[] difficultyList = DigitToArray(multDifficulty[difficulty] * 10, 2);
     int[] totalList = DigitToArray(totalScore);
 
     //length variables so they don't get called every frame
@@ -288,6 +294,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
             if (missCount == 0) UpdateList(noMissList, noMissLength, ObjRender_GetY(noMissText)); //no miss bonus
             if (bombCount == 0) UpdateList(noBombList, noBombLength, ObjRender_GetY(noBombText)); //no bomb bonus
             if (continues > 0) UpdateListDecimal(continueList, ObjRender_GetY(continueText), COLOR_RED); //continue multiplier
+            UpdateListDecimal(initLivesList, ObjRender_GetY(initLivesText), initLives <= 2 ? COLOR_GREEN_L : COLOR_RED); //initial lives multiplier
             UpdateListDecimal(difficultyList, ObjRender_GetY(difficultyText), COLOR_GREEN_L); //difficulty multiplier
             UpdateList(totalList, totalLength, ObjRender_GetY(totalText)); //total score
             yield;
