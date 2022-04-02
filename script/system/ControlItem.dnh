@@ -199,13 +199,15 @@ task TCheckThrillGauge() {
 task TCheckScoreExtend() {
     if (GetGameMode() == GAME_SPELL) return; //no score extends in spell practice
 
-    _resetScoreExtend = false;
+    while (_resetScoreExtend == true) yield;
 
     int extendThreshold = 010_000_000;
     loop {
         while (GetScore() < extendThreshold && !_resetScoreExtend) yield;
-        if (_resetScoreExtend) return;
+        if (_resetScoreExtend) break;
         NotifyEventOwn(EV_SCORE_EXTEND, 0);
         extendThreshold *= 2;
     }
+
+    _resetScoreExtend = false;
 }
