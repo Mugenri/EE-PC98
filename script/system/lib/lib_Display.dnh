@@ -870,7 +870,6 @@ task TBannerDisplay(int type_, int row_, int score_) {
     }
     case (BANNER_HIGHSCORE) {
         bounds = [0, 416, 128, 432];
-        //CallSFX(SND_HIGHSCORE); TODO?
     }
 
     int bannerText = InitSprite2D(bounds[0], bounds[1], bounds[2], bounds[3], IMG_SYSTEM_UI, RP_STG_MAX);

@@ -9,7 +9,7 @@ const string GAME_VERSION = "0.31a";
 //FONT CONSTANTS
 //----------------------------------------------------
 const string SYS_FONT = "PC-9800";
-const string SYS_FONT_PATH = GetModuleDirectory() ~ "script/img/system/font/PC-9800.ttf"; //TODO change this and similar to module directory
+const string SYS_FONT_PATH = GetModuleDirectory() ~ "script/img/system/font/PC-9800.ttf";
 const string HEADER_FONT = "Magic Decimal Sharp";
 const string HEADER_FONT_PATH = GetModuleDirectory() ~ "script/img/system/font/MagicDecimalSharp.ttf";
 
