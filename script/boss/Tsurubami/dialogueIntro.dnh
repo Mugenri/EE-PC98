@@ -178,7 +178,7 @@ function<void> Dialogue() {
         }
         case (34) {
             Dialogue_SetPortrait(bossCutin, 2);
-            Dialogue_SetText(true, "Haha, very good!/Well then, let's wrap this up/quickly, shall we?");
+            Dialogue_SetText(true, "Haha, very good!/Well then, shall we do the/cha-cha?");
         }
         case (35) {
             Dialogue_SetPortrait(playerCutin, 9);
