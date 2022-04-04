@@ -64,6 +64,7 @@ task TMain() {
 }
 
 task TFire(dir_) {
+    if (!_bossAlive) return;
     Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     wait(3);
     Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);

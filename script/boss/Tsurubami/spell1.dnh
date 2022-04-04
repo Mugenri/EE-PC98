@@ -78,8 +78,9 @@ task TFireA() {
     wait(30);
     async {
         wait(150);
+        if (!_bossAlive) return;
         Animation_Charge(_objBoss, true);
-        if (_bossAlive) CallSFX(SND_CHARGE1);
+        CallSFX(SND_CHARGE1);
     }
     int numShot = 30;
     float yAccel = [0.2, 0.2, 0.38][_diff];

@@ -3,20 +3,20 @@
 //Returns loop times for the specified track
 function<int[]> BGM_GetSample(int bgmID_) {
     alternative (bgmID_)
-    case (0) return[0, 4871328]; //Title Track
-    case (1) return [352969, 7842912]; //Eternal Dance Engine
-    case (2) return [0, 10598280]; //Broken Eternal Dance Engine
-    others return [0, 0];
+    case (0) { return [0, 4871328]; } //Title Track
+    case (1) { return [352969, 7842912]; } //Eternal Dance Engine
+    case (2) { return [0, 10598280]; } //Broken Eternal Dance Engine
+    others { return [0, 0]; }
 }
 
 //Returns path to specified track
 function<string> BGM_GetPath(int bgmID_) {
     string musicDir = GetModuleDirectory() ~ "script/bgm/";
     alternative (bgmID_)
-    case (0) return (musicDir ~ "title.ogg"); //To the Village that isn't Real ~ Chain Link?
-    case (1) return (musicDir ~ "tsurubami1.ogg"); //Eternal Dance Engine
-    case (2) return (musicDir ~ "tsurubami2.ogg"); //Broken Eternal Dance Engine
-    others return ("");
+    case (0) { return (musicDir ~ "title.ogg"); } //To the Village that isn't Real ~ Chain Link?
+    case (1) { return (musicDir ~ "tsurubami1.ogg"); } //Eternal Dance Engine
+    case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
+    others { return (""); }
 }
 
 //Returns text information for the specified track (for music menu)
@@ -59,7 +59,7 @@ their first theme. They've been separated in the[r]
 game for obvious reasons, but I wanted to include[r]
 both somehow.";
     }
-    others{
+    others { //default
         name = "Track number " ~ IntToString(bgmID_ + 1);
         comment = "Description number " ~ IntToString(bgmID_ + 1);
     }
