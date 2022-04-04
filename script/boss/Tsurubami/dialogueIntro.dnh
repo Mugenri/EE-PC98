@@ -45,53 +45,155 @@ function<void> Dialogue() {
 
     function<bool> DialogueLine(int line_) {
         //-----------------------------
-        alternative (line_)
+        alternative (line)
         case (0) {
             Dialogue_SetPortrait(playerCutin, 5);
-            Dialogue_SetText(false, "Enough games, get out here!");
+            Dialogue_SetText(false, "...");
         }
         case (1) {
-            Dialogue_SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, MID_X, 60);
-            Dialogue_SetPortrait(bossCutin, 1);
-            Dialogue_BossTitle("Inexplicable Hakama/T s u r u b a m i  S e n r i");
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Ugh, not this dream again./I'm getting tired of seeing/this place.");
         }
         case (2) {
-            Dialogue_SetPortrait(bossCutin, 2);
-            Dialogue_SetText(true, "You called?");
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, ".../.../...");
         }
         case (3) {
-            Dialogue_SetPortrait(playerCutin, 1);
-            Dialogue_SetText(false, "You know as well as I do why/we're here.");
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "It's so booooring~/I'm boooooooored~/Can I wake up already?");
         }
         case (4) {
-            Dialogue_SetPortrait(bossCutin, 8);
-            Dialogue_SetText(true, "Ah. I see.../There are others watching,/are there?");
+            Dialogue_SetText(false, "Hellooooooo~?");
         }
         case (5) {
-            Dialogue_SetPortrait(playerCutin, 4);
-            Dialogue_SetText(false, "Don't you know what that/means?");
+            Dialogue_SetText(true, "Are you here...");
         }
         case (6) {
-            Dialogue_SetPortrait(playerCutin, 3);
-            Dialogue_SetText(false, "It means I get to beat you/up <3.");
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "Who-!?");
         }
         case (7) {
-            Dialogue_SetPortrait(bossCutin, 6);
-            Dialogue_SetText(true, "Oh, I'm certain this is going/to go quite differently than/you're imagining...");
+            Dialogue_SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, MID_X, 60);
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_BossTitle("The Inexplicable Hakama/T s u r u b a m i  S e n r i");
         }
         case (8) {
-            Dialogue_SetPortrait(playerCutin, 10);
-            Dialogue_SetText(false, "Let's put on a show then!");
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "..to wipe away your prestige?/I'm impressed you made it all/the way here.");
         }
         case (9) {
-            Dialogue_SetPortrait(playerCutin, 11);
-            Dialogue_SetText(false, "For the viewers at home too~");
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Ooh, well this is new~");
         }
         case (10) {
-            Dialogue_SetPortrait(bossCutin, 11);
-            Dialogue_SetText(true, "You'll regret being so/brazen!");
+            Dialogue_SetPortrait(playerCutin, 9);
+            Dialogue_SetText(false, "Though I really hope you're/not Suzumi in a Senri-shaped/trenchcoat again.");
         }
-        others{
+        case (11) {
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "However, I never gave you/permission to come all this/way here.");
+        }
+        case (12) {
+            Dialogue_SetText(true, "Stay on the beaten path,/will you?");
+        }
+        case (13) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "What are you- wait.../Now I'm getting serious/deja vu.");
+        }
+        case (14) {
+            Dialogue_SetText(false, "Is it just me, or does this/all sound veeeeery familiar~?");
+        }
+        case (15) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "It sure doesn't seem to./Well, it at least bought me/some time...");
+        }
+        case (16) {
+            Dialogue_SetText(true, "I needed to make preparations/to go easy on you, after all.");
+        }
+        case (17) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "What are you on about?/Why do I keep showing up/here?");
+        }
+        case (18) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "I'm saying that I needed a/little more time to prepare/the handicap.");
+        }
+        case (19) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Are you ignoring me?");
+        }
+        case (20) {
+            Dialogue_SetPortrait(bossCutin, 4);
+            Dialogue_SetText(true, "I am. I've even said it twice/now, using different words.");
+        }
+        case (21) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "...");
+        }
+        case (22) {
+            Dialogue_SetText(false, "You're not really answering/me, but it's still just as/annoying as last time.");
+        }
+        case (23) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "You still seem upbeat, as/your manner of speaking/indicates.");
+        }
+        case (24) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "What part of this sounds/upbeat to you!?");
+        }
+        case (25) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Not that you're going to tell/me. You're just saying what/you said when we first met.");
+        }
+        case (26) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Even so, I feel like you/being here is important/somehow...");
+        }
+        case (27) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "Oh, so you were able to see/through my disguise. You're/pretty good at this~");
+        }
+        case (28) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "So you ARE here for a reason!/Or... gah! You're still just/reciting lines, aren't you!?");
+        }
+        case (29) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Well, the details can wait/for after we decide who gets/first place.");
+        }
+        case (30) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "I'll \"first place\" you into/a coffin if you keep joking/around!");
+        }
+        case (31) {
+            Dialogue_SetText(false, "Why do I keep having this/stupid dream?");
+        }
+        case (32) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "If you want me to answer,/I recommend brute force.");
+        }
+        case (33) {
+            Dialogue_SetPortrait(playerCutin, 3);
+            Dialogue_SetText(false, "Aaah! Even in my dreams I/can't stand talking to you!/So annoying~");
+        }
+        case (34) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Haha, very good!/Well then, let's wrap this up/quickly, shall we?");
+        }
+        case (35) {
+            Dialogue_SetPortrait(playerCutin, 9);
+            Dialogue_SetText(false, "This is the part where you/attack me, isn't it?");
+        }
+        case (36) {
+            Dialogue_SetPortrait(playerCutin, 1);
+            Dialogue_SetText(false, "...Even if it's only in my/dreams, might as well have/fun with this-");
+        }
+        case (37) {
+            StartBGM(1, 180, 0);
+            Dialogue_SetPortrait(playerCutin, 10);
+            Dialogue_SetText(false, "-and enjoy beating your ass~");
+        }
+        others {
             return true;
         }
         return false;

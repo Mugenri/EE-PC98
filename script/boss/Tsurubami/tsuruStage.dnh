@@ -38,7 +38,6 @@ task TStage() {
     StartDialogueScript(dialoguePath);
 
     StartScript(ID);
-    StartBGM(1, 180, 0);
 
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
     wait(120); //last explosion & spell bonus numbers
