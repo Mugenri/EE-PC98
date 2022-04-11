@@ -108,6 +108,7 @@ function<void> Boss_Finalize(int obj_) {
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
     bool isFinal = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_LAST_STEP);
     bool isCapture = Boss_IsSpellCaptured();
+    int timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
 
     int currentStage = GetStageIndex();
     int currentSpell = Spell_GetCurrent();
@@ -156,11 +157,13 @@ function<void> Boss_Finalize(int obj_) {
             }
             radius += 100;
         }
-    } else if (!isCapture || !isSpell) { //spell capture fail or nonspell
+    } else if ((!isCapture || !isSpell) && (timer > 0 || _isSurvival)) { //spell capture fail or nonspell
         for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 600, TARGET_ENEMY)) {
             if (ObjMove_GetX(shot) < MIN_X || ObjMove_GetX(shot) > MAX_X || ObjMove_GetY(shot) < MIN_Y || ObjMove_GetY(shot) > MAX_Y) continue; //no score for bullets offscreen
             else if (Obj_GetType(shot) == OBJ_SHOT) Obj_SetValueI(shot, SHOT_SCORE, score);
         }
+        scoreTotal = -1;
+    } else { //timeout non-survival spell
         scoreTotal = -1;
     }
 
