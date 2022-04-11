@@ -1,5 +1,4 @@
-//Dialogue test script
-//Cant include lib_Common because dialogue is being called from the package
+//Pre-fight dialogue
 #include "./../../lib/lib_Dialogue.dnh" //dialogue functions
 
 @Initialize {

@@ -1,0 +1,258 @@
+//Post-fight dialogue
+#include "./../../lib/lib_Dialogue.dnh" //dialogue functions
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TBackground();
+    TMain();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TBackground() {
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_MIN);
+}
+
+//dialogue function
+task TMain() {
+    Dialogue_Start(); //pause game, create text boxes
+    Dialogue(); //main dialogue function
+    Dialogue_End(); //remove text boxes
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Dialogue() {
+    //create player/enemy portraits and text fields
+    int playerCutin = Dialogue_CreatePortrait(BOSS_ID_YABUSAME, false);
+    int bossCutin = Dialogue_CreatePortrait(BOSS_ID_TSURUBAMI, true);
+
+    //dialogue line position
+    int line = 0;
+    loop {
+        bool end = DialogueLine(line);
+        if (end) break;
+        line++;
+        Dialogue_Wait();
+    }
+    //Dialogue end
+    Obj_Delete(playerCutin);
+    Obj_Delete(bossCutin);
+
+    function<bool> DialogueLine(int line_) {
+        //-----------------------------
+        alternative (line)
+        case (0) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetPortrait(bossCutin, 4);
+            Dialogue_SetText(true, "Haha~, well that was fun./You're stronger than I/remember.");
+        }
+        case (1) {
+            Dialogue_SetText(false, "And you're still going easy/on me.");
+        }
+        case (2) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Of course, I wouldn't want to/hit you so hard you woke up.");
+        }
+        case (3) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Oh, now you wanna talk, huh?/What took so long?");
+        }
+        case (4) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "Ah, yes. I suppose you're due/an explanation. However, we/don't have much time here...");
+        }
+        case (5) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Gimme the short version then,/you're already starting to/annoy me.");
+        }
+        case (6) {
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "So rude~");
+        }
+        case (7) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Anyways, one of my abilities/as a priest is metaphysical/communication.");
+        }
+        case (8) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Soooo... talking through/dreams?");
+        }
+        case (9) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "As well as visions and/premonitions and the like,/yes.");
+        }
+        case(10) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "There are... certain forces,/we'll say, that don't take/kindly to others medding in-");
+        }
+        case (11) {
+            Dialogue_SetText(true, "-their planes of authority./Dreams are one such plane.");
+        }
+        case (12) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "I'm doing what I can to avoid/detection.");
+        }
+        case (13) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "So there are things that even/the Senri priest is afraid/of... Scaaary~");
+        }
+        case (14) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "Hmm, not quite. This is/really just for my/convenience.");
+        }
+        case (15) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Uh huh, great... and what/does this have to do with me?");
+        }
+        case (16) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "I've had the same dream every/night for like, two weeks/straight!");
+        }
+        case (17) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Have you ever seen something/so many times you begin to/ignore it?");
+        }
+        case (18) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Like uhhh... grass?/Fairies?/This dream?");
+        }
+        case (19) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "Oho, you catch on quickly~");
+        }
+        case (20) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Even if something subtle/changed about this dream/you'd be unlikely to notice.");
+        }
+        case (21) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "Ooooooh. I think i get it!");
+        }
+        case (22) {
+            Dialogue_SetText(false, "You're trying to go/unnoticed by making this/dream the same over and over?");
+        }
+        case (23) {
+            Dialogue_SetPortrait(bossCutin, 4);
+            Dialogue_SetText(true, "Precisely! You're smarter/than I remember too~");
+        }
+        case (24) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Annoying~~/Anyway, what are these/\"certain forces\"?");
+        }
+        case (25) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "To speak their names would be/akin to summoning them./Quite foolish.");
+        }
+        case (26) {
+            Dialogue_SetPortrait(playerCutin, 9);
+            Dialogue_SetText(false, "I see...");
+        }
+        case (27) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "I'm still annoyed that you/made me go through this so/many times.");
+        }
+        case (28) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "It's been reaaaaaally/booooooring~");
+        }
+        case (29) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "My apologies, but it makes/the next part easier for me.");
+        }
+        case (30) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Can you just tell me what you/want so i can wake up and/forget all this nonsense?");
+        }
+        case (31) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "I need a favor from you.");
+        }
+        case (32) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "I beat you up and now you're/the one asking for favors./This seems backwards...");
+        }
+        case (33) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Well, we are technically/outside of Mugenri, so its/rules don't apply here.");
+        }
+        case (34) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Of course.../Fine, what is it you desire,/o' great Senri.");
+        }
+        case (35) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "I need you to ask Jinbei/about the \"special brew\" in/the shrine storeroom.");
+        }
+        case (36) {
+            Dialogue_SetText(true, "They'll know what I'm talking/about.");
+        }
+        case (37) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Uh huh, uh huh, and then?");
+        }
+        case (38) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "Slip it into Tsubakura's/drink.");
+        }
+        case (39) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "AND WHY WOULD I DO THAT!?");
+        }
+        case (40) {
+            Dialogue_SetPortrait(bossCutin, 10);
+            Dialogue_SetText(true, "How many more times would you/like to end up here when you/go to sleep?");
+        }
+        case (41) {
+            Dialogue_SetPortrait(playerCutin, 3);
+            Dialogue_SetText(false, "I'm listening.");
+        }
+        case (42) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "I promise that they'll remain/unharmed. I just need you to/do this for me.");
+        }
+        case (43) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "I'll leave you alone after/that.");
+        }
+        case (44) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "If something bad happens to/Tsuba, I am going to find/you~");
+        }
+        case (45) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "There will be no need for/that, you have my word.");
+        }
+        case (46) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Consider it part of your/official duties as a Senri/shrine priest.");
+        }
+        case (47) {
+            Dialogue_SetPortrait(playerCutin, 3);
+            Dialogue_SetText(false, "Whatever helps you sleep at/night~");
+        }
+        case (48) {
+            Dialogue_SetPortrait(bossCutin, 8);
+            Dialogue_SetText(true, "Well, that's about all I/think. Just in time too. It/appears I must be going.");
+        }
+        case (49) {
+            Dialogue_SetPortrait(playerCutin, 4);
+            Dialogue_SetText(false, "The sooner the better./Can I wake up already!?");
+        }
+        case (50) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "Don't forget what I asked of/you, Yabusame Houren!");
+        }
+        case (51) {
+            Dialogue_SetPortrait(playerCutin, 1);
+            Dialogue_SetText(false, "Yeah, yeah, don't get your/ofuda in a twist.");
+        }
+        others {
+            return true;
+        }
+        return false;
+    }
+}

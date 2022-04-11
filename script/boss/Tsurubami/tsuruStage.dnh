@@ -38,12 +38,13 @@ task TStage() {
     StartDialogueScript(dialoguePath);
 
     StartScript(ID);
+    StartBGM(1, 180, 0);
 
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
-    wait(120); //last explosion & spell bonus numbers
+    wait(150); //last explosion & spell bonus numbers
 
-    //dialoguePath = dir ~ "dialogueIntro.dnh"; //TODO change to end dialogue
-    //StartDialogueScript(dialoguePath);
+    dialoguePath = dir ~ "dialogueOutro.dnh";
+    StartDialogueScript(dialoguePath);
 
     Stage_EndScreen(10000);
     Stage_End();
