@@ -668,13 +668,13 @@ task TSpellDisplay(int stageIndex_, int spellID_) {
 
     ObjSpriteList2D_CloseVertex(banner);
 
-    int nameText = CreateText(0, 0, RP_STG_SPELL, name, COLOR_WHITE); //spawn off screen just in case of weirdness
+    int nameText = CreateText(0, -32, RP_STG_SPELL, name, COLOR_WHITE); //spawn off screen just in case of weirdness
     ObjText_SetFontBorderColor(nameText, COLOR_BLACK);
     ObjText_SetFontBorderType(nameText, BORDER_FULL);
     ObjText_SetFontBorderWidth(nameText, 1);
     ObjText_SetHorizontalAlignment(nameText, ALIGNMENT_RIGHT);
     ObjText_SetSidePitch(nameText, -1);
-    ObjText_SetMaxWidth(nameText, 384);
+    ObjText_SetMaxWidth(nameText, MAX_X - 2);
 
     int failText = InitSprite2D(160, 336, 192, 344, IMG_SYSTEM_UI, RP_STG_SPELL); //bonus failed text
     Obj_SetVisible(failText, false);

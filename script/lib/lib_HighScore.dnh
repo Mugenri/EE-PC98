@@ -42,5 +42,5 @@ function<int> HS_GetDefaultScore(int gameMode_) {
     alternative (gameMode_)
     case (GAME_MAIN)    { return 001_000_000; }
     case (GAME_SPELL)   { return 0; }
-    others { assert(false, gameMode_ ~ " is an invalid game mode."); }
+    others { assert(false, IntToString(gameMode_) ~ " is an invalid game mode."); }
 }
