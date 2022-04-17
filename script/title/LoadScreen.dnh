@@ -1,4 +1,5 @@
 #include "./lib/lib_TitleCommon.dnh"
+#include "./lib/lib_TitleUtil.dnh"
 #include "./../lib/lib_Load.dnh"
 
 function<void> Load_Init() {
@@ -15,8 +16,21 @@ task TLoadScene() { //loading screen
     CreateRenderTarget(RT_SCREENSHOT);
     CreateRenderTarget(RT_ENDSCREEN);
 
+    //loading screen
+    bool isLoaded = false;
+    TLoadingGraphics();
+
+    wait(30);
+
     //Preload Universal textures
     Load_LoadTextureBase();
+
+    wait(30);
+
+    //Load title textures
+    Load_LoadTextureTitle();
+
+    wait(30);
 
     { //load audio manager
         string path = GetModuleDirectory() ~ "script/title/ControlAudio.dnh";
@@ -30,14 +44,63 @@ task TLoadScene() { //loading screen
 
     //load achievement script if i make one
 
-    //TODO actual load screen and fangame disclaimer
-    wait(60); //Give loading screen time to run
+    wait(30);
 
     { //Run title screen
+        isLoaded = true;
         string path = GetModuleDirectory() ~ "script/title/Title.dnh";
         int id = LoadScript(path);
         SetScriptArgument(id, 0, -1); //no preload
         StartScript(id);
         UnloadScriptFromCache(path);
+    }
+
+    task TLoadingGraphics() {
+        int fade = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MAX);
+        ObjRender_SetColor(fade, COLOR_BLACK);
+
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
+        ObjRender_SetColor(bg, COLOR_BLACK);
+
+        int loadSprites = InitSpriteList2D(IMG_TT_LOAD, RP_UI_IMG);
+        //ink
+        ObjSpriteList2D_SetSourceDestRect(loadSprites, 0, 112, 512, 512);
+        ObjRender_SetPosition(loadSprites, 128, 0, 1);
+        ObjSpriteList2D_AddVertex(loadSprites);
+        //loading text
+        ObjSpriteList2D_SetSourceDestRect(loadSprites, 128, 0, 464, 64);
+        ObjRender_SetPosition(loadSprites, 300, 336, 1);
+        ObjSpriteList2D_AddVertex(loadSprites);
+        //disclaimer kanji
+        ObjSpriteList2D_SetSourceDestRect(loadSprites, 0, 0, 128, 64);
+        ObjRender_SetPosition(loadSprites, 16, 16, 1);
+        ObjSpriteList2D_AddVertex(loadSprites);
+        //disclaimer text
+        ObjSpriteList2D_SetSourceDestRect(loadSprites, 0, 64, 256, 112);
+        ObjRender_SetPosition(loadSprites, 16, 80, 1);
+        ObjSpriteList2D_AddVertex(loadSprites);
+
+        ObjSpriteList2D_CloseVertex(loadSprites);
+
+        int eye = InitSprite2D(464, 0, 508, 44, IMG_TT_LOAD, RP_UI_IMG);
+        ObjSprite2D_SetDestCenter(eye);
+        ObjRender_SetPosition(eye, 264, 354, 1);
+
+        int disclaimerText = CreateText(16, 128, RP_UI_TEXT, "Characters appearing in this game are[r]property of Trick Nostalgie.", COLOR_WHITE);
+
+        int count = 0;
+        while (!isLoaded) {
+            float ratio = 0.5 + 0.5 * sin(count);
+            ObjRender_SetAngleZ(eye, Interpolate_Linear(-30, 30, ratio));
+            ObjRender_SetAlpha(fade, 255 - count * 2);
+            count += 8;
+            yield;
+        }
+
+        Obj_Delete(fade);
+        Obj_Delete(bg);
+        Obj_Delete(loadSprites);
+        Obj_Delete(eye);
+        Obj_Delete(disclaimerText);
     }
 }

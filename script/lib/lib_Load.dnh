@@ -5,6 +5,7 @@
 function<void> Load_LoadTextureBase() { //load universal textures (generic textures used in all stages)
     for each (img in Load_GetTextureBase()) {
         LoadTexture(img);
+        yield;
     }
 }
 
@@ -29,12 +30,14 @@ function<string[]> Load_GetTextureBase() {
 function<void> Load_LoadTextureTitle() { //load textures used in the title screen
     for each (img in Load_GetTextureTitle()) {
         LoadTexture(img);
+        yield;
     }
 }
 
 function<void> Load_UnloadTextureTitle() { //unload textures used in the title screen
     for each (img in Load_GetTextureTitle()) {
         RemoveTexture(img);
+        yield;
     }
 }
 

@@ -12,6 +12,7 @@ const string[] SCRIPT_PLAYERS = [
 const string DIR_IMG_TITLE = GetModuleDirectory() ~ "script/img/title/";
 
 //Loading Screen
+const string IMG_TT_LOAD        = DIR_IMG_TITLE ~ "loadScreen.png"; //excluded from texture load functions
 
 //Main Screen
 const string IMG_TT_BG          = DIR_IMG_TITLE ~ "titleBG.png";
@@ -21,7 +22,7 @@ const string IMG_TT_LOGO        = DIR_IMG_TITLE ~ "titleLogo.png";
 const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "rankBG.png";
 
 //Player Select
-const string IMG_TT_PLAYER    = DIR_IMG_TITLE ~ "playerSelectBG.png";
+const string IMG_TT_PLAYER      = DIR_IMG_TITLE ~ "playerSelectBG.png";
 
 //Others
 const string IMG_TT_SPELL       = DIR_IMG_TITLE ~ "spellPractice.png";

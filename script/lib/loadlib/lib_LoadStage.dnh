@@ -5,12 +5,14 @@
 function<void> Load_LoadTextureStage(int stageIndex_) {
     for each (img in Load_GetTextureStage(stageIndex_)) {
         LoadTexture(img);
+        yield;
     }
 }
 
 function<void> Load_UnloadTextureStage(int stageIndex_) {
     for each (img in Load_GetTextureStage(stageIndex_)) {
         RemoveTexture(img);
+        yield;
     }
 }
 
@@ -32,12 +34,14 @@ function<string[]> Load_GetTextureStage(int stageIndex_) {
 function<void> Load_LoadTextureDialogue(int stageIndex_, int playerType_) {
     for each (img in Load_GetTextureDialogue(stageIndex_, playerType_)) {
         LoadTexture(img);
+        yield;
     }
 }
 
 function<void> Load_UnloadTextureDialogue(int stageIndex_, int playerType_) {
     for each (img in Load_GetTextureDialogue(stageIndex_, playerType_)) {
         RemoveTexture(img);
+        yield;
     }
 }
 
@@ -58,12 +62,14 @@ function<string[]> Load_GetTextureDialogue(int stageIndex_, int playerType_) {
 function<void> Load_LoadTexturePlayer(int playerType_) {
     for each (img in Load_GetTexturePlayer(playerType_)) {
         LoadTexture(img);
+        yield;
     }
 }
 
 function<void> Load_UnloadTexturePlayer(int playerType_) {
     for each (img in Load_GetTexturePlayer(playerType_)) {
         RemoveTexture(img);
+        yield;
     }
 }
 
@@ -81,6 +87,7 @@ function<string[]> Load_GetTexturePlayer(int playerType_) {
 function<void> Load_UncacheScripts(int stageIndex_, int playerType_, int gameMode_) {
     for each (scriptPath in Load_GetStageScriptPath(stageIndex_, playerType_, gameMode_)) {
         UnloadScriptFromCache(scriptPath);
+        yield;
     }
 }
 
