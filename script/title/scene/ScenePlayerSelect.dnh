@@ -156,7 +156,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         ObjRender_SetPosition(objPlayerUnselect, x_, y_, 1);
 
         while (!exitFlag) {
-            Obj_SetVisible(objPlayerUnselect, index_ != indexCurrent);
+            Obj_SetVisible(objPlayerUnselect, selectFlag ? false : index_ != indexCurrent);
             Obj_SetVisible(objPlayerImg, selectFlag ? index_ == indexCurrent : true);
             yield;
         }
