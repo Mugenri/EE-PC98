@@ -193,6 +193,8 @@ function<void> SceneResult(int score_, string clearStatus_) {
                     yield;
                 }
             }
+
+            Obj_Delete(highScoreText);
         }
 
         task TPlayTimeDisplay() {
