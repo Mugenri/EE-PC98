@@ -112,6 +112,7 @@ task TRender() {
 		if (leftState == KEY_PUSH || leftState == KEY_HOLD && rightState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 64, 0, 96, 48);
 		else if (rightState == KEY_PUSH || rightState == KEY_HOLD && leftState == KEY_FREE) ObjSprite2D_SetSourceRect(_objPlayer, 32, 0, 64, 48);
 		else ObjSprite2D_SetSourceRect(_objPlayer, 0, 0, 32, 48);
+        ObjSprite2D_SetDestCenter(_objPlayer);
 
         ObjSprite2D_SetSourceRect(objHitbox, 0 + 8 * (frame / frameRate), 0, 8 + 8 * (frame / frameRate), 8);
         ObjSprite2D_SetDestCenter(objHitbox);

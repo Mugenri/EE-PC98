@@ -3,7 +3,7 @@ shot_image = "./../img/character/tsubakura/tsubaStg.png"
 ShotData {
     id = 1
     render = ALPHA
-    rect = ( 144, 0, 160, 16 )
+    rect = ( 0, 48, 16, 64 )
     alpha = 255
     collision = 1
 }
@@ -11,7 +11,7 @@ ShotData {
 ShotData {
     id = 2
     render = ALPHA
-    rect = ( 160, 0, 176, 16 )
+    rect = ( 112, 0, 128, 16 )
     alpha = 255
     collision = 1
 }
@@ -19,7 +19,7 @@ ShotData {
 ShotData {
     id = 3
     render = ALPHA
-    rect = ( 144, 16, 160, 32 )
+    rect = ( 32, 48, 48, 64 )
     alpha = 255
-    collission = 1
+    collision = 1
 }

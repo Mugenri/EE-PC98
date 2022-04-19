@@ -143,7 +143,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
         int[] forbidden = [];
         for (int i = 0; i < length(flags); i++) {
-            if (!flags[i]) forbidden ~= [i];
+            if (!flags[i] && !DEBUG_MODE) forbidden ~= [i];
         }
         selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSUBAKURA, forbidden);
     }

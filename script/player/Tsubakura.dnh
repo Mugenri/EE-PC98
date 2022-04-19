@@ -12,8 +12,8 @@ int _countShot = 0;
 
 @Initialize {
     string imageFile = IMG_PLR_TSUBAKURA;
-    string shotData = DIR_PLR ~ "Tsubashot.dnh";
-    InitPlayer(imageFile, shotData, 4.5, 2.2, 24);
+    string shotData = DIR_PLR ~ "TsubaShot.dnh";
+    InitPlayer(imageFile, shotData, 4.5, 2.2, 16, 48);
 
     TShot();
 }
@@ -22,6 +22,7 @@ int _countShot = 0;
     _count++;
     if (Shooting() && !IsPlayerSpellActive() && Alive()) _countShot++;
     else _countShot = -1;
+    if (Alive()) SetPlayerItemScope(GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD ? _focusScope : _itemScope);
     yield;
 }
 
@@ -31,10 +32,10 @@ int _countShot = 0;
 
 task TShot() {
     TCreateLaser();
-    ascent (i in 0..13) TCreateLaserEffect(-i * 32);
+    ascent (i in 0..11) TCreateLaserEffect(-i * 36);
     ascent (i in 0..6) TOption(i);
     loop {
-        if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
+        if (Shooting() && !IsPlayerSpellActive() && Alive() && _countShot % 10 == 0) {
             loop (3) {
                 CallSFX(SND_PL_SHOT);
                 wait(3);
@@ -46,7 +47,7 @@ task TShot() {
     task TCreateLaser() { //Hitbox
         int objLaser = ObjShot_Create(OBJ_STRAIGHT_LASER);
         ObjShot_SetGraphic(objLaser, 1);
-        ObjShot_SetDamage(objLaser, 3);
+        ObjShot_SetDamage(objLaser, 2.5);
         Obj_SetVisible(objLaser, false);
         ObjShot_SetAutoDelete(objLaser, false);
         ObjShot_Regist(objLaser);
@@ -54,8 +55,7 @@ task TShot() {
 
         while (!Obj_IsDeleted(_objPlayer)) {
             ObjMove_SetPosition(objLaser, GetPlayerX(), GetPlayerY());
-            ObjShot_SetIntersectionEnable(objLaser, Shooting() && !IsPlayerSpellActive() && Alive());
-            ObjShot_SetIntersectionLine(objLaser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - 600, 2);
+            if (Shooting() && !IsPlayerSpellActive() && Alive()) ObjShot_SetIntersectionLine(objLaser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - 600, 2);
             yield;
         }
         Obj_Delete(objLaser);
@@ -65,20 +65,19 @@ task TShot() {
         int objEffect = ObjPrim_Create(OBJ_SPRITE_2D);
         ObjPrim_SetTexture(objEffect, _pathImg);
         ObjRender_SetTextureFilter(objEffect, FILTER_NONE, FILTER_NONE, FILTER_NONE);
-        ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff_ - 16, 1);
         Obj_SetRenderPriorityI(objEffect, RP_STG_PLAYER - 1i);
 
         int frame = 0;
 
         while (!Obj_IsDeleted(_objPlayer)) {
             ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff_ - 16, 1);
-            ObjSprite2D_SetSourceRect(objEffect, 160, frame * 4, 176, frame * 4 + 32);
+            ObjSprite2D_SetSourceRect(objEffect, 112, frame, 128, frame + 36);
             ObjSprite2D_SetDestCenter(objEffect);
 
             Obj_SetVisible(objEffect, Shooting() && !IsPlayerSpellActive() && Alive());
 
-            frame++;
-            if (frame >= 8) frame = 0;
+            frame += 3;
+            if (frame > 11) frame = 0;
             yield;
         }
         Obj_Delete(objEffect);
@@ -87,17 +86,18 @@ task TShot() {
 
 
 task TOption(int offset_) {
-    int distUnfocus = 30;
+    int distUnfocus = 32;
     int distFocus = 18;
     int distCurrent = distUnfocus;
 
-    int objOption = InitSprite2D(179, 3, 189, 13, _pathImg, RP_STG_PLAYER - 1i);
+    int objOption = InitSprite2D(64, 48, 80, 64, _pathImg, RP_STG_PLAYER - 1i);
     ObjSprite2D_SetDestCenter(objOption);
 
     TOptionShot();
 
+    float offset = 360 / 6 * offset_;
     while (!Obj_IsDeleted(_objPlayer)) {
-        float rotationX = cos(_count * 4 + 360 / 6 * offset_);
+        float rotationX = cos(_count * 4 + offset);
         distCurrent = (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) ? distUnfocus : distFocus;
 
         ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent * rotationX, GetPlayerY() + distCurrent * sin(_count * 3 + 360 / 6 * offset_) * 0.8, 1);
@@ -112,9 +112,11 @@ task TOption(int offset_) {
 
     task TOptionShot() {
         while (!Obj_IsDeleted(_objPlayer)) {
+            float angleMod = cos(_count * 4 + 360 / 6 * offset_);
+            if (GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD || GetVirtualKeyState(VK_SLOWMOVE) == KEY_PUSH) angleMod = 0;
             if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
                 loop (3) {
-                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270, 0.5, 1, 1);
+                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270 + 10 * angleMod, 1.5, 1, 1);
                     Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                     wait(3);
                 }
@@ -135,7 +137,7 @@ task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot del
     int frameRate = 2;
     while (frame < 4 * frameRate) {
         ObjParticleList_SetPosition(_particleShot, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleShot, frame / frameRate, 0, 0);
+        ObjParticleList_SetExtraData(_particleShot, 6, frame / frameRate, 0);
         ObjParticleList_AddInstance(_particleShot);
 
         frame++;
@@ -144,7 +146,7 @@ task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot del
     }
 }
 
-task TSpell() {
+task TSpell() { //TODO tsubakura bomb
     int objManage = GetSpellManageObject();
 
     SetForbidPlayerShot(true);
@@ -152,8 +154,8 @@ task TSpell() {
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
     SetPlayerSpeed(2.2, 2.2);
 
-    CallSFX(SND_PL_T_SPELL1);
-    CallSFX(SND_PL_T_SPELL2);
+    // CallSFX(SND_PL_T_SPELL1);
+    // CallSFX(SND_PL_T_SPELL2);
 
     TEffect();
     
@@ -212,7 +214,7 @@ task TSpell() {
         }
 
         //Retract Black Circle
-        CallSFX(SND_PL_T_SPELL3);
+        //CallSFX(SND_PL_T_SPELL3);
         loop (45) {
             ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 1..34) {
@@ -227,7 +229,7 @@ task TSpell() {
 
         //Retract White Circle
         radius = 600;
-        CallSFX(SND_PL_T_SPELL3);
+        //CallSFX(SND_PL_T_SPELL3);
         loop (35) {
             ObjPrim_SetVertexPosition(wCircle, 0, GetPlayerX(), GetPlayerY(), 1);
             ascent (i in 1..34) {
@@ -241,7 +243,7 @@ task TSpell() {
         Obj_Delete(wCircle);
 
         //monochrome ray
-        CallSFX(SND_PL_T_SPELL4);
+        //CallSFX(SND_PL_T_SPELL4);
 
         int laser = ObjSpell_Create();
         ObjSpell_SetEraseShot(laser, false);
