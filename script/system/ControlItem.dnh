@@ -4,12 +4,14 @@
 #include "./../lib/effectlib/lib_EffectCancel.dnh"
 
 int _baseScore = [12800, 12800, 25600, 51200, 12800, 25600, 51200][GetDifficulty()];
+int _pointLine = 128;
 bool _autoCollect = false;
 bool _resetScoreExtend = false;
 
 @Initialize {
     System_Init();
     SetAreaCommonData(AREA_SYSTEM, "SCRIPT_ITEM", GetOwnScriptID());
+    SetAreaCommonData(AREA_SYSTEM, "PointLine", _pointLine);
     SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
     SetPlayerAutoItemCollectLine(-1);
@@ -96,11 +98,11 @@ bool _resetScoreExtend = false;
         }
         case (ITEM_SCORE) {
             AddPoint(1);
-            if (ObjRender_GetY(obj) < 128 || Obj_GetValueDI(obj, ITEM_AUTOCOLLECT, false)) {
+            if (ObjRender_GetY(obj) < _pointLine || Obj_GetValueDI(obj, ITEM_AUTOCOLLECT, false)) {
                 score = _baseScore;
                 color = COLOR_YELLOW_L;
             } else {
-                score = (_baseScore / 2) - (_baseScore / 2) * ((ObjRender_GetY(obj) - 128) / GetStgFrameHeight());
+                score = (_baseScore / 2) - (_baseScore / 2) * ((ObjRender_GetY(obj) - _pointLine) / GetStgFrameHeight());
                 score -= score % 10; //cuts off last digit, rounds down
             }
             CallSFX(SND_ITEM);

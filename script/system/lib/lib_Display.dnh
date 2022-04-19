@@ -16,7 +16,7 @@ function<void> Display_Init() {
     _scoreBonusList = InitParticleList(IMG_SYSTEM_UI, RP_STG_MAX, [0, 0, 16, 16]);
     ParticleListShader(_scoreBonusList, 16 / 256, 16 / 512);
     ObjSprite2D_SetDestRect(_scoreBonusList, 0, 0, 16, 16);
-    TIntro();   
+    TIntro();
     Difficulty();
     THighScore();
     TScore();
@@ -26,6 +26,7 @@ function<void> Display_Init() {
     TPlayerSpell();
     TGraze();
     TPointItem();
+    TPointLine();
     TThrillGauge();
     TShotCounter();
     if (!IsReplay()) TFPS();
@@ -548,6 +549,21 @@ task TPointItem() {
         }
         yield;
     }
+}
+
+//----------------------------------------------------
+//Point Item Max Value Line
+//----------------------------------------------------
+task TPointLine() {
+    int pointLineImg = InitSprite2D(240, 272, 256, 288, IMG_SYSTEM_UI, RP_UI_IMG);
+    int pointLine = -1;
+    
+    while (pointLine == -1) {
+        pointLine = GetAreaCommonData(AREA_SYSTEM, "PointLine", -1);
+        yield;
+    }
+
+    ObjRender_SetPosition(pointLineImg, 15, 14 + pointLine, 1);
 }
 
 //----------------------------------------------------
