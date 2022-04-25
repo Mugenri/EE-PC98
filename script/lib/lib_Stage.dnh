@@ -212,8 +212,8 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     float pointCount = min(GetPoint(), 999);
     int missCount = GetAreaCommonData(AREA_STAGE, "Player_Miss", 0);
     int bombCount = GetAreaCommonData(AREA_STAGE, "Player_Bomb", 0);
-    float noMissBonus = 500000;
-    float noBombBonus = 500000;
+    float noMissBonus = 5000000;
+    float noBombBonus = 5000000;
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     float[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
     int initLives = _startingLives;
