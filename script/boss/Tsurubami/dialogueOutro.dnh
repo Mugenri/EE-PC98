@@ -236,7 +236,7 @@ function<void> Dialogue() {
         }
         case (48) {
             Dialogue_SetPortrait(bossCutin, 8);
-            Dialogue_SetText(true, "Well, that's about all I/think. Just in time too. It/appears I must be going.");
+            Dialogue_SetText(true, "Well, that's about all, I/think. Just in time too. It/appears I must be going.");
         }
         case (49) {
             Dialogue_SetPortrait(playerCutin, 4);
