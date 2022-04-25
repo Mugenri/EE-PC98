@@ -308,10 +308,13 @@ task TBossLife() {
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
             ObjParticleList_AddInstance(_displayList);
             //num
-            int tempStep = clamp(countRemStep, 0, 9);
-            ObjParticleList_SetPosition(_displayList, 560, 128, 1);
-            ObjParticleList_SetExtraData(_displayList, tempStep, 1, 0);
-            ObjParticleList_AddInstance(_displayList);
+            int[] tempStep = DigitToArray(clamp(countRemStep, 0, 99), 2);
+            for (int i = 0; i < 2; i++) {
+                if (i == 0 && tempStep[i] == 0) continue;
+                ObjParticleList_SetPosition(_displayList, 544 + 16 * i, 128, 1);
+                ObjParticleList_SetExtraData(_displayList, tempStep[i], 1, 0);
+                ObjParticleList_AddInstance(_displayList);
+            }
         } else {
             for (int i = 0; i < countRemStep; i++) {
                 ObjParticleList_SetPosition(_displayList, 496 + 4 * 16 - i * 16, 128, 1);
@@ -420,7 +423,7 @@ task TPlayerLife() {
 
     loop {
         int lives = GetPlayerLife();
-        lives = clamp(lives, 0, 9);
+        lives = clamp(lives, 0, 99);
 
         if (lives > 5) {
             //icon
@@ -434,9 +437,13 @@ task TPlayerLife() {
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
             ObjParticleList_AddInstance(_displayList);
             //num
-            ObjParticleList_SetPosition(_displayList, 560, 177, 1);
-            ObjParticleList_SetExtraData(_displayList, lives, 1, 0);
-            ObjParticleList_AddInstance(_displayList);
+            int[] tempLives = DigitToArray(lives, 2);
+            for (int i = 0; i < 2; i++) {
+                if (i == 0 && tempLives[i] == 0) continue;
+                ObjParticleList_SetPosition(_displayList, 544 + 16 * i, 177, 1);
+                ObjParticleList_SetExtraData(_displayList, tempLives[i], 1, 0);
+                ObjParticleList_AddInstance(_displayList);
+            }
         } else {
             //icons
             for (int i = 0; i < lives; i++) {
@@ -462,7 +469,7 @@ task TPlayerSpell() {
 
 	loop {
         int spell = GetPlayerSpell();
-        spell = clamp(spell, 0, 9);
+        spell = clamp(spell, 0, 99);
 
         if (spell > 5) {
             //icon
@@ -476,9 +483,13 @@ task TPlayerSpell() {
             ObjParticleList_SetExtraData(_displayList, 10, 0, 0);
             ObjParticleList_AddInstance(_displayList);
             //num
-            ObjParticleList_SetPosition(_displayList, 560, 209, 1);
-            ObjParticleList_SetExtraData(_displayList, spell, 1, 0);
-            ObjParticleList_AddInstance(_displayList);
+            int[] tempSpell = DigitToArray(spell, 2);
+            for (int i = 0; i < 2; i++) {
+                if (i == 0 && tempSpell[i] == 0) continue;
+                ObjParticleList_SetPosition(_displayList, 544 + 16 * i, 209, 1);
+                ObjParticleList_SetExtraData(_displayList, tempSpell[i], 1, 0);
+                ObjParticleList_AddInstance(_displayList);
+            }
         } else {
             //icons
             for (int i = 0; i < spell; i++) {
