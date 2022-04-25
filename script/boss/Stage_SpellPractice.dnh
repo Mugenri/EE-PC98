@@ -6,10 +6,8 @@
 #include "./../lib/lib_Common.dnh"
 #include "./../lib/lib_Stage.dnh"
 
-bool _start = false;
-
 @Initialize {
-    Stage_Init(0, 0);
+    Stage_Init();
     TStage();
 }
 

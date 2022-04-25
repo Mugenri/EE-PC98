@@ -9,9 +9,9 @@ const string GAME_VERSION = "0.33a";
 //FONT CONSTANTS
 //----------------------------------------------------
 const string SYS_FONT = "PC-9800";
-const string SYS_FONT_PATH = GetModuleDirectory() ~ "script/img/system/font/PC-9800.ttf";
+const string SYS_FONT_PATH = "script/img/system/font/PC-9800.ttf";
 const string HEADER_FONT = "Magic Decimal Sharp";
-const string HEADER_FONT_PATH = GetModuleDirectory() ~ "script/img/system/font/MagicDecimalSharp.ttf";
+const string HEADER_FONT_PATH = "script/img/system/font/MagicDecimalSharp.ttf";
 
 //----------------------------------------------------
 //EVENT CONSTANTS
@@ -50,8 +50,10 @@ const int STAGE_PAUSE_SPELL     = 2; //Spell practice pause
 const int STAGE_VICTORY_SPELL   = 3; //Spell practice victory
 const int STAGE_GAMEOVER        = 4; //Main game gameover
 const int STAGE_GAMEOVER_SPELL  = 5; //Spell practice gameover
-const int STAGE_DIALOGUE        = 6; //start dialogue (pass with path)
-const int STAGE_VICTORY         = 7; //normal game mode stage victory
+const int STAGE_PAUSE_REPLAY    = 6; //Replay pause
+const int STAGE_GAMEOVER_REPLAY = 7; //Replay end
+const int STAGE_DIALOGUE        = 8; //start dialogue (pass with path)
+const int STAGE_VICTORY         = 9; //normal game mode stage victory
 
 //Script Result Constants
 const int RESULT_CONTINUE = 0; //player used a continue (game over menu)

@@ -169,9 +169,9 @@ task THighScore() {
         highScore = HS_GetHighScore(defaultScore);
         continues = GetCommonDataPtr(cPointer);
 
-        if (score < highScore || continues != 0) { //high score > score OR continues have been used. render high score as-is
+        if (score < highScore || continues != 0 || IsReplay()) { //high score > score OR continues have been used or is a replay. render high score as-is
             numList = DigitToArray(highScore, count);
-            while (score <= highScore || continues != 0) {
+            while (score <= highScore || continues != 0 || IsReplay()) {
                 continues = GetCommonDataPtr(cPointer);
                 score = GetScore();
                 for (int i = 0; i < count; i++) {
@@ -806,34 +806,19 @@ task TFPS() {
 
 	loop {
 		float fps = GetCurrentFps();
-		string text = vtos("1.2f", fps) ~ "fps";
-		ObjText_SetText(objText, text);
+		ObjText_SetText(objText, vtos("2.2f", fps) ~ "fps");
 		yield;
 	}
 }
 
 task TReplayFPS() {
-    //TODO this DEFINITELY needs reformatting
-	if (!IsReplay()) return;
-
-	int objText = ObjText_Create();
-	ObjText_SetFontSize(objText, 12);
-	ObjText_SetFontBold(objText, true);
-	ObjText_SetVertexColor(objText, 0xFF000000 + COLOR_WHITE);
-	ObjText_SetFontBorderType(objText, BORDER_FULL);
-	ObjText_SetFontBorderColor(objText, 255, 255, 255);
-	ObjText_SetFontBorderWidth(objText, 1);
-	Obj_SetRenderPriorityI(objText, RP_UI_MAX);
-
-	int px = GetStgFrameLeft() + GetStgFrameWidth() - 18;
-	int py = GetStgFrameTop() + GetStgFrameHeight() - 14;
-	ObjRender_SetX(objText, px);
-	ObjRender_SetY(objText, py);
+	int objText = CreateText(0, WINDOW_HEIGHT - 20, RP_UI_MAX, "", COLOR_WHITE);
+	ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+	ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
 
 	loop {
 		float fps = GetReplayFps();
-		string text = vtos("02d", fps);
-		ObjText_SetText(objText, text);
+		ObjText_SetText(objText, vtos("2.2f", fps) ~ "fps");
 		yield;
 	}
 }

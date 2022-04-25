@@ -45,9 +45,9 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     }
 
     wait(15); //wait for screen fade from previous menu to clear
-    WaitKeysFree([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+    WaitVirtualKeysFree([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop {
-        int userKey = CheckKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckVirtualKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_LEFT) {
             CallSFX(SND_TT_SELECT);

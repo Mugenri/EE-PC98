@@ -4,7 +4,7 @@
 const int INDEX_EXTRA   = 0;
 const int INDEX_PRACTICE= 1;
 const int INDEX_REPLAY  = 2;
-const int INDEX_RESULT   = 3;
+const int INDEX_RESULT  = 3;
 const int INDEX_MUSIC   = 4;
 const int INDEX_SOUND   = 5;
 const int INDEX_OPTION  = 6;
@@ -51,9 +51,9 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
     }
 
     wait(15); //wait for screen fade from previous menu to clear
-    WaitKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+    WaitVirtualKeysFree([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
     loop { //Wait for input loop
-        int userKey = CheckKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+        int userKey = CheckVirtualKeyPressed([VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         alternative (userKey)
         case (VK_UP, VK_LEFT) {
             CallSFX(SND_TT_SELECT);
@@ -107,7 +107,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 ScreenBlackout(10, 5, 10, COLOR_BLACK);
                 wait(10);
             }
-            TSelectReplay();
+            TSelectReplay(isPreload_);
         }
         case (INDEX_RESULT) {
             //Result
@@ -311,14 +311,9 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
                 SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
-                //Run main stage script
-                int stageIndex = selectedPlayer == 0 ? 0 : 1; //0 yabu, 1 tsuba. this will eventually be replaced by a stage selection system
-                SetAreaCommonData(AREA_TITLE, "StageIndex", stageIndex);
-                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-                int idScript = LoadScript(pathScript);
-                StartScript(idScript);
-                UnloadScriptFromCache(pathScript);
-                NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
+                //start stage
+                SetAreaCommonData(AREA_TITLE, "StageIndex", selectedPlayer == PLAYER_YABUSAME ? 0 : 1);
+                StartPackageStageScript();
                 return;
             }
         }
@@ -351,11 +346,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
             SetAreaCommonData(AREA_TITLE, "StageIndex", tempData[2]);
             SetAreaCommonData(AREA_TITLE, "SpellPracticeID", tempData[3]);
             //start stage
-            string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
-            int idScript = LoadScript(pathScript);
-            StartScript(idScript);
-            UnloadScriptFromCache(pathScript);
-            NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
+            StartPackageStageScript();
             return;
         }
 
@@ -363,9 +354,32 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         TMainMenu(false, INDEX_PRACTICE, -1);
     }
 
-    task TSelectReplay() {
+    task TSelectReplay(bool preload_) {
         exitFlag = true;
-        //SceneReplay();
+
+        int tempData = -1;
+        int selectedDefault = 0;
+        if (preload_) {
+            selectedDefault = GetReplayIndex() - 1;
+        }
+
+        loop {
+            tempData = SceneReplay(selectedDefault, false);
+            if (tempData == -1) break;
+
+            //replay info
+            SetAreaCommonData(AREA_TITLE, "ReplayPath", "script/replay/package_replay" ~ vtos("02d", tempData) ~ ".dat");
+            SetAreaCommonData(AREA_TITLE, "GameMode", GetReplayGameMode(tempData));
+            SetAreaCommonData(AREA_TITLE, "PlayerType", GetReplayPlayerType(tempData));
+            SetAreaCommonData(AREA_TITLE, "Difficulty", GetReplayDifficulty(tempData));
+            SetAreaCommonData(AREA_TITLE, "StageIndex", GetReplayStageIndex(tempData));
+            SetAreaCommonData(AREA_TITLE, "SpellPracticeID", GetReplaySpellPracticeID(tempData));
+            SetAreaCommonData(AREA_TITLE, "ReplayStartingLives", GetReplayStartingLives(tempData));
+
+            //start stage
+            StartPackageStageScript();
+            return;
+        }
 
         //Exited Replay menu
         TMainMenu(false, INDEX_REPLAY, -1);
@@ -402,5 +416,13 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
 
         //Exited option menu
         TMainMenu(false, INDEX_OPTION, -1);
+    }
+
+    function<void> StartPackageStageScript() {
+        string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+        int idScript = LoadScript(pathScript);
+        StartScript(idScript);
+        UnloadScriptFromCache(pathScript);
+        NotifyEvent(GetAreaCommonData(AREA_TITLE, "SCRIPT_TITLE", -1), EV_TITLE_END, 0);
     }
 }

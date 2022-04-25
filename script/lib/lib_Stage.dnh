@@ -1,11 +1,18 @@
 //Stage function library
 bool _introPlaying = true; //assume screen is fading from black
+bool _start = false; //stage intro text
+int _startingLives = 0;
 float[] tempSpeed = []; //store player speed to stop movement during intro fade
 
-function<void> Stage_Init(int lives_, int bombs_) {
+function<void> Stage_Init() {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
-    SetPlayerLife(lives_);
-    SetPlayerSpell(bombs_);
+    if (!IsReplay() && GetGameMode() == GAME_MAIN) {
+        _startingLives = GetStartingLives();
+    } else if (IsReplay()) {
+        _startingLives = GetReplayStartingLives(GetReplayIndex());
+    }
+    SetPlayerLife(_startingLives);
+    SetPlayerSpell(GetGameMode == GAME_MAIN ? 3 : 0);
     //Stop player movement while screen is black
     SetForbidPlayerShot(true);
     SetForbidPlayerSpell(true);
@@ -30,7 +37,7 @@ function<void> Stage_Event() { //Generic stage events (can create another event 
     case (EV_CONTINUE) { ///used a continue
         CD_AddAreaCommonData(AREA_STAGE, "Continues", 1, 0);
 
-        SetPlayerLife(GetStartingLives());
+        SetPlayerLife(_startingLives);
         SetPlayerSpell(3);
 
         SetScore(GetAreaCommonData(AREA_STAGE, "Continues", 0));
@@ -209,7 +216,7 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     float noBombBonus = 500000;
     int continues = GetAreaCommonData(AREA_STAGE, "Continues", 0);
     float[] multContinue = [1.0, 0.8, 0.6, 0.4]; //0, 1, 2, 3 continues used
-    int initLives = GetStartingLives();
+    int initLives = _startingLives;
     float[] multLives = [1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5];
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     float[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
@@ -301,8 +308,11 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
         }
     }
 
-    //wait for input
-    while (GetVirtualKeyState(VK_SHOT) != KEY_PUSH) yield;
+    //wait for input (for 10 seconds max)
+    loop (600) {
+        if (GetVirtualKeyState(VK_SHOT) == KEY_PUSH) break;
+        yield;
+    }
 
     Obj_Delete(objBlack);
 

@@ -8,6 +8,7 @@
 #include "./scene/SceneOption.dnh"
 #include "./scene/ScenePlayerSelect.dnh"
 #include "./scene/SceneRankSelect.dnh"
+#include "./scene/SceneReplay.dnh"
 #include "./scene/SceneResult.dnh"
 #include "./scene/SceneSoundTest.dnh"
 #include "./scene/SceneSpellPractice.dnh"

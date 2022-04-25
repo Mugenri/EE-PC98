@@ -16,6 +16,9 @@ task TLoadScene() { //loading screen
     CreateRenderTarget(RT_SCREENSHOT);
     CreateRenderTarget(RT_ENDSCREEN);
 
+    InstallFont(SYS_FONT_PATH); //pc9800 font
+    InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
+
     //loading screen
     bool isLoaded = false;
     TLoadingGraphics();
@@ -38,9 +41,6 @@ task TLoadScene() { //loading screen
         StartScript(id);
         UnloadScriptFromCache(path);
     }
-
-    InstallFont(SYS_FONT_PATH); //pc9800 font
-    InstallFont(HEADER_FONT_PATH); //magic decimal sharp font
 
     //load achievement script if i make one
 
