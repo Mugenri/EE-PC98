@@ -17,6 +17,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
     if (selectedDefault_ != -1) {
         ScreenBlackout(0, 0, 15, COLOR_BLACK);
         indexCurrent = selectedDefault_;
+        if (indexCurrent > indexListSize) indexListTop = indexCurrent - indexListSize;
     } else indexCurrent = 0;
 
     TCreateMenuGraphicsReplay();
