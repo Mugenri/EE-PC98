@@ -65,7 +65,9 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
             indexCurrent[subIndex] = IncrementIndex(indexCurrent[subIndex], increment, 0, selectMax[subIndex]);
             if (subIndex == MENU_STAGE) {
                 int currStage = indexCurrent[MENU_STAGE];
-                int numDiff = length(GetDifficultyList(currStage));
+                int[] diffList = GetDifficultyList(currStage);
+                int numDiff = length(diffList);
+                if (!contains(diffList, selectedDiff)) selectedDiff = diffList[0];
                 selectMax[MENU_SPELL] = GetSpellIndexListSize(currStage, numDiff);
             }
         }
@@ -309,8 +311,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
             while (!exitFlag) {
                 if (currStage != indexCurrent[MENU_STAGE]) {
                     currStage = indexCurrent[MENU_STAGE];
-                    int diffList = GetDifficultyList(currStage);
-                    if (!contains(diffList, currDiff)) currDiff = diffList[0];
+                    int[] diffList = GetDifficultyList(currStage);
                 }
                 if (currDiff != selectedDiff) {
                     currDiff = selectedDiff;
@@ -346,6 +347,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         int currDiff; //current difficulty setting
         int numDiff; //number of difficulties available
         int currPlayer; //player index
+        int currStage; //selected stage
 
         //modify text object depending on menu type
         alternative (subIndex_)
@@ -363,7 +365,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         UpdateListItem();
 
         while (!exitFlag) {
-            if (indexListTop[subIndex_] + index_ != realID || currDiff != selectedDiff || currPlayer != selectedPlayer) {
+            if (indexListTop[subIndex_] + index_ != realID || currDiff != selectedDiff || currPlayer != selectedPlayer || currStage != indexCurrent[MENU_STAGE]) {
                 UpdateListItem();
             }
             int[] cUnfocSelect = [COLOR_WHITE, COLOR_GRAY];
@@ -374,9 +376,10 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         Obj_Delete(objText);
 
         function<void> UpdateListItem() {
+            currStage = indexCurrent[MENU_STAGE];
             realID = indexListTop[subIndex_] + index_;
             currDiff = selectedDiff;
-            numDiff = length(GetDifficultyList(indexCurrent[MENU_STAGE]));
+            numDiff = length(GetDifficultyList(currStage));
             currPlayer = selectedPlayer;
             if (index_ > selectMax[subIndex_]) {
                 ObjText_SetText(objText, ""); //doesn't exist
@@ -392,7 +395,6 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                 if (CheckUnlock(subIndex_, realID, numDiff)) {
                     //MAIN 00 / 00   SPELL 00 / 00   SCORE 000000000
                     int spellID = realID * numDiff + tempDiff;
-                    int currStage = indexCurrent[MENU_STAGE];
                     int[] hMain = Spell_GetHistory(GAME_MAIN, currPlayer, currStage, spellID);
                     int[] hSpell = Spell_GetHistory(GAME_SPELL, currPlayer, currStage, spellID);
                     int scoreSpell = HS_GetHighScore("SPELL_" ~ IntToString(currPlayer) ~ "_" ~ IntToString(currStage) ~ "_" ~ IntToString(spellID), 0);
