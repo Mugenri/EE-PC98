@@ -80,7 +80,7 @@ function<void> SceneOption() {
 
     task TCreateMenuGraphicsOption() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
-        int logo = InitSprite2D(0, 0, 327, 87, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo = InitSprite2D(640, 0, 967, 87, IMG_TT_BG, RP_UI_TEXT);
 
         ObjRender_SetPosition(logo, 5, 3, 1);
 

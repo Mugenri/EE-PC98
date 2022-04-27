@@ -16,7 +16,6 @@ const string IMG_TT_LOAD        = DIR_IMG_TITLE ~ "loadScreen.png"; //excluded f
 
 //Main Screen
 const string IMG_TT_BG          = DIR_IMG_TITLE ~ "titleBG.png";
-const string IMG_TT_LOGO        = DIR_IMG_TITLE ~ "titleLogo.png";
 
 //Rank Select
 const string IMG_TT_RANK        = DIR_IMG_TITLE ~ "rankBG.png";

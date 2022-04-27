@@ -44,7 +44,6 @@ function<void> Load_UnloadTextureTitle() { //unload textures used in the title s
 function<string[]> Load_GetTextureTitle() { //list of title textures
     return [
         IMG_TT_BG,
-        IMG_TT_LOGO,
         IMG_TT_RANK,
         IMG_TT_PLAYER,
         IMG_TT_SPELL,

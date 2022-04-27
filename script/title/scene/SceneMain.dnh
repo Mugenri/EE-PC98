@@ -149,16 +149,16 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
         wait(30);
-        int logo1 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo1 = InitSprite2D(640, 87, 967, 174, IMG_TT_BG, RP_UI_TEXT);
         ObjRender_SetColor(logo1, COLOR_BLUE_D);
         ObjRender_SetPosition(logo1, WINDOW_WIDTH, 3, 1);
-        int logo2 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo2 = InitSprite2D(640, 87, 967, 174, IMG_TT_BG, RP_UI_TEXT);
         ObjRender_SetColor(logo2, COLOR_INDIGO_D);
         ObjRender_SetPosition(logo2, WINDOW_WIDTH, 3, 1);
-        int logo3 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo3 = InitSprite2D(640, 87, 967, 174, IMG_TT_BG, RP_UI_TEXT);
         ObjRender_SetColor(logo3, COLOR_INDIGO_L);
         ObjRender_SetPosition(logo3, WINDOW_WIDTH, 3, 1);
-        int logo4 = InitSprite2D(0, 87, 327, 174, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo4 = InitSprite2D(640, 87, 967, 174, IMG_TT_BG, RP_UI_TEXT);
         ObjRender_SetColor(logo4, COLOR_WHITE);
         ObjRender_SetPosition(logo4, WINDOW_WIDTH, 3, 1);
 
@@ -220,7 +220,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
 
     task TCreateMenuGraphicsMain() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
-        int logo = InitSprite2D(0, 0, 327, 87, IMG_TT_LOGO, RP_UI_TEXT);
+        int logo = InitSprite2D(640, 0, 967, 87, IMG_TT_BG, RP_UI_TEXT);
 
         ObjRender_SetPosition(logo, 5, 3, 1);
 
