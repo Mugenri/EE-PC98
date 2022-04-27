@@ -8,22 +8,28 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
 
     int selectInfo = -1;
 
-    int selectMax = 19; //0 indexed
+    int selectMax = 9; //0 indexed
+    int[] replayList = GetValidReplayIndices();
+    if (!length(replayList) == 0) selectMax = replayList[-1] + 9; //10+ highest index
     int indexListSize = 9; //0 indexed
     int indexListTop = 0;
 
     int indexCurrent = selectedDefault_;
 
     if (selectedDefault_ != -1) {
-        ScreenBlackout(0, 0, 15, COLOR_BLACK);
+        ScreenBlackout(0, 5, 10, COLOR_BLACK);
         indexCurrent = selectedDefault_;
         if (indexCurrent > indexListSize) indexListTop = indexCurrent - indexListSize;
     } else indexCurrent = 0;
 
     TCreateMenuGraphicsReplay();
 
-    int menuX = 16;
-    int menuY = 16;
+    int infoText = CreateText(64, 321, RP_UI_TEXT, saveMode_ ? "Save a replay..." : "Select a replay...", COLOR_PAPER);
+    ObjText_SetLinePitch(infoText, 2);
+    ObjText_SetFontType(infoText, HEADER_FONT);
+
+    int menuX = 58;
+    int menuY = 96;
     int yOff = 19;
     //replay menu
     for (int i = 0; i <= indexListSize; i++) {
@@ -62,6 +68,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
     }
 
     exitFlag = true;
+    Obj_Delete(infoText);
     return selectInfo;
 
     function<bool> SelectIndex(int index_) {
@@ -76,6 +83,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
                 LoadReplayList();
                 CallSFX(SND_EXTEND);
             }
+            ObjText_SetText(infoText, saveMode_ ? "Save a replay..." : "Select a replay...");
             WaitVirtualKeysFree([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]); //prevent accidental menu exit
         } else {
             if (IsValidReplayIndex(index_)) {
@@ -95,14 +103,17 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
     }
 
     task TCreateMenuGraphicsReplay() {
-        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
-        ObjRender_SetColor(bg, COLOR_BLUE_D);
+        int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_REPLAY, RP_UI_BG);
 
-        //TODO change menu header when in save mode
+        int header = InitSprite2D(640, 0, 1024, 64, IMG_TT_REPLAY, RP_UI_BG);
+        if (saveMode_) ObjSprite2D_SetSourceRect(header, 640, 64, 1024, 128);
+
+        ObjRender_SetPosition(header, 100, 24, 1);
 
         while (!exitFlag) yield;
 
         Obj_Delete(bg);
+        Obj_Delete(header);
     }
 
     task TCreateMenuItemReplay(int index_, int xPos_, int yPos_) {
@@ -121,7 +132,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
                 UpdateListItem();
                 updateIndex = -1;
             }
-            ObjText_SetVertexColor(objText, 0xFF000000 + (realID == indexCurrent ? COLOR_YELLOW : IsValidReplayIndex(realID + 1) ? COLOR_WHITE : COLOR_GRAY));
+            ObjText_SetVertexColor(objText, 0xFF000000 + (realID == indexCurrent ? COLOR_BLACK : IsValidReplayIndex(realID + 1) ? COLOR_OLIVE_D : COLOR_GRAY_L));
             yield;
         }
         
@@ -212,112 +223,123 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
         SetReplayUserData("SpellPracticeID", GetSpellPracticeID());
         SetReplayUserData("StartingLives", GetGameMode() == GAME_MAIN ? GetStartingLives() : 0);
     }
-}
 
-function<string> ReplayNameEntry(int index_) {
-    bool exitFlag = false;
+    function<string> ReplayNameEntry(int index_) {
+        bool exitFlag = false;
 
-    string name = "";
+        string name = "";
 
-    int nameField = CreateText(200, 310, RP_UI_TEXT, name, COLOR_YELLOW);
-    ObjText_SetSyntacticAnalysis(nameField, false);
+        int nameField = CreateText(404, 314, RP_UI_TEXT, name, COLOR_OLIVE_D);
+        ObjText_SetSyntacticAnalysis(nameField, false);
 
-    int namePrompt = CreateText(180, 260, RP_UI_TEXT, "Use keyboard to enter name.[r]ESC to cancel.[r]ENTER to confirm.", COLOR_WHITE);
-    ObjText_SetLinePitch(namePrompt, 0);
-
-    int[] keys = GetKeyArray();
-    string[][] chars = GetCharacterArray();
-
-    WaitKeysFree(keys);
-    loop {
-        int userKey = CheckKeyPressed(keys);
-        bool shift = (GetKeyState(KEY_LSHIFT) == KEY_HOLD || GetKeyState(KEY_RSHIFT) == KEY_HOLD);
-        //special keys
-        alternative (userKey)
-        case (KEY_ESCAPE) { //exit
-            CallSFX(SND_TT_CANCEL);
-            name = "NAME_INVALID";
-            break;
+        async {
+            int nameRange = CreateText(396, 318, RP_UI_TEXT, ">__________<", COLOR_OLIVE_D);
+            int count = 0;
+            while (!exitFlag) {
+                Obj_SetVisible(nameRange, count % 60 < 45);
+                count++;
+                yield;
+            }
+            Obj_Delete(nameRange);
         }
-        case (KEY_RETURN) { //enter name
-            if (length(name) == 0) CallSFX(SND_TT_CANCEL); //can't enter blank name
-            else break;
-            continue;
-        }
-        case (KEY_BACK) {
-            CallSFX(SND_TT_CANCEL);
-            if (length(name) == 0) {
+
+        ObjText_SetText(infoText, "Use keyboard to[r]enter replay name.[r]ESCAPE to cancel.[r]ENTER to confirm.");
+
+        int[] keys = GetKeyArray();
+        string[][] chars = GetCharacterArray();
+
+        WaitKeysFree(keys);
+        loop {
+            int userKey = CheckKeyPressed(keys);
+            bool shift = (GetKeyState(KEY_LSHIFT) == KEY_HOLD || GetKeyState(KEY_RSHIFT) == KEY_HOLD);
+            //special keys
+            alternative (userKey)
+            case (KEY_ESCAPE) { //exit
+                CallSFX(SND_TT_CANCEL);
                 name = "NAME_INVALID";
                 break;
             }
-            else name = name[0..length(name) - 1];
-            ObjText_SetText(nameField, name);
-            continue;
-        }
-
-        if (length(name) < 10) {
-            CallSFX(SND_TT_SELECT);
-
-            for (int i = 0; i < length(keys); i++) {
-                if (keys[i] == userKey) {
-                    userKey = i;
+            case (KEY_RETURN) { //enter name
+                if (length(name) == 0) CallSFX(SND_TT_CANCEL); //can't enter blank name
+                else break;
+                continue;
+            }
+            case (KEY_BACK) {
+                CallSFX(SND_TT_CANCEL);
+                if (length(name) == 0) {
+                    name = "NAME_INVALID";
                     break;
                 }
+                else name = name[0..length(name) - 1];
+                ObjText_SetText(nameField, name);
+                continue;
             }
-            name ~= chars[shift][userKey];
-        } else CallSFX(SND_TT_CANCEL);
 
-        ObjText_SetText(nameField, name);
+            if (length(name) < 10) {
+                CallSFX(SND_TT_SELECT);
 
-        yield;
-    }
+                for (int i = 0; i < length(keys); i++) {
+                    if (keys[i] == userKey) {
+                        userKey = i;
+                        break;
+                    }
+                }
+                name ~= chars[shift][userKey];
+            } else CallSFX(SND_TT_CANCEL);
 
-    Obj_Delete(nameField);
-    Obj_Delete(namePrompt);
-    return name;
+            ObjText_SetText(nameField, name);
 
-    function<int[]> GetKeyArray() {
-        int[] keys = [
-            KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J, KEY_K, KEY_L, KEY_M,
-            KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R, KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z,
-            KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0, KEY_MINUS, KEY_EQUALS, KEY_SLASH,
-            KEY_LBRACKET, KEY_RBRACKET, KEY_SEMICOLON, KEY_APOSTROPHE, KEY_COMMA, KEY_PERIOD, KEY_GRAVE, KEY_SPACE, KEY_BACK, KEY_ESCAPE, KEY_RETURN
-        ];
-        return keys;
-    }
+            yield;
+        }
 
-    function<string[][]> GetCharacterArray() {
-        string[][] chars = [
-            //lowercase
-            [
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-                "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
-                "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "/",
-                "[", "]", ";", "'", ",", ".", "`", " ", "BSPC", "ESC", "ENTER"
-            ],
-            //uppercase
-            [
-                "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-                "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
-                "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "?",
-                "{", "}", ":", "\"", "<", ">", "~", " ", "BSPC", "ESC", "ENTER"
-            ]
-        ];
-        return chars;
+        Obj_Delete(nameField);
+        exitFlag = true;
+        return name;
+
+        function<int[]> GetKeyArray() {
+            int[] keys = [
+                KEY_A, KEY_B, KEY_C, KEY_D, KEY_E, KEY_F, KEY_G, KEY_H, KEY_I, KEY_J, KEY_K, KEY_L, KEY_M,
+                KEY_N, KEY_O, KEY_P, KEY_Q, KEY_R, KEY_S, KEY_T, KEY_U, KEY_V, KEY_W, KEY_X, KEY_Y, KEY_Z,
+                KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9, KEY_0, KEY_MINUS, KEY_EQUALS, KEY_SLASH,
+                KEY_LBRACKET, KEY_RBRACKET, KEY_SEMICOLON, KEY_APOSTROPHE, KEY_COMMA, KEY_PERIOD, KEY_GRAVE, KEY_SPACE, KEY_BACK, KEY_ESCAPE, KEY_RETURN
+            ];
+            return keys;
+        }
+
+        function<string[][]> GetCharacterArray() {
+            string[][] chars = [
+                //lowercase
+                [
+                    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
+                    "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "/",
+                    "[", "]", ";", "'", ",", ".", "`", " ", "BSPC", "ESC", "ENTER"
+                ],
+                //uppercase
+                [
+                    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+                    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+                    "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "?",
+                    "{", "}", ":", "\"", "<", ">", "~", " ", "BSPC", "ESC", "ENTER"
+                ]
+            ];
+            return chars;
+        }
     }
 }
+
 
 function<bool> SaveReplayPrompt(int continues_) {
     bool saveReplay = false;
     int indexCurrent = 1; //no
 
-    int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
-    ObjRender_SetColor(bg, COLOR_BLUE_D);
+    int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_REPLAY, RP_UI_BG);
 
-    int text = CreateText(0, 192, RP_UI_TEXT, "ERR", COLOR_WHITE);
+    int header = InitSprite2D(640, 64, 1024, 128, IMG_TT_REPLAY, RP_UI_BG);
+    ObjRender_SetPosition(header, 100, 24, 1);
+
+    int text = CreateText(64, 321, RP_UI_TEXT, "ERR", COLOR_PAPER);
     ObjText_SetFontType(text, HEADER_FONT);
-    ObjText_SetHorizontalAlignment(text, ALIGNMENT_CENTER);
-    ObjText_SetMaxWidth(text, WINDOW_WIDTH);
 
     if (continues_ != 0) {
         ObjText_SetText(text, "Cannot save replays after[r]using continues!");
@@ -339,16 +361,15 @@ function<bool> SaveReplayPrompt(int continues_) {
         wait(15);
         WaitVirtualKeysFree([VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
         loop {
-            int userKey = CheckVirtualKeyPressed([VK_LEFT, VK_RIGHT, VK_OK, VK_CANCEL, VK_PAUSE]);
+            int userKey = CheckVirtualKeyPressed([VK_UP, VK_DOWN, VK_OK, VK_CANCEL, VK_PAUSE]);
             alternative (userKey)
-            case (VK_LEFT, VK_RIGHT) {
+            case (VK_UP, VK_DOWN) {
                 CallSFX(SND_TT_SELECT);
                 indexCurrent = IncrementIndex(indexCurrent, 1, 0, 1);
             }
             case (VK_CANCEL, VK_PAUSE) {
                 CallSFX(SND_TT_CANCEL);
                 if (indexCurrent != 1) indexCurrent = 1;
-                else break;
             }
             case (VK_OK) {
                 CallSFX(SND_TT_DECIDE);
@@ -362,12 +383,14 @@ function<bool> SaveReplayPrompt(int continues_) {
         exitFlag = true;
 
         task TSavePromptMenu() {
-            int yesText = CreateText(WINDOW_WIDTH_MID - 40, 220, RP_UI_TEXT, "Yes", COLOR_WHITE);
-            int noText = CreateText(WINDOW_WIDTH_MID + 30, 220, RP_UI_TEXT, "No", COLOR_WHITE);
+            int yesText = CreateText(396, 314, RP_UI_TEXT, "ERR", COLOR_RED);
+            int noText = CreateText(396, 330, RP_UI_TEXT, "ERR", COLOR_RED);
 
             while (!exitFlag) {
-                ObjText_SetVertexColor(yesText, 0xFF000000 + (indexCurrent == 0 ? COLOR_WHITE : COLOR_GRAY));
-                ObjText_SetVertexColor(noText, 0xFF000000 + (indexCurrent == 1 ? COLOR_WHITE : COLOR_GRAY));
+                ObjText_SetVertexColor(yesText, 0xFF000000 + (indexCurrent == 0 ? COLOR_BLACK : COLOR_OLIVE));
+                ObjText_SetVertexColor(noText, 0xFF000000 + (indexCurrent == 1 ? COLOR_BLACK : COLOR_OLIVE));
+                ObjText_SetText(yesText, indexCurrent == 0 ? ">Yes" : " Yes");
+                ObjText_SetText(noText, indexCurrent == 1 ? ">No" : " No");
                 yield;
             }
 
@@ -377,6 +400,7 @@ function<bool> SaveReplayPrompt(int continues_) {
     }
 
     Obj_Delete(bg);
+    Obj_Delete(header);
     Obj_Delete(text);
 
     return indexCurrent == 0 ? true : false;

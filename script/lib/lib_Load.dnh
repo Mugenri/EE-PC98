@@ -47,6 +47,7 @@ function<string[]> Load_GetTextureTitle() { //list of title textures
         IMG_TT_RANK,
         IMG_TT_PLAYER,
         IMG_TT_SPELL,
+        IMG_TT_REPLAY,
         IMG_TT_RESULT,
         IMG_TT_MUSIC,
         IMG_TT_CURSOR

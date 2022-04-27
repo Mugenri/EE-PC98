@@ -226,6 +226,7 @@ task TStageScene() {
         }
         case (RESULT_SAVE_REPLAY) {
             saveReplay = true;
+            wait(30);
         }
         case (RESULT_END) {
             if (!isStageEnd_) TerminateStageScene();
