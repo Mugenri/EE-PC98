@@ -135,8 +135,8 @@ task TStageScene() {
                 WriteLog("won");
                 alternative (_stageEvent)
                 case (STAGE_VICTORY) { //game clear
-                    Result_AddClearCount(GetPlayerType(), GetDifficulty());
-                    //TODO ending scene, credits, tsuba unlock
+                    HandleStageVictory();
+                    //TODO endings/credits maybe clearbgm and start ending song idk
                     SceneResult(GetScore(), "Cleared");
                     saveReplay = SaveReplayPrompt(GetAreaCommonData(AREA_STAGE, "Continues", 0));
                     WriteLog("stage victory");
@@ -275,6 +275,19 @@ task TStageScene() {
         Obj_Delete(objBlack);
         Obj_Delete(objText);
         if (!IsReplay()) wait(60);
+    }
+
+    function<void> HandleStageVictory() {
+        Result_AddClearCount(playerType, GetDifficulty());
+
+        CD_SetGameClearFlag(playerType);
+
+        //unlock character
+        if (playerType == PLAYER_YABUSAME) {
+            CD_SetExtraStageFlag(PLAYER_TSUBAKURA);
+        } else if (playerType == PLAYER_TSUBAKURA) {
+            //tsurubami?
+        }
     }
 }
 

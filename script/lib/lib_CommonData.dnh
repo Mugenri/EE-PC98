@@ -78,17 +78,31 @@ function<void> CD_SaveResult() {
 function<void> CD_AddAreaCommonData(string area_, string field_, int amount_, int default_) {
     SetAreaCommonData(area_, field_, GetAreaCommonData(area_, field_, default_) + amount_);
 }
+//Stage clear status
+// function<void> CD_SetStageClearFlag(int stageIndex_, int player_) {
+//     SetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_), true);
+// }
+// function<bool> CD_GetStageClearFlag(int stageIndex_, int player_) {
+//     return GetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_), false);
+// }
+//Game clear status
+function<void> CD_SetGameClearFlag(int player_) {
+    SetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_), true);
+}
+function<bool> CD_GetGameClearFlag(int player_) {
+    return GetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_), false);
+}
 //Unlock extra stage
 function<void> CD_SetExtraStageFlag(int player_) {
     SetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), true);
 }
 function<bool> CD_GetExtraStageFlag(int player_) {
-    return(GetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), false));
+    return GetAreaCommonData(AREA_SAVE, "Extra_" ~ IntToString(player_), false);
 }
 //Music room track unlocks
 function<void> CD_SetBGMHeard(int trackID_) {
     SetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), true);
 }
 function<bool> CD_GetBGMHeard(int trackID_) {
-    return(GetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), false));
+    return GetAreaCommonData(AREA_SAVE, "Music_" ~ IntToString(trackID_), false);
 }

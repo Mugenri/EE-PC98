@@ -57,7 +57,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
     exitFlag = true;
     if (resultIndex >= 0 && extraMode) resultIndex += D_EASYEX;
     SetAreaCommonData(AREA_TITLE, "Difficulty", resultIndex);
-    return(resultIndex);
+    return resultIndex;
 
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);

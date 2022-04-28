@@ -19,8 +19,9 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     if (selectedDifficulty >= D_EASYEX) {
         unlockFlag = [
             CD_GetExtraStageFlag(PLAYER_YABUSAME), 
-            CD_GetExtraStageFlag(PLAYER_TSUBAKURA)
-            ];
+            //CD_GetExtraStageFlag(PLAYER_TSUBAKURA) TODO not in demo
+            false
+        ];
     }
     //additional else if branch for practice mode unlocks
 
@@ -37,11 +38,8 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     TCreateMenuGraphicsPlayer();
 
     //Create Menu Items
-    int menuX = 36;
-    int menuY = 160;
-    ascent (i in 0..selectMax + 1) {
-        TCreateMenuItemPlayer(i, menuX, menuY);
-        menuX = 468;
+    for (int i = 0; i <= selectMax; i++) {
+        TCreateMenuItemPlayer(i);
     }
 
     wait(15); //wait for screen fade from previous menu to clear
@@ -70,7 +68,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         }
     }
     exitFlag = true;
-    return(resultIndex);
+    return resultIndex;
 
     function<void> MenuSelect() {
         CallSFX(SND_TT_DECIDE);
@@ -148,20 +146,40 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         }
     }
 
-    task TCreateMenuItemPlayer(int index_, int x_, int y_) {
+    task TCreateMenuItemPlayer(int index_) {
+        int x;
+        int y;
+
+        alternative (index_)
+        case (PLAYER_YABUSAME) {
+            x = 36;
+            y = 160;
+        }
+        case (PLAYER_TSUBAKURA) {
+            x = 468;
+            y = 160;
+        }
+
         int objPlayerImg = InitSprite2D(0 + (288 * index_), 400, 144 + (288 * index_), 640, IMG_TT_PLAYER, RP_UI_IMG);
-        ObjRender_SetPosition(objPlayerImg, x_, y_, 1);
+        ObjRender_SetPosition(objPlayerImg, x, y, 1);
 
         int objPlayerUnselect = InitSprite2D(144 + (288 * index_), 400, 288 + (288 * index_), 640, IMG_TT_PLAYER, RP_UI_IMG);
-        ObjRender_SetPosition(objPlayerUnselect, x_, y_, 1);
+        ObjRender_SetPosition(objPlayerUnselect, x, y, 1);
+
+        int objPlayerClear = InitSprite2D(0, 640, 64, 656, IMG_TT_PLAYER, RP_UI_IMG);
+        ObjRender_SetPosition(objPlayerClear, x + 32, y - 16, 1);
+
+        bool isCleared = CD_GetGameClearFlag(index_);
 
         while (!exitFlag) {
             Obj_SetVisible(objPlayerUnselect, selectFlag ? false : index_ != indexCurrent);
             Obj_SetVisible(objPlayerImg, selectFlag ? index_ == indexCurrent : true);
+            Obj_SetVisible(objPlayerClear, selectFlag ? false : (index_ == indexCurrent && isCleared));
             yield;
         }
         Obj_Delete(objPlayerImg);
         Obj_Delete(objPlayerUnselect);
+        Obj_Delete(objPlayerClear);
     }
 }
 
