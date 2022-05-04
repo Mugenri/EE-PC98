@@ -342,7 +342,7 @@ function<bool> SaveReplayPrompt(int continues_) {
     ObjText_SetFontType(text, HEADER_FONT);
 
     if (continues_ != 0) {
-        ObjText_SetText(text, "Cannot save replays after[r]using continues!");
+        ObjText_SetText(text, "Cannot save replays[r]after using[r]continues!");
 
         WaitVirtualKeysFree([VK_OK, VK_CANCEL, VK_PAUSE]);
         loop {
