@@ -4,7 +4,7 @@
 function<int[]> BGM_GetSample(int bgmID_) {
     alternative (bgmID_)
     case (0) { return [0, 4871328]; } //Title Track
-    case (1) { return [352969, 7842912]; } //Eternal Dance Engine
+    case (1) { return [354814, 7894656]; } //Eternal Dance Engine
     case (2) { return [0, 10598280]; } //Broken Eternal Dance Engine
     others { return [0, 0]; }
 }
