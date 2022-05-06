@@ -723,21 +723,21 @@ ShotData {  id = 594    rect = ( 960, 288, 992, 320 )   fixed_angle = false coll
 
 //Bubble
 //----------------------------------------------------
-ShotData {  id = 595    rect = ( 000, 896, 064, 960 )   fixed_angle = true  collision = 15  } //Red
-ShotData {  id = 596    rect = ( 064, 896, 128, 960 )   fixed_angle = true  collision = 15  } //Orange
-ShotData {  id = 597    rect = ( 128, 896, 192, 960 )   fixed_angle = true  collision = 15  } //Yellow
-ShotData {  id = 598    rect = ( 192, 896, 256, 960 )   fixed_angle = true  collision = 15  } //Green
-ShotData {  id = 599    rect = ( 256, 896, 320, 960 )   fixed_angle = true  collision = 15  } //Blue
-ShotData {  id = 600    rect = ( 320, 896, 384, 960 )   fixed_angle = true  collision = 15  } //Purple
-ShotData {  id = 601    rect = ( 384, 896, 448, 960 )   fixed_angle = true  collision = 15  } //Pink
-ShotData {  id = 602    rect = ( 448, 896, 512, 960 )   fixed_angle = true  collision = 15  } //Gray
-ShotData {  id = 603    rect = ( 512, 896, 576, 960 )   fixed_angle = true  collision = 15  } //White
-ShotData {  id = 604    rect = ( 000, 960, 064, 1024)   fixed_angle = true  collision = 15  } //Red (Invert)
-ShotData {  id = 605    rect = ( 064, 960, 128, 1024)   fixed_angle = true  collision = 15  } //Orange (Invert)
-ShotData {  id = 606    rect = ( 128, 960, 192, 1024)   fixed_angle = true  collision = 15  } //Yellow (Invert)
-ShotData {  id = 607    rect = ( 192, 960, 256, 1024)   fixed_angle = true  collision = 15  } //Green (Invert)
-ShotData {  id = 608    rect = ( 256, 960, 320, 1024)   fixed_angle = true  collision = 15  } //Blue (Invert)
-ShotData {  id = 609    rect = ( 320, 960, 384, 1024)   fixed_angle = true  collision = 15  } //Purple (Invert)
-ShotData {  id = 610    rect = ( 384, 960, 448, 1024)   fixed_angle = true  collision = 15  } //Pink (Invert)
-ShotData {  id = 611    rect = ( 448, 960, 512, 1024)   fixed_angle = true  collision = 15  } //Gray (Invert)
-ShotData {  id = 612    rect = ( 512, 960, 576, 1024)   fixed_angle = true  collision = 15  } //Black
+ShotData {  id = 595    rect = ( 000, 896, 064, 960 )   fixed_angle = true  collision = 20  } //Red
+ShotData {  id = 596    rect = ( 064, 896, 128, 960 )   fixed_angle = true  collision = 20  } //Orange
+ShotData {  id = 597    rect = ( 128, 896, 192, 960 )   fixed_angle = true  collision = 20  } //Yellow
+ShotData {  id = 598    rect = ( 192, 896, 256, 960 )   fixed_angle = true  collision = 20  } //Green
+ShotData {  id = 599    rect = ( 256, 896, 320, 960 )   fixed_angle = true  collision = 20  } //Blue
+ShotData {  id = 600    rect = ( 320, 896, 384, 960 )   fixed_angle = true  collision = 20  } //Purple
+ShotData {  id = 601    rect = ( 384, 896, 448, 960 )   fixed_angle = true  collision = 20  } //Pink
+ShotData {  id = 602    rect = ( 448, 896, 512, 960 )   fixed_angle = true  collision = 20  } //Gray
+ShotData {  id = 603    rect = ( 512, 896, 576, 960 )   fixed_angle = true  collision = 20  } //White
+ShotData {  id = 604    rect = ( 000, 960, 064, 1024)   fixed_angle = true  collision = 20  } //Red (Invert)
+ShotData {  id = 605    rect = ( 064, 960, 128, 1024)   fixed_angle = true  collision = 20  } //Orange (Invert)
+ShotData {  id = 606    rect = ( 128, 960, 192, 1024)   fixed_angle = true  collision = 20  } //Yellow (Invert)
+ShotData {  id = 607    rect = ( 192, 960, 256, 1024)   fixed_angle = true  collision = 20  } //Green (Invert)
+ShotData {  id = 608    rect = ( 256, 960, 320, 1024)   fixed_angle = true  collision = 20  } //Blue (Invert)
+ShotData {  id = 609    rect = ( 320, 960, 384, 1024)   fixed_angle = true  collision = 20  } //Purple (Invert)
+ShotData {  id = 610    rect = ( 384, 960, 448, 1024)   fixed_angle = true  collision = 20  } //Pink (Invert)
+ShotData {  id = 611    rect = ( 448, 960, 512, 1024)   fixed_angle = true  collision = 20  } //Gray (Invert)
+ShotData {  id = 612    rect = ( 512, 960, 576, 1024)   fixed_angle = true  collision = 20  } //Black
