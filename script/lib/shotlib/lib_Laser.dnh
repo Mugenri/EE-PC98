@@ -392,18 +392,68 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
         return obj;
     }
 }
-
-function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, int color_) {
+//laser with built in movement
+function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, float maxLength_, int color_, int priority_) {
     //Object Creation
     //Hitbox and position/angle
     if (color_ == SHOT_BLACK) color_ = 9;
     int controller = CreateStraightLaserA1(x_, y_, angle_, 0, 64, sustain_, 1, 0);
 
     ObjShot_SetSpellResist(controller, true);
+    ObjShot_SetAutoDelete(controller, false);
     Obj_SetValueI(controller, SHOT_CANCEL, true);
     Obj_SetVisible(controller, false);
 
-    int laser = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 6, IMG_SYSTEM_SHOT, RP_STG_LASER);
+    int laser = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 6, IMG_SYSTEM_SHOT, priority_);
+
+    int yOff = 16 * color_;
+    ObjPrim_SetVertexUVT(laser, 0, 1008, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 1, 1008, 16 + yOff);
+    ObjPrim_SetVertexUVT(laser, 2, 1009, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 3, 1009, 16 + yOff);
+    ObjPrim_SetVertexUVT(laser, 4, 1024, 0 + yOff);
+    ObjPrim_SetVertexUVT(laser, 5, 1024, 16 + yOff);
+
+    async {
+        for (int i = 1; i <= sustain_; i++) {
+            if (Obj_IsDeleted(controller)) break;
+            ObjLaser_SetLength(controller, Interpolate_Decelerate(0, maxLength_, i / as_float(sustain_ / 2)));
+            UpdatePosition();
+            yield;
+        }
+
+        Obj_Delete(laser);
+
+        function<void> UpdatePosition() {
+            float x_ = ObjMove_GetX(controller);
+            float y_ = ObjMove_GetY(controller);
+            float angle_ = ObjStLaser_GetAngle(controller);
+            float len = ObjLaser_GetLength(controller);
+
+            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * cos(angle_ - 90), y_ + 8 * sin(angle_ - 90), 1);
+            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * cos(angle_ + 90), y_ + 8 * sin(angle_ + 90), 1);
+            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * cos(angle_ - 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len - 7) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * cos(angle_ + 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len - 7) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * cos(angle_ - 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len + 8) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * cos(angle_ + 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len + 8) * sin(angle_), 1);
+        }
+    }
+
+    return controller;
+}
+//laser without movement
+function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, int color_, int priority_) {
+    //Object Creation
+    //Hitbox and position/angle
+    if (color_ == SHOT_BLACK) color_ = 9;
+    int controller = CreateStraightLaserA1(x_, y_, angle_, 0, 64, sustain_, 1, 0);
+
+    ObjShot_SetSpellResist(controller, true);
+    ObjShot_SetAutoDelete(controller, false);
+    Obj_SetValueI(controller, SHOT_CANCEL, true);
+    Obj_SetVisible(controller, false);
+
+    int laser = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 6, IMG_SYSTEM_SHOT, priority_);
 
     int yOff = 16 * color_;
     ObjPrim_SetVertexUVT(laser, 0, 1008, 0 + yOff);

@@ -198,17 +198,8 @@ task TFireD() {
     task TFireWall(float xPos_) {
         int frames = 60;
         float maxLength = [58, 64, 80][_diff];
-        int laser = CreateFireLaser(xPos_, MAX_Y + 32, 270, frames, SHOT_PINK);
-        ObjShot_SetSpellResist(laser, true);
-        ObjShot_SetAutoDelete(laser, false);
-
-        for (int i = 1; i <= frames; i++) {
-            float len = Interpolate_Decelerate(0, maxLength, i / as_float(frames / 2));
-            ObjLaser_SetLength(laser, len);
-            yield;
-        }
+        int laser = CreateFireLaser(xPos_, MAX_Y + 32, 270, frames, maxLength, SHOT_PINK, RP_STG_LASER);
     }
-
 }
 
 task TFireE() {
