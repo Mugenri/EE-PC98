@@ -67,7 +67,7 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
         int xFrame = trunc(effect / 9) * 4; //inv colors are 4 cells right of normal ones
         int yFrame = effect > 8 ? effect - 9 : effect; //color
 
-        while (frame < 4) {
+        while (frame < 4 * frameRate) {
             ObjParticleList_SetPosition(_effectCancel64, x, y, 1);
             ObjParticleList_SetExtraData(_effectCancel64, xFrame + frame / frameRate, yFrame, 0);
             ObjParticleList_AddInstance(_effectCancel64);
