@@ -278,9 +278,10 @@ task TStageScene() {
     }
 
     function<void> HandleStageVictory() {
-        Result_AddClearCount(playerType, GetDifficulty());
+        int diff = GetDifficulty();
+        Result_AddClearCount(playerType, diff);
 
-        CD_SetGameClearFlag(playerType);
+        CD_SetGameClearFlag(playerType, diff);
 
         //unlock character
         if (playerType == PLAYER_YABUSAME) {

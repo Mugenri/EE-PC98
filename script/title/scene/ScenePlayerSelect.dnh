@@ -169,7 +169,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
         int objPlayerClear = InitSprite2D(0, 640, 64, 656, IMG_TT_PLAYER, RP_UI_IMG);
         ObjRender_SetPosition(objPlayerClear, x + 32, y - 16, 1);
 
-        bool isCleared = CD_GetGameClearFlag(index_);
+        bool isCleared = CD_GetGameClearFlag(index_, GetDifficulty());
 
         while (!exitFlag) {
             Obj_SetVisible(objPlayerUnselect, selectFlag ? false : index_ != indexCurrent);

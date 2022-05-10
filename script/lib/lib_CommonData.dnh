@@ -79,18 +79,18 @@ function<void> CD_AddAreaCommonData(string area_, string field_, int amount_, in
     SetAreaCommonData(area_, field_, GetAreaCommonData(area_, field_, default_) + amount_);
 }
 //Stage clear status
-// function<void> CD_SetStageClearFlag(int stageIndex_, int player_) {
-//     SetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_), true);
+// function<void> CD_SetStageClearFlag(int stageIndex_, int player_, int diff_) {
+//     SetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), true);
 // }
-// function<bool> CD_GetStageClearFlag(int stageIndex_, int player_) {
-//     return GetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_), false);
+// function<bool> CD_GetStageClearFlag(int stageIndex_, int player_, int diff_) {
+//     return GetAreaCommonData(AREA_SAVE, "StageClear_" ~ IntToString(stageIndex_) ~ "_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), false);
 // }
 //Game clear status
-function<void> CD_SetGameClearFlag(int player_) {
-    SetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_), true);
+function<void> CD_SetGameClearFlag(int player_, int diff_) {
+    SetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), true);
 }
-function<bool> CD_GetGameClearFlag(int player_) {
-    return GetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_), false);
+function<bool> CD_GetGameClearFlag(int player_, int diff_) {
+    return GetAreaCommonData(AREA_SAVE, "GameClear_" ~ IntToString(player_) ~ "_" ~ IntToString(diff_), false);
 }
 //Unlock extra stage
 function<void> CD_SetExtraStageFlag(int player_) {
