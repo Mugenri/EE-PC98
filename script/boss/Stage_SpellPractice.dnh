@@ -23,11 +23,13 @@ task TStage() {
     int spellID = GetSpellPracticeID();
     
     string bgPath = SpellPractice_GetBackground(stageIndex);
+    int bgIndex = SpellPractice_GetBackgroundIndex(stageIndex, spellID);
     int bgmIndex = SpellPractice_GetBGMIndex(stageIndex);
     string pathSingle = SpellPractice_GetSpellPath(stageIndex, spellID);
 
     //load and execute background script
     int bgID = LoadScript(bgPath);
+    SetScriptArgument(bgID, 0, bgIndex);
     StartScript(bgID);
 
     //get path and preload single
@@ -50,6 +52,20 @@ function<string> SpellPractice_GetBackground(int stageIndex_) {
     string dir = DIR_STG;
     alternative (stageIndex_)
     case (0) { return dir ~ "tsurubami/tsuruBG.dnh"; } //tsurubami
+    others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
+}
+
+function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
+    alternative (stageIndex_)
+    case (0) {
+        alternative (spellID_)
+        case (69, 70, 71, 72, 73, 74) { return 16; }
+        others { return 0; }
+    }
+    case (1) {
+        alternative (spellID_)
+        others { return 0; }
+    }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
@@ -90,6 +106,7 @@ function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
         case (60, 61, 62)   { return dir ~ "spell11.dnh"; }     //21
         case (63, 64, 65)   { return dir ~ "spell12.dnh"; }     //22
         case (66, 67, 68)   { return dir ~ "spell13.dnh"; }     //23
+        case (69, 70, 71)   { return dir ~ "nonspell11.dnh"; }  //24
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

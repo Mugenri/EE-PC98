@@ -22,6 +22,7 @@ task TStage() {
     //load and execute background script
     string bgPath = dir ~ "tsuruBG.dnh";
     int bgID = LoadScript(bgPath);
+    SetScriptArgument(bgID, 0, 0);
     StartScript(bgID);
     
     //preload plural

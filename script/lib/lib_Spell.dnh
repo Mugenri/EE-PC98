@@ -75,6 +75,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (63, 64)       { return "Chimera Card \"Ultimate Chimera\""; }                 //EZ, EX
         case (65)           { return "\"Flower of the Shadow of Death\""; }                 //ABEX
         case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }
+        case (69, 70, 71)   { return "Nonspell 11"; }
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

@@ -4,7 +4,7 @@
 
 @Initialize {
     SetAutoDeleteObject(true);
-    BG_Init(0);
+    BG_Init(GetScriptArgument(0));
 }
 
 @Event { BG_Event(); }
@@ -37,8 +37,8 @@ task TBackground(int index_, int priority_, color_) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
-        if (count % 90 == 0) TCircle();
-        if (count % 120 == 0) {
+        if (count % frames == 0) {
+            TCircle();
             async {
                 ObjRender_SetColor(black, color_);
                 for (int frame = 0; frame <= frames; frame++) {

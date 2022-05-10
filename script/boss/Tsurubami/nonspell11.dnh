@@ -1,0 +1,198 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 11"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = 760;
+_spellID = 69 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(45 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    //SetPlayerInvincibilityFrame(10000);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                ChargeAnim();
+                loop (20) {
+                    TFireA();
+                    wait(8);
+                }
+                wait(20);
+                ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+                wait(45);
+                loop (8) {
+                    ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(40, -40), 60 + rand(60, -20), 30, LERP_DECELERATE);
+                    TFireB(1);
+                    wait(15);
+                    TFireB(-1);
+                    wait(15);
+                }
+                ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-120, 120), 60 + rand(20, -20), 30, LERP_DECELERATE);
+                wait(45);
+                TFireC();
+            }
+        }
+        yield;
+    }
+}
+
+function<void> ChargeAnim() {
+    if (!_bossAlive) return;
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+
+    loop (6) {
+        if (!_bossAlive) return;
+        Primitive_ContractPolygon2D(_bossX, _bossY, 45, 500, 0, 30, 32, COLOR_RED, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 500, 180, 30, 18, COLOR_GRAY_L);
+        wait(3);
+        Primitive_ContractPolygon2D(_bossX, _bossY, 45, 500, 0, 30, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 500, -180, 30, 18, COLOR_RED);
+        wait(3);
+    }
+    wait(30);
+    Animation_Charge(_objBoss, false);
+}
+
+task TFireA() {
+    if (!_bossAlive) return;
+    //teleport bursts with aimed amulet walls
+
+    int xPos = rand(MIN_X + 60, MAX_X - 60);
+    int yPos = rand(32, 96);
+    ObjMove_SetPosition(_objBoss, xPos, yPos);
+
+    int way = [12, 12, 18][_diff];
+    int stack = [8, 8, 14][_diff];
+    float maxSpeed = [12, 12, 18][_diff];
+    float minSpeed = [1.0, 1.4, 2.2][_diff];
+    float safeArc = [40, 35, 25][_diff];
+    float angleT = GetAngleToPlayer(_objBoss) + safeArc / 2;
+    //amulets
+    for (int i = 0; i < way; i++) {
+        int color = SHOT_RED_INV;
+        for (int j = 0; j <= stack - 1; j++) {
+            CreateShotUA1(xPos, yPos, Interpolate_Linear(maxSpeed, minSpeed, j / as_float(stack)), angleT, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            color = SHOT_BLACK;
+        }
+        angleT += (360 - safeArc) / (way - 1);
+    }
+
+    //random burst
+    way = [14, 20, 22][_diff];
+    maxSpeed = [2.8, 3.3, 3.5][_diff];
+    angleT = rand(0, 360);
+    for (int i = 0; i < way; i++) {
+        CreateShotUA1(xPos, yPos, rand(minSpeed, maxSpeed), angleT, SHOT_RED+NEEDLES, 0, SHOT_RED+CANCEL_BURST2);
+        angleT += 360 / way;
+    }
+
+    CallSFX(SND_SHOT1);
+}
+
+task TFireB(int dir_) {
+    if (!_bossAlive) return;
+
+    //amulet with trails
+    int way = [4, 5, 6][_diff];
+    float speed = [3.2, 3.6, 3.7][_diff];
+    float angleT = GetAngleToPlayer(_objBoss) + rand(10, -5) * dir_;
+    for (int i = 0; i < way; i++) {
+        int amulet = CreateShotUA2(_bossX, _bossY, speed, angleT, 0, 0, 1 * dir_, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+CANCEL_FADE);
+        ObjMove_AddPatternA2(amulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.4 * dir_);
+        TTrail(amulet);
+        angleT += 360 / way;
+    }
+
+    CallSFX(SND_SHOT1);
+
+    task TTrail(int obj_) {
+        int waitTime = [7, 6, 6][_diff];
+        int stack = [5, 6, 6][_diff];
+        int dir = -dir_;
+        float accel = 0.03;
+        float maxSpeed = [1.7, 1.8, 1.8][_diff];
+        while (!_bossAlive || !Obj_IsDeleted(obj_)) {
+            for (int i = 0; i < stack; i++) {
+                if (!_bossAlive || Obj_IsDeleted(obj_)) return;
+                CreateShotUA2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0, ObjMove_GetAngle(obj_) + 30 * dir, accel, maxSpeed, 0, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+                wait(waitTime);
+            }
+            dir *= -1;
+        }
+    }
+}
+
+task TFireC() {
+    if (!_bossAlive) return;
+    //gengetsu funny
+    int waveNum = 37;
+    float angleT = GetAngleToPlayer(_objBoss) + 180;
+    float dist = 12.4;
+
+    int color = SHOT_RED;
+    int waitTime = [4, 4, 3][_diff];
+    int loopNum = [3, 5, 5][_diff];
+    for (int i = 0; i < waveNum; i++) {
+        if (!_bossAlive) return;
+        color = [SHOT_RED, SHOT_GRAY][i % 2];
+        FireWave((angleT - 90) + (9 * i), 1);
+        FireWave((angleT + 90) - (9 * i), -1);
+        CallSFX(SND_SHOT1);
+        wait(waitTime);
+    }
+
+    function<void> FireWave(float angleT_, int dir_) {
+        angleT_ -= dist * dir_ * 2;
+        float speed = [3.2, 3.5, 4.5][_diff];
+        loop (loopNum) {
+            CreateShotUA1(_bossX, _bossY, speed, angleT_, color+NEEDLES, 0, color+SPAWN_S+SIZE_16, color+CANCEL_SPARKLE);
+            angleT_ += dist * dir_;
+        }
+    }
+}
