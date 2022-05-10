@@ -15,12 +15,13 @@ function<void> ChangeIndex(int index_, int priority_) {
     //change to index (starts shutdown for current bg)
     _bIndex = index_;
     alternative (index_)
-    case (0) { TBackground(index_, priority_); }
-    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14) { TSpellBackground(index_, priority_); }
+    case (0) { TBackground(index_, priority_, COLOR_BLACK); }
+    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) { TSpellBackground(index_, priority_); }
+    case (16) { TBackground(index_, priority_, COLOR_RED_DD); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
-task TBackground(int index_, int priority_) {
+task TBackground(int index_, int priority_, color_) {
     bool exitFlag = false;
     //black bg
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
@@ -29,6 +30,7 @@ task TBackground(int index_, int priority_) {
     int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI, priority_ + 1);
 
     int count = 0;
+    int frames = 90;
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
@@ -36,6 +38,15 @@ task TBackground(int index_, int priority_) {
             index_ = _bIndex;
         }
         if (count % 90 == 0) TCircle();
+        if (count % 120 == 0) {
+            async {
+                ObjRender_SetColor(black, color_);
+                for (int frame = 0; frame <= frames; frame++) {
+                    ObjRender_SetColor(black, Interpolate_X_PackedInt(color_, COLOR_BLACK, frame / as_float(frames), LERP_SMOOTH));
+                    yield;
+                }
+            }
+        }
         count++;
         yield;
     }
