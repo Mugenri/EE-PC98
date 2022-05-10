@@ -43,6 +43,7 @@ function<void> Particle_ExplosionSmall(float x_, float y_, float radiusW_, float
             loop (count_) {
                 float[] pos = Rotate2D(radiusW_ * cos(angleT), radiusH_ * sin(angleT), angle_);
                 ObjParticleList_SetPosition(_effectParticle16, x_ + pos[0], y_ + pos[1], 0);
+                ObjParticleList_SetColor(_effectParticle16, COLOR_WHITE);
                 ObjParticleList_SetExtraData(_effectParticle16, frame / frameRate, 1, 0);
                 ObjParticleList_AddInstance(_effectParticle16);
 
@@ -66,6 +67,7 @@ function<void> Particle_ExplosionBig(float x_, float y_) {
         while (frame < 16 * frameRate) {
             loop (16) { //explosion ring
                 ObjParticleList_SetPosition(_effectParticle64, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 0);
+                ObjParticleList_SetColor(_effectParticle64, COLOR_WHITE);
                 ObjParticleList_SetExtraData(_effectParticle64, (frame / frameRate) % 4, 4, 0);
                 ObjParticleList_AddInstance(_effectParticle64);
 
