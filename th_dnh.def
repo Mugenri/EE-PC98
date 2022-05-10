@@ -1,5 +1,5 @@
 package.script.main = script/package.dnh
-window.title = 連縁无現里 ~ Misremembered Memories v0.40a
+window.title = 連縁无現里 ~ Misremembered Memories v0.41a
 screen.width = 640
 screen.height = 400
 window.size.list = 640x400
