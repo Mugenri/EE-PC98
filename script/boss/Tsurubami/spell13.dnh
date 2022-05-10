@@ -1,0 +1,465 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 13"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+_spellID = 66 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(4000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(90 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(3000000);
+    }
+    case (EV_REQUEST_IS_DURABLE_SPELL) {
+        SetScriptResult(true);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Rise(13, 0);
+    CallSFX(SND_TRANSITION);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+
+    if (GetGameMode == GAME_MAIN) TDisappearAnimation(true);
+    
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < 0) yield;
+
+    //SetPlayerInvincibilityFrame(10000);
+
+    TDisappearAnimation(false);
+    wait(45);
+
+    //PHASE 1
+    int phaseLength = 1000;
+    TPhase1(MID_X, 60);
+    wait(phaseLength + 200);
+
+    //PHASE 2
+    phaseLength = 1200;
+    TPhase2(MID_X, MAX_Y - 60);
+    wait(phaseLength + 200);
+
+    //PHASE 3
+    phaseLength = 1000;
+    TPhase3(MID_X, MID_Y);
+    wait(phaseLength + 200);
+
+    //PHASE 4
+    phaseLength = 1400;
+    TPhase4(MID_X, 60);
+    //to end of spell
+
+    task TPhase1(int xPos_, int yPos_) {
+        //descending walls, rings of different sized bullets
+        TCreateEye(xPos_, yPos_, phaseLength);
+        wait(60);
+
+        int phaseLoop = [130, 120, 100][_diff];
+        loop (phaseLength - 60) {
+            if (_count % phaseLoop == 0) {
+                TWalls();
+            }
+            if (_count % (phaseLoop ~/ 4) == 0) {
+                TFire();
+            }
+            yield;
+        }
+
+        //walls with small gap
+        task TWalls() {
+            int waitTime = [10, 9, 6][_diff];
+            int frames = [80, 80, 70][_diff];
+            float maxLength = [175, 185, 190][_diff];
+            float xMod = rand(-80, 80);
+            CallSFX(SND_FIRE);
+            for (int i = 0; i < 24; i++) {
+                int laserL = CreateFireLaser(-32, i * 16 + 8, 0, frames, maxLength + xMod, SHOT_BLACK, RP_STG_LASER_HI);
+                int laserR = CreateFireLaser(MAX_X + 32, i * 16 + 8, 180, frames, maxLength - xMod, SHOT_BLACK, RP_STG_LASER_HI);
+                wait(waitTime);
+            }
+        }
+
+        //ring of shots from center
+        task TFire() {
+            int numShot = [7, 9, 8][_diff];
+            float angleT = rand(0, 360);
+            float speed = [2.8, 3.0, 3.8][_diff];
+            for (int i = 0; i < numShot; i++) {
+                CreateShotUA2(xPos_, yPos_, 14, angleT, -1, speed, 0, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
+                CreateShotUA2(xPos_, yPos_, 14, angleT + 180 / numShot, -1, speed, 0, SHOT_BLACK+YINYANG_A, 0, SHOT_GRAY+CANCEL_32);
+                CreateShotUA2(xPos_, yPos_, 14, angleT + 100 / numShot, -1, speed, 0, SHOT_GRAY+CARD, 0, SHOT_GRAY+CANCEL_FADE);
+                CreateShotUA2(xPos_, yPos_, 14, angleT - 100 / numShot, -1, speed, 0, SHOT_GRAY+CARD, 0, SHOT_GRAY+CANCEL_FADE);
+                angleT += 360 / numShot;
+            }
+            CallSFX(SND_SHOT3);
+        }
+    }
+
+    task TPhase2(int xPos_, int yPos_) {
+        //angled shots and varied walls
+        TCreateEye(xPos_, yPos_, phaseLength);
+        wait(60);
+
+        TWalls();
+
+        int phaseLoop = [70, 60, 50][_diff];
+        loop (phaseLength - 60) {
+            if (_count % phaseLoop == 0) {
+                TFire(-1);
+            }
+            if (_count % phaseLoop == phaseLoop / 2) {
+                TFire(1);
+            }
+            yield;
+        }
+
+        task TWalls() {
+            int waitTime = [11, 10, 8][_diff];
+            int frames = [90, 90, 40][_diff];
+            float maxLength = 432;
+            int numLaser = [19, 20, 23][_diff];
+            //from left
+            //warning
+            for (int i = 0; i < numLaser; i++) {
+                Laser_WarningLine(i * 16 + 8, -32, 90, 500, 10);
+                yield;
+            }
+            wait(20);
+            //laser
+            CallSFX(SND_FIRE);
+            for (int i = 0; i < numLaser; i++) {
+                int laser = CreateFireLaser(i * 16 + 8, -32, 90, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                wait(waitTime);
+            }
+            wait(60);
+
+            //from right
+            //warning
+            for (int i = 0; i < numLaser; i++) {
+                Laser_WarningLine(MAX_X - i * 16 - 8, -32, 90, 500, 10);
+                yield;
+            }
+            wait(20);
+            CallSFX(SND_FIRE);
+            for (int i = 0; i < numLaser; i++) {
+                int laser = CreateFireLaser(MAX_X - i * 16 - 8, -32, 90, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                wait(waitTime);
+            }
+            wait(60);
+            
+            //from top diagonal
+            maxLength = 440;
+            numLaser = [14, 15, 15][_diff];
+            //warning
+            for (int i = 0; i < numLaser; i++) {
+                Laser_WarningLine(i * 22 + 8, -32, 135, 500, 10);
+                Laser_WarningLine(MAX_X - i * 22 - 8, -32, 45, 500, 10);
+                yield;
+            }
+            wait(20);
+            //laser
+            CallSFX(SND_FIRE);
+            for (int i = 0; i < numLaser; i++) {
+                int laserL = CreateFireLaser(i * 22 + 8, -32, 135, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                int laserR = CreateFireLaser(MAX_X - i * 22 - 8, -32, 45, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                wait(waitTime);
+            }
+            wait(30);
+
+            //from bottom
+            waitTime = [6, 4, 1][_diff];
+            maxLength = 440;
+            numLaser = [17, 18, 22][_diff];
+            for (int i = 0; i < numLaser; i++) {
+                Laser_WarningLine(-8, MAX_Y - i * 16 - 8, 0, 500, 10);
+                yield;
+            }
+            wait(20);
+            CallSFX(SND_FIRE);
+            int dir = 1;
+            for (int i = 0; i < numLaser; i++) {
+                int laser = CreateFireLaser(MID_X + (MID_X + 32) * dir, MAX_Y - i * 16 - 8, 90 + 90 * dir, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                dir *= -1;
+                wait(waitTime);
+            }
+            wait(60);
+
+            //from top
+            waitTime = [16, 15, 13][_diff];
+            maxLength = 440;
+            numLaser = [14, 16, 22][_diff];
+            for (int i = 0; i < numLaser; i++) {
+                Laser_WarningLine(-8, i * 16 + 8, 0, 400, 10);
+                yield;
+            }
+            wait(60);
+            CallSFX(SND_FIRE);
+            dir = 1;
+            for (int i = 0; i < numLaser; i++) {
+                int laser = CreateFireLaser(MID_X + (MID_X + 32) * dir, i * 16 + 8, 90 + 90 * dir, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                dir *= -1;
+                wait(waitTime);
+            }
+        }
+
+        task TFire(int dir_) {
+            int numShot = [18, 20, 22][_diff];
+            float angleT = rand(0, 360);
+            float speed = [1.4, 1.5, 1.6][_diff];
+            int rad = 32;
+            for (int i = 0; i < numShot; i++) {
+                float xMod = rad * cos(angleT);
+                float yMod = rad * sin(angleT);
+                CreateShotUA2(xPos_ + xMod, yPos_ + yMod, 11, angleT + 90 * dir_, -1, speed, 0, SHOT_GRAY+CARD, 0, SHOT_GRAY+CANCEL_FADE);
+                angleT += 360 / numShot;
+            }
+            CallSFX(SND_SHOT3);
+        }
+    }
+
+    task TPhase3(int xPos_, int yPos_) {
+        //spinning lasers and crossing bullets
+        TCreateEye(xPos_, yPos_, phaseLength);
+
+        wait(30);
+        //warning lasers
+        int numShot = [10, 12, 8][_diff];
+        for (int i = 0; i < numShot; i++) {
+            float angleT = 360 / numShot * i;
+            Laser_WarningLine(xPos_, yPos_, angleT, 300, 60);
+        }
+        wait(30);
+        
+        TWalls();
+
+        int phaseLoop = [70, 70, 50][_diff];
+        loop (phaseLength - 60) {
+            if (_count % phaseLoop == 0) {
+                TFire();
+            }
+            yield;
+        }
+
+        task TWalls() {
+            int frames = 50;
+            int counter = 60;
+            int wallTimer = 0;
+
+            float waitTime = [11.1, 11.1, 7.5][_diff];
+            int minTime = [5, 5, 5][_diff];
+
+            float angleT = 0;
+            float accel = [0.007, 0.007, 0.0208][_diff];
+            int maxLength = [245, 245, 280][_diff]; //no abex safespot 4 u
+            float angleStep = [6, 6, -6][_diff];
+            CallSFX(SND_FIRE);
+            while (counter < phaseLength) {
+                if (wallTimer % ceil(waitTime) == 0) {
+                    int laserL1 = CreateFireLaser(MID_X + 285 * cos(angleT - 1), MID_Y + 285 * sin(angleT - 1), angleT + 180, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                    int laserL2 = CreateFireLaser(MID_X + 285 * cos(angleT + 1), MID_Y + 285 * sin(angleT + 1), angleT + 180, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                    int laserR1 = CreateFireLaser(MID_X + 285 * cos(angleT + 179), MID_Y + 285 * sin(angleT + 179), angleT, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                    int laserR2 = CreateFireLaser(MID_X + 285 * cos(angleT + 181), MID_Y + 285 * sin(angleT + 181), angleT, frames, maxLength, SHOT_BLACK, RP_STG_LASER_HI);
+                    angleT += angleStep;
+                    wallTimer = 0;
+                }
+                waitTime = max(minTime, waitTime - accel);
+                wallTimer++;
+                counter++;
+                yield;
+            }
+        }
+
+        task TFire() {
+            //ring of bullets
+            float angleT = 0;
+            int rad = 270;
+            float speed = [2.5, 3, 2.2][_diff];
+            for (int i = 0; i < numShot; i++) {
+                int shot = CreateShotUA1(MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), speed, angleT + 180, SHOT_GRAY+BALL_S, 0, SHOT_GRAY+CANCEL_FADE);
+                ObjShot_SetAutoDelete(shot, false);
+                ObjShot_SetDeleteFrame(shot, 420);
+                angleT += 360 / numShot;
+            }
+            CallSFX(SND_SHOT1);
+        }
+    }
+
+    task TPhase4(int xPos_, int yPos_) {
+        //closing walls
+        TCreateEye(xPos_, yPos_, phaseLength);
+        wait(60);
+
+        TWalls();
+
+        int phaseLoop = [70, 60, 40][_diff];
+        loop (phaseLength - 60) {
+            if (!_bossAlive) return;
+            if (_count % phaseLoop == 0) {
+                TFire();
+            }
+            yield;
+        }
+
+        task TWalls() {
+            int frames = [60, 60, 40][_diff];
+            float waitTime = [60, 60, 50][_diff];
+            float waitDecrement = 1.2;
+            int minTime = [30, 30, 28][_diff];
+
+            while (_bossAlive) {
+                for (int i = 0; i < 4; i++) {
+                    if (!_bossAlive) return;
+                    float maxLength = [215, 230, 235][_diff];
+                    float angleT = 90 - 90 * i;
+
+                    //top left bottom right
+                    int x = [MAX_X - 8, -32, 8, MAX_X + 32][i];
+                    int y = [-32, 8, MAX_Y + 32, MAX_Y - 8][i];
+                    int xStep = [-16, 0, 16, 0][i];
+                    int yStep = [0, 16, 0, -16][i];
+
+                    TWall(x, y, xStep, yStep, angleT, maxLength);
+                    CallSFX(SND_FIRE);
+
+                    wait(waitTime);
+                    waitTime = max(minTime, waitTime - waitDecrement);
+
+                    task TWall(int xStart_, int yStart_, int xInc_, int yInc_, float angleT_, float maxLength_) {
+                        int waitTime = [6, 6, 4][_diff];
+                        for (int i = 0; i < 24; i++) {
+                            if (!_bossAlive) return;
+                            CreateFireLaser(xStart_, yStart_, angleT_, frames, maxLength_, SHOT_BLACK, RP_STG_LASER);
+                            xStart_ += xInc_;
+                            yStart_ += yInc_;
+                            wait(waitTime);
+                        }
+                    }
+                }
+            }
+        }
+
+        task TFire() {
+            int numShot = [7, 8, 7][_diff];
+            float angleT = rand(0, 360);
+            float speed = [1.1, 1.3, 1.4][_diff];
+            for (int i = 0; i < numShot; i++) {
+                CreateShotUA2(xPos_, yPos_, 7, angleT, -1, speed, 0, SHOT_GRAY+BALL_L, 0, SHOT_GRAY+CANCEL_32);
+                CreateShotUA2(xPos_, yPos_, 5, angleT, -1, speed, 0, SHOT_GRAY+BALL_S, 0, SHOT_GRAY+CANCEL_BURST1);
+                CreateShotUA2(xPos_, yPos_, 9, angleT + 180 / numShot, -1, speed, 0, SHOT_GRAY+BALL_S, 0, SHOT_GRAY+CANCEL_FADE);
+                CreateShotUA2(xPos_, yPos_, 8, angleT + 180 / numShot, -1, speed, 0, SHOT_GRAY+PELLET, 0, SHOT_GRAY+CANCEL_BURST1);
+                angleT += 360 / numShot;
+            }
+            CallSFX(SND_SHOT2);
+        }
+    }
+
+    //senri eye
+    function<void> TCreateEye(int xPos_, int yPos_, int frames_) {
+        //warning
+        CallSFX(SND_CHARGE1);
+        Primitive_ContractPolygon2D(xPos_, yPos_, 45, 128, 0, 45, 32, COLOR_BLACK, false, RP_STG_EFF_MID);
+        wait(6);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, 180, 45, 12, COLOR_BLACK);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, -180, 45, 12, COLOR_BLACK);
+        wait(6);
+        Primitive_ContractPolygon2D(xPos_, yPos_, 45, 128, 0, 45, 32, COLOR_GRAY_D, false, RP_STG_EFF_MID);
+        wait(6);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, 180, 45, 12, COLOR_GRAY_D);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, -180, 45, 12, COLOR_GRAY_D);
+        wait(6);
+        Primitive_ContractPolygon2D(xPos_, yPos_, 45, 128, 0, 45, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+        wait(6);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, 180, 45, 12, COLOR_GRAY);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, -180, 45, 12, COLOR_GRAY);
+        wait(6);
+        Primitive_ContractPolygon2D(xPos_, yPos_, 45, 128, 0, 45, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+        wait(6);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, 180, 45, 12, COLOR_GRAY_L);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, -180, 45, 12, COLOR_GRAY_L);
+        wait(6);
+        Primitive_ContractPolygon2D(xPos_, yPos_, 45, 128, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+        wait(6);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, 180, 45, 12, COLOR_WHITE);
+        Particle_ContractRing(xPos_, yPos_, 0, 128, -180, 45, 12, COLOR_WHITE);
+        
+        wait(60);
+
+        //bullets
+        int shotNum = 40;
+        loop (5) {
+            for (int i = 0; i < shotNum; i++) {
+                float angle = 360 / shotNum * i;
+                float radius = shotNum > 1 ? (shotNum > 24 ? 48 : shotNum * 2) : 0;
+                int color = ((shotNum == 18 || shotNum == 12) && angle <= 180) ? SHOT_GRAY : SHOT_BLACK;
+                int shot = CreateShotUA1(xPos_ + radius * cos(angle), yPos_ + radius * sin(angle), 0, angle, color+BALL_S, 0, color+SPAWN_E+SIZE_16, color+CANCEL_SPARKLE);
+                ObjShot_SetDeleteFrame(shot, frames_);
+                ObjShot_SetSpellResist(shot, true);
+            }
+            if (shotNum > 24) shotNum = 24;
+            shotNum = max(shotNum - 6, 1);
+            CallSFX(SND_SHOT2);
+            async { //vanish noise
+                wait(frames_);
+                CallSFX(SND_SHOT2);
+            }
+            wait(6);
+        }
+    }
+}
+
+task TDisappearAnimation(bool visible_) {
+    int circle = Primitive_CreatePolygon2D(_bossX, _bossY, 0, 0, 32, COLOR_BLACK, true, RP_STG_EFF_MID);
+    int vertices = ObjPrim_GetVertexCount(circle);
+    async {
+            int frames = 90;
+            for (int i = 0; i < frames; i++) {
+                float rad = Interpolate_Decelerate(0, 64, i / as_float(frames / 2));
+                for (int vert = 1; vert < vertices; vert++) {
+                    float angleT = 360 / (vertices - 2) * vert;
+                    ObjPrim_SetVertexPosition(circle, vert, _bossX + rad * cos(angleT), _bossY + rad * sin(angleT), 1);
+                }
+                yield;
+            }
+            Obj_Delete(circle);
+        }
+    wait(45);
+    Obj_SetVisible(_objBoss, visible_);
+}
