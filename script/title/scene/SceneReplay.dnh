@@ -8,9 +8,8 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
 
     int selectInfo = -1;
 
-    int selectMax = 9; //0 indexed
     int[] replayList = GetValidReplayIndices();
-    if (!length(replayList) == 0) selectMax = replayList[-1] + 9; //10+ highest index
+    int selectMax = length(replayList) == 0 ? 9 : max(replayList[-1] - 1, length(replayList) + 9); //0 indexed, highest index or 10 + number of replays
     int indexListSize = 9; //0 indexed
     int indexListTop = 0;
 
