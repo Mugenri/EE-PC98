@@ -44,6 +44,11 @@ function<void> BG_Update(int index_, int time_) {
     }
 }
 
+function<bool> BG_Exit() { //change exit flag after set frames
+    loop (_transitionTime) yield;
+    return true;
+}
+
 task TUpdateRenderTargets() { //assigns render priority ranges to render targets
     loop {
         RenderToTextureA1(RT_BG1, RP_STG_BG1, RP_STG_EFF_BG1, true);

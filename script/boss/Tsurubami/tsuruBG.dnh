@@ -32,7 +32,7 @@ task TBackground(int index_, int priority_) {
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
-            TExit();
+            async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
         if (count % 90 == 0) TCircle();
@@ -59,15 +59,6 @@ task TBackground(int index_, int priority_) {
         }
         Obj_Delete(circle);
     }
-
-    task TExit () { //TODO find a way to make this reusable instead of copy pasting it? exit background task
-        int timer = _transitionTime;
-        while (timer > 0) {
-            timer--;
-            yield;
-        }
-        exitFlag = true;
-    }
 }
 
 task TSpellBackground(int index_, int priority_) {
@@ -92,7 +83,7 @@ task TSpellBackground(int index_, int priority_) {
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
-            TExit();
+            async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
         ObjRender_SetColor(black, color, color, color);
@@ -170,14 +161,5 @@ task TSpellBackground(int index_, int priority_) {
             }
             Obj_Delete(line);
         }
-    }
-
-    task TExit () { //exit background task
-        int timer = _transitionTime;
-        while (timer > 0) {
-            timer--;
-            yield;
-        }
-        exitFlag = true;
     }
 }
