@@ -235,7 +235,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         int objText = CreateText(x_ + xOff_, y_, text_, color);
         int objCursor = CreateCursor(ObjRender_GetX(objText) + (ObjText_GetTotalWidth(objText) / 2), ObjRender_GetY(objText) + 8);
         while (!exitFlag) {
-            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : color));
+            ObjText_SetVertexColor(objText, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : color));
             Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }

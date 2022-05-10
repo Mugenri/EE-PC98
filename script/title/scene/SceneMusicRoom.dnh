@@ -69,8 +69,8 @@ function<void> SceneMusicRoom() {
                 revealIndex = indexCurrent;
                 revealPrompt = false;
             } else { //prompt player on selecting undiscovered music
-                ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_RED);
-                ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_RED);
+                ObjText_SetVertexColor(playingText, 0xFF000000 | COLOR_RED);
+                ObjText_SetVertexColor(descriptionText, 0xFF000000 | COLOR_RED);
                 ObjText_SetText(playingText, "???");
                 ObjText_SetText(descriptionText, "Are you sure?");
                 revealPrompt = true;
@@ -80,8 +80,8 @@ function<void> SceneMusicRoom() {
         ClearBGM(); //allows restarting the same track if it's already playing
         yield;
         StartBGM(indexCurrent, 15, 15);
-        ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_WHITE);
-        ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(playingText, 0xFF000000 | COLOR_WHITE);
+        ObjText_SetVertexColor(descriptionText, 0xFF000000 | COLOR_WHITE);
         ObjText_SetText(playingText, BGM_GetText(indexCurrent)[0]);
         ObjText_SetText(descriptionText, BGM_GetText(indexCurrent)[1]);
     }
@@ -175,15 +175,15 @@ function<void> SceneMusicRoom() {
                 ObjText_SetText(objText, indexNumber ~ BGM_GetText(bgmID)[0]);
                 revealIndex = -1;
             }
-            ObjText_SetVertexColor(objText, 0xFF000000 + (bgmID == indexCurrent ? COLOR_YELLOW : COLOR_WHITE));
+            ObjText_SetVertexColor(objText, 0xFF000000 | (bgmID == indexCurrent ? COLOR_YELLOW : COLOR_WHITE));
             yield;
         }
         Obj_Delete(objText);
     }
 
     function<void> CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
-        ObjText_SetVertexColor(playingText, 0xFF000000 + COLOR_WHITE);
-        ObjText_SetVertexColor(descriptionText, 0xFF000000 + COLOR_WHITE);
+        ObjText_SetVertexColor(playingText, 0xFF000000 | COLOR_WHITE);
+        ObjText_SetVertexColor(descriptionText, 0xFF000000 | COLOR_WHITE);
         ObjText_SetText(playingText, BGM_GetText(GetCurrentBGMID())[0]);
         ObjText_SetText(descriptionText, BGM_GetText(GetCurrentBGMID())[1]);
         revealPrompt = false;

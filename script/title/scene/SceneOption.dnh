@@ -101,7 +101,7 @@ function<void> SceneOption() {
         else if (index_ == INDEX_STARTING_LIVES) TCreateOptionSlider(index_, 2);
 
         while (!exitFlag) {
-            ObjText_SetVertexColor(objText, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
+            ObjText_SetVertexColor(objText, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
             Obj_SetVisible(objCursor, index_ == indexCurrent);
             yield;
         }
@@ -114,7 +114,7 @@ function<void> SceneOption() {
             
             while (!exitFlag) {
                 ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], default_)));
-                ObjText_SetVertexColor(objSlider, 0xFF000000 + (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
+                ObjText_SetVertexColor(objSlider, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
                 yield;
             }
             Obj_Delete(objSlider);

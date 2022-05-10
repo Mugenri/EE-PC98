@@ -132,7 +132,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
                 UpdateListItem();
                 updateIndex = -1;
             }
-            ObjText_SetVertexColor(objText, 0xFF000000 + (realID == indexCurrent ? COLOR_BLACK : IsValidReplayIndex(realID + 1) ? COLOR_OLIVE_D : COLOR_GRAY_L));
+            ObjText_SetVertexColor(objText, 0xFF000000 | (realID == indexCurrent ? COLOR_BLACK : IsValidReplayIndex(realID + 1) ? COLOR_OLIVE_D : COLOR_GRAY_L));
             yield;
         }
         
@@ -387,8 +387,8 @@ function<bool> SaveReplayPrompt(int continues_) {
             int noText = CreateText(396, 330, RP_UI_TEXT, "ERR", COLOR_RED);
 
             while (!exitFlag) {
-                ObjText_SetVertexColor(yesText, 0xFF000000 + (indexCurrent == 0 ? COLOR_BLACK : COLOR_OLIVE));
-                ObjText_SetVertexColor(noText, 0xFF000000 + (indexCurrent == 1 ? COLOR_BLACK : COLOR_OLIVE));
+                ObjText_SetVertexColor(yesText, 0xFF000000 | (indexCurrent == 0 ? COLOR_BLACK : COLOR_OLIVE));
+                ObjText_SetVertexColor(noText, 0xFF000000 | (indexCurrent == 1 ? COLOR_BLACK : COLOR_OLIVE));
                 ObjText_SetText(yesText, indexCurrent == 0 ? ">Yes" : " Yes");
                 ObjText_SetText(noText, indexCurrent == 1 ? ">No" : " No");
                 yield;

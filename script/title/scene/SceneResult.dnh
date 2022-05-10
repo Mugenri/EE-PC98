@@ -183,12 +183,12 @@ function<void> SceneResult(int score_, string clearStatus_) {
             else ObjText_SetText(highScoreText, "Press SHOT to continue...");
 
             while (!exitFlag) {
-                ObjText_SetVertexColor(highScoreText, 0xFF000000 + COLOR_WHITE);
+                ObjText_SetVertexColor(highScoreText, 0xFF000000 | COLOR_WHITE);
                 loop (30) {
                     if (exitFlag) break;
                     yield;
                 }
-                if (isNewHighScore_) ObjText_SetVertexColor(highScoreText, 0xFF000000 + COLOR_YELLOW);
+                if (isNewHighScore_) ObjText_SetVertexColor(highScoreText, 0xFF000000 | COLOR_YELLOW);
                 loop (30) {
                     if (exitFlag) break;
                     yield;
@@ -231,7 +231,7 @@ function<void> SceneResult(int score_, string clearStatus_) {
         int currPlayer = selectedPlayer;
         int currDiff = selectedDiff;
 
-        if (index_ == newIndex) ObjText_SetVertexColor(entryText, 0xFF000000 + COLOR_YELLOW);
+        if (index_ == newIndex) ObjText_SetVertexColor(entryText, 0xFF000000 | COLOR_YELLOW);
 
         //initial creation
         ObjText_SetText(entryText, UpdateEntry());

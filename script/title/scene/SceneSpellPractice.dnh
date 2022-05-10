@@ -369,7 +369,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                 UpdateListItem();
             }
             int[] cUnfocSelect = [COLOR_WHITE, COLOR_GRAY];
-            ObjText_SetVertexColor(objText, 0xFF000000 + (subIndex_ == subIndex ? realID == indexCurrent[subIndex_] ? COLOR_YELLOW : COLOR_WHITE : realID == indexCurrent[subIndex_] ? cUnfocSelect[subIndex_] : COLOR_GRAY)); //christ
+            ObjText_SetVertexColor(objText, 0xFF000000 | (subIndex_ == subIndex ? realID == indexCurrent[subIndex_] ? COLOR_YELLOW : COLOR_WHITE : realID == indexCurrent[subIndex_] ? cUnfocSelect[subIndex_] : COLOR_GRAY)); //christ
             yield;
         }
 

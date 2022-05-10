@@ -117,7 +117,7 @@ function<int> CreateText(int x_, int y_, int priority_, string text_, int color_
     ObjText_SetText(obj, text_);
     ObjText_SetFontSize(obj, 16);
     ObjText_SetFontType(obj, SYS_FONT);
-    ObjText_SetVertexColor(obj, 0xFF000000 + color_);
+    ObjText_SetVertexColor(obj, 0xFF000000 | color_);
     ObjText_SetFontBorderType(obj, BORDER_NONE);
     return obj;
 }

@@ -135,20 +135,20 @@ function<void> Dialogue_SetText(bool isBoss_, string text_) { //Sets selected te
     //-----------------------------   <-- this long
     if (isBoss_) {
         ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_LEFT);
-        ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
-        ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
+        ObjText_SetVertexColor(_bossText, 0xFF000000 | COLOR_WHITE);
+        ObjText_SetVertexColor(_playerText, 0xFF000000 | COLOR_BLUE);
         TTextScroll(_bossText, text_, true);
     } else {
-        ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_WHITE);
-        ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_BLUE);
+        ObjText_SetVertexColor(_playerText, 0xFF000000 | COLOR_WHITE);
+        ObjText_SetVertexColor(_bossText, 0xFF000000 | COLOR_BLUE);
         TTextScroll(_playerText, text_, true);
     }
 }
 
 function<void> Dialogue_BossTitle(string text_) { //Centers text for use in boss titles/names
     ObjText_SetHorizontalAlignment(_bossText, ALIGNMENT_CENTER);
-    ObjText_SetVertexColor(_bossText, 0xFF000000 + COLOR_WHITE);
-    ObjText_SetVertexColor(_playerText, 0xFF000000 + COLOR_BLUE);
+    ObjText_SetVertexColor(_bossText, 0xFF000000 | COLOR_WHITE);
+    ObjText_SetVertexColor(_playerText, 0xFF000000 | COLOR_BLUE);
     TTextScroll(_bossText, text_, false);
 }
 
