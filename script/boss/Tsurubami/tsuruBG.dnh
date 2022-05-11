@@ -38,8 +38,9 @@ task TBackground(int index_, int priority_, color_) {
             index_ = _bIndex;
         }
         if (count % frames == 0) {
-            TCircle();
+            TLineEffect();
             async {
+                wait(37); //accelerate from 0 to 6 = 1 using i / 90
                 ObjRender_SetColor(black, color_);
                 for (int frame = 0; frame <= frames; frame++) {
                     ObjRender_SetColor(black, Interpolate_X_PackedInt(color_, COLOR_BLACK, frame / as_float(frames), LERP_SMOOTH));
@@ -54,21 +55,25 @@ task TBackground(int index_, int priority_, color_) {
     Obj_Delete(bg);
     Obj_Delete(black);
 
-    task TCircle() {
-        int circle = InitPrim2D(PRIMITIVE_LINESTRIP, 33, priority_);
-        ObjRender_SetColor(circle, COLOR_GRAY_D);
+    task TLineEffect() {
+        int outline = InitPrim2D(PRIMITIVE_LINESTRIP, 32, priority_);
+        ObjRender_SetColor(outline, COLOR_GRAY_D);
 
         int frames = 90;
-        for (int i = 1; i <= frames; i++) {
-            int radius = Interpolate_Accelerate(0, 275, i / as_float(frames));
-            float angle = 0;
-            for (int j = 0; j < 33; j++) {
-                ObjPrim_SetVertexPosition(circle, j, MID_X + radius * cos(angle), MID_Y + radius * sin(angle), 1);
-                angle += 360 / 32;
+
+        for (int i = 0; i < frames; i++) {
+            //all points are polar, angle & radius for coords
+            float rMult = Interpolate_Accelerate(0, 6.0, i / as_float(frames)); //~1 at i = 37
+
+            for (int j = 0; j < 16; j++) {
+                float rad = [121.2, 95.9, 108.8, 108.5, 95.5, 94.0, 111.0, 114.4, 49.8, 53.2, 71.5, 74.2, 55.2, 64.4, 89.9, 105.1][j];
+                float angle = [54.9, 82.7, 83.6, 85.2, 84.5, 91.2, 91.0, 94.0, 99.5, 117.6, 110.0, 115.2, 125.2, 138.2, 122.1, 124.0][j];
+                ObjPrim_SetVertexPosition(outline, j, MID_X + rad * rMult * cos(90 + angle), MID_Y + rad * rMult * sin(90 + angle), 1);
+                ObjPrim_SetVertexPosition(outline, 31 - j, MID_X + rad * rMult * cos(90 - angle), MID_Y + rad * rMult * sin(90 - angle), 1);
             }
-            if (!exitFlag) yield;
+            yield;
         }
-        Obj_Delete(circle);
+        Obj_Delete(outline);
     }
 }
 
