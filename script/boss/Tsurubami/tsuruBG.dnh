@@ -31,6 +31,8 @@ task TBackground(int index_, int priority_, color_) {
 
     int count = 0;
     int frames = 90;
+    float[] rad = [121.2, 95.9, 108.8, 108.5, 95.5, 94.0, 111.0, 114.4, 49.8, 53.2, 71.5, 74.2, 55.2, 64.4, 89.9, 105.1];
+    float[] angle = [54.9, 82.7, 83.6, 85.2, 84.5, 91.2, 91.0, 94.0, 99.5, 117.6, 110.0, 115.2, 125.2, 138.2, 122.1, 124.0];
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
@@ -59,17 +61,13 @@ task TBackground(int index_, int priority_, color_) {
         int outline = InitPrim2D(PRIMITIVE_LINESTRIP, 32, priority_);
         ObjRender_SetColor(outline, COLOR_GRAY_D);
 
-        int frames = 90;
-
         for (int i = 0; i < frames; i++) {
             //all points are polar, angle & radius for coords
             float rMult = Interpolate_Accelerate(0, 6.0, i / as_float(frames)); //~1 at i = 37
 
             for (int j = 0; j < 16; j++) {
-                float rad = [121.2, 95.9, 108.8, 108.5, 95.5, 94.0, 111.0, 114.4, 49.8, 53.2, 71.5, 74.2, 55.2, 64.4, 89.9, 105.1][j];
-                float angle = [54.9, 82.7, 83.6, 85.2, 84.5, 91.2, 91.0, 94.0, 99.5, 117.6, 110.0, 115.2, 125.2, 138.2, 122.1, 124.0][j];
-                ObjPrim_SetVertexPosition(outline, j, MID_X + rad * rMult * cos(90 + angle), MID_Y + rad * rMult * sin(90 + angle), 1);
-                ObjPrim_SetVertexPosition(outline, 31 - j, MID_X + rad * rMult * cos(90 - angle), MID_Y + rad * rMult * sin(90 - angle), 1);
+                ObjPrim_SetVertexPosition(outline, j, MID_X + rad[j] * rMult * cos(90 + angle[j]), MID_Y + rad[j] * rMult * sin(90 + angle[j]), 1);
+                ObjPrim_SetVertexPosition(outline, 31 - j, MID_X + rad[j] * rMult * cos(90 - angle[j]), MID_Y + rad[j] * rMult * sin(90 - angle[j]), 1);
             }
             yield;
         }
