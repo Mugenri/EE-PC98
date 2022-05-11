@@ -63,11 +63,12 @@ task TMain() {
                 wait(20);
                 ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
                 wait(45);
+                float angleToPlayer = GetAngleToPlayer(_objBoss);
                 loop (8) {
-                    ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(40, -40), 60 + rand(60, -20), 30, LERP_DECELERATE);
-                    TFireB(1);
+                    ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(30, -30), 80 + rand(0, 60), 30, LERP_DECELERATE);
+                    TFireB(1, angleToPlayer);
                     wait(15);
-                    TFireB(-1);
+                    TFireB(-1, angleToPlayer);
                     wait(15);
                 }
                 ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-120, 120), 60 + rand(20, -20), 30, LERP_DECELERATE);
@@ -135,18 +136,18 @@ task TFireA() {
     CallSFX(SND_SHOT1);
 }
 
-task TFireB(int dir_) {
+task TFireB(int dir_, float angleT_) {
     if (!_bossAlive) return;
 
     //amulet with trails
     int way = [4, 5, 6][_diff];
     float speed = [3.2, 3.6, 3.7][_diff];
-    float angleT = GetAngleToPlayer(_objBoss) + rand(10, -5) * dir_;
+    angleT_ += rand(10, -5) * dir_;
     for (int i = 0; i < way; i++) {
-        int amulet = CreateShotUA2(_bossX, _bossY, speed, angleT, 0, 0, 1 * dir_, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+CANCEL_FADE);
+        int amulet = CreateShotUA2(_bossX, _bossY, speed, angleT_, 0, 0, 1 * dir_, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.4 * dir_);
         TTrail(amulet);
-        angleT += 360 / way;
+        angleT_ += 360 / way;
     }
 
     CallSFX(SND_SHOT1);
