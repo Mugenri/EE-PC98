@@ -93,6 +93,7 @@ task TMain() {
         wait(60);
 
         int phaseLoop = [130, 120, 100][_diff];
+        float xMod = 0; //laser wall offset from center
         loop (phaseLength - 60) {
             if (_count % phaseLoop == 0) {
                 TWalls();
@@ -108,13 +109,20 @@ task TMain() {
             int waitTime = [10, 9, 6][_diff];
             int frames = [80, 80, 70][_diff];
             float maxLength = [175, 185, 190][_diff];
-            float xMod = rand(-80, 80);
             CallSFX(SND_FIRE);
+            float tempLength = xMod;
+            //cap to +-80 from previous position, if outside bounds of +-80, *= -1;
+            int xAdd = rand_int(40, 80); //value to be added to xMod;
+            if (xAdd % 2 == 0) xAdd *= -1;
+            if (xMod + xAdd > 100 || xMod + xAdd < -100) xAdd *= -1;
+            xMod += xAdd;
+
             for (int i = 0; i < 24; i++) {
-                int laserL = CreateFireLaser(-32, i * 16 + 8, 0, frames, maxLength + xMod, SHOT_BLACK, RP_STG_LASER_HI);
-                int laserR = CreateFireLaser(MAX_X + 32, i * 16 + 8, 180, frames, maxLength - xMod, SHOT_BLACK, RP_STG_LASER_HI);
+                int laserL = CreateFireLaser(-32, i * 16 + 8, 0, frames, maxLength + tempLength, SHOT_BLACK, RP_STG_LASER_HI);
+                int laserR = CreateFireLaser(MAX_X + 32, i * 16 + 8, 180, frames, maxLength - tempLength, SHOT_BLACK, RP_STG_LASER_HI);
                 wait(waitTime);
             }
+
         }
 
         //ring of shots from center
