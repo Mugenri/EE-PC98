@@ -358,24 +358,24 @@ ShotData {  id = 288    rect = ( 272, 192, 288, 208 )   fixed_angle = true  coll
 
 //Scale
 //----------------------------------------------------
-ShotData {  id = 289    rect = ( 000, 208, 016, 224 )   fixed_angle = false collision = 3   } //Red
-ShotData {  id = 290    rect = ( 016, 208, 032, 224 )   fixed_angle = false collision = 3   } //Orange
-ShotData {  id = 291    rect = ( 032, 208, 048, 224 )   fixed_angle = false collision = 3   } //Yellow
-ShotData {  id = 292    rect = ( 048, 208, 064, 224 )   fixed_angle = false collision = 3   } //Green
-ShotData {  id = 293    rect = ( 064, 208, 080, 224 )   fixed_angle = false collision = 3   } //Blue
-ShotData {  id = 294    rect = ( 080, 208, 096, 224 )   fixed_angle = false collision = 3   } //Purple
-ShotData {  id = 295    rect = ( 096, 208, 112, 224 )   fixed_angle = false collision = 3   } //Pink
-ShotData {  id = 296    rect = ( 112, 208, 128, 224 )   fixed_angle = false collision = 3   } //Gray
-ShotData {  id = 297    rect = ( 128, 208, 144, 224 )   fixed_angle = false collision = 3   } //White
-ShotData {  id = 298    rect = ( 144, 208, 160, 224 )   fixed_angle = false collision = 3   } //Red (Invert)
-ShotData {  id = 299    rect = ( 160, 208, 176, 224 )   fixed_angle = false collision = 3   } //Orange (Invert)
-ShotData {  id = 300    rect = ( 176, 208, 192, 224 )   fixed_angle = false collision = 3   } //Yellow (Invert)
-ShotData {  id = 301    rect = ( 192, 208, 208, 224 )   fixed_angle = false collision = 3   } //Green (Invert)
-ShotData {  id = 302    rect = ( 208, 208, 224, 224 )   fixed_angle = false collision = 3   } //Blue (Invert)
-ShotData {  id = 303    rect = ( 224, 208, 240, 224 )   fixed_angle = false collision = 3   } //Purple (Invert)
-ShotData {  id = 304    rect = ( 240, 208, 256, 224 )   fixed_angle = false collision = 3   } //Pink (Invert)
-ShotData {  id = 305    rect = ( 256, 208, 272, 224 )   fixed_angle = false collision = 3   } //Gray (Invert)
-ShotData {  id = 306    rect = ( 272, 208, 288, 224 )   fixed_angle = false collision = 3   } //Black
+ShotData {  id = 289    rect = ( 000, 208, 016, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Red
+ShotData {  id = 290    rect = ( 016, 208, 032, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Orange
+ShotData {  id = 291    rect = ( 032, 208, 048, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Yellow
+ShotData {  id = 292    rect = ( 048, 208, 064, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Green
+ShotData {  id = 293    rect = ( 064, 208, 080, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Blue
+ShotData {  id = 294    rect = ( 080, 208, 096, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Purple
+ShotData {  id = 295    rect = ( 096, 208, 112, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Pink
+ShotData {  id = 296    rect = ( 112, 208, 128, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Gray
+ShotData {  id = 297    rect = ( 128, 208, 144, 224 )   fixed_angle = false collision = (3, 0, -2)   } //White
+ShotData {  id = 298    rect = ( 144, 208, 160, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Red (Invert)
+ShotData {  id = 299    rect = ( 160, 208, 176, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Orange (Invert)
+ShotData {  id = 300    rect = ( 176, 208, 192, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Yellow (Invert)
+ShotData {  id = 301    rect = ( 192, 208, 208, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Green (Invert)
+ShotData {  id = 302    rect = ( 208, 208, 224, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Blue (Invert)
+ShotData {  id = 303    rect = ( 224, 208, 240, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Purple (Invert)
+ShotData {  id = 304    rect = ( 240, 208, 256, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Pink (Invert)
+ShotData {  id = 305    rect = ( 256, 208, 272, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Gray (Invert)
+ShotData {  id = 306    rect = ( 272, 208, 288, 224 )   fixed_angle = false collision = (3, 0, -2)   } //Black
 
 //Small Star
 //----------------------------------------------------
