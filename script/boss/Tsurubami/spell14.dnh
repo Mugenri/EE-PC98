@@ -10,6 +10,7 @@ int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
 int _loopTime = [270, 240, 200][_diff];
 _spellID = 72 + _diff;
+bool timeOut = false;
 
 @Event {
     alternative (GetEventType())
@@ -17,7 +18,7 @@ _spellID = 72 + _diff;
         SetScriptResult(8000);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(80 + absolute(_count / 60));
+        SetScriptResult(100 + absolute(_count / 60));
     }
     case (EV_REQUEST_SPELL_SCORE) {
         SetScriptResult(3000000);
@@ -58,6 +59,7 @@ task TMain() {
     while (_count < -30) yield;
     while (_bossAlive) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF) < 1200 && _bossLife > 3500) timeOut = true;
         yield;
     }
 }
@@ -84,7 +86,7 @@ task TPhase1() {
     int moveTime = 80;
     int threshold = 5500;
 
-    while (_bossLife > threshold) {
+    while (_bossLife > threshold && !timeOut) {
         if (_count % (_loopTime ~/ 3) == 0) {
             TFireA();
             Boss_MoveInArea(_objBoss, MID_X - 60, MID_X + 60, 40, 75, moveTime, LERP_DECELERATE);
@@ -97,7 +99,8 @@ task TPhase1() {
     DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
     Boss_SetVulnerable(_objBoss, false);
     Particle_RandomExplosionSmall(_bossX, _bossY);
-    TPhase2();
+    if (timeOut) TPhase3();
+    else TPhase2();
 
     task TFireA() {
         //accel flower burst
@@ -122,12 +125,13 @@ task TPhase1() {
         }
         CallSFX(SND_SHOT1);
         wait(30);
-        if (_bossLife < threshold) return;
+        if (_bossLife <= threshold || timeOut) return;
         CallSFX(SND_SHOT2);
     }
 
     task TFireB() {
         //crossing amulets
+        if (_bossLife <= threshold || timeOut) return;
         int numShot = [24, 32, 28][_diff];
         float speed = [2, 2, 2.6][_diff];
 
@@ -168,7 +172,7 @@ task TPhase2() {
     int moveTime = 80;
     int threshold = 3000;
 
-    while (_bossLife > threshold) {
+    while (_bossLife > threshold && !timeOut) {
         if (_count % _loopTime == 0) {
             TFireA(1);
             Boss_MoveInArea(_objBoss, MID_X - 100, MID_X + 100, 40, 100, moveTime, LERP_DECELERATE);
@@ -198,7 +202,7 @@ task TPhase2() {
         int delayMod = [7, 6, 4][_diff];
 
         for (int i = 0; i < numShot; i++) {
-            if (_bossLife <= threshold) return;
+            if (_bossLife <= threshold || timeOut) return;
             int shot = CreateShotUA2(_bossX, _bossY, speed, angleT, 0, 0, wVel * tempDir, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
             int delay = 14;
             loop (trailNum) {
@@ -275,6 +279,7 @@ task TPhase3() {
         phaseLoop = Interpolate_Linear(minLoop, maxLoop, _bossLife / as_float(maxHealth));
         phaseCount++;
         if (phaseCount >= phaseLoop) phaseCount = 0;
+        if (timeOut) maxLoop = minLoop;
         yield;
     }
 
