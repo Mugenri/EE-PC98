@@ -56,3 +56,15 @@ function<void> Boss_SetIndicator(int parent_) {
         Obj_Delete(indicator);
     }
 }
+
+//MOVEMENT FUNCTIONS
+//Move randomly in rectangular area
+function<void> Boss_MoveInArea(int obj_, float xMin_, float xMax_, float yMin_, float yMax_, int frames_, int interpolation_) {
+    ObjMove_SetDestAtFrame(obj_, rand(xMin_, xMax_), rand(yMin_, yMax_), frames_, interpolation_);
+}
+//Move randomly in circular area
+function<void> Boss_MoveInArea(int obj_, float xPos_, float yPos_, float radius_, int frames_, int interpolation_) {
+    float angleT = rand(0, 360);
+    float dist = rand(0, radius_);
+    ObjMove_SetDestAtFrame(obj_, xPos_ + dist * cos(angleT), yPos_ + dist * sin(angleT), frames_, interpolation_);
+}

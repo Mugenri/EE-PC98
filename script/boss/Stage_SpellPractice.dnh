@@ -59,7 +59,7 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
     alternative (stageIndex_)
     case (0) {
         alternative (spellID_)
-        case (69, 70, 71, 72, 73, 74) { return 16; }
+        case (69, 70, 71, 72, 73, 74) { return 15; }
         others { return 0; }
     }
     case (1) {
@@ -107,6 +107,7 @@ function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
         case (63, 64, 65)   { return dir ~ "spell12.dnh"; }     //22
         case (66, 67, 68)   { return dir ~ "spell13.dnh"; }     //23
         case (69, 70, 71)   { return dir ~ "nonspell11.dnh"; }  //24
+        case (72, 73, 74)   { return dir ~ "spell14.dnh"; }     //25
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

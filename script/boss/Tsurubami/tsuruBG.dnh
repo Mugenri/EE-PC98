@@ -16,8 +16,8 @@ function<void> ChangeIndex(int index_, int priority_) {
     _bIndex = index_;
     alternative (index_)
     case (0) { TBackground(index_, priority_, COLOR_BLACK); }
-    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15) { TSpellBackground(index_, priority_); }
-    case (16) { TBackground(index_, priority_, COLOR_RED_DD); }
+    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14) { TSpellBackground(index_, priority_); }
+    case (15) { TBackground(index_, priority_, COLOR_RED_DD); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
@@ -83,7 +83,7 @@ task TSpellBackground(int index_, int priority_) {
     //character silhouette
     int xNum = (index_ - 1) % 5;
     int yNum = (index_ - 1) / 5;
-    int character = InitSprite2D((MID_X * xNum), MAX_Y + (MID_Y * yNum), (MID_X * xNum) + MID_X, MAX_Y + (MID_Y * yNum) + MID_Y, IMG_BG_TSURUBAMI, priority_);
+    int character = InitSprite2D((MID_X * xNum), MAX_Y + (MID_Y * yNum), (MID_X * xNum) + MID_X, MAX_Y + (MID_Y * yNum) + MID_Y, IMG_BG_TSURUBAMI, priority_ + 1);
     ObjRender_SetPosition(character, 1, 1, 1);
     ObjRender_SetScaleXYZ(character, 2, 2, 1);
     //torii & kanji

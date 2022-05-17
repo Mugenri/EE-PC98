@@ -36,7 +36,6 @@ _spellID = 69 + _diff;
 }
 
 task TInitialize() {
-    //SetPlayerInvincibilityFrame(10000);
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
     wait(120);
     Boss_SetVulnerable(_objBoss, true);

@@ -54,7 +54,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (23)           { return "Forbidden Art \"Tax Evasion\""; }                     //ABEX
         case (24, 25, 26)   { return "Nonspell 5"; }
         case (27, 28)       { return "Senri Technique \"Ink Projection Youkai Seal\""; }    //EZ, EX
-        case (29)           { return "Forbidden Art \"Dual Youkai Annihilation Seal\""; }   //ABEX
+        case (29)           { return "Forbidden Art \"Omnilateral Annihilation Seal\""; }   //ABEX
         case (30, 31, 32)   { return "Nonspell 6"; }
         case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
         case (35)           { return "Severing Card \"Unconventional Grave-Digger\""; }     //ABEX
@@ -73,9 +73,11 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (60, 61)       { return "Ego Card \"Aurora Emperor\""; }                       //EZ, EX
         case (62)           { return "Iron Fist \"Aurora Pincer\""; }                       //ABEX
         case (63, 64)       { return "Chimera Card \"Ultimate Chimera\""; }                 //EZ, EX
-        case (65)           { return "\"Flower of the Shadow of Death\""; }                 //ABEX
-        case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }
+        case (65)           { return "Chimera Bloom \"Flower of the Shadow of Death\""; }   //ABEX
+        case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }    
         case (69, 70, 71)   { return "Nonspell 11"; }
+        case (72, 73)       { return "Mind's Eye \"Dreamcatcher\""; }                       //EZ, EX
+        case (74)           { return "All-Seeing Eye \"Faded Memory\""; }                   //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

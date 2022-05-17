@@ -1,0 +1,322 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 14"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = [270, 240, 200][_diff];
+_spellID = 72 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(8000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(80 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(3000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TPhase1();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(14, 0);
+    CallSFX(SND_TRANSITION);
+}
+
+task TFinalize() {
+    while (_bossAlive) yield;
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (_bossAlive) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        yield;
+    }
+}
+
+task TPhase1() {
+    while (_count < 0) yield;
+    //crossing amulets, rubberbanding waves
+
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 150, 0, 45, 32, COLOR_RED_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 150, 90, 45, 18, COLOR_WHITE);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 150, -90, 45, 18, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 150, 90, 45, 18, COLOR_GRAY);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 150, -90, 45, 18, COLOR_RED_L);
+    wait(45);
+    Animation_Charge(_objBoss, false);
+    Boss_SetVulnerable(_objBoss, true);
+
+    int moveTime = 80;
+    int threshold = 5500;
+
+    while (_bossLife > threshold) {
+        if (_count % (_loopTime ~/ 3) == 0) {
+            TFireA();
+            Boss_MoveInArea(_objBoss, MID_X - 60, MID_X + 60, 40, 75, moveTime, LERP_DECELERATE);
+            wait(_loopTime ~/ 6);
+            TFireB();
+        }
+        yield;   
+    }
+
+    DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
+    Boss_SetVulnerable(_objBoss, false);
+    Particle_RandomExplosionSmall(_bossX, _bossY);
+    TPhase2();
+
+    task TFireA() {
+        //accel flower burst
+        int numShot = [130, 150, 240][_diff];
+        int step = numShot / [13, 15, 15][_diff];
+        float accelMax = [0.08, 0.10, 0.11][_diff];
+
+        float minSpeed = 0;
+        float maxSpeed = [1.8, 2, 2.2][_diff];
+        float topSpeed = 5;
+
+        float angleT = rand(0, 360);
+        for (int i = 0; i < numShot; i++) {
+            float speed = Interpolate_Linear(minSpeed, maxSpeed, (i % step * 2) / as_float(step));
+            float accel = Interpolate_Decelerate(accelMax, 0, (i % step * 2) / as_float(step));
+            if (speed >= maxSpeed) speed -= (speed - maxSpeed) * 2;
+            int color = i % step == 0 ? SHOT_RED : SHOT_GRAY;
+            int shot = CreateShotUA1(_bossX, _bossY, speed, angleT, color+SCALE, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST1);
+            ObjMove_AddPatternA2(shot, 30, NO_CHANGE, NO_CHANGE, accel, topSpeed, 0);
+            ObjMove_AddPatternA2(shot, 80, NO_CHANGE, NO_CHANGE, 0, NO_CHANGE, 0);
+            angleT += 360 / numShot;
+        }
+        CallSFX(SND_SHOT1);
+        wait(30);
+        if (_bossLife < threshold) return;
+        CallSFX(SND_SHOT2);
+    }
+
+    task TFireB() {
+        //crossing amulets
+        int numShot = [24, 32, 28][_diff];
+        float speed = [2, 2, 2.6][_diff];
+
+        float angleT = rand(0, 360);
+        for (int i = 0; i < numShot; i++) {
+            int shotL = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_GRAY_INV+CARD, 0, SHOT_GRAY_INV+SPAWN_S+SIZE_16, SHOT_GRAY_INV+CANCEL_FADE);
+            int shotR = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+            ObjMove_AddPatternA2(shotL, 20, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, -2);
+            ObjMove_AddPatternA2(shotR, 20, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 2);
+            ObjMove_AddPatternA2(shotL, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+            ObjMove_AddPatternA2(shotR, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+            angleT += 360 / numShot;
+        }
+        CallSFX(SND_SHOT1);
+    }
+}
+
+task TPhase2() {
+    //large curving shots, amulet trails
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 45, LERP_DECELERATE);
+    wait(90);
+
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 250, 0, 45, 32, COLOR_RED_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 250, 90, 45, 18, COLOR_INDIGO_L);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 250, -90, 45, 18, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 250, 90, 45, 18, COLOR_GRAY);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 250, -90, 45, 18, COLOR_WHITE);
+    wait(45);
+    Animation_Charge(_objBoss, false);
+    Boss_SetVulnerable(_objBoss, true);
+
+    int moveTime = 80;
+    int threshold = 3000;
+
+    while (_bossLife > threshold) {
+        if (_count % _loopTime == 0) {
+            TFireA(1);
+            Boss_MoveInArea(_objBoss, MID_X - 100, MID_X + 100, 40, 100, moveTime, LERP_DECELERATE);
+        }
+        if (_count % (_loopTime ~/ 2) == _loopTime ~/ 4) {
+            TFireB();
+        }
+        if (_count % _loopTime == _loopTime ~/ 2) {
+            TFireA(-1);
+            Boss_MoveInArea(_objBoss, MID_X - 100, MID_X + 100, 40, 100, moveTime, LERP_DECELERATE);
+        }
+        yield;
+    }
+
+    DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
+    Boss_SetVulnerable(_objBoss, false);
+    Particle_RandomExplosionSmall(_bossX, _bossY);
+    TPhase3();
+
+    task TFireA(int dir_) { //amulet trails
+        int tempDir = dir_;
+        int numShot = [14, 18, 22][_diff];
+        int trailNum = [6, 6, 7][_diff];
+        float speed = [1.6, 1.6, 1.7][_diff];
+        float angleT = 90 - rand(60, 100) * dir_;
+        float wVel = 1.5;
+        int delayMod = [7, 6, 4][_diff];
+
+        for (int i = 0; i < numShot; i++) {
+            if (_bossLife <= threshold) return;
+            int shot = CreateShotUA2(_bossX, _bossY, speed, angleT, 0, 0, wVel * tempDir, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+            int delay = 14;
+            loop (trailNum) {
+                int trail = CreateShotUA2(_bossX, _bossY, speed, angleT, 0, 0, wVel * tempDir, SHOT_GRAY_INV+TALISMAN_A, delay, SHOT_GRAY_INV+CANCEL_BURST1);
+                ObjMove_AddPatternA2(trail, 20 + delay, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+                delay += delayMod;
+            }
+            ObjMove_AddPatternA2(shot, 20 + 20, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+            CallSFX(SND_SHOT1);
+            wait(4);
+            angleT += 360 / numShot * dir_;
+            tempDir *= -1;
+        }
+    }
+
+    task TFireB() { //flower burst
+        int numShot = [152, 192, 264][_diff];
+        float minSpeed = [1.2, 1.2, 1.2][_diff];
+        float maxSpeed = [2.4, 2.8, 3.2][_diff];
+        int step = numShot / [19, 24, 22][_diff];
+
+        float angleT = rand(0, 360);
+        for (int i = 0; i < numShot; i++) {
+            float speed = Interpolate_Decelerate(minSpeed, maxSpeed, (i % step * 2) / as_float(step));
+            int color = [SHOT_WHITE, SHOT_GRAY, SHOT_GRAY_INV, SHOT_GRAY][i % 4];
+            CreateShotUA1(_bossX, _bossY, speed, angleT, color+SCALE, 0, color+CANCEL_BURST1);
+            angleT += 360 / numShot;
+        }
+        CallSFX(SND_SHOT2);
+    }
+}
+
+task TPhase3() {
+    //constant bursts, lasers
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 100, 45, LERP_DECELERATE);
+    wait(90);
+
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+
+    async {
+        wait(60);
+        CallSFX(SND_CHARGE2);
+    }
+
+    int dir = 1;
+    loop (10) {
+        Primitive_ContractPolygon2D(_bossX, _bossY, 45, 500, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 500, 360 * dir, 45, 18, COLOR_WHITE);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 500, -360 * dir, 45, 18, COLOR_BLACK);
+        wait(3);
+        dir *= -1;
+    }
+
+    wait(45);
+    Boss_SetVulnerable(_objBoss, true);
+
+    int maxHealth = _bossLife; //~3500
+
+    TFlower();
+
+    int minLoop = [25, 15, 10][_diff];
+    int maxLoop = [80, 80, 50][_diff];
+    int phaseCount = 0;
+    int phaseLoop = maxLoop;
+
+    while (_bossAlive) {
+        if (phaseCount % phaseLoop == 0) {
+            TFire();
+        }
+
+        phaseLoop = Interpolate_Linear(minLoop, maxLoop, _bossLife / as_float(maxHealth));
+        phaseCount++;
+        if (phaseCount >= phaseLoop) phaseCount = 0;
+        yield;
+    }
+
+    task TFlower() {
+        int numShot = [84, 120, 99][_diff];
+        int step = [7, 8, 11][_diff];
+        int waitTime = [14, 12, 11][_diff];
+        float angleT = 90;
+        float increment = 180 / (numShot / (step)) + 360 / numShot;
+        int maxDelay = [45, 40, 18][_diff];
+        float speed = [1.4, 2, 1.5][_diff];
+        while (_bossAlive) {
+            for (int i = 0; i < numShot; i++) {
+                if (!_bossAlive) return;
+                int delay = Interpolate_Linear(0, maxDelay, (i % step * 2) / as_float(step));
+                if (delay >= maxDelay) delay -= (delay - maxDelay) * 2;
+                int color = i % 2 == 0 ? SHOT_BLACK : SHOT_GRAY;
+                int shot = CreateShotUA1(_bossX, _bossY, speed, angleT, color+SCALE, delay, color+SPAWN_E+SIZE_16, color+CANCEL_BURST1);
+                angleT += 360 / numShot;
+            }
+            CallSFX(SND_SHOT2);
+            wait(maxDelay + waitTime);
+            angleT += increment;
+        }
+    }
+
+    task TFire() {
+        int numShot = [10, 15, 16][_diff];
+        int delayTime = [50, 40, 30][_diff];
+        
+        float speed = [10, 12, 13][_diff];
+        float len = [110, 145, 150][_diff];
+
+        float angleT = rand(0, 360);
+        for (int i = 0; i < numShot; i++) {
+            CreateLooseLaserUA1(_bossX, _bossY, speed, angleT, len, COLOR_WHITE, delayTime);
+            Laser_WarningLine(_bossX, _bossY, angleT, 550, delayTime + 20);
+            angleT += 360 / numShot;
+        }
+        wait(delayTime);
+        if (_bossAlive);
+        CallSFX(SND_LASER1);
+    }
+
+}

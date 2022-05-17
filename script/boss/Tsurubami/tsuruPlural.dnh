@@ -42,12 +42,11 @@ task TPlural() {
     ObjEnemyBossScene_Add(_objScene, 11, dir ~ "spell12.dnh");
     ObjEnemyBossScene_Add(_objScene, 12, dir ~ "spell13.dnh");
     ObjEnemyBossScene_Add(_objScene, 13, dir ~ "nonspell11.dnh");
+    ObjEnemyBossScene_Add(_objScene, 13, dir ~ "spell14.dnh");
 
     ObjEnemyBossScene_LoadInThread(_objScene);
     ObjEnemyBossScene_Regist(_objScene);
 
-    while (!Obj_IsDeleted(_objScene)) {
-        yield;
-    }
+    while (!Obj_IsDeleted(_objScene)) yield;
     CloseScript(GetOwnScriptID());
 }
