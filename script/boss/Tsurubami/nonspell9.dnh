@@ -71,12 +71,16 @@ task TNoCheese() {
 
     bool cheese = false;
     int waitTime = 1;
+    int cheeseTimer = 0;
 
     while (_bossAlive) {
         if (GetPlayerY < 80) {
-            _loopTime = 999999;
-            cheese = true;
-            waitTime = 4;
+            cheeseTimer++;
+            if (cheeseTimer > 180) {
+                _loopTime = 999999;
+                cheese = true;
+                waitTime = 4;
+            }
         }
 
         if (cheese) { // :)
