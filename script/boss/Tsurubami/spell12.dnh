@@ -65,7 +65,7 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         int life = ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE);
         int time = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
-        if (time <= threshold && _loopTime > 180){
+        if (time <= threshold && !rage && life > 2600){
             _loopTime = [180, 180, 60][_diff];
             rage = true;
             DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
