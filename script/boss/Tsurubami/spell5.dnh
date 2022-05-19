@@ -153,15 +153,24 @@ task TFire() {
     int waitTime = [0, 0, 1][_diff];
     int numShot = [8, 12, 64][_diff];
     int moveTime = [125, 110, 50][_diff];
+    int trailNum = [2, 4, 1] [_diff];
     loop (numShot) {
         if (!_bossAlive) return;
         float radius = 150;
         float xPos = MID_X + radius * cos(angleT);
         float yPos = MID_Y + radius * sin(angleT);
+
+        int delay = 3;
+        loop (trailNum) {
+            int shot2 = CreateShotUA1(_bossX, _bossY, 0, 0, SHOT_GRAY_INV+CRYSTAL_S, 0, SHOT_GRAY_INV+CANCEL_SPARKLE);
+            ObjMove_AddPatternD2(shot2, delay, xPos, yPos, moveTime, LERP_ACCELERATE);
+            ObjShot_SetDeleteFrame(shot2, moveTime + delay - 1);
+            delay += 3;
+        }
+
         int shot = CreateShotUA1(_bossX, _bossY, 0, 0, SHOT_GRAY+PILL_A, 0, SHOT_GRAY+CANCEL_32);
-        ObjShot_SetSpellResist(shot, true);
-        //ObjMove_SetDestAtFrame(shot, xPos, yPos, moveTime, LERP_ACCELERATE);
         ObjMove_AddPatternD2(shot, 0, xPos, yPos, moveTime, LERP_ACCELERATE);
+        ObjShot_SetSpellResist(shot, true);
         shots ~= [shot];
         CallSFX(SND_SHOT3);
         angleT -= 360 / numShot;
