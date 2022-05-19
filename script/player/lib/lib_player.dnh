@@ -136,6 +136,9 @@ task TThrillGauge() {
     int thrillPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Level", 0);
     int timerPtr = LoadAreaCommonDataValuePointer(AREA_SYSTEM, "Thrill Timer", 0);
 
+    int thrillBar = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_THRILLTIME);
+    bool thrillOption = GetAreaCommonData(AREA_CONFIG, "PlayerThrillGauge", false);
+
     while (!Obj_IsDeleted(_objPlayer)) {
         if (thrillLevel > thrillPrevious) timer = timerMax; //grazed
         thrillLevel = clamp(thrillLevel, 0, thrillMax);
@@ -153,6 +156,19 @@ task TThrillGauge() {
 
         SetCommonDataPtr(thrillPtr, thrillLevel);
         SetCommonDataPtr(timerPtr, timer);
+
+        //bar over player sprite
+        if (thrillOption) {
+            Obj_SetVisible(thrillBar, thrillLevel > 0 && Alive());
+            float barX = GetPlayerX();
+            float barY = GetPlayerY() - 24;
+            float fill = Interpolate_Linear(0, 16, timer / as_float(timerMax));
+            ObjPrim_SetVertexPosition(thrillBar, 0, barX - fill, barY, 1);
+            ObjPrim_SetVertexPosition(thrillBar, 1, barX - fill, barY + 2, 1);
+            ObjPrim_SetVertexPosition(thrillBar, 2, barX + fill, barY, 1);
+            ObjPrim_SetVertexPosition(thrillBar, 3, barX + fill, barY + 2, 1);
+            ObjRender_SetColor(thrillBar, thrillLevel == thrillMax ? COLOR_RED_L : COLOR_WHITE);
+        }
         yield;
     }
 }

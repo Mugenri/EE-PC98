@@ -50,9 +50,11 @@ function<void> CD_LoadConfig(bool loadDefault_) { //load config settings from fi
     if (saveFile) { //load from save file
 		CopyCommonDataArea(AREA_CONFIG, "SAVED_CONFIG");
 		SetAreaCommonData(AREA_CONFIG, "VERSION", GAME_VERSION);
-    } else { //default options, create save file
+    } else { //default options, create save file (or load default options)
         SetAreaCommonData(AREA_CONFIG, "BGM_Volume", 100);
         SetAreaCommonData(AREA_CONFIG, "SFX_Volume", 100);
+        SetAreaCommonData(AREA_CONFIG, "StartingLives", 2);
+        SetAreaCommonData(AREA_CONFIG, "PlayerThrillGauge", false);
         CopyCommonDataArea("SAVED_CONFIG", AREA_CONFIG);
     }
 }

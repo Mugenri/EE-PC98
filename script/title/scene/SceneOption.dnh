@@ -4,9 +4,10 @@ function<void> SceneOption() {
     const int INDEX_VOLUME_BGM = 0;
     const int INDEX_VOLUME_SFX = 1;
     const int INDEX_STARTING_LIVES = 2;
+    const int INDEX_THRILL_BAR = 3;
     
-    const int INDEX_DEFAULT = 3;
-    const int INDEX_QUIT = 4;
+    const int INDEX_DEFAULT = 4;
+    const int INDEX_QUIT = 5;
 
     bool exitFlag = false;
 
@@ -16,12 +17,12 @@ function<void> SceneOption() {
     TCreateMenuGraphicsOption();
 
     //Set up the menu
-    string[] commonName = ["BGM_Volume", "SFX_Volume", "StartingLives"]; //common data field names
+    string[] commonName = ["BGM_Volume", "SFX_Volume", "StartingLives", "PlayerThrillGauge"]; //common data field names
     {
         int menuX = 504;
         int menuY = 24;
         int yOffset = 15;
-        string[] texts = ["BGM Volume    ", "SFX Volume    ", "Lives  ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
+        string[] texts = ["BGM Volume    ", "SFX Volume    ", "Init. Lives   ", "Thrill Bar    ", "Default", "Quit"]; //volumes given more space to accomodate a space and 3 extra characters (volume numbers)
         ascent (i in 0..selectMax + 1) {
             TCreateMenuItemOption(i, menuX, menuY, 0, yOffset, texts[i]);
             menuY += yOffset;
@@ -48,6 +49,9 @@ function<void> SceneOption() {
             } else if (indexCurrent == INDEX_STARTING_LIVES) {
                 IncrementValue(indexCurrent, -1, 0, 7);
                 CallSFX(SND_TT_SELECT);
+            } else if (indexCurrent == INDEX_THRILL_BAR) {
+                ToggleValue(indexCurrent);
+                CallSFX(SND_TT_SELECT);
             }
         }
         case (VK_RIGHT) {
@@ -56,6 +60,9 @@ function<void> SceneOption() {
                 CallSFX(SND_TT_SELECT);
             } else if (indexCurrent == INDEX_STARTING_LIVES) {
                 IncrementValue(indexCurrent, 1, 0, 7);
+                CallSFX(SND_TT_SELECT);
+            } else if (indexCurrent == INDEX_THRILL_BAR) {
+                ToggleValue(indexCurrent);
                 CallSFX(SND_TT_SELECT);
             }
         }
@@ -99,6 +106,7 @@ function<void> SceneOption() {
         //option types
         if (index_ == INDEX_VOLUME_BGM || index_ == INDEX_VOLUME_SFX) TCreateOptionSlider(index_, 100);
         else if (index_ == INDEX_STARTING_LIVES) TCreateOptionSlider(index_, 2);
+        else if (index_ == INDEX_THRILL_BAR) TCreateOptionToggle(index_, false);
 
         while (!exitFlag) {
             ObjText_SetVertexColor(objText, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
@@ -109,21 +117,37 @@ function<void> SceneOption() {
         Obj_Delete(objCursor);
 
         task TCreateOptionSlider(int index_, int default_) {
-            int objSlider = CreateText(x_ + 4 + ObjText_GetTotalWidth(objText) / 4, y_ + yOff_, "000", COLOR_INDIGO_L);
+            int objSlider = CreateText(x_ + xOff_ + ObjText_GetTextLength(objText) + 18, y_ + yOff_, "000", COLOR_INDIGO_L);
             if (GetAreaCommonData(AREA_CONFIG, commonName[index_], default_) == default_) SetAreaCommonData(AREA_CONFIG, commonName[index_], default_);
             
             while (!exitFlag) {
-                ObjText_SetText(objSlider, IntToString(GetAreaCommonData(AREA_CONFIG, commonName[index_], default_)));
+                ObjText_SetText(objSlider, vtos("3d", GetAreaCommonData(AREA_CONFIG, commonName[index_], default_)));
                 ObjText_SetVertexColor(objSlider, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
                 yield;
             }
             Obj_Delete(objSlider);
+        }
+
+        task TCreateOptionToggle(int index_, default_) {
+            int objToggle = CreateText(x_ + xOff_ + ObjText_GetTextLength(objText) + 18, y_ + yOff_, "000", COLOR_INDIGO_L);
+            if (GetAreaCommonData(AREA_CONFIG, commonName[index_], default_) == default_) SetAreaCommonData(AREA_CONFIG, commonName[index_], default_);
+
+            while(!exitFlag) {
+                ObjText_SetText(objToggle, GetAreaCommonData(AREA_CONFIG, commonName[index_], default_) == true ? " ON" : "OFF");
+                ObjText_SetVertexColor(objToggle, 0xFF000000 | (index_ == indexCurrent ? COLOR_BLACK : COLOR_INDIGO_L));
+                yield;
+            }
+            Obj_Delete(objToggle);
         }
     }
 
     function<void> IncrementValue(int index_, int value_, int min_, int max_) {
         int newValue = clamp(GetAreaCommonData(AREA_CONFIG, commonName[index_], max_) + value_, min_, max_);
         SetAreaCommonData(AREA_CONFIG, commonName[index_], newValue);
+    }
+
+    function<void> ToggleValue(int index_) {
+        SetAreaCommonData(AREA_CONFIG, commonName[index_], !GetAreaCommonData(AREA_CONFIG, commonName[index_]));
     }
 
     function<void> SaveConfig() {
