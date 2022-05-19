@@ -128,7 +128,7 @@ task TThrillGauge() {
     int thrillPrevious = 0; //thrill level previous frame
     int thrillMax = 50; //number of bullets to fill the gauge
     int timer = 0; //time until thrillLevel is reset
-    int timerMax = 180; //max timer level upon grazing
+    int timerMax = 210; //max timer level upon grazing
 
     SetAreaCommonData(AREA_SYSTEM, "Thrill Max", thrillMax);
     SetAreaCommonData(AREA_SYSTEM, "Thrill Timer Max", timerMax);
