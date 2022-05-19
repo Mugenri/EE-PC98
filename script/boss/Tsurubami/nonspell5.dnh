@@ -108,7 +108,7 @@ task TFire() {
                 ObjMove_SetX(obj_, clamp(xPos, MIN_X, MAX_X));
                 ObjMove_SetAngle(obj_, 180 - angleT);
                 ObjMove_AddPatternB2(obj_, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.05, NO_CHANGE, 2.75);
-                if (cos(180 - angleT) < 0) ObjRender_SetScaleX(obj_, -1);
+                ObjRender_SetScaleX(obj_, cos(180 - angleT) < 0 ? -1 : 1);
             }
             yield;
         }
