@@ -207,6 +207,7 @@ task TStageScene() {
         }
         case (RESULT_RETRY) {
             if (gameMode == GAME_MAIN) ClearBGM();
+            if (_stageEvent == STAGE_GAMEOVER) Result_AddNew(GetScore(), GetCurrentDateTimeS(), "Failed"); //retry from continue menu
             UpdateHighScore();
             if (!isStageEnd_) {
                 TerminateStageScene();
