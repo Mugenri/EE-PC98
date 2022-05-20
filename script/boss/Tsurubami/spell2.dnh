@@ -132,9 +132,10 @@ task TSkewer() {
     wait(8);
     Particle_ContractRing(_bossX, _bossY, 0, 32, -90, 37, 8, COLOR_GRAY_D);
     wait(37);
+    float minSpeed = [0, 0, 3][_diff];
     if (!_bossAlive) return;
     for (int i = 0; i < 15; i++) {
-        CreateShotUA1(_bossX, _bossY, 12 - Interpolate_Decelerate(0, 12, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
+        CreateShotUA1(_bossX, _bossY, 12 - Interpolate_Decelerate(0, 12 - minSpeed, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
         if ([false, false, true][_diff]) modif = rand(-5, 5);
     }
     CallSFX(SND_SHOT1);
