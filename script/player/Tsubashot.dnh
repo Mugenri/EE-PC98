@@ -6,6 +6,7 @@ ShotData {
     rect = ( 0, 48, 16, 64 )
     alpha = 255
     collision = 1
+    fixed_angle = true;
 }
 
 ShotData {
