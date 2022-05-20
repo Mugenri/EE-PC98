@@ -32,6 +32,7 @@ _spellID = 15 + _diff;
     TFinalize();
     TMain();
     TWalls();
+    TBottom();
 }
 
 @MainLoop {
@@ -105,6 +106,25 @@ task TWalls() {
 
     Obj_Delete(laserL);
     Obj_Delete(laserR);
+}
+
+task TBottom() {
+    //fire lasers travelling along the bottom
+    while (_count < 0) yield;
+
+    int frames = [64, 48, 36][_diff];
+    int waitTime = [8, 6, 5][_diff];
+    int maxLength = [48, 64, 72][_diff];
+
+    CallSFX(SND_FIRE);
+    while (_bossAlive) {
+        for (int i = 0; i < 23; i++) {
+            if (!_bossAlive) return;
+            int fireL = CreateFireLaser(8 + i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
+            int fireR = CreateFireLaser(MAX_X - 8 - i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
+            wait(waitTime);
+        }
+    }
 }
 
 task TFire() {
