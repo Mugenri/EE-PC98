@@ -7,14 +7,15 @@
 
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
-int _count = -120;
-int _loopTime = [25, 15, 10][_diff];
+int _count = -180;
+int _loopTime = [270, 250, 250][_diff];
 _spellID = 42 + _diff;
+bool _timeOut = false;
 
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(3800);
+        SetScriptResult(4000);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(50 + absolute(_count / 60));
@@ -31,7 +32,8 @@ _spellID = 42 + _diff;
     TInitialize();
     TFinalize();
     TMain();
-    TMovement();
+    TBowap();
+    TLaserWings();
 }
 
 @MainLoop {
@@ -45,7 +47,7 @@ task TInitialize() {
     wait(30);
     Transition_Circle(8, 0);
     CallSFX(SND_TRANSITION);
-    wait(120);
+    wait(180);
     Boss_SetVulnerable(_objBoss, true);
 }
 
@@ -63,55 +65,141 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                TLaser();
+                TSpark();
             }
         }
         yield;
     }
 }
 
-task TMovement() {
-    int moveTime = 90;
-    float speedMod = [0.7, 0.8, 1.0][_diff];
+task TBowap() {
     while (_count < 0) yield;
+
+    //reverse bowaps
+    int spokes = [5, 6, 1][_diff];
+    float radius = 440;
+    float speed = [1.2, 1.4, 1.1][_diff];
+    int deleteTime = radius / speed * [1, 1.3, 2][_diff];
+    int waitTime = [10, 9, 2][_diff];
+
+    float angleT = 0;
+    float angleIncrement = 1;
+    float angleAccel = [3.11, 3.11, 0.21][_diff];
     while (_bossAlive) {
-        float xPos = MID_X - 112 * sin(_count * speedMod);
-        ObjMove_SetDestAtFrame(_objBoss, xPos, 60, 1);
-        yield;
+        for (int i = 0; i < spokes; i++) {
+            int color = [SHOT_WHITE, SHOT_YELLOW, SHOT_PINK][i % 3];
+            float angleMod = i * (360 / spokes);
+            int shotL = CreateShotUA1(MID_X - 100 + radius * cos(angleT + angleMod), 60 + radius * sin(angleT + angleMod), speed, angleT + angleMod + 180, color+SPARKLE, 0, color+CANCEL_BURST1);
+            int shotR = CreateShotUA1(MID_X + 100 + radius * cos(-angleT - angleMod - 180), 60 + radius * sin(-angleT - angleMod - 180), speed, -angleT - angleMod, color+SPARKLE, 0, color+CANCEL_BURST1);
+            ObjShot_SetAutoDelete(shotL, false);
+            ObjShot_SetAutoDelete(shotR, false);
+            ObjShot_SetDeleteFrame(shotL, deleteTime);
+            ObjShot_SetDeleteFrame(shotR, deleteTime);
+        }
+        CallSFX(SND_SHOT1);
+        angleT += angleIncrement;
+        angleIncrement += angleAccel;
+        if (_bossLife >= 4000 && _count >= 2220 && !_timeOut) {
+            _timeOut = true;
+            DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
+            spokes = 6;
+            speed = 1.8;
+            deleteTime = radius / speed * 2;
+            waitTime = 6;
+            angleT = 0;
+            angleIncrement = 1;
+            angleAccel = 3.11;
+            wait(180);
+        }
+        wait(waitTime);
     }
 }
 
-task TLaser() {
-    if (!_bossAlive) return;
+task TSpark() {
+    //bone spark
+    if(!_bossAlive || _timeOut) return;
+    float angleT = GetAngleToPlayer(_objBoss);
+    int delayTime = 120;
+    float maxWidth = [120, 160, 100][_diff];
+    int sustain = 80;
 
-    int xPos = _bossX;
-    int width = [50, 45, 40][_diff];
-    int moveTime = [200, 170, 60][_diff];
-    int waitTime = [85, 60, 48][_diff];
-    int numShot = [3, 5, 6][_diff];
-    float accel = [0.005, 0.006, 0.033][_diff];
+    //warning
+    Animation_Charge(_objBoss, true);
+    async {
+        wait(54);
+        Primitive_ContractPolygon2D(_bossX, _bossY, 45, 130, 0, 60, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 130, 90, 60, 18, COLOR_GRAY_L);
+        wait(3);
+        Particle_ContractRing(_bossX, _bossY, 0, 130, -90, 60, 18, COLOR_GRAY);
+    }
+    CreateMasterSpark(_bossX, _bossY, angleT, 550, maxWidth, sustain, COLOR_GRAY, COLOR_GRAY_L, delayTime);
+    Laser_WarningLine(_bossX, _bossY, angleT + 12, 550, delayTime);
+    Laser_WarningLine(_bossX, _bossY, angleT - 12, 550, delayTime);
 
-    int color = [COLOR_BLACK, COLOR_BLACK, COLOR_RED][_diff];
-    int laserL = CreateStraightLaserUA1(xPos - width, -20, 180, MAX_X, moveTime, color, 0);
-    int laserR = CreateStraightLaserUA1(xPos + width, -20, 0, MAX_X, moveTime, color, 0);
-    ObjShot_SetSpellResist(laserL, true);
-    ObjShot_SetSpellResist(laserR, true);
-    ObjMove_AddPatternD2(laserL, 0, xPos - width, MAX_Y + 10, moveTime, LERP_LINEAR);
-    ObjMove_AddPatternD2(laserR, 0, xPos + width, MAX_Y + 10, moveTime, LERP_LINEAR);
+    //charge anim
+    CallSFX(SND_CHARGE1);
+    wait(delayTime);
+    if(!_bossAlive) return;
 
-    wait(rand_int(0, waitTime));
+    //laser & movement
+    Animation_Charge(_objBoss, false);
+    CallSFX(SND_MASTERSPARK);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X + 48 * cos(angleT + 180), 60 + 48 * sin(angleT + 180), sustain / 4, LERP_DECELERATE);
+    wait(sustain / 4);
+    if(!_bossAlive) return;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, sustain, LERP_SMOOTH);
+}
 
-    while (!Obj_IsDeleted(laserL) && !Obj_IsDeleted(laserR)) {
-        if (!_bossAlive) return;
-        int dir = cos(ObjMove_GetAngle(_objBoss)) > 0 ? -1 : 1;
-        float angle = 0;
-        for (int i = 0; i < numShot; i++) {
-            float xPos = MID_X + (MID_X * dir);
-            float yPos = ObjMove_GetY(laserL);
-            CreateShotUA2(xPos, yPos, 0, dottheta(xPos, yPos, GetPlayerX(), GetPlayerY()) + angle, accel, rand(3.5, 5.7), 0, SHOT_RED_INV+SWORD_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
-            angle += 360 / numShot;
+task TLaserWings() {
+    while (_count < -90) yield;
+
+    Animation_Charge(_objBoss, true);
+
+    CallSFX(SND_CHARGE2);
+    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 500, 0, 45, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 360, 45, 18, COLOR_WHITE);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, -360, 45, 18, COLOR_YELLOW_L);
+    wait(3);
+    Particle_ContractRing(_bossX, _bossY, 0, 500, 360, 45, 18, COLOR_PINK);
+    wait(3);
+    wait(10);
+
+    float angleMod = 30;
+    float distMod = 40;
+    //top
+    TLaser(0 - angleMod, 60 - distMod);
+    TLaser(180 + angleMod, 60 - distMod);
+    wait(6);
+    //middle
+    TLaser(0, 60);
+    TLaser(180, 60);
+    wait(6);
+    //bottom
+    TLaser(0 + angleMod, 60 + distMod);
+    TLaser(180 - angleMod, 60 + distMod);
+    wait(20);
+
+    Animation_Charge(_objBoss, false);
+
+    task TLaser(float angle_, float yDest_) {
+        float xDest = angle_ > 90 ? MIN_X : MAX_X;
+        int radius = 24;
+        int delay = 30;
+
+        int laser = CreateStraightLaserUA1(_bossX + radius * cos(angle_), _bossY + radius * sin(angle_), dottheta(_bossX, _bossY, xDest, yDest_), 250, 10000, COLOR_BLACK, delay);
+        wait(delay);
+        CallSFX(SND_LASER2);
+        ObjShot_SetAutoDelete(laser, false);
+        ObjShot_SetSpellResist(laser, true);
+
+        while (!Obj_IsDeleted(laser)) {
+            ObjMove_SetPosition(laser, _bossX + radius * cos(angle_), _bossY + radius * sin(angle_));
+            float destAngle = dottheta(_bossX, _bossY, xDest, yDest_);
+            ObjStLaser_SetAngle(laser, destAngle);
+            yield;
         }
-        CallSFX(SND_SHOT1);
-        wait(waitTime);
     }
 }
