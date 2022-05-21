@@ -57,12 +57,12 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (29)           { return "Forbidden Art \"Omnilateral Annihilation Seal\""; }   //ABEX
         case (30, 31, 32)   { return "Nonspell 6"; }
         case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
-        case (35)           { return "Severing Card \"Unconventional Grave-Digger\""; }     //ABEX
-        case (36, 37)       { return "\"Orochi Labyrinth\""; }                              //EZ, EX
+        case (35)           { return "Severing Card \"Unconventional Grave-Digging\""; }    //ABEX
+        case (36, 37)       { return "Serpent Card \"Orochi Labyrinth\""; }                 //EZ, EX
         case (38)           { return "\"Super Ouroboros\""; }                               //ABEX
         case (39, 40, 41)   { return "Nonspell 7"; }
-        case (42, 43)       { return "Disembodiment Card \"Bonerot\""; }                    //EZ, EX
-        case (44)           { return "Dismemberment Card \"Spine Ripper\""; }               //ABEX
+        case (42, 43)       { return "Disembodiment Card \"Ghoul Attractor\""; }            //EZ, EX
+        case (44)           { return "Dismemberment Card \"Necrobrilliance\""; }            //ABEX
         case (45, 46, 47)   { return "Nonspell 8"; }
         case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //EZ, EX
         case (50)           { return "Constellation Card \"Speed-of-Light Rodeo\""; }       //ABEX
@@ -70,8 +70,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (54, 55)       { return "Senri Technique \"Spirit Crossroads\""; }             //EZ, EX
         case (56)           { return "Forbidden Art \"Soulstream\""; }                      //ABEX
         case (57, 58, 59)   { return "Nonspell 10"; }
-        case (60, 61)       { return "Ego Card \"Aurora Emperor\""; }                       //EZ, EX
-        case (62)           { return "Iron Fist \"Aurora Pincer\""; }                       //ABEX
+        case (60, 61)       { return "Ego Card \"Imperious Aurora\""; }                     //EZ, EX
+        case (62)           { return "Iron Fist \"Aurora Usurper\""; }                      //ABEX
         case (63, 64)       { return "Chimera Card \"Ultimate Chimera\""; }                 //EZ, EX
         case (65)           { return "Chimera Bloom \"Flower of the Shadow of Death\""; }   //ABEX
         case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }    
