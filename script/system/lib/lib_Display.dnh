@@ -770,10 +770,11 @@ task TSpellBonus(int score_) {
     AddScore(score_);
     //Ascii numbers around boss
     int tempScore = score_;
+    int scoreIncrement = max(51200, 51200 * (score_ ~/ 1_000_000));
     float[] pos = GetAreaCommonData(AREA_STAGE, "Pos_Bonus", [0, 0]);
-    while (tempScore > 10000) {
-        Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), 10000, COLOR_YELLOW);
-        tempScore -= 10000;
+    while (tempScore > scoreIncrement) {
+        Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), scoreIncrement, COLOR_YELLOW);
+        tempScore -= scoreIncrement;
     }
     if (tempScore > 0) Ascii_ScoreNum(pos[0] + prand_int(-64, 64), pos[1] + prand_int(-64, 64), tempScore, COLOR_YELLOW);
 
