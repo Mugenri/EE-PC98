@@ -50,7 +50,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -67,8 +67,8 @@ task TKillAura() {
 
     //spawn animation
     for (int i = 1; i <= 60; i++) {
-        float x = _bossX;
-        float y = _bossY;
+        float x = Boss_X(_objBoss);
+        float y = Boss_Y(_objBoss);
         float angleT = 0;
         int tempRad = Interpolate_Decelerate(0, radius, i / 60);
         for (int j = 0; j < 33; j++) {
@@ -81,8 +81,8 @@ task TKillAura() {
     //shrink animation
     async {
         for (int i = 1; i <= 60; i++) {
-            float x = _bossX;
-            float y = _bossY;
+            float x = Boss_X(_objBoss);
+            float y = Boss_Y(_objBoss);
             float angleT = 0;
             int tempRad = Interpolate_Accelerate(radius, 0, i / 60);
             for (int j = 0; j < 33; j++) {
@@ -95,10 +95,10 @@ task TKillAura() {
     }
 
     async { //aura 2 loop
-        while (_bossAlive) {
+        while (Boss_Alive(_objBoss)) {
             for (int i = 1; i <= 60; i++) {
-                float x = _bossX;
-                float y = _bossY;
+                float x = Boss_X(_objBoss);
+                float y = Boss_Y(_objBoss);
                 float angleT = 0;
                 int tempRad = Interpolate_Decelerate(0, radius, i / 60);
                 for (int j = 0; j < 33; j++) {
@@ -110,9 +110,9 @@ task TKillAura() {
         }
     }
 
-    while (_bossAlive) {
-        float x = _bossX;
-        float y = _bossY;
+    while (Boss_Alive(_objBoss)) {
+        float x = Boss_X(_objBoss);
+        float y = Boss_Y(_objBoss);
         float pX = ObjMove_GetX(_objPlayer);
         float pY = ObjMove_GetY(_objPlayer);
         float angleT = 0;
@@ -146,7 +146,7 @@ task TKillAura() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -160,13 +160,13 @@ task TMain() {
 }
 
 task TFire(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //move to position
     float xDest = MID_X - 160 * dir_;
     float yDest = MID_Y - 150;
     wait(60);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     ObjMove_SetDestAtFrame(_objBoss, xDest, yDest, 90, LERP_SMOOTHER);
 
     //spawn laser
@@ -175,23 +175,23 @@ task TFire(int dir_) {
     CallSFX(SND_CHARGE1);
 
     loop (100) {
-        if (!_bossAlive) return;
-        ObjMove_SetPosition(mSpark, _bossX, _bossY);
+        if (!Boss_Alive(_objBoss)) return;
+        ObjMove_SetPosition(mSpark, Boss_X(_objBoss), Boss_Y(_objBoss));
         yield;
     }
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     CallSFX(SND_MASTERSPARK);
     Animation_Charge(_objBoss, true);
 
     wait(20);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     int loopNum = [1, 2, 3][_diff];
     float maxYSpeed = [2.6, 3.0, 2.5][_diff];
     async { //bullets at edge of screen
         int color = 0;
-        while (_bossAlive && !Obj_IsDeleted(mSpark)) {
+        while (Boss_Alive(_objBoss) && !Obj_IsDeleted(mSpark)) {
             int tempColor = [SHOT_GRAY, SHOT_WHITE, SHOT_BLUE][color % 3];
             float angleT = ObjStLaser_GetAngle(mSpark) + rand(-7, 7);
             float xPos = xDest + 525 * cos(angleT);
@@ -211,16 +211,16 @@ task TFire(int dir_) {
         float min = 90 - 90 * dir_;
         float max = 90 - 20 * dir_;
         for (int i = 1; i <= 160; i++) {
-            if (!_bossAlive || Obj_IsDeleted(mSpark)) return;
+            if (!Boss_Alive(_objBoss) || Obj_IsDeleted(mSpark)) return;
             ObjStLaser_SetAngle(mSpark, Interpolate_Accelerate(min, max, i / 160));
             yield;
         }
     }
 
     wait(160);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     Obj_Delete(mSpark);
     wait(15);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     Animation_Charge(_objBoss, false);
 }

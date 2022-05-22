@@ -1,12 +1,25 @@
 //Boss utility function library
+
+//OBJECT VALUE FUNCTIONS
 //Assigns boss ID string to boss object
-function<void> Boss_SetID(int obj_, string ID_) {
-    Obj_SetValue(obj_, BOSS_ID, ID_);
-}
-//Returns boss ID string attached to boss object.
-function<string> Boss_GetID(int obj_) {
-    return Obj_GetValueD(obj_, BOSS_ID, "INVALID");
-}
+function<void> Boss_SetID(int obj_, string ID_) { Obj_SetValueI(obj_, BOSS_ID, ID_); }
+function<string> Boss_GetID(int obj_) { return Obj_GetValueDI(obj_, BOSS_ID, "INVALID"); }
+//Boss health > 0
+function<bool> Boss_Alive(int obj_) { return Obj_GetValueDI(obj_, BOSS_ALIVE, true); }
+//Boss bomb barrier currently active?
+function<bool> Boss_IsBombBarrier(int obj_) { return Obj_GetValueDI(obj_, BOSS_BOMB_BARRIER, false); }
+//Boss position
+function<float> Boss_X(int obj_) { return Obj_GetValueDI(obj_, BOSS_X, 0); }
+function<float> Boss_Y(int obj_) { return Obj_GetValueDI(obj_, BOSS_Y, 0); }
+//Boss life
+function<float> Boss_Life(int obj_) { return Obj_GetValueDI(obj_, BOSS_LIFE, 0); }
+//Damage ratios
+function<void> Boss_SetDamageShot(int obj_, float ratio_) { Obj_SetValueI(obj_, BOSS_DMG_SHOT, ratio_); }
+function<float> Boss_GetDamageShot(int obj_) { return Obj_GetValueDI(obj_, BOSS_DMG_SHOT, 100); }
+function<void> Boss_SetDamageSpell(int obj_, float ratio_) { Obj_SetValueI(obj_, BOSS_DMG_SPELL, ratio_); }
+function<float> Boss_GetDamageSpell(int obj_) { return Obj_GetValueDI(obj_, BOSS_DMG_SPELL, 100); }
+
+//UTILITY FUNCTIONS
 //Moves the boss object associated with bossID_ to the position it was located at the end of the last single.
 function<void> Boss_GetInitPosition(int obj_) {
     float[] pos = GetAreaCommonData(AREA_STAGE, "Pos_" ~ Boss_GetID(obj_), [0, 0]);
@@ -29,9 +42,9 @@ function<void> Boss_SetIntersection(int obj_, int target_, int toShot_, int toPl
 }
 //sets invulnerability of the given boss object
 function<void> Boss_SetVulnerable(int obj_, bool isVulnerable_) {
-    if (isVulnerable_ && !_spellBarrier && !_isSurvival) { //if no spell barrier is active and the spell is not a survival spell
-        if (_isSpellVulnerable) ObjEnemy_SetDamageRate(obj_, 100, 100);
-        else ObjEnemy_SetDamageRate(obj_, 100, 0.000001);
+    if (isVulnerable_ && !Boss_IsBombBarrier(obj_) && !_isSurvival) { //if no spell barrier is active and the spell is not a survival spell
+        if (_isSpellVulnerable) ObjEnemy_SetDamageRate(obj_, Boss_GetDamageShot(obj_), Boss_GetDamageSpell(obj_));
+        else ObjEnemy_SetDamageRate(obj_, Boss_GetDamageShot(obj_), 0.000001);
     } else {
         ObjEnemy_SetDamageRate(obj_, 0.000001, 0.000001); //relates to how invuln sounds are handled, no actual damage is dealt.
     }

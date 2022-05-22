@@ -43,7 +43,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -51,7 +51,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -73,7 +73,7 @@ task TNoCheese() {
     int waitTime = 1;
     int cheeseTimer = 0;
 
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         if (GetPlayerY < 80) {
             cheeseTimer++;
             if (cheeseTimer > 180) {
@@ -85,8 +85,8 @@ task TNoCheese() {
 
         if (cheese) { // :)
             float angle = rand(0, 360);
-            float xPos = _bossX + rand(-40, 40);
-            float yPos = _bossY + rand(-40, 40);
+            float xPos = Boss_X(_objBoss) + rand(-40, 40);
+            float yPos = Boss_Y(_objBoss) + rand(-40, 40);
             int graphic = rand_int(0, 1) == 0 ? SHOT_GRAY+BALL_S : SHOT_GRAY+PELLET;
             loop (32) {
                 CreateShotUA1(xPos, yPos, 6, angle, graphic, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST1);
@@ -100,9 +100,9 @@ task TNoCheese() {
 }
 
 task TFireA(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
-    int amulet = CreateShotUA2(_bossX, _bossY, 8, 90 - 80 * dir_, -1.2, 1.5, 3.6 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    int amulet = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 8, 90 - 80 * dir_, -1.2, 1.5, 3.6 * dir_, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjMove_AddPatternA2(amulet, 50, NO_CHANGE, NO_CHANGE, 0.15, 8, 0);
     ObjShot_SetSpellResist(amulet, true);
     CallSFX(SND_SHOT3);
@@ -110,7 +110,7 @@ task TFireA(int dir_) {
     wait(20);
 
     int waitTime = [8, 4, 4][_diff];
-    while (_bossAlive && !Obj_IsDeleted(amulet)) {
+    while (Boss_Alive(_objBoss) && !Obj_IsDeleted(amulet)) {
         TTrail(amulet);
         wait(waitTime);
     }
@@ -127,11 +127,11 @@ task TFireA(int dir_) {
 }
 
 task TFireB(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 15, 100, -90 * dir_, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 100, -90 * dir_, 30, 8, COLOR_GRAY);
 
     int laserNum = [6, 8, 16][_diff];
     float speed = [9.5, 12.5, 14][_diff];
@@ -141,17 +141,17 @@ task TFireB(int dir_) {
     float angleT = GetAngleToPlayer(_objBoss) + 90 * dir_;
 
     loop (laserNum) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         TLaser(angleT);
         angleT -= (180 / laserNum) * dir_;
         wait(waitTime);
     }
 
     task TLaser(float angle_) {
-        int warning = Laser_WarningLine(_bossX, _bossY, angle_, 400, delay);
-        int laser = CreateLooseLaserUA1(_bossX, _bossY, speed, angle_, laserLength, COLOR_BLACK, delay);
+        int warning = Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), angle_, 400, delay);
+        int laser = CreateLooseLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angle_, laserLength, COLOR_BLACK, delay);
         wait(delay);
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         CallSFX(SND_LASER2);
     }
 }

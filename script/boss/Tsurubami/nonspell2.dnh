@@ -42,7 +42,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -51,7 +51,7 @@ task TFinalize() {
 task TMain() {
     while (_count < -30) yield;
     int waitTime = [120, 120, 60][_diff];
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -65,18 +65,18 @@ task TMain() {
 }
 
 task TFireA(int dir_) {
-    if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 20, 32, COLOR_GRAY_D, false, RP_STG_EFF_MID);
+    if (!Boss_Alive(_objBoss)) return;
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 20, 32, COLOR_GRAY_D, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_D);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 20, 8, COLOR_GRAY_L);
     wait(20);
 
     for (int i = 1; i <= 22; i++) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         float angleT = 90 + 20 * dir_ + Interpolate_Decelerate(0, 320, i / 22) * dir_;
-        int shot = CreateShotUA1(_bossX, _bossY, 14, angleT, SHOT_BLACK+PILL_L, 0, SHOT_BLACK+CANCEL_32);
+        int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 14, angleT, SHOT_BLACK+PILL_L, 0, SHOT_BLACK+CANCEL_32);
         ObjShot_SetSpellResist(shot, true);
         TSpawnRing(shot, i);
         CallSFX(SND_SHOT1);
@@ -88,7 +88,7 @@ task TFireA(int dir_) {
         wait(rand_int(2, 5));
         int numShot = [2, 3, 3][_diff];
         loop (3) {
-            if (!_bossAlive || Obj_IsDeleted(obj_)) return;
+            if (!Boss_Alive(_objBoss) || Obj_IsDeleted(obj_)) return;
             float angleT = rand_int(0, 10) * 10;
             int color = rand_int(0, 1) == 0 ? SHOT_BLACK : SHOT_GRAY;
             for (int i = 0; i < numShot; i++) {

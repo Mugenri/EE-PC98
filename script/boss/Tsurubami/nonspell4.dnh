@@ -43,7 +43,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -51,7 +51,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -63,12 +63,12 @@ task TMain() {
 }
 
 task TFire() {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     float speed = [3.8, 3.8, 5.2][_diff];
     float modif = [6, 5, 4][_diff];
-    int amulet = CreateShotUA1(_bossX, _bossY, speed, _count * modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+    int amulet = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, _count * modif, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
     ObjShot_SetSpellResist(amulet, true);
-    Laser_WarningLine(_bossX, _bossY, _count * modif, 550, 15);
+    Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), _count * modif, 550, 15);
     CallSFX(SND_SHOT1);
 
     wait(20);
@@ -77,7 +77,7 @@ task TFire() {
     float accel = [0.025, 0.025, 0.04][_diff];
     float maxSpeed = [2.0, 2.0, 2.4][_diff];
     while (!Obj_IsDeleted(amulet)) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         float xPos = ObjMove_GetX(amulet);
         float yPos = ObjMove_GetY(amulet);
         float angleT = ObjMove_GetAngle(amulet);
@@ -89,7 +89,7 @@ task TFire() {
 
 task TMovement() {
     while (_count < 0) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         float x = 0.5 + 0.5 * (-cos(_count));
         float y = 0.5 + 0.5 * (sin(_count));
         float xPos = Interpolate_Linear(30, MAX_X - 30, x);

@@ -51,7 +51,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, 30, 70, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -60,7 +60,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -89,15 +89,15 @@ task TWalls() {
         yield;
     }
 
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         for (int i = 1; i <= frames; i++) {
-            if (!_bossAlive) break;
+            if (!Boss_Alive(_objBoss)) break;
             ObjStLaser_SetAngle(laserL, Interpolate_Smoother(80, 100, i / as_float(frames)));
             ObjStLaser_SetAngle(laserR, Interpolate_Smoother(100, 80, i / as_float(frames)));
             yield;
         }
         for (int i = 1; i <= frames; i++) {
-            if (!_bossAlive) break;
+            if (!Boss_Alive(_objBoss)) break;
             ObjStLaser_SetAngle(laserL, Interpolate_Smoother(100, 80, i / as_float(frames)));
             ObjStLaser_SetAngle(laserR, Interpolate_Smoother(80, 100, i / as_float(frames)));
             yield;
@@ -117,9 +117,9 @@ task TBottom() {
     int maxLength = [48, 64, 72][_diff];
 
     CallSFX(SND_FIRE);
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         for (int i = 0; i < 23; i++) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             int fireL = CreateFireLaser(8 + i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
             int fireR = CreateFireLaser(MAX_X - 8 - i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
             wait(waitTime);
@@ -128,20 +128,20 @@ task TBottom() {
 }
 
 task TFire() {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     int[] shots = [];
 
     Animation_Charge(_objBoss, true);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 20, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 20, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90, 20, 8, COLOR_GRAY_L);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, -90, 20, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90, 20, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90, 20, 8, COLOR_GRAY_L);
 
     wait(20);
 
     async {
         loop (300) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             for each (shot in shots) Reflect(shot);
             yield;
         }
@@ -150,8 +150,8 @@ task TFire() {
     float angleT = rand(0, 360);
     float speed = [2.2, 2.5, 1.4][_diff];
     for (int i = 0; i < [32, 32, 16][_diff]; i++) { //spawn
-        if (!_bossAlive) return;
-        int shot = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+        if (!Boss_Alive(_objBoss)) return;
+        int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_WHITE+BOUNCY_BALL, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
         ObjShot_SetSpellResist(shot, true);
         shots ~= [shot];
         angleT += rand(90, 120);
@@ -172,25 +172,25 @@ task TFire() {
     int waitTime = [90, 90, 120][_diff];
     wait(waitTime);
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     for each (shot in shots) { //slow
         ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, -0.04, 0, NO_CHANGE);
     }
 
-    int firstLaser = CreateStraightLaserUA1(_bossX, _bossY, 0, 0, 5, COLOR_GRAY_L, 120);
+    int firstLaser = CreateStraightLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 0, 5, COLOR_GRAY_L, 120);
     int shot1 = shots[length(shots) - 1]; //last index shot
 
     Animation_Charge(_objBoss, true);
 
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 128, 0, 120, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 128, 0, 125, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 128, 0, 130, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 128, 0, 120, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 128, 0, 125, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 128, 0, 130, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     CallSFX(SND_CHARGE1);
 
     loop (75) { //point at last index
-        if (!_bossAlive) return;
-        float x1 = _bossX;
-        float y1 = _bossY;
+        if (!Boss_Alive(_objBoss)) return;
+        float x1 = Boss_X(_objBoss);
+        float y1 = Boss_Y(_objBoss);
         float x2 = ObjMove_GetX(shot1);
         float y2 = ObjMove_GetY(shot1);
         float angle = dottheta(x1, y1, x2, y2);
@@ -205,7 +205,7 @@ task TFire() {
 
     async {
         for (int i = length(shots) - 1; i > 0; i--) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             shot1 = shot2;
             shot2 = shots[i - 1];
             float x2 = ObjMove_GetX(shot1);
@@ -222,15 +222,15 @@ task TFire() {
     async {
         wait(45);
         loop (length(shots) - 1) {
-            if (_bossAlive) CallSFX(SND_LASER2);
+            if (Boss_Alive(_objBoss)) CallSFX(SND_LASER2);
             wait(2);
         }
     }
 
 
     wait(13);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 180, 32, 8, COLOR_GRAY_L);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, -180, 32, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 180, 32, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -180, 32, 8, COLOR_GRAY_L);
     wait(32); //laser delay time
     Animation_Charge(_objBoss, false);
 
@@ -238,7 +238,7 @@ task TFire() {
     int color = [SHOT_BLUE_INV, SHOT_BLUE_INV, SHOT_RED_INV][_diff];
     int loopNum = [4, 5, 3][_diff];
     for (int i = length(shots) - 1; i >= 0; i--) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         int shot = shots[i];
         float x = ObjMove_GetX(shot);
         float y = ObjMove_GetY(shot);

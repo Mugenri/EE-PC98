@@ -42,7 +42,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, [60, 60, MID_Y][_diff], 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -50,7 +50,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -70,20 +70,20 @@ task TMain() {
 }
 
 task TFireA(int dir_) {
-    if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    if (!Boss_Alive(_objBoss)) return;
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(30);
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     //ring of rotating amulets that spawn lines of bullets that move away from the boss
     float angleT = 90;
     float speed = [3.2, 3.2, 5.2][_diff];
     loop (12) {
-        int amulet = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
+        int amulet = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);
         TCommands(amulet);
         angleT += 360 / 12;
@@ -91,14 +91,14 @@ task TFireA(int dir_) {
     CallSFX(SND_SHOT1);
 
     wait(35);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //aimed circles
     speed = [7.2, 9, 14.5][_diff];
     int numShot = [48, 64, 72][_diff];
     angleT = GetAngleToPlayer(_objBoss) + [0, 0, 360 / numShot][_diff];
     for (int i = 0; i < numShot; i++) {
-        int amulet2 = CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
+        int amulet2 = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet2, 12, NO_CHANGE, NO_CHANGE, -1, 1, NO_CHANGE);
         angleT += 360 / numShot;
         if (i % 2 == 1) ObjShot_SetDeleteFrame(amulet2, 40);
@@ -109,8 +109,8 @@ task TFireA(int dir_) {
         ObjMove_SetAngularVelocity(parent_, 1.8 * dir_);
         ObjMove_AddPatternA2(parent_, 45, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 1 * dir_);
         ObjMove_AddPatternA2(parent_, 90, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.2 * dir_);
-        float bossX = _bossX;
-        float bossY = _bossY;
+        float bossX = Boss_X(_objBoss);
+        float bossY = Boss_Y(_objBoss);
         int delayTime = [128, 128, 64][_diff];
         int waitTime = [16, 8, 5][_diff];
         float accel = [0.01, 0.01, 0.04][_diff];
@@ -119,9 +119,9 @@ task TFireA(int dir_) {
 
         wait(20);
 
-        while (!Obj_IsDeleted(parent_) && _bossAlive) {
+        while (!Obj_IsDeleted(parent_) && Boss_Alive(_objBoss)) {
             loop (shotNum) {
-                if (Obj_IsDeleted(parent_) || !_bossAlive) break;
+                if (Obj_IsDeleted(parent_) || !Boss_Alive(_objBoss)) break;
                 float pX = ObjMove_GetX(parent_);
                 float pY = ObjMove_GetY(parent_);
                 int shot = CreateShotUA1(pX, pY, 0, dottheta(pX, pY, bossX, bossY) + 180, SHOT_BLACK+BALL_S, 0, SHOT_BLACK+SPAWN_E+SIZE_16, SHOT_BLACK+CANCEL_FADE);

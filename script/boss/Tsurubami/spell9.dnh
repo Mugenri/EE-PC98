@@ -50,7 +50,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -59,7 +59,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 210) {
             async {
@@ -79,23 +79,23 @@ task TSpokes() {
 
     CallSFX(SND_CHARGE1);
 
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, 15, 160, 90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 160, 90, 30, 8, COLOR_ORANGE);
     wait(3);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
-    Particle_ContractRing(_bossX, _bossY, -15, 160, -90, 30, 8, COLOR_ORANGE);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_ORANGE_D, false, RP_STG_EFF_MID);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), -15, 160, -90, 30, 8, COLOR_ORANGE);
     wait(30);
 
     //origin position
@@ -138,7 +138,7 @@ task TSpokes() {
         float baseSpeed = [0.32 , 0.4, 0.5][_diff];
         float speedCap = [0.4, 0.4, 1.5][_diff];
         float increment = 0;
-        while (_bossAlive) {
+        while (Boss_Alive(_objBoss)) {
             float maxSpeed = baseSpeed + Interpolate_Linear(speedCap, 0.0, ObjEnemy_GetInfo(_objBoss, INFO_LIFE) / 3500);
             float temp = angleT;
             for (int i = 0; i < length(shots); i++) {
@@ -156,7 +156,7 @@ task TSpokes() {
 
 task TFire(int dir_) {
     //ring of bullets at a skew
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     int way = [16, 20, 24][_diff];
     int stack = [3, 4, 6][_diff];
     int waitTime = [5, 5, 3][_diff];
@@ -166,15 +166,15 @@ task TFire(int dir_) {
     float maxSpeed = [2.8, 3, 3.8][_diff];
     float angleT = rand(0, 360);
 
-    Particle_ContractRing(_bossX, _bossY, 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 15, 100, 90 * dir_, 30, 8, COLOR_YELLOW_D);
     wait(30);
 
     for (int i = 0; i < stack; i++) {
         for (int j = 0; j < way; j++) {
-            if (!_bossAlive) return;
-            CreateShotUA2(_bossX + 32 * cos(angleT), _bossY + 64 * sin(angleT), speed, angleT + (160 * dir_), accel, maxSpeed, 0.12 * dir_, SHOT_YELLOW_INV+STAR_S, 0, SHOT_YELLOW_INV+SPAWN_S+SIZE_8, SHOT_YELLOW_INV+CANCEL_BURST1);
+            if (!Boss_Alive(_objBoss)) return;
+            CreateShotUA2(Boss_X(_objBoss) + 32 * cos(angleT), Boss_Y(_objBoss) + 64 * sin(angleT), speed, angleT + (160 * dir_), accel, maxSpeed, 0.12 * dir_, SHOT_YELLOW_INV+STAR_S, 0, SHOT_YELLOW_INV+SPAWN_S+SIZE_8, SHOT_YELLOW_INV+CANCEL_BURST1);
             angleT += 360 / way;
         }
         CallSFX(SND_SHOT1);

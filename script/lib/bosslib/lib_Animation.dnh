@@ -41,14 +41,14 @@ function<void> Animation_DrawBoss(int objBoss_) {
             float speed = ObjMove_GetSpeed(objBoss_);
             float dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
             //in order of precedence
-            if (Obj_GetValueDI(objBoss_, ANIM_SPECIAL, false)) animType = ANIM_SPECIAL;
-            else if (_spellBarrier || _isSurvival) {
+            if (Obj_GetValueDI(objBoss_, BOSS_SPECIAL, false)) animType = ANIM_SPECIAL;
+            else if (Boss_IsBombBarrier(objBoss_) || _isSurvival) {
                 if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE_INV;
                 else {
                     if (dir < 0) animType = ANIM_LEFT_INV;
                     else animType = ANIM_RIGHT_INV;
                 }
-            } else if (Obj_GetValueDI(objBoss_, ANIM_CHARGE, false)) animType = ANIM_CHARGE;
+            } else if (Obj_GetValueDI(objBoss_, BOSS_CHARGE, false)) animType = ANIM_CHARGE;
             else {
                 if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE;
                 else {
@@ -103,10 +103,10 @@ function<void> Animation_DrawBoss(int objBoss_) {
 
 //toggle the charge and special animation flags (for use in single scripts)
 function<void> Animation_Charge(int obj_, bool active_) {
-    Obj_SetValueI(obj_, ANIM_CHARGE, active_);
+    Obj_SetValueI(obj_, BOSS_CHARGE, active_);
 }
 function<void> Animation_Special(int obj_, bool active_) {
-    Obj_SetValueI(obj_, ANIM_SPECIAL, active_);
+    Obj_SetValueI(obj_, BOSS_SPECIAL, active_);
 }
 
 //----------------------------------------------------

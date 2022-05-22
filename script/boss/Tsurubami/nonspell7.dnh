@@ -42,7 +42,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -50,7 +50,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -64,12 +64,12 @@ task TMain() {
 }
 
 task TFire(dir_) {
-    if (!_bossAlive) return;
-    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    if (!Boss_Alive(_objBoss)) return;
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 0, 30, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 30, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 30, 8, COLOR_WHITE);
     wait(30);
     int way = [20, 20, 38][_diff];
     int stack = [5, 6, 7][_diff];
@@ -78,9 +78,9 @@ task TFire(dir_) {
     float offset = rand(0, 360);
 
     loop (stack) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         loop (way) {
-            int shot = CreateShotUC2(_bossX, _bossY, initSpeed, initSpeed, -0.3, -0.3, 0.0001, 0.0001, offset, 0, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
+            int shot = CreateShotUC2(Boss_X(_objBoss), Boss_Y(_objBoss), initSpeed, initSpeed, -0.3, -0.3, 0.0001, 0.0001, offset, 0, SHOT_GRAY+CARD, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_FADE);
             for (int i = 1; i < 10; i++) {
                 int offsetAdd = [40, -40][i % 2];
                 int color = [SHOT_GRAY, SHOT_BLACK][i % 2];

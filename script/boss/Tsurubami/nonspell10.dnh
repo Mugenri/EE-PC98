@@ -43,7 +43,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MAX_Y - 32, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -51,7 +51,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         yield;
     }
@@ -63,21 +63,21 @@ task TFireA() {
     //vfx
     CallSFX(SND_CHARGE1);
     Animation_Charge(_objBoss, true);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, 540, 100, 8, COLOR_WHITE);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, -540, 100, 8, COLOR_WHITE);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, 540, 100, 8, COLOR_GRAY_L);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, -540, 100, 8, COLOR_GRAY_L);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, 540, 100, 8, COLOR_GRAY);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, -540, 100, 8, COLOR_GRAY);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, 540, 100, 8, COLOR_BLACK);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, 540, 100, 8, COLOR_BLACK);
     wait(2);
-    Particle_ContractRing(_bossX, _bossY, 0, 500, -540, 100, 8, COLOR_BLACK);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, -540, 100, 8, COLOR_BLACK);
     wait(100);
 
     int pointNum = [5, 7, 5][_diff];
@@ -93,17 +93,17 @@ task TFireA() {
         arcAdd_ = 360 / pointNum * arcAdd_; //extra distance along full rotation
 
         int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
-        ObjPrim_SetVertexPosition(line, 0, _bossX, _bossY, 1);
+        ObjPrim_SetVertexPosition(line, 0, Boss_X(_objBoss), Boss_Y(_objBoss), 1);
 
         int loopCount = 0;
-        while (_bossAlive) {
+        while (Boss_Alive(_objBoss)) {
             float xPos = MID_X + MID_X * sin(_count / 1.5 + arcAdd_);
             ObjPrim_SetVertexPosition(line, 1, xPos, 0, 1);
             if (_count % _loopTime == 0) {
                 int color = [SHOT_BLACK, SHOT_GRAY][loopCount % 2];
                 async {
                     loop (loopNum) {
-                        if (!_bossAlive) break;
+                        if (!Boss_Alive(_objBoss)) break;
                         CreateShotUA1(xPos, 0, speed, 90, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
                         CreateShotUA1(xPos, 0, speed, 75, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
                         CreateShotUA1(xPos, 0, speed, 105, color+KNIFE, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);

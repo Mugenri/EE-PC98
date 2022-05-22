@@ -42,7 +42,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -50,7 +50,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -68,13 +68,13 @@ task TMain() {
 }
 
 task TFire() {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //yin yang ring
     float angleT = rand(0, 360);
     float numShot = [8, 12, 18][_diff];
     loop (numShot) {
-        int orbShot = CreateShotUA1(_bossX, _bossY, 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
+        int orbShot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 2.5, angleT, SHOT_BLACK+YINYANG_A, 0, SHOT_BLACK+SPAWN_S+SIZE_32, SHOT_BLACK+CANCEL_32);
         if (cos(angleT) < 0) ObjRender_SetScaleX(orbShot, -1);
         ObjShot_SetSpellResist(orbShot, true);
         TReflect(orbShot);
@@ -86,7 +86,7 @@ task TFire() {
     for (int i = 0; i < 3; i++) {
         angleT = rand(0, 360);
         loop (numShot) {
-            int shot = CreateShotUA1(_bossX, _bossY, rand(1.3, 1.55) + 0.4 * i, angleT, SHOT_GRAY+RING_S, i * 4, SHOT_GRAY+CANCEL_BURST2);
+            int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), rand(1.3, 1.55) + 0.4 * i, angleT, SHOT_GRAY+RING_S, i * 4, SHOT_GRAY+CANCEL_BURST2);
             angleT += 360 / numShot;
         }
     }
@@ -94,14 +94,14 @@ task TFire() {
     //aimed shots
     angleT = GetAngleToPlayer(_objBoss);
     for (int i = 0; i < 6; i++) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         TAmuletLine(i, angleT);
         CallSFX(SND_SHOT1);
         wait(6);
     }
 
     task TReflect(int obj_) {
-        while (!Obj_IsDeleted(obj_) && _bossAlive) {
+        while (!Obj_IsDeleted(obj_) && Boss_Alive(_objBoss)) {
             float xPos = ObjMove_GetX(obj_);
             if (xPos < MIN_X || xPos > MAX_X) {
                 float angleT = ObjMove_GetAngle(obj_);
@@ -118,14 +118,14 @@ task TFire() {
         float speedMod = [0.32, 0.45, 0.80][_diff];
         int color = SHOT_RED_INV;
         for (int i = 7 - angleMod_; i >= 0; i--) {
-            if (!_bossAlive) return;
-            CreateShotUA1(_bossX, _bossY, 2 + speedMod * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
-            CreateShotUA1(_bossX, _bossY, 2 + speedMod * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            if (!Boss_Alive(_objBoss)) return;
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 2 + speedMod * i, angleP_ + 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 2 + speedMod * i, angleP_ - 15 * angleMod_, color+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, color+CANCEL_FADE);
             color = SHOT_BLACK;
         }
     }
 }
 
 task TMovement(int dir_) {
-    if (_bossAlive) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(45, 140) * dir_, 50 + rand(0, 40), 90, LERP_DECELERATE);
+    if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(45, 140) * dir_, 50 + rand(0, 40), 90, LERP_DECELERATE);
 }

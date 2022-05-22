@@ -43,7 +43,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -51,7 +51,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -63,12 +63,12 @@ task TMain() {
 }
 
 task TFireA() {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     int numShot = 8;
     float angleT = 30 * sin(_count / 2.5) + 360 / numShot;
     loop (numShot) {
-        int amulet = CreateShotUA1(_bossX, _bossY, 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        int amulet = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 3.2, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
         ObjShot_SetSpellResist(amulet, true);
         TSplit(amulet);
         angleT += 360 / numShot;
@@ -77,7 +77,7 @@ task TFireA() {
 
     task TSplit(int obj_) {
         wait(30);
-        if (Obj_IsDeleted(obj_) || !_bossAlive) return;
+        if (Obj_IsDeleted(obj_) || !Boss_Alive(_objBoss)) return;
         float angleT = ObjMove_GetAngle(obj_);
         ObjMove_SetAngle(obj_, angleT + 25);
         int newShot = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 3.2, angleT - 25, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_FADE);
@@ -93,10 +93,10 @@ task TFireB() {
     int waitTime = [6, 4, 2][_diff];
     int numShot = 24;
     float speed = [1.6, 1.6, 2.1][_diff];
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         for (int i = 1; i < 8; i++) {
-            CreateShotUA1(_bossX, _bossY, speed, angleT + i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
-            CreateShotUA1(_bossX, _bossY, speed, angleT + 180 - i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT + i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT + 180 - i * 1, SHOT_GRAY+CRYSTAL_S, i, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
         }
         angleT += 360 / numShot;
         wait(waitTime);

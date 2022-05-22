@@ -11,21 +11,12 @@
 
 int _spellID = -1; // currently running spell
 
-bool _bossAlive = true; //boss health > 0
-bool _isSpellVulnerable = true; //is vulnerable to bomb damage
-bool _spellBarrier = false; //is spell barrier active
-
+bool _isSpellVulnerable = true; //is current spell vulnerable to bomb damage
 bool _isSurvival = false; //survival spell
 
-//position of boss
-float _bossX = 0;
-float _bossY = 0;
-
-float _bossLife; //current life
-float _previousLife = 0; //life of previous frame
-
-float _intersectionShot = 28; //default intersection to shot
-float _intersectionPlayer = 20; //default intersection to player
+//Default intersection radii
+float _intersectionShot = 28;
+float _intersectionPlayer = 20;
 
 //Initialize a boss scene
 function<void> Boss_Init(bool isVulnerable_) {
@@ -60,41 +51,45 @@ function<int> Boss_Create(string bossID_, float x_, float y_) {
 }
 //update function to be run in mainloop of single TODO test double bosses with two health pools
 function<void> Boss_Update(int objBoss_) {
-    _bossX = ObjMove_GetX(objBoss_);
-    _bossY = ObjMove_GetY(objBoss_);
-
+    //set object values
+    Obj_SetValueI(objBoss_, BOSS_X, ObjMove_GetX(objBoss_));
+    Obj_SetValueI(objBoss_, BOSS_Y, ObjMove_GetY(objBoss_));
+    Obj_SetValueI(objBoss_, BOSS_LIFE, ObjEnemy_GetInfo(objBoss_, INFO_LIFE));
     Obj_SetValueI(objBoss_, BOSS_DAMAGED, false);
-    _bossLife = ObjEnemy_GetInfo(objBoss_, INFO_LIFE);
 
-    if (_bossLife <= 0) {
-        _bossAlive = false; //health check
+    //get object values
+    float bossLife = Boss_Life(objBoss_); //current life
+    float previousLife = Obj_GetValueDI(objBoss_, BOSS_LIFE_PREV, bossLife); //previous frame life
+
+    if (bossLife <= 0) {
+        Obj_SetValueI(objBoss_, BOSS_ALIVE, false); //health check
         return;
     }
 
-    if (_bossLife < _previousLife) { //damage check
-        if (_previousLife - _bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
-            if (_bossLife > 400) CallSFX(SND_DAMAGE);
+    if (bossLife < previousLife) { //damage check
+        if (previousLife - bossLife > 0.01 && !_isSurvival) { //if the boss has lost more than a hundredth of a point of health from the last frame
+            if (bossLife > 400) CallSFX(SND_DAMAGE);
             else CallSFX(SND_DAMAGE_LOW);
             Obj_SetValueI(objBoss_, BOSS_DAMAGED, true);
-            AddScore(10 * (round(_previousLife - _bossLife))); //~10 points per point of boss health
+            AddScore(10 * (round(previousLife - bossLife))); //~10 points per point of boss health
         } else {
             CallSFX(SND_INVINCIBLE);
-            ObjEnemy_SetLife(objBoss_, ceil(_bossLife)); //accounts for how invincibility is handled
+            ObjEnemy_SetLife(objBoss_, ceil(bossLife)); //accounts for how invincibility is handled
         }
     }
 
-    if (!_isSpellVulnerable && !_isSurvival && _spellBarrier == false && IsPlayerSpellActive() && _bossAlive) TSpellBarrier(objBoss_); //bomb invulnerability check
+    if (!_isSpellVulnerable && !_isSurvival && Boss_IsBombBarrier(objBoss_) == false && IsPlayerSpellActive() && Boss_Alive(_objBoss)) TSpellBarrier(objBoss_); //bomb invulnerability check
 
-    _previousLife = _bossLife;
+    Obj_SetValueI(objBoss_, BOSS_LIFE_PREV, bossLife);
 
     task TSpellBarrier(int objBoss_) {
-        _spellBarrier = true;
-        while (IsPlayerSpellActive() && _bossAlive) { //_bossAlive just in case
+        Obj_SetValueI(objBoss_, BOSS_BOMB_BARRIER, true);
+        while (IsPlayerSpellActive() && Boss_Alive(objBoss_)) { //Boss_Alive() just in case
             Boss_SetVulnerable(objBoss_, false);
             yield;
         }
         wait(15);
-        _spellBarrier = false;
+        Obj_SetValueI(objBoss_, BOSS_BOMB_BARRIER, false);
         Boss_SetVulnerable(objBoss_, true);
     }
 }

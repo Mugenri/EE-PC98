@@ -50,7 +50,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -60,7 +60,7 @@ task TFinalize() {
 task TMain() {
     int waitTime = [90, 90, 10][_diff];
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -78,7 +78,7 @@ task TMain() {
 
 task TSlugShot() {
     //bullet move in sine wave but slow down and speed up, leave a trail of bullets
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     float radius = 270;
     float angleT = GetAngleToPlayer(_objBoss) + rand(140, 220); //don't spawn directly behind the player
     float xPos = MID_X + radius * cos(angleT);
@@ -91,7 +91,7 @@ task TSlugShot() {
     TMovement(head);
     wait(8);
     loop ([3, 5, 6][_diff]) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         int trail = CreateShotUA1(xPos, yPos, 0, angleT, SHOT_GRAY_INV+PILL_L, 0, SHOT_GRAY_INV+CANCEL_32);
         ObjShot_SetSpellResist(trail, true);
         ObjShot_SetAutoDelete(trail, false);
@@ -105,7 +105,7 @@ task TSlugShot() {
             if (!Obj_IsDeleted(obj_)) ObjShot_SetAutoDelete(obj_, true);
         }
         async {
-            while (!Obj_IsDeleted(obj_) && _bossAlive) {
+            while (!Obj_IsDeleted(obj_) && Boss_Alive(_objBoss)) {
                 int objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) + 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
                 objTrail = CreateShotUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0.6, ObjMove_GetAngle(obj_) - 90 + rand(-40, 40), SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_E+SIZE_8, SHOT_YELLOW+CANCEL_BURST1);
                 wait(rand_int(110, 155));
@@ -127,15 +127,15 @@ task TSlugShot() {
 task TSkewer() {
     float angleT = GetAngleToPlayer(_objBoss);
     float modif = 0;
-    Laser_WarningLine(_bossX, _bossY, angleT, 280, 45);
-    Particle_ContractRing(_bossX, _bossY, 0, 32, 90, 37, 8, COLOR_BLACK);
+    Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), angleT, 280, 45);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 32, 90, 37, 8, COLOR_BLACK);
     wait(8);
-    Particle_ContractRing(_bossX, _bossY, 0, 32, -90, 37, 8, COLOR_GRAY_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 32, -90, 37, 8, COLOR_GRAY_D);
     wait(37);
     float minSpeed = [0, 0, 3][_diff];
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     for (int i = 0; i < 15; i++) {
-        CreateShotUA1(_bossX, _bossY, 12 - Interpolate_Decelerate(0, 12 - minSpeed, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
+        CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 12 - Interpolate_Decelerate(0, 12 - minSpeed, i / 16), angleT + modif, SHOT_BLACK+CARD, 30 - i * 2, SHOT_BLACK+CANCEL_FADE);
         if ([false, false, true][_diff]) modif = rand(-5, 5);
     }
     CallSFX(SND_SHOT1);

@@ -224,11 +224,20 @@ const int SHOT_CANCEL       = 3; //If the bullet/laser should be given a cancel 
 const int SHOT_EFFECT       = 4; //Key field for bullet deletion effect
 //Boss
 const int BOSS_ID           = 5; //Boss ID string constant
-// const int ANIM_CHARGE       = 6; //value reserved for animation library
-// const int ANIM_SPECIAL      = 7; //value reserved for animation library
-const int BOSS_DAMAGED      = 8; //Boss took damage this frame
+const int BOSS_ALIVE        = 6; //Boss health > 0
+const int BOSS_BOMB_BARRIER = 7; //Bomb barrier currently active (bool)
+const int BOSS_X            = 8; //X position of boss
+const int BOSS_Y            = 9; //Y position of boss
+const int BOSS_LIFE         = 10;//Boss health
+const int BOSS_LIFE_PREV    = 11;//Boss health previous frame
+const int BOSS_DMG_SHOT     = 12;//Boss damage ratio to shot
+const int BOSS_DMG_SPELL    = 13;//Boss damage ratio to spells
+const int BOSS_DAMAGED      = 14;//Boss took damage this frame (bool)
+//Boss animations
+const int BOSS_CHARGE       = 15;//Boss Charge animation flag
+const int BOSS_SPECIAL      = 16;//Boss Special animation flag
 //Item
-const int ITEM_AUTOCOLLECT  = 9; //Item was autocollected
+const int ITEM_AUTOCOLLECT  = 17;//Item was autocollected
 
 //----------------------------------------------------
 //COLOR CONSTANTS

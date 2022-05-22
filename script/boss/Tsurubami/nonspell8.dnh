@@ -42,7 +42,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -50,7 +50,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -64,24 +64,24 @@ task TMain() {
 }
 
 task TFire(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     Animation_Charge(_objBoss, true);
 
     CallSFX(SND_CHARGE1);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 40, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 0, 40, 32, COLOR_RED, false, RP_STG_EFF_MID);
     wait(5);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 40, 8, COLOR_RED);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 40, 8, COLOR_RED);
     wait(5);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 40, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 0, 40, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
     wait(5);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 180 * dir_, 40, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 180 * dir_, 40, 8, COLOR_WHITE);
     wait(5);
-    Primitive_ContractPolygon2D(_bossX, _bossY, 0, 100, 0, 40, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 0, 40, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
     wait(5);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 360 * dir_, 40, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 360 * dir_, 40, 8, COLOR_GRAY);
     wait(40);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     
     Animation_Charge(_objBoss, false);
 
@@ -91,22 +91,22 @@ task TFire(int dir_) {
     ObjMove_SetDestAtFrame(_objBoss, MID_X + ((MID_X + 32) * dir_) , 60, moveTime, LERP_ACCELERATE);
     TTrail();
     wait(moveTime);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     ObjMove_SetPosition(_objBoss, MID_X + ((MID_X + 32) * -dir_), 60);
 
     while (moveTime > 10) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         ObjMove_SetDestAtFrame(_objBoss, MID_X + ((MID_X + 32) * dir_) , 60, moveTime, LERP_LINEAR);
         wait(moveTime);
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         ObjMove_SetPosition(_objBoss, MID_X + ((MID_X + 32) * -dir_), 60);
         moveTime *= 0.7;
     }
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-80, 80), 60, 8, LERP_LINEAR);
     wait(8);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     moving = false;
 
     //explosion
@@ -115,9 +115,9 @@ task TFire(int dir_) {
     loop (2) {
         float angleT = 90;
         loop (shotNum) {
-            CreateShotUA2(_bossX + 60 * cos(angleT), _bossY + 60 * sin(angleT), baseMax - 0.8, angleT + (90 * dir_) + 45, -0.08, 2.8, 0, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
-            CreateShotUA2(_bossX + 60 * cos(angleT), _bossY + 60 * sin(angleT), baseMax - 0.4, angleT + (90 * dir_) + 45, -0.08, 3.0, 0, SHOT_RED+TALISMAN_A, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
-            CreateShotUA2(_bossX + 60 * cos(angleT), _bossY + 60 * sin(angleT), baseMax, angleT + (90 * dir_) + 45, -0.08, 3.2, 0, SHOT_RED_INV+TALISMAN_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
+            CreateShotUA2(Boss_X(_objBoss) + 60 * cos(angleT), Boss_Y(_objBoss) + 60 * sin(angleT), baseMax - 0.8, angleT + (90 * dir_) + 45, -0.08, 2.8, 0, SHOT_BLACK+TALISMAN_A, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_BURST2);
+            CreateShotUA2(Boss_X(_objBoss) + 60 * cos(angleT), Boss_Y(_objBoss) + 60 * sin(angleT), baseMax - 0.4, angleT + (90 * dir_) + 45, -0.08, 3.0, 0, SHOT_RED+TALISMAN_A, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
+            CreateShotUA2(Boss_X(_objBoss) + 60 * cos(angleT), Boss_Y(_objBoss) + 60 * sin(angleT), baseMax, angleT + (90 * dir_) + 45, -0.08, 3.2, 0, SHOT_RED_INV+TALISMAN_A, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
             angleT += 360 / shotNum;
         }
         dir_ *= -1;
@@ -127,7 +127,7 @@ task TFire(int dir_) {
     float angleT = rand(0, 360);
     float speed = [2.4, 2.5, 2.6][_diff];
     loop (shotNum) {
-        CreateShotUA1(_bossX, _bossY, speed, angleT, SHOT_RED+CARD, 0, SHOT_RED+CANCEL_FADE);
+        CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_RED+CARD, 0, SHOT_RED+CANCEL_FADE);
         angleT += 360 / shotNum;
     }
 
@@ -140,13 +140,13 @@ task TFire(int dir_) {
         int maxWait = [14, 12, 4][_diff];
         int way = [7, 8, 18][_diff];
         while (moving) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             int color = [SHOT_GRAY, SHOT_BLACK, SHOT_RED_INV][loopCount % 3];
             float angleT = GetAngleToPlayer(_objBoss);
             loop (way) {
-                CreateShotUA1(_bossX, _bossY, Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT - 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
-                CreateShotUA1(_bossX, _bossY, Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
-                CreateShotUA1(_bossX, _bossY, Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT + 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+                CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT - 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+                CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
+                CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), Interpolate_Linear(maxSpeed, minSpeed, moveTime / 60), angleT + 2, color+CARD, 0, color+SPAWN_S+SIZE_16, color+CANCEL_FADE);
                 angleT += 360 / way;
             }
             CallSFX(SND_SHOT1);

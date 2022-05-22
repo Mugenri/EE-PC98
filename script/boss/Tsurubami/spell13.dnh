@@ -49,7 +49,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
 
     if (GetGameMode == GAME_MAIN) TDisappearAnimation(true);
     
@@ -339,7 +339,7 @@ task TMain() {
 
         int phaseLoop = [70, 60, 40][_diff];
         loop (phaseLength - 60) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             if (_count % phaseLoop == 0) {
                 TFire();
             }
@@ -352,9 +352,9 @@ task TMain() {
             float waitDecrement = 1.2;
             int minTime = [30, 30, 28][_diff];
 
-            while (_bossAlive) {
+            while (Boss_Alive(_objBoss)) {
                 for (int i = 0; i < 4; i++) {
-                    if (!_bossAlive) return;
+                    if (!Boss_Alive(_objBoss)) return;
                     float maxLength = [215, 230, 235][_diff];
                     float angleT = 90 - 90 * i;
 
@@ -373,7 +373,7 @@ task TMain() {
                     task TWall(int xStart_, int yStart_, int xInc_, int yInc_, float angleT_, float maxLength_) {
                         int waitTime = [6, 6, 4][_diff];
                         for (int i = 0; i < 24; i++) {
-                            if (!_bossAlive) return;
+                            if (!Boss_Alive(_objBoss)) return;
                             CreateFireLaser(xStart_, yStart_, angleT_, frames, maxLength_, SHOT_BLACK, RP_STG_LASER);
                             xStart_ += xInc_;
                             yStart_ += yInc_;
@@ -454,7 +454,7 @@ task TMain() {
 }
 
 task TDisappearAnimation(bool visible_) {
-    int circle = Primitive_CreatePolygon2D(_bossX, _bossY, 0, 0, 32, COLOR_BLACK, true, RP_STG_EFF_MID);
+    int circle = Primitive_CreatePolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 0, 32, COLOR_BLACK, true, RP_STG_EFF_MID);
     int vertices = ObjPrim_GetVertexCount(circle);
     async {
             int frames = 90;
@@ -462,7 +462,7 @@ task TDisappearAnimation(bool visible_) {
                 float rad = Interpolate_Decelerate(0, 64, i / as_float(frames / 2));
                 for (int vert = 1; vert < vertices; vert++) {
                     float angleT = 360 / (vertices - 2) * vert;
-                    ObjPrim_SetVertexPosition(circle, vert, _bossX + rad * cos(angleT), _bossY + rad * sin(angleT), 1);
+                    ObjPrim_SetVertexPosition(circle, vert, Boss_X(_objBoss) + rad * cos(angleT), Boss_Y(_objBoss) + rad * sin(angleT), 1);
                 }
                 yield;
             }

@@ -49,7 +49,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -61,7 +61,7 @@ task TMain() {
     bool rage = false;
     while (_count < -30) yield;
 
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         int life = ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE);
         int time = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
@@ -85,7 +85,7 @@ task TMain() {
 
 task TFireA() {
     //curving knives
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     int shotNum = [16, 22, 30][_diff]; //must be even
     float initSpeed = 4;
@@ -95,11 +95,11 @@ task TFireA() {
     float wVel = 0.2;
 
     loop (4) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         for (int i = 1; i <= shotNum / 2; i++) {
             float angleT = GetAngleToPlayer(_objBoss) + 180;
-            int shot1 = CreateShotUA2(_bossX, _bossY, initSpeed, angleT + i * angleMod, 0, 0, initwVel, SHOT_PURPLE+KNIFE, 0, SHOT_PURPLE+CANCEL_32); //right
-            int shot2 = CreateShotUA2(_bossX, _bossY, initSpeed, angleT - i * angleMod, 0, 0, -initwVel, SHOT_PURPLE+KNIFE, 0, SHOT_PURPLE+CANCEL_32); //left
+            int shot1 = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), initSpeed, angleT + i * angleMod, 0, 0, initwVel, SHOT_PURPLE+KNIFE, 0, SHOT_PURPLE+CANCEL_32); //right
+            int shot2 = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), initSpeed, angleT - i * angleMod, 0, 0, -initwVel, SHOT_PURPLE+KNIFE, 0, SHOT_PURPLE+CANCEL_32); //left
             ObjMove_AddPatternA2(shot1, 50, NO_CHANGE, NO_CHANGE, -0.08, speed, wVel);
             ObjMove_AddPatternA2(shot2, 50, NO_CHANGE, NO_CHANGE, -0.08, speed, -wVel);
         }
@@ -110,15 +110,15 @@ task TFireA() {
 
 task TFireB() {
     //curve lasers
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     int laserNum = [5, 5, 7][_diff];
     int trackTime = [80, 80, 90][_diff];
     float wVel = [3.2, 2.5, 2.5][_diff];
 
     loop (2) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         for (int i = 0; i < laserNum; i++) {
-            int laser = CreateCurveLaserUA1(_bossX, _bossY, 6, Interpolate_Linear(190, 350, i / as_float(laserNum - 1)), 20, COLOR_PINK, 0);
+            int laser = CreateCurveLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 6, Interpolate_Linear(190, 350, i / as_float(laserNum - 1)), 20, COLOR_PINK, 0);
             ObjShot_SetSpellResist(laser, true);
             ObjMove_AddPatternA2(laser, 0, NO_CHANGE, NO_CHANGE, -0.15, 0, NO_CHANGE);
             ObjMove_AddPatternA2(laser, 60, NO_CHANGE, NO_CHANGE, 0.15, 6, NO_CHANGE);
@@ -146,7 +146,7 @@ task TFireC() {
 
     loop (2) {
         async {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             //spawn animation
             CallSFX(SND_CHARGE1);
             float xPos = GetPlayerX();
@@ -155,7 +155,7 @@ task TFireC() {
 
             int waitTime = 90;
             wait(waitTime);
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             int shotNum = [5, 7, 8][_diff];
             float speed = [0.7, 0.8, 1.0][_diff];
             for (int i = 0; i < shotNum; i++) {
@@ -170,26 +170,26 @@ task TFireC() {
 task TFireD() {
     //laser that spawns wall
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     Animation_Charge(_objBoss, true);
     wait(60);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     float angleT = GetAngleToPlayer(_objBoss);
-    int laser = CreateStraightLaserUA1(_bossX, _bossY, angleT, 440, 60, COLOR_PINK, 60);
+    int laser = CreateStraightLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), angleT, 440, 60, COLOR_PINK, 60);
     wait(60);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     CallSFX(SND_LASER2);
     Animation_Charge(_objBoss, false);
 
     //wall at laser position
-    float xPos = _bossX + 365 * cos(angleT);
+    float xPos = Boss_X(_objBoss) + 365 * cos(angleT);
     xPos = clamp(xPos, MIN_X, MAX_X);
 
     TFireWall(xPos);
     int waitTime = 8;
     wait(waitTime);
     for (int i = 1; i <= 24; i++) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         TFireWall(xPos + i * 16);
         TFireWall(xPos - i * 16);
         wait(waitTime);

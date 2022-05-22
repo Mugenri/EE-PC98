@@ -49,7 +49,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -58,7 +58,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -74,10 +74,10 @@ task TMain() {
 }
 
 task TWall(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     CallSFX(SND_FIRE);
     for (int i = 0; i < 23; i++) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         TFireWall(i * 16 + 8);
         wait(12);
     }
@@ -91,23 +91,23 @@ task TWall(int dir_) {
 }
 
 task TRing(int dir_) {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     int innerCount = [7, 9, 10][_diff];
     int outerCount = [12, 16, 16][_diff];
 
     Animation_Charge(_objBoss, true);
 
-    Primitive_ContractPolygon2D(_bossX, _bossY, 45, 100, 0, 20, 32, COLOR_INDIGO, false, RP_STG_EFF_MID);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 20, 32, COLOR_INDIGO, false, RP_STG_EFF_MID);
     wait(5);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, -90 * dir_, 20, innerCount, COLOR_BLUE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90 * dir_, 20, innerCount, COLOR_BLUE);
     wait(5);
-    Particle_ContractRing(_bossX, _bossY, 0, 100, 90 * dir_, 20, outerCount, COLOR_INDIGO_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90 * dir_, 20, outerCount, COLOR_INDIGO_L);
     wait(20);
 
     Animation_Charge(_objBoss, false);
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     int[] outer = [];
     int[] inner = [];
@@ -116,13 +116,13 @@ task TRing(int dir_) {
     float ySpeed = -3;
     float yMax = 1.6;
 
-    int core = CreateShotUB2(_bossX, _bossY, xSpeed, ySpeed, -0.05 * dir_, 0.1, 0.001, yMax, SHOT_BLUE+FIRE_A, 0, SHOT_BLUE+SPAWN_S+SIZE_32, SHOT_BLUE+CANCEL_32);
+    int core = CreateShotUB2(Boss_X(_objBoss), Boss_Y(_objBoss), xSpeed, ySpeed, -0.05 * dir_, 0.1, 0.001, yMax, SHOT_BLUE+FIRE_A, 0, SHOT_BLUE+SPAWN_S+SIZE_32, SHOT_BLUE+CANCEL_32);
     ObjShot_SetSpellResist(core, true);
     ObjShot_SetAutoDelete(core, false);
     CallSFX(SND_SHOT2);
 
     wait(20); //spawn animation time
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //shot rings
     for (int i = 0; i < outerCount; i++) {

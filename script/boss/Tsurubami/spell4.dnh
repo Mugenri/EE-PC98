@@ -49,7 +49,7 @@ task TInitialize() {
 }
 
 task TFinalize() {
-    while (_bossAlive) yield;
+    while (Boss_Alive(_objBoss)) yield;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
@@ -58,7 +58,7 @@ task TFinalize() {
 
 task TMain() {
     while (_count < -30) yield;
-    while (_bossAlive) {
+    while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
@@ -70,28 +70,28 @@ task TMain() {
 }
 
 task TFire() {
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
     CallSFX(SND_CHARGE2);
     Animation_Charge(_objBoss, true);
     wait(15);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, 180, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 180, 30, 8, COLOR_GRAY);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, -180, 30, 8, COLOR_GRAY);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -180, 30, 8, COLOR_GRAY);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, 180, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 180, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, -180, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -180, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, 180, 30, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 180, 30, 8, COLOR_WHITE);
     wait(3);
-    Particle_ContractRing(_bossX, _bossY, 0, 150, -180, 30, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -180, 30, 8, COLOR_WHITE);
     wait(30);
     Animation_Charge(_objBoss, false);
 
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     float speed = [1.3, 1.3, 1.9][_diff];
-    int bigShot = CreateShotUA1(_bossX, _bossY, speed, rand(-25, 25) + 90, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
+    int bigShot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, rand(-25, 25) + 90, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
     ObjShot_SetSpellResist(bigShot, true);
     CallSFX(SND_SHOT4);
 
@@ -141,7 +141,7 @@ task TFire() {
 
     int waitTime = [6, 5, 3][_diff];
     for (int i = 0; i < length(locations); i++) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         float x = ObjMove_GetX(bigShot);
         float y = ObjMove_GetY(bigShot);
         float lX = locations[i][0];
@@ -155,7 +155,7 @@ task TFire() {
     }
 
     wait(240);
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
 
     float pX = ObjMove_GetX(_objPlayer);
@@ -177,7 +177,7 @@ task TFire() {
     //display safe zone
     Primitive_ContractPolygon2D(randX, randY, 45, 135, 0, 180, 32, COLOR_GREEN_L, false, RP_STG_EFF_MID);
     loop (3) {
-        if (!_bossAlive) return;
+        if (!Boss_Alive(_objBoss)) return;
         Primitive_ContractPolygon2D(randX, randY, 45, 32, 0, 45, 32, COLOR_GREEN_L, true, RP_STG_EFF_MID);
         Primitive_ExpandPolygon2D(randX, randY, 45, 32, 550, 0, 40, 32, COLOR_RED, false, RP_STG_EFF_MID);
         Primitive_ExpandPolygon2D(randX, randY, 45, 32, 550, 0, 50, 32, COLOR_RED, false, RP_STG_EFF_MID);
@@ -185,7 +185,7 @@ task TFire() {
         CallSFX(SND_BANG1);
         wait(60);
     }
-    if (!_bossAlive) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     CallSFX(SND_TRANSITION);
 
@@ -202,7 +202,7 @@ task TFire() {
         int frames = [85, 75, 65][_diff];
         ObjMove_AddPatternD2(shot_, 1, x_, y_, frames, LERP_LINEAR);
         wait(frames);
-        if (!_bossAlive || Obj_IsDeleted(shot_)) return;
+        if (!Boss_Alive(_objBoss) || Obj_IsDeleted(shot_)) return;
         ObjShot_SetDeleteFrame(shot_, 45);
         angleT_ += rand(-5, 5);
         Laser_WarningLine(x_, y_, angleT_, 550, 80);
@@ -212,7 +212,7 @@ task TFire() {
         float numShots = rand_int(minShot, maxShot);
         int waitTime = [6, 4, 1][_diff];
         for (int i = 1; i <= numShots; i++) {
-            if (!_bossAlive) return;
+            if (!Boss_Alive(_objBoss)) return;
             float radius = Interpolate_Linear(0, 550, i / numShots);
             int newShot = CreateShotUA1(x_ + radius * cos(angleT_), y_ + radius * sin(angleT_), 0.12 * i / numShots, angleT_, SHOT_YELLOW+COIN, 0, SHOT_YELLOW+SPAWN_S+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE);
             shots ~= [newShot];
