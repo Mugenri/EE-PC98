@@ -144,3 +144,30 @@ function<void> ParticleListShader(int list_, float floatX_, float floatY_) { //f
     ObjShader_SetFloat(list_, "STEP_X", floatX_);
     ObjShader_SetFloat(list_, "STEP_Y", floatY_);
 }
+
+//Full Screen blackout
+function<int> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_) {
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_MAX);
+    ObjRender_SetColor(obj, color_);
+
+    async {
+        for (float i = 1; i <= fadeOut_; i++) {
+            if (Obj_IsDeleted(obj)) break;
+            ObjRender_SetAlpha(obj, Interpolate_Linear(0, 255, i / fadeOut_));
+            yield;
+        }
+        ObjRender_SetAlpha(obj, 255);
+        loop (between_) {
+            if (Obj_IsDeleted(obj)) break;
+            yield;
+        }
+        for (float i = 1; i <= fadeIn_; i++) {
+            if (Obj_IsDeleted(obj)) break;
+            ObjRender_SetAlpha(obj, Interpolate_Linear(255, 0, i / fadeIn_));
+            yield;
+        }
+        if (!Obj_IsDeleted(obj)) Obj_Delete(obj);
+    }
+
+    return obj;
+}
