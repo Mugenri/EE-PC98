@@ -60,11 +60,11 @@ task TMain() {
                     wait(8);
                 }
                 wait(20);
-                ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+                if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
                 wait(45);
                 float angleToPlayer = GetAngleToPlayer(_objBoss);
                 loop (8) {
-                    ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(30, -30), 80 + rand(0, 60), 30, LERP_DECELERATE);
+                    if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(30, -30), 80 + rand(0, 60), 30, LERP_DECELERATE);
                     TFireB(1, angleToPlayer);
                     wait(15);
                     TFireB(-1, angleToPlayer);

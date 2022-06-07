@@ -95,6 +95,10 @@ task TBowap() {
             ObjShot_SetAutoDelete(shotR, false);
             ObjShot_SetDeleteFrame(shotL, deleteTime);
             ObjShot_SetDeleteFrame(shotR, deleteTime);
+            if (_diff == 2) {
+                ObjShot_SetSpellResist(shotL, true);
+                ObjShot_SetSpellResist(shotR, true);
+            }
         }
         CallSFX(SND_SHOT1);
         angleT += angleIncrement;
