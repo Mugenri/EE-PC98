@@ -1,0 +1,167 @@
+//Ending scene library
+#include "./../../lib/lib_SystemAll.dnh"
+#include "./../../lib/lib_File.dnh"
+#include "./../../lib/lib_Util.dnh"
+
+int _bg; //background texture
+string _panelTexture; //ending panel image set
+int _objShader; //transition shader object
+int _imageIndex = 0; //current image index
+int _text; //text object
+int _color = COLOR_BLACK; //text color
+bool _reading = false; //text currently scrolling
+bool _skip = false; //flag for skipping text
+
+function<void> End_Init(int playerType_, float xWidth_) {
+    alternative (playerType_)
+    case (PLAYER_YABUSAME) { _panelTexture = IMG_END_YABUSAME; }
+    //case (PLAYER_TSUBAKURA) { _panelTexture = IMG_END_TSUBAKURA; }
+
+    _bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_END_YABUSAME_BG, RP_UI_BG); //placeholder bg for source/dest rect settings
+    _text = CreateText(24, WINDOW_HEIGHT - 57, RP_UI_TEXT, "", COLOR_WHITE);
+    ObjText_SetLinePitch(_text, 0);
+    ObjText_SetMaxWidth(_text, 560);
+
+    int textBox = InitSprite2D(0, 0, WINDOW_WIDTH - 32, 48, IMG_END_TEXTBOX, RP_UI_BG);
+    ObjPrim_SetVertexUVT(textBox, 0, 0, 0);
+    ObjPrim_SetVertexUVT(textBox, 1, WINDOW_WIDTH - 32, 0);
+    ObjPrim_SetVertexUVT(textBox, 2, 0, 48);
+    ObjPrim_SetVertexUVT(textBox, 3, WINDOW_WIDTH - 32, 48);
+    ObjRender_SetPosition(textBox, 16, WINDOW_HEIGHT - 56, 1);
+
+    //shader
+    _objShader = ObjShader_Create();
+    ObjShader_SetShaderF(_objShader, HLSL_FADE); //fade effect shader
+    ObjShader_SetTexture(_objShader, "textureMask_", IMG_EFFECT_FADE); //set texture to fade graphic
+    ObjShader_SetFloat(_objShader, "xWidth", xWidth_); //width of panel set image (height of 256)
+    ObjRender_SetTextureFilter(_objShader, FILTER_NONE, FILTER_NONE, FILTER_NONE);
+    ObjShader_SetTechnique(_objShader, "Render");
+
+    async {
+        int icon = InitSprite2D(0, 240, 16, 256, IMG_SYSTEM_UI, RP_UI_TEXT);
+        ObjRender_SetPosition(icon, 601, WINDOW_HEIGHT - 31, 1);
+        Obj_SetVisible(icon, false);
+        while (_reading == false) yield; //wait for first line of text
+
+        int frame = 0;
+        int framerate = 8;
+        loop {
+            Obj_SetVisible(icon, _reading == false && _skip == false);
+            ObjSprite2D_SetSourceRect(icon, 0 + 16 * (frame / framerate % 4), 240, 16 + 16 * (frame / framerate % 4), 256);
+            frame++;
+            yield;
+        }
+    }
+}
+
+//----------------------------------------------------
+//Images
+//----------------------------------------------------
+function<void> End_SetBG(string texture_) {
+    //set _bg to the passed texture
+    ObjPrim_SetTexture(_bg, texture_);
+}
+
+function<void> End_SetImage(int panel_, bool fade_) {
+    //create new image using passed panel number and _panelTexture;
+    int panel = InitSprite2D(320 * panel_, 0, 320 + 320 * panel_, 200, _panelTexture, RP_UI_IMG);
+    ObjRender_SetPosition(panel, 160, 64, 1);
+
+    //if fade, do fade shader thing
+    if (fade_) {
+        int frameRate = 8;
+        ObjShader_SetShaderO(panel, _objShader);
+        for (int frame = 0; frame < 4 * frameRate; frame++) {
+            ObjShader_SetFloat(_objShader, "frame_", frame ~/ frameRate);
+            yield;
+        }        
+        ObjShader_ResetShader(panel);
+        wait(frameRate);
+    }
+
+    _imageIndex = panel_;
+    int index = panel_;
+
+    async {
+        while (_imageIndex == index) yield;
+        Obj_Delete(panel);
+    }
+}
+
+//----------------------------------------------------
+//Text
+//----------------------------------------------------
+function<void> End_SetText(string text_) {
+    ObjText_SetVertexColor(_text, 0xFF000000 | _color);
+    TTextScroll("", text_);
+}
+
+function<void> End_SetText(string name_, string text_) {
+    ObjText_SetVertexColor(_text, 0xFF000000 | _color);
+    TTextScroll(name_, text_);
+}
+
+function<void> End_ClearText() {
+    ObjText_SetText(_text, "");
+}
+
+task TTextScroll(string name_, string text_) { //Makes text fill gradually in text boxes
+    _reading = true;
+    bool hasName = length(name_) > 0;
+    string padding = "              "; //14 whitespace characters
+    string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
+    string tempString = hasName ? vtos("14s", name_ ~ ": ") : padding; //TODO format strings to have padding on the left
+    char lastChar;
+    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
+        SetVirtualKeyState(VK_OK, KEY_FREE);
+    }
+    ascent (i in 0..length(tempStrings)) { //list of substrings
+        ascent (j in 0..length(tempStrings[i])) { //for each character in a substring
+            tempString ~= [tempStrings[i][j]];
+            lastChar = tempString[-1];
+            ObjText_SetText(_text, tempString);
+            if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) { //skip if player presses button or dialogue is being skipped
+                if (lastChar != ' ' && hasName) {
+                    CallSFX(SND_TALK);
+                }
+                loop (GetWaitTime()) {
+                    if (GetVirtualKeyState(VK_OK) != KEY_PUSH && !_skip) yield;
+                    else break;
+                }
+            }
+        }
+        tempString ~= ['[','r',']'] ~ padding; //append a newline after each substring TODO add line padding for name space
+    }
+    if (GetVirtualKeyState(VK_OK) == KEY_PUSH) SetVirtualKeyState(VK_OK, KEY_FREE); //Prevents the keystate from carrying over to the reading check in WaitForInput()
+    _reading = false;
+
+    function<int> GetWaitTime() {
+        alternative (lastChar)
+        case ('.', '!', '?', '~') { return 10; } //end of sentence
+        case (' ') { return 3; }
+        others { return 1; }
+    }
+}
+
+//----------------------------------------------------
+//Utility
+//----------------------------------------------------
+function<void> End_Wait() { //waits for player input to advance text
+    //yield;
+    int skipFlag = 0;
+	loop {
+        SkipCheck(skipFlag);
+		if ((_skip || (!_reading && GetVirtualKeyState(VK_OK) == KEY_PUSH))) return;
+		if (GetVirtualKeyState(VK_OK) == KEY_HOLD || GetVirtualKeyState(VK_OK) == KEY_PUSH) skipFlag++;
+		else skipFlag = 0;
+		yield;
+    }
+}
+
+function<bool> SkipCheck(int flag_) { //hold key to skip dialogue
+    if (!_skip && flag_ > 30) {
+        _skip = true;
+        flag_ = 0;
+    }
+    if (GetVirtualKeyState(VK_OK) != KEY_HOLD) _skip = false;
+}

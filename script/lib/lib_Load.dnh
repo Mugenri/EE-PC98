@@ -13,6 +13,7 @@ function<string[]> Load_GetTextureBase() {
     return [
         //effect
         IMG_EFFECT_CANCEL,
+        IMG_EFFECT_FADE,
         IMG_EFFECT_PARTICLE,
         IMG_EFFECT_SPAWN,
         IMG_EFFECT_TRANSITION,
@@ -52,4 +53,39 @@ function<string[]> Load_GetTextureTitle() { //list of title textures
         IMG_TT_MUSIC,
         IMG_TT_CURSOR
     ];
+}
+
+function<void> Load_LoadTextureEnding(int playerType_) { //load textures used in the endings
+    for each (img in Load_GetTextureEnding(playerType_)) {
+        LoadTexture(img);
+        yield;
+    }    
+}
+
+function<void> Load_UnloadTextureEnding(int playerType_) { //unload textures used in the endings
+    for each (img in Load_GetTextureEnding(playerType_)) {
+        RemoveTexture(img);
+        yield;
+    }
+}
+
+function<string[]> Load_GetTextureEnding(int playerType_) {
+    string[] texture = [IMG_END_TEXTBOX];
+
+    alternative (playerType_)
+    case (PLAYER_YABUSAME) {
+        texture ~= [
+            IMG_END_YABUSAME_BG,
+            IMG_END_YABUSAME
+        ];
+    }
+    case (PLAYER_TSUBAKURA) {
+        texture ~= [
+            //IMG_END_TSUBAKURA
+        ];
+    }
+
+    //TODO credits textures
+
+    return texture;
 }

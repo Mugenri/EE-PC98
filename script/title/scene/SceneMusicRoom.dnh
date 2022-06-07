@@ -4,7 +4,7 @@
 function<void> SceneMusicRoom() {
     bool exitFlag = false;
 
-    int selectMax = 2; //number of tracks - 1 (starts from index 0)
+    int selectMax = 3; //number of tracks - 1 (starts from index 0)
     int indexListSize = 8; //number of tracks on screen at once - 1 (starts from index 0)
     int indexListTop = 0; //index at the top of the track list, used for scrolling the list
 

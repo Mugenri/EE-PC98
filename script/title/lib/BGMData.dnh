@@ -6,6 +6,7 @@ function<int[]> BGM_GetSample(int bgmID_) {
     case (0) { return [0, 4871328]; } //Title Track
     case (1) { return [354814, 7894656]; } //Eternal Dance Engine
     case (2) { return [0, 10598280]; } //Broken Eternal Dance Engine
+    case (3) { return [0, 4298448]; } //Clairvoyant ~ Dream VISION
     others { return [0, 0]; }
 }
 
@@ -16,6 +17,7 @@ function<string> BGM_GetPath(int bgmID_) {
     case (0) { return (musicDir ~ "title.ogg"); } //To the Village that isn't Real ~ Chain Link?
     case (1) { return (musicDir ~ "tsurubami1.ogg"); } //Eternal Dance Engine
     case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
+    case (3) { return (musicDir ~ "ending.ogg"); } //Clairvoyant ~ Dream VISION
     others { return (""); }
 }
 
@@ -58,6 +60,12 @@ This is actually part of the same arrangement as[r]
 their first theme. They've been separated in the[r]
 game for obvious reasons, but I wanted to include[r]
 both somehow.";
+    }
+    case (3) { //ending theme
+        name = "Clairvoyant ~ Dream VISION";
+        comment = "
+The ending theme.[r]
+First entirely original composition.";
     }
     others { //default
         name = "Track number " ~ IntToString(bgmID_ + 1);

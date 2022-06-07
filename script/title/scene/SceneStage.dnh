@@ -136,7 +136,8 @@ task TStageScene() {
                 alternative (_stageEvent)
                 case (STAGE_VICTORY) { //game clear
                     HandleStageVictory();
-                    //TODO endings/credits maybe clearbgm and start ending song idk
+                    RunEnding();
+                    //RunCredits();
                     SceneResult(GetScore(), "Cleared");
                     saveReplay = SaveReplayPrompt(GetAreaCommonData(AREA_STAGE, "Continues", 0));
                     WriteLog("stage victory");
@@ -265,7 +266,7 @@ task TStageScene() {
 
         int fadeTime = 180;
         for (int i = 1; i <= fadeTime; i++) {
-            ObjRender_SetAlpha(objBlack, Interpolate_Linear(0, 255, i / as_float(fadeTime)));
+            ObjRender_SetAlpha(objBlack, 255 / 14 * as_int(Interpolate_Linear(1, 14, i / as_float(fadeTime))));
             yield;
         }
 
@@ -290,6 +291,25 @@ task TStageScene() {
         } else if (playerType == PLAYER_TSUBAKURA) {
             //tsurubami?
         }
+    }
+
+    function<void> RunEnding() {
+        //load textures
+        Load_LoadTextureEnding(playerType);
+        //get ending type, run appropriate script, wait for close
+        string pathScript = GetEndingPath(playerType);
+        int idScript = LoadScript(pathScript);
+        StartScript(idScript);
+        UnloadScriptFromCache(pathScript);
+
+        while (!IsCloseScript(idScript)) yield;
+
+        return;
+    }
+
+    function<void> RunCredits() {
+        //TODO run credits script
+        return;
     }
 }
 
@@ -325,6 +345,7 @@ function<void> TReturnToTitle() { //Run title screen
         Load_UncacheScripts(stageIndex, playerType, gameMode);
         Load_UnloadTextureStage(stageIndex);
         Load_UnloadTexturePlayer(playerType);
+        Load_UnloadTextureEnding(playerType);
         if (gameMode == GAME_MAIN) Load_UnloadTextureDialogue(stageIndex, playerType);
     }
 
@@ -347,7 +368,15 @@ function<string> GetStagePath(int index_) {
     alternative (index_)
     case (0) return DIR_STG ~ "tsurubami/tsuruStage.dnh"; //yabusame stage
     case (1) return DIR_STG ~ "tsurubami/tsuruStage.dnh"; //tsubakura stage
-    others assert(false, index_ ~ " is an invalid stage index.");
+    others assert(false, IntToString(index_) ~ " is an invalid stage index.");
+}
+
+function<string> GetEndingPath(int player_) {
+    string dir = GetCurrentScriptDirectory();
+    alternative (player_)
+    case (PLAYER_YABUSAME) { return dir ~ "ending/end_Yabusame.dnh"; }
+    case (PLAYER_TSUBAKURA) { return dir ~ "ending/end_Tsubakura.dnh"; }
+    others assert(false, IntToString(player_) ~ " has no ending file.");
 }
 
 //update high score with conditions

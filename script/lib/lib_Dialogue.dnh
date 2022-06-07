@@ -157,7 +157,6 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
     string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
     string tempString = "";
     char lastChar;
-    int waitTime;
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
         SetVirtualKeyState(VK_OK, KEY_FREE);
     }
@@ -231,7 +230,7 @@ function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, stri
 
     //animation
     for (int i = 1; i <= fadeIn_; i++) {
-        ObjRender_SetAlpha(whiteout, Interpolate_Linear(0, 255, i / as_float(fadeIn_)));
+        ObjRender_SetAlpha(whiteout, 255 / 14 * as_int(Interpolate_Linear(0, 14, i / as_float(fadeIn_))));
         yield;
     }
 
@@ -240,7 +239,7 @@ function<void> Dialogue_SummonBoss(int fadeIn_, int between_, int fadeOut_, stri
     wait(between_);
 
     for (int i = 1; i <= fadeIn_; i++) {
-        ObjRender_SetAlpha(whiteout, Interpolate_Linear(255, 0, i / as_float(fadeIn_)));
+        ObjRender_SetAlpha(whiteout, 255 / 14 * as_int(Interpolate_Linear(14, 0, i / as_float(fadeIn_))));
         yield;
     }
 

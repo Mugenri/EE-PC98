@@ -173,7 +173,7 @@ task TSpell() {
 
         int frames = 20;
         for (int i = 1; i <= frames; i++) {
-            ObjRender_SetAlpha(flash, Interpolate_Linear(196, 0, i / as_float(frames)));
+            ObjRender_SetAlpha(flash, 196 / 14 * as_int(Interpolate_Linear(14, 0, i / as_float(frames))));
             yield;
         }
 
@@ -259,7 +259,7 @@ task TSpell() {
 
         frames = 20;
         for (int i = 1; i <= frames; i++) { //screen flash
-            ObjRender_SetAlpha(flash, Interpolate_Linear(255, 0, i / as_float(frames)));
+            ObjRender_SetAlpha(flash, 255 / 14 * as_int(Interpolate_Linear(14, 0, i / as_float(frames))));
             yield;
         }
 

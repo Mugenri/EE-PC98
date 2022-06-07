@@ -153,7 +153,7 @@ function<int> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_
     async {
         for (float i = 1; i <= fadeOut_; i++) {
             if (Obj_IsDeleted(obj)) break;
-            ObjRender_SetAlpha(obj, Interpolate_Linear(0, 255, i / fadeOut_));
+            ObjRender_SetAlpha(obj, 255 / 14 * as_int(Interpolate_Linear(0, 14, i / fadeOut_)));
             yield;
         }
         ObjRender_SetAlpha(obj, 255);
@@ -163,7 +163,7 @@ function<int> ScreenBlackout(int fadeOut_, int between_, int fadeIn_, int color_
         }
         for (float i = 1; i <= fadeIn_; i++) {
             if (Obj_IsDeleted(obj)) break;
-            ObjRender_SetAlpha(obj, Interpolate_Linear(255, 0, i / fadeIn_));
+            ObjRender_SetAlpha(obj, 255 / 14 * as_int(Interpolate_Linear(14, 0, i / fadeIn_)));
             yield;
         }
         if (!Obj_IsDeleted(obj)) Obj_Delete(obj);

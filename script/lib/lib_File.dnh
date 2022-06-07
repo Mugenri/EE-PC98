@@ -10,6 +10,7 @@ const string DIR_SE     = GetModuleDirectory() ~ "script/se/";
 
 //Effect images
 const string IMG_EFFECT_CANCEL      = DIR_IMG ~ "effect/shotCancelEffect.png";
+const string IMG_EFFECT_FADE        = DIR_IMG ~ "effect/fadeEffect.png";
 const string IMG_EFFECT_PARTICLE    = DIR_IMG ~ "effect/particleEffect.png";
 const string IMG_EFFECT_SPAWN       = DIR_IMG ~ "effect/shotSpawnEffect.png";
 const string IMG_EFFECT_TRANSITION  = DIR_IMG ~ "effect/transitionEffect.png";
@@ -38,6 +39,14 @@ const string IMG_STG_TSURUBAMI      = DIR_IMG ~ "character/tsurubami/tsuruSTG.pn
 const string IMG_BG_TSURUBAMI       = DIR_IMG ~ "stg/tsurubamiBG.png";
 
 //HLSL Shaders
+const string HLSL_FADE              = DIR_HLSL ~ "TexFade.hlsl";
 const string HLSL_PARTICLE          = DIR_HLSL ~ "TexParticle.hlsl";
+const string HLSL_TRANSITION        = DIR_HLSL ~ "TexMask.hlsl";
 const string HLSL_WHITE             = DIR_HLSL ~ "TexWhite.hlsl";
-const string HLSL_TRANSITION        = DIR_HLSL ~ "TexTransition.hlsl";
+
+//Ending Images
+const string IMG_END_TEXTBOX        = DIR_IMG ~ "ending/endTextbox.png";
+//const string IMG_END_TSUBAKURA      = DIR_IMG ~ "ending/endTsubakura.png";
+//const string IMG_END_TSUBAKURA_BG   = DIR_IMG ~ "ending/endTsubakuraBG.png";
+const string IMG_END_YABUSAME       = DIR_IMG ~ "ending/endYabusame.png";
+const string IMG_END_YABUSAME_BG    = DIR_IMG ~ "ending/endYabusameBG.png";

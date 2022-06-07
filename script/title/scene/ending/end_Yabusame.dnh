@@ -1,0 +1,62 @@
+//Yabusame ending
+#include "./../../lib/lib_Ending.dnh"
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TMain();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TMain() {
+    ScreenBlackout(60, 30, 60, COLOR_WHITE);
+    wait(60);
+    End_Init(PLAYER_YABUSAME, 1024);
+    Ending();
+    ScreenBlackout(180, 60, 0, COLOR_BLACK);
+    ClearBGM();
+    wait(240);
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Ending() {
+    int step = 0;
+    loop {
+        bool end = EndStep(step);
+        if (end) break;
+        step++;
+        End_Wait();
+    }
+
+    function<bool> EndStep(int step_) {
+        //------------------------------------------------------- 55 char limit
+        alternative (step_)
+        case (0) {
+            //make text box?
+            End_SetBG(IMG_END_YABUSAME_BG);
+            wait(90);
+            StartBGM(3, 240, 0);
+            End_SetImage(0, true);
+            _color = COLOR_SKY;
+            End_SetText("Yabusame", "\"This is a test string./It even has multiple lines!!/I needed a third for testing.\"");
+        }
+        case (1) {
+            End_SetText("Yabusame", "\"I sure hope the pool doesn't close due to aids.../That sure would be unfortunate.\"");
+        }
+        case (2) {
+            End_SetImage(1, true);
+            _color = COLOR_WHITE;
+            End_SetText("It was at this time that the pool had closed due to/aids.");
+        }
+        case (3) {
+            _color = COLOR_SKY;
+            End_SetText("Yabusame", "\"You've gotta be fucking kidding me.\"");
+        }
+        others { return true; }
+        return false;
+    }
+}
