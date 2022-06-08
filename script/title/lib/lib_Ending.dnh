@@ -8,19 +8,23 @@ string _panelTexture; //ending panel image set
 int _objShader; //transition shader object
 int _imageIndex = 0; //current image index
 int _text; //text object
-int _color = COLOR_BLACK; //text color
+int _color = COLOR_WHITE; //text color
 bool _reading = false; //text currently scrolling
 bool _skip = false; //flag for skipping text
 
-function<void> End_Init(int playerType_, float xWidth_) {
+function<void> End_Init(int playerType_) {
     alternative (playerType_)
     case (PLAYER_YABUSAME) { _panelTexture = IMG_END_YABUSAME; }
     //case (PLAYER_TSUBAKURA) { _panelTexture = IMG_END_TSUBAKURA; }
 
     _bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_END_YABUSAME_BG, RP_UI_BG); //placeholder bg for source/dest rect settings
     _text = CreateText(24, WINDOW_HEIGHT - 57, RP_UI_TEXT, "", COLOR_WHITE);
-    ObjText_SetLinePitch(_text, 0);
     ObjText_SetMaxWidth(_text, 560);
+    ObjText_SetFontBorderColor(_text, COLOR_BLACK);
+    ObjText_SetFontBorderType(_text, BORDER_FULL);
+    ObjText_SetFontBorderWidth(_text, 1);
+    ObjText_SetSidePitch(_text, -1);
+    ObjText_SetLinePitch(_text, -1);
 
     int textBox = InitSprite2D(0, 0, WINDOW_WIDTH - 32, 48, IMG_END_TEXTBOX, RP_UI_BG);
     ObjPrim_SetVertexUVT(textBox, 0, 0, 0);
@@ -33,7 +37,7 @@ function<void> End_Init(int playerType_, float xWidth_) {
     _objShader = ObjShader_Create();
     ObjShader_SetShaderF(_objShader, HLSL_FADE); //fade effect shader
     ObjShader_SetTexture(_objShader, "textureMask_", IMG_EFFECT_FADE); //set texture to fade graphic
-    ObjShader_SetFloat(_objShader, "xWidth", xWidth_); //width of panel set image (height of 256)
+    ObjShader_SetFloat(_objShader, "xWidth", GetTextureWidth(_panelTexture)); //width of panel set image (height of 256)
     ObjRender_SetTextureFilter(_objShader, FILTER_NONE, FILTER_NONE, FILTER_NONE);
     ObjShader_SetTechnique(_objShader, "Render");
 
@@ -137,7 +141,7 @@ task TTextScroll(string name_, string text_) { //Makes text fill gradually in te
 
     function<int> GetWaitTime() {
         alternative (lastChar)
-        case ('.', '!', '?', '~') { return 10; } //end of sentence
+        case ('.', '!', '?', '~', ',', ';') { return 10; } //end of sentence/verbal pause
         case (' ') { return 3; }
         others { return 1; }
     }
@@ -147,7 +151,7 @@ task TTextScroll(string name_, string text_) { //Makes text fill gradually in te
 //Utility
 //----------------------------------------------------
 function<void> End_Wait() { //waits for player input to advance text
-    //yield;
+    yield;
     int skipFlag = 0;
 	loop {
         SkipCheck(skipFlag);

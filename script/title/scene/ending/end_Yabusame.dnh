@@ -1,6 +1,10 @@
 //Yabusame ending
 #include "./../../lib/lib_Ending.dnh"
 
+int _colorYabu = COLOR_SKY;
+int _colorJinbei = COLOR_PAPER;
+int _colorTsuba = 0xBBBBBB;
+
 @Initialize {
     SetAutoDeleteObject(true);
     TMain();
@@ -15,7 +19,8 @@
 task TMain() {
     ScreenBlackout(60, 30, 60, COLOR_WHITE);
     wait(60);
-    End_Init(PLAYER_YABUSAME, 1024);
+    End_Init(PLAYER_YABUSAME);
+    End_SetImage(0, false);
     Ending();
     ScreenBlackout(180, 60, 0, COLOR_BLACK);
     ClearBGM();
@@ -36,25 +41,129 @@ function<void> Ending() {
         //------------------------------------------------------- 55 char limit
         alternative (step_)
         case (0) {
-            //make text box?
             End_SetBG(IMG_END_YABUSAME_BG);
             wait(90);
             StartBGM(3, 240, 0);
-            End_SetImage(0, true);
-            _color = COLOR_SKY;
-            End_SetText("Yabusame", "\"This is a test string./It even has multiple lines!!/I needed a third for testing.\"");
+            End_SetText("At the Senri Shrine.../A certain fool has awoken from their fitful slumber,/having not gotten much rest at all.");
         }
         case (1) {
-            End_SetText("Yabusame", "\"I sure hope the pool doesn't close due to aids.../That sure would be unfortunate.\"");
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"What a crazy dream.../Was that really Tsurubami?/Sure feels like it was, I'm beat.\"");
         }
         case (2) {
-            End_SetImage(1, true);
-            _color = COLOR_WHITE;
-            End_SetText("It was at this time that the pool had closed due to/aids.");
+            End_SetText("Yabusame", "\"They acted a little strange, but maybe they were/always like that.../Well, no use dwelling on it.\"");
         }
         case (3) {
-            _color = COLOR_SKY;
-            End_SetText("Yabusame", "\"You've gotta be fucking kidding me.\"");
+            End_SetText("Yabusame", "\"Uhmmm, ask Jinbei... what was it again? Something/about a 'special brew'. I hope they don't think I'm/crazy. Well, anymore than they already do, hehe~\"");
+        }
+        case (4) {
+            End_SetImage(1, true);
+            _color = COLOR_WHITE;
+            End_SetText("Yabusame explains to Jinbei their dream involving/the previous Senri Priest...");
+        }
+        case (5) {
+            _color = _colorJinbei;
+            End_SetText("Jinbei", "\"Oh, is it finally time for that?/Figured it would be some time soon, what with the war/and all.\"");
+        }
+        case (6) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Time for what?\"");
+        }
+        case (7) {
+            _color = _colorJinbei;
+            End_SetText("Jinbei", "\"Just take this; use it to make that dreadful beverage/you call coffee. Should work fine if you don't mess it/up too bad.\"");
+        }
+        case (8) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"These look like normal coffee beans.\"");
+        }
+        case (9) {
+            _color = _colorJinbei;
+            End_SetText("Jinbei", "\"Could you get Tsubakura to drink a coffee that/doesn't look anything like coffee?\"");
+        }
+        case (10) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Fair point./...are these safe to drink?\"");
+        }
+        case (11) {
+            _color = _colorJinbei;
+            End_SetText("Jinbei", "\"You said yourself they look like normal coffee beans./While I find it to be revolting sludge, Tsubakura/should be fine; they might even enjoy it.\"");
+        }
+        case (12) {
+            End_SetText("Jinbei", "\"Don't drink any yourself though.\"");
+        }
+        case (13) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Okay... but if anything bad happens I'm gonna beat/you up.\"");
+        }
+        case (14) {
+            _color = COLOR_WHITE;
+            End_SetText("One relatively normal coffee brewing later...");
+        }
+        case (15) {
+            End_SetImage(2, true);
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Coffee~ come and get it!\"");
+        }
+        case (16) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"You made coffee just this morning.\"");
+        }
+        case (17) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Oh did I? Guess I forgot~\"");
+        }
+        case (18) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"There's only one cup.\"");
+        }
+        case (19) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Oh, umm, I wasn't feeling like having any today.\"");
+        }
+        case (20) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"It smells funny, did you do something weird to it?\"");
+        }
+        case (21) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Mmmmm no~/Just trying something new, tell me how it is~\"");
+        }
+        case (22) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"I swear to... whatever./.....\"");
+        }
+        case (23) {
+            End_SetText("Tsubakura", "\"Well, it tastes alright at least./Just make my usual next time, please.\"");
+        }
+        case (24) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"You know what they say, 'variety is the food/of thought' and all that.\"");
+        }
+        case (25) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"I'm not even going to guess what you were trying to/say./...I'm pretty tired actually, think I'll take a nap.\"");
+        }
+        case (26) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"But you just drank a coffee?\"");
+        }
+        case (27) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"Your new coffee is broken, just make the usual next/time. I'm gonna go to bed.\"");
+        }
+        case (28) {
+            _color = _colorYabu;
+            End_SetText("Yabusame", "\"Fiiiiine~\"");
+        }
+        case (29) {
+            End_SetImage(3, true);
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\(Why do I feel like I really shouldn't have drank/that...\)");
+        }
+        case (30) {
+            _color = COLOR_GREEN_L;
+            End_SetText("ENDING #01", "Strange Dreams Under Strange Circumstances/To be continued in Misremembered Memories v1.00/Yabusame's Scenario Cleared - Congratulations!");
         }
         others { return true; }
         return false;
