@@ -184,7 +184,7 @@ task TTextScroll(int obj_, string text_, bool isSpeech_) { //Makes text fill gra
     function<int> GetWaitTime() {
         if (!isSpeech_) return 5;
         alternative (lastChar)
-        case ('.', '!', '?', '~') { return 10; } //end of sentence
+        case ('.', '!', '?', '~', ',', ';') { return 10; } //end of sentence/verbal pause
         case (' ') { return 3; }
         others { return 1; }
     }
