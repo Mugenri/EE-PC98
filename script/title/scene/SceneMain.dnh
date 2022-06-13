@@ -275,7 +275,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
 
                 //Run main stage script
-                string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+                string pathScript = GetModuleDirectory() ~ "script/title/scene/SceneStage.dnh";
                 int idScript = LoadScript(pathScript);
                 StartScript(idScript);
                 UnloadScriptFromCache(pathScript);
@@ -368,7 +368,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
             if (tempData == -1) break;
 
             //replay info
-            SetAreaCommonData(AREA_TITLE, "ReplayPath", "script/replay/package_replay" ~ vtos("02d", tempData) ~ ".dat");
+            SetAreaCommonData(AREA_TITLE, "ReplayPath", "script/replay/game_replay" ~ vtos("02d", tempData) ~ ".dat");
             SetAreaCommonData(AREA_TITLE, "GameMode", GetReplayGameMode(tempData));
             SetAreaCommonData(AREA_TITLE, "PlayerType", GetReplayPlayerType(tempData));
             SetAreaCommonData(AREA_TITLE, "Difficulty", GetReplayDifficulty(tempData));
@@ -419,7 +419,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
     }
 
     function<void> StartPackageStageScript() {
-        string pathScript = GetCurrentScriptDirectory() ~ "SceneStage.dnh";
+        string pathScript = GetModuleDirectory() ~ "script/title/scene/SceneStage.dnh";
         int idScript = LoadScript(pathScript);
         StartScript(idScript);
         UnloadScriptFromCache(pathScript);

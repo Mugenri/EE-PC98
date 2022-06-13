@@ -3,11 +3,11 @@
 #Text[""]
 #Player["./player/Yabusame.dnh", "./player/Tsubakura.dnh"]
 
-//opening screen
-#include "./title/LoadScreen.dnh"
-
 @Initialize {
-    Load_Init();
+    AddArchiveFile(GetModuleDirectory() ~ "script/data.dat");
+    string path = GetModuleDirectory() ~ "script/package.dnh";
+    StartScript(LoadScript(path));
+    CloseScript(GetOwnScriptID());
 }
 
 @MainLoop { yield; }

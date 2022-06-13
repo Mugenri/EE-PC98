@@ -15,7 +15,7 @@ bool _resetScoreExtend = false;
     SetItemAutoDeleteClip(32, 256, 32, 64);
     SetDefaultBonusItemEnable(false);
     SetPlayerAutoItemCollectLine(-1);
-    LoadItemData(GetCurrentScriptDirectory() ~ "lib/dat_ItemData.dnh");
+    LoadItemData(GetModuleDirectory() ~ "script/system/lib/dat_ItemData.dnh");
     Cancel_Init();
     Ascii_Init();
     TCheckThrillGauge();

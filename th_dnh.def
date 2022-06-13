@@ -1,4 +1,4 @@
-package.script.main = script/package.dnh
+package.script.main = script/game.dnh
 window.title = 連縁无現里 ~ Misremembered Memories v0.43a
 screen.width = 640
 screen.height = 400

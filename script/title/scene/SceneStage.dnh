@@ -372,7 +372,7 @@ function<string> GetStagePath(int index_) {
 }
 
 function<string> GetEndingPath(int player_) {
-    string dir = GetCurrentScriptDirectory();
+    string dir = GetModuleDirectory() ~ "script/title/scene/";
     alternative (player_)
     case (PLAYER_YABUSAME) { return dir ~ "ending/end_Yabusame.dnh"; }
     case (PLAYER_TSUBAKURA) { return dir ~ "ending/end_Tsubakura.dnh"; }

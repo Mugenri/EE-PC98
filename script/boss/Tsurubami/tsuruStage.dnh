@@ -18,7 +18,7 @@
 @Finalize {}
 
 task TStage() {
-    string dir = GetCurrentScriptDirectory();
+    string dir = GetModuleDirectory() ~ "script/boss/tsurubami/";
     //load and execute background script
     string bgPath = dir ~ "tsuruBG.dnh";
     int bgID = LoadScript(bgPath);

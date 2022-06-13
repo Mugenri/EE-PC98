@@ -3,9 +3,9 @@
 #include "./shotlib/lib_ShotConstant.dnh"
 
 //File paths
-const string pathShotData = GetCurrentScriptDirectory() ~ "shotlib/dat_Shot.dnh";
-const string pathShotAnim = GetCurrentScriptDirectory() ~ "shotlib/dat_ShotAnim.dnh";
-const string pathShotSpawn = GetCurrentScriptDirectory() ~ "shotlib/dat_ShotSpawn.dnh";
+const string pathShotData = GetModuleDirectory() ~ "script/lib/shotlib/dat_Shot.dnh";
+const string pathShotAnim = GetModuleDirectory() ~ "script/lib/shotlib/dat_ShotAnim.dnh";
+const string pathShotSpawn = GetModuleDirectory() ~ "script/lib/shotlib/dat_ShotSpawn.dnh";
 
 function<void> Shot_Init() {
     LoadEnemyShotData(pathShotData);

@@ -15,7 +15,7 @@
 @MainLoop { yield; }
 
 task TPlural() {
-    string dir = GetCurrentScriptDirectory();
+    string dir = GetModuleDirectory() ~ "script/boss/tsurubami/";
     _objScene = ObjEnemyBossScene_Create();
 
     ObjEnemyBossScene_Add(_objScene, 0, dir ~ "nonspell1.dnh");

@@ -19,7 +19,7 @@
     SetInvalidRenderPriorityA1(22, 26);
     //SetIntersectionVisualization(true);
 
-    StartItemScript(GetCurrentScriptDirectory() ~ "ControlItem.dnh");
+    StartItemScript(GetModuleDirectory() ~ "script/system/ControlItem.dnh");
 }
 
 @Event {
