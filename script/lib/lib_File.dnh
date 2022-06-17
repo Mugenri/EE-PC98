@@ -50,3 +50,7 @@ const string IMG_END_TEXTBOX        = DIR_IMG ~ "ending/endTextbox.png";
 //const string IMG_END_TSUBAKURA_BG   = DIR_IMG ~ "ending/endTsubakuraBG.png";
 const string IMG_END_YABUSAME       = DIR_IMG ~ "ending/endYabusame.png";
 const string IMG_END_YABUSAME_BG    = DIR_IMG ~ "ending/endYabusameBG.png";
+
+//Credits
+const string IMG_END_STAFFROLL      = DIR_IMG ~ "ending/credits.png";
+const string IMG_END_EFFECT         = DIR_IMG ~ "ending/creditFade.png";

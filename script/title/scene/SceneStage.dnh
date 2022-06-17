@@ -137,7 +137,7 @@ task TStageScene() {
                 case (STAGE_VICTORY) { //game clear
                     HandleStageVictory();
                     RunEnding();
-                    //RunCredits();
+                    RunCredits();
                     SceneResult(GetScore(), "Cleared");
                     saveReplay = SaveReplayPrompt(GetAreaCommonData(AREA_STAGE, "Continues", 0));
                     WriteLog("stage victory");
@@ -308,7 +308,14 @@ task TStageScene() {
     }
 
     function<void> RunCredits() {
-        //TODO run credits script
+        //run credits script
+        string pathScript = GetModuleDirectory() ~ "script/title/scene/Credits.dnh";
+        int idScript = LoadScript(pathScript);
+        StartScript(idScript);
+        UnloadScriptFromCache(pathScript);
+
+        while(!IsCloseScript(idScript)) yield;
+
         return;
     }
 }

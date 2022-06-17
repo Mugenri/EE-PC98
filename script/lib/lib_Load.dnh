@@ -85,7 +85,11 @@ function<string[]> Load_GetTextureEnding(int playerType_) {
         ];
     }
 
-    //TODO credits textures
+    //credits textures
+    texture ~= [
+        IMG_END_STAFFROLL,
+        IMG_END_EFFECT
+    ];
 
     return texture;
 }

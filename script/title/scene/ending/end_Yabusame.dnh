@@ -43,7 +43,7 @@ function<void> Ending() {
         case (0) {
             End_SetBG(IMG_END_YABUSAME_BG);
             wait(90);
-            StartBGM(3, 240, 0);
+            StartBGM(2, 240, 0);
             End_SetText("At the Senri Shrine.../A certain fool has awoken from their fitful slumber,/having not gotten much rest at all.");
         }
         case (1) {

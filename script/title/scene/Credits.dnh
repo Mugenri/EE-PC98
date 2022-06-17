@@ -1,0 +1,173 @@
+//Credits cutscene
+
+#include "./../../lib/lib_SystemAll.dnh"
+#include "./../../lib/lib_File.dnh"
+#include "./../../lib/lib_Util.dnh"
+
+int _creditsList;
+int _count = 0; //timer
+bool exitFlag = false;
+bool exit = false;
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    SetSkipModeKey(KEY_LCONTROL);
+    _creditsList = InitParticleList(IMG_EFFECT_PARTICLE, RP_UI_TEXT, [0, 0, 16, 16]); //needs to render over everything
+    ParticleListShader(_creditsList, 16 / 512, 16 / 512);
+    TBackground();
+    TCredits();
+}
+
+@Event {}
+
+@MainLoop {
+    _count++;
+    if (exitFlag && !exit) {
+        exit = true;
+        TExit();
+    }
+    yield;   
+}
+
+@Finalize {}
+
+task TExit() {
+    wait(60);
+    ScreenBlackout(240, 190, 0, COLOR_BLACK);
+    ClearBGM();
+    wait(420);
+    if (!DEBUG_MODE) SetSkipModeKey(KEY_INVALID);
+    CloseScript(GetOwnScriptID());
+}
+
+task TBackground() {
+    //TODO START BGM
+    //StartBGM(3, 240, 0);
+    ScreenBlackout(0, 120, 240, COLOR_BLACK);
+
+    //objects
+    int staffRoll = InitSprite2D(0, 0, 512, 400, IMG_END_STAFFROLL, RP_UI_IMG);
+    int fadeTop = InitSprite2D(0, 0, 640, 128, IMG_END_EFFECT, RP_UI_IMG);
+    int fadeBottom = InitSprite2D(0, 0, 640, 128, IMG_END_EFFECT, RP_UI_IMG);
+    int borderL = InitSprite2D(0, 3328, 208, 3728, IMG_END_STAFFROLL, RP_UI_IMG);
+    int borderR = InitSprite2D(208, 3328, 416, 3728, IMG_END_STAFFROLL, RP_UI_IMG);
+    ObjRender_SetPosition(staffRoll, 64, 0, 1);
+    ObjRender_SetPosition(borderL, 0, 0, 1);
+    ObjRender_SetPosition(borderR, 442, 0, 1);
+
+    //fade texture UV
+    ObjPrim_SetVertexUVT(fadeTop, 0, 0, 128);
+    ObjPrim_SetVertexUVT(fadeTop, 1, 640, 128);
+    ObjPrim_SetVertexUVT(fadeTop, 2, 0, 0);
+    ObjPrim_SetVertexUVT(fadeTop, 3, 640, 0);
+
+    ObjPrim_SetVertexUVT(fadeBottom, 0, 0, 0);
+    ObjPrim_SetVertexUVT(fadeBottom, 1, 640, 0);
+    ObjPrim_SetVertexUVT(fadeBottom, 2, 0, 128);
+    ObjPrim_SetVertexUVT(fadeBottom, 3, 640, 128);
+
+    //lines on each face of corridor
+    int linesH = 7;
+    int linesV = 11;
+    //arc lines are restricted to
+    float arcH = 50;
+    float arcV = 180 - arcH;
+    //radius
+    float rad = 250;
+    //calculate vertices
+    int vertices = 2 * (2 * linesH + 2 * linesV); //x2 for 2 h walls and 2 v walls
+    //prim
+    int linesObj = InitPrim2D(PRIMITIVE_LINELIST, vertices, RP_UI_BG);
+    ObjRender_SetColor(linesObj, COLOR_GREEN_D);
+
+    //setup
+    //even vertices in center
+    for (int i = 0; i < vertices; i += 2) {
+        ObjPrim_SetVertexPosition(linesObj, i, 320, 200, 1);
+    }
+
+    //H
+    float angleT = 0 - (arcH / 2);
+    int vertex = 1;
+    loop (linesH) {
+        ObjPrim_SetVertexPosition(linesObj, vertex, 320 + rad * cos(angleT), 200 + rad * sin(angleT), 1);
+        ObjPrim_SetVertexPosition(linesObj, vertex + 2, 320 + rad * cos(angleT + 180), 200 + rad * sin(angleT + 180), 1);
+        vertex += 4;
+        angleT += arcH / (linesH - 1);
+    }
+    //V
+    angleT = 90 - (arcV / 2);
+    loop (linesV) {
+        ObjPrim_SetVertexPosition(linesObj, vertex, 320 + rad * cos(angleT), 200 + rad * sin(angleT), 1);
+        ObjPrim_SetVertexPosition(linesObj, vertex + 2, 320 + rad * cos(angleT + 180), 200 + rad * sin(angleT + 180), 1);
+        vertex += 4;
+        angleT += arcV / (linesV - 1);
+    }
+
+    async {
+        loop {
+            int scrollAmt = max(0, min(_count / 2 - 180, 2928));
+            if (scrollAmt >= 2928) exitFlag = true;
+            ObjPrim_SetVertexUVT(staffRoll, 0, 0, 0 + scrollAmt);
+            ObjPrim_SetVertexUVT(staffRoll, 1, 512, 0 + scrollAmt);
+            ObjPrim_SetVertexUVT(staffRoll, 2, 0, 400 + scrollAmt);
+            ObjPrim_SetVertexUVT(staffRoll, 3, 512, 400 + scrollAmt);
+            //particles
+            float radius = 241;
+            float angleT = rand(-50, 50);
+            TMoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT), WINDOW_HEIGHT_MID + radius * sin(angleT), angleT);
+            TMoveParticle(WINDOW_WIDTH_MID + radius * cos(angleT + 180), WINDOW_HEIGHT_MID + radius * sin(angleT + 180), angleT + 180);
+            ObjRender_SetPosition(fadeTop, 0 + _count % 16, 0, 1);
+            ObjRender_SetPosition(fadeBottom, 0 - _count % 16, 272, 1);
+            yield;
+        }
+    }
+
+    loop {
+        TSquares(200);
+        wait(14);
+    }
+
+    task TSquares(int frames_) {
+        int square = InitPrim2D(PRIMITIVE_LINESTRIP, 5, RP_UI_BG);
+        ObjRender_SetColor(square, COLOR_GREEN_D);
+
+        for (int i = 0; i < frames_; i++) {
+            float radius = Interpolate_Accelerate(0, 500, Interpolate_Accelerate(0, 1, i / as_float(frames_)));
+
+            float angleMod = 0 + arcH / 2;
+            ObjPrim_SetVertexPosition(square, 0, 320 + radius * cos(0 - angleMod), 200 + radius * sin(0 - angleMod), 1);
+            ObjPrim_SetVertexPosition(square, 1, 320 + radius * cos(0 + angleMod), 200 + radius * sin(0 + angleMod), 1);
+            ObjPrim_SetVertexPosition(square, 2, 320 + radius * cos(180 - angleMod), 200 + radius * sin(180 - angleMod), 1);
+            ObjPrim_SetVertexPosition(square, 3, 320 + radius * cos(180 + angleMod), 200 + radius * sin(180 + angleMod), 1);
+            ObjPrim_SetVertexPosition(square, 4, 320 + radius * cos(0 - angleMod), 200 + radius * sin(0 - angleMod), 1);
+            yield;
+        }
+    }
+
+    task TMoveParticle(float x_, float y_, float angle_) {
+            int[] color = [COLOR_WHITE, COLOR_GRAY_L, COLOR_GRAY, COLOR_GRAY_D];
+            float maxSpeed = rand(2, 3.4);
+            float speed = maxSpeed;
+            int frame = 0;
+            int frameRate = 20;
+            while (frame < frameRate * 4) {
+                //add particle
+                ObjParticleList_SetPosition(_creditsList, x_, y_, 1);
+                ObjParticleList_SetExtraData(_creditsList, trunc(3 - (frame / frameRate)), 0, 0);
+                ObjParticleList_SetColor(_creditsList, color[frame / frameRate]);
+                ObjParticleList_AddInstance(_creditsList);
+                //update position variables
+                x_ += speed * cos(angle_);
+                y_ += speed * sin(angle_);
+                speed = Interpolate_Decelerate(maxSpeed, 0, frame / (frameRate * 4.0));
+                frame++;
+                yield;
+            }
+        }
+}
+
+task TCredits() {
+    //create objects, display credits
+    //probably wait for intro animation or something
+}
