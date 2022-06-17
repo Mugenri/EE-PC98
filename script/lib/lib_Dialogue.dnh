@@ -124,7 +124,11 @@ function<int> CreateDialogueText(bool isBoss_) { //creates the dialogue text obj
     int yPos = isBoss_ ? 191 : 319;
 
     int obj = CreateText(xPos, yPos, RP_UI_TEXT, "", COLOR_WHITE);
-    ObjText_SetLinePitch(obj, 0);
+    ObjText_SetFontBorderColor(obj, COLOR_BLACK);
+    ObjText_SetFontBorderType(obj, BORDER_FULL);
+    ObjText_SetFontBorderWidth(obj, 1);
+    ObjText_SetSidePitch(obj, -1);
+    ObjText_SetLinePitch(obj, -1);
     ObjText_SetMaxWidth(obj, 242);
 
     return obj;
