@@ -114,7 +114,7 @@ task TTextScroll(string name_, string text_) { //Makes text fill gradually in te
     bool hasName = length(name_) > 0;
     string padding = "              "; //14 whitespace characters
     string[] tempStrings = SplitString(text_, "/"); //use / for newlines instead of [r]
-    string tempString = hasName ? vtos("14s", name_ ~ ": ") : padding; //TODO format strings to have padding on the left
+    string tempString = hasName ? vtos("14s", name_ ~ ": ") : padding;
     char lastChar;
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) { //Prevents skipping the yield
         SetVirtualKeyState(VK_OK, KEY_FREE);
@@ -134,7 +134,7 @@ task TTextScroll(string name_, string text_) { //Makes text fill gradually in te
                 }
             }
         }
-        tempString ~= ['[','r',']'] ~ padding; //append a newline after each substring TODO add line padding for name space
+        tempString ~= ['[','r',']'] ~ padding; //append a newline after each substring with padding for character name.
     }
     if (GetVirtualKeyState(VK_OK) == KEY_PUSH) SetVirtualKeyState(VK_OK, KEY_FREE); //Prevents the keystate from carrying over to the reading check in WaitForInput()
     _reading = false;
