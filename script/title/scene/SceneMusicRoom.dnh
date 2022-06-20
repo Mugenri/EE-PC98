@@ -3,9 +3,10 @@
 
 function<void> SceneMusicRoom() {
     bool exitFlag = false;
+    bool playing = false;
 
     int selectMax = -1;
-    while (BGM_GetPath(selectMax + 1) != "") { selectMax++; }
+    while (BGM_GetPath(selectMax + 1) != "") selectMax++;
     int indexListSize = 8; //number of tracks on screen at once - 1 (starts from index 0)
     int indexListTop = 0; //index at the top of the track list, used for scrolling the list
 
@@ -16,16 +17,16 @@ function<void> SceneMusicRoom() {
 
     TCreateMenuGraphicsMusic();
     //default texts
-    int playingText = CreateText(32, 247, BGM_GetText(-1)[0], COLOR_WHITE); //currently playing track
-    int descriptionText = CreateText(32, 270, BGM_GetText(-1)[1], COLOR_WHITE); //track comments
-    ObjText_SetMaxWidth(playingText, 412);
-    ObjText_SetMaxWidth(descriptionText, 412);
+    int playingText = CreateText(72, 252, BGM_GetText(-1)[0], COLOR_WHITE); //currently playing track
+    int descriptionText = CreateText(72, 276, BGM_GetText(-1)[1], COLOR_WHITE); //track comments
+    ObjText_SetMaxWidth(playingText, 512);
+    ObjText_SetMaxWidth(descriptionText, 512);
     ObjText_SetLinePitch(descriptionText, 0);
 
     //Create Menu Items
     {
-        int menuX = 32;
-        int menuY = 64;
+        int menuX = 72;
+        int menuY = 69;
         for (int i = 0; i <= indexListSize; i++) {
             TCreateMenuItemMusic(i, menuX, menuY);
             menuY+= 16;
@@ -81,6 +82,7 @@ function<void> SceneMusicRoom() {
         ClearBGM(); //allows restarting the same track if it's already playing
         yield;
         StartBGM(indexCurrent, 15, 15);
+        playing = true;
         ObjText_SetVertexColor(playingText, 0xFF000000 | COLOR_WHITE);
         ObjText_SetVertexColor(descriptionText, 0xFF000000 | COLOR_WHITE);
         ObjText_SetText(playingText, BGM_GetText(indexCurrent)[0]);
@@ -91,20 +93,31 @@ function<void> SceneMusicRoom() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RP_UI_BG);
         ObjRender_SetColor(bg, COLOR_BLACK);
 
-        int header = InitSprite2D(0, 0, 333, 44, IMG_TT_MUSIC, RP_UI_IMG);
-        ObjRender_SetPosition(header, 25, 0, 1);
+        int header = InitSprite2D(0, 0, 336, 44, IMG_TT_MUSIC, RP_UI_IMG);
+        ObjRender_SetPosition(header, 152, 2, 1);
 
-        int graphic = InitSprite2D(0, 44, 427, 357, IMG_TT_MUSIC, RP_UI_IMG);
-        ObjRender_SetPosition(graphic, 25, 43, 1);
+        int graphic = InitSprite2D(0, 48, 512, 400, IMG_TT_MUSIC, RP_UI_IMG);
+        ObjRender_SetPosition(graphic, 64, 48, 1);
         int linesH = CreateLinesH();
         int linesV = CreateLinesV();
 
-        while (!exitFlag) yield;
+        //particle list
+        int musicList = InitParticleList(IMG_TT_MUSIC, RP_UI_PARTICLE, [0, 400, 32, 432]);
+        ParticleListShader(musicList, 32 / 512, 32 / 512);
+
+        while (!exitFlag) {
+            if (playing) TNoteParticle();
+            loop (4) {
+                if (exitFlag) break;
+                yield;
+            }
+        }
         Obj_Delete(bg);
         Obj_Delete(header);
         Obj_Delete(graphic);
         Obj_Delete(linesH);
         Obj_Delete(linesV);
+        Obj_Delete(musicList);
 
         function<int> CreateLinesH() {
             int lines = InitPrim2D(PRIMITIVE_LINELIST, 36, RP_UI_BG);
@@ -152,25 +165,48 @@ function<void> SceneMusicRoom() {
                 }
             }
         }
+
+        task TNoteParticle() {
+            float xPos = 670;
+            float yPos = rand(0, 400);
+
+            float speed = 1;
+            float maxSpeed = 5;
+            float angle = rand(170, 190);
+            float accel = rand(0.01, 0.06);
+            int frame = 0;
+            int frameRate = 10;
+            while (xPos > -10 && !exitFlag) {
+                //add particle
+                ObjParticleList_SetPosition(musicList, xPos, yPos, 1);
+                ObjParticleList_SetExtraData(musicList, trunc(frame / frameRate) % 4, 0, 0);
+                ObjParticleList_AddInstance(musicList);
+                //update position
+                xPos += speed * cos(angle);
+                yPos += speed * sin(angle);
+                speed = min(speed + accel, maxSpeed);
+                frame++;
+                yield;
+            }
+        }
     }
 
     task TCreateMenuItemMusic(int index_, int x_, int y_) {
         if (index_ > selectMax) return;
         int objText;
-        int bgmID = indexListTop + index_; //actual track number = index at top of list + position in the list
-        string indexNumber = StringFormat("%2.0d. ", "d", bgmID + 1); //prepended track number
+        int bgmID = -1; //actual track number = index at top of list + position in the list
+        int indexNumber = -1; //prepended track number
 
         //Initial list creation
-        if (!CD_GetBGMHeard(bgmID)) objText = CreateText(x_, y_, indexNumber ~ "???", COLOR_WHITE);
-        else objText = CreateText(x_, y_, indexNumber ~ BGM_GetText(bgmID)[0], COLOR_WHITE);
-        ObjText_SetMaxWidth(objText, 412);
+        objText = CreateText(x_, y_, RP_UI_TEXT, "???", COLOR_WHITE);
+        ObjText_SetMaxWidth(objText, 512);
 
         while (!exitFlag) {
             if (indexListTop + index_ != bgmID) { //update list if it scrolls beyond the current boundaries
                 bgmID = indexListTop + index_;
-                indexNumber = StringFormat("%2.0d. ", "d", bgmID + 1);
-                if (!CD_GetBGMHeard(bgmID)) ObjText_SetText(objText, indexNumber ~ "???");
-                else ObjText_SetText(objText, indexNumber ~ BGM_GetText(bgmID)[0]);
+                indexNumber = bgmID + 1;
+                if (!CD_GetBGMHeard(bgmID)) ObjText_SetText(objText, FormatTrackName(indexNumber, "???"));
+                else ObjText_SetText(objText, FormatTrackName(indexNumber, BGM_GetText(bgmID)[0]));
             }
             if (revealIndex == indexListTop + index_) { //play undiscovered track
                 ObjText_SetText(objText, indexNumber ~ BGM_GetText(bgmID)[0]);
@@ -180,6 +216,16 @@ function<void> SceneMusicRoom() {
             yield;
         }
         Obj_Delete(objText);
+
+        function<string> FormatTrackName(int index_, string text_) {
+            //track name can have 55 characters
+            float padding = 55 / 2 - (length(text_) / 2);
+            loop (floor(padding)) {
+                text_ = insert(text_, 0, ' ');
+            }
+
+            return StringFormat("%2.0d. %s", "ds", as_int(index_), text_);
+        }
     }
 
     function<void> CancelReveal() { //resets currently playing track and desription text upon cancelling a track reveal
