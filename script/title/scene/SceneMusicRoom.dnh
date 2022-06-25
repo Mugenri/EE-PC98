@@ -209,7 +209,7 @@ function<void> SceneMusicRoom() {
                 else ObjText_SetText(objText, FormatTrackName(indexNumber, BGM_GetText(bgmID)[0]));
             }
             if (revealIndex == indexListTop + index_) { //play undiscovered track
-                ObjText_SetText(objText, indexNumber ~ BGM_GetText(bgmID)[0]);
+                ObjText_SetText(objText, FormatTrackName(indexNumber, BGM_GetText(bgmID)[0]));
                 revealIndex = -1;
             }
             ObjText_SetVertexColor(objText, 0xFF000000 | (bgmID == indexCurrent ? COLOR_YELLOW : COLOR_WHITE));
