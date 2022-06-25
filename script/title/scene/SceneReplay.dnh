@@ -56,9 +56,14 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
         }
         case (VK_CANCEL, VK_PAUSE) {
             CallSFX(SND_TT_CANCEL);
-            if (saveMode_) ClearBGM();
-            ScreenBlackout(10, 5, 10, COLOR_BLACK);
-            wait(10);
+            if (saveMode_) {
+                ClearBGM();
+                ScreenBlackout(90, 100, 0, COLOR_BLACK);
+                wait(180);
+            } else {
+                ScreenBlackout(10, 5, 10, COLOR_BLACK);
+                wait(10);
+            }
             break;
         }
         //check if cursor is outside list
@@ -376,8 +381,9 @@ function<bool> SaveReplayPrompt(int continues_) {
             }
         }
 
-        ScreenBlackout(10, 1, 0, COLOR_BLACK);
-        wait(10);
+        ClearBGM();
+        ScreenBlackout(90, 100, 0, COLOR_BLACK);
+        wait(180);
 
         exitFlag = true;
 

@@ -7,6 +7,7 @@ function<int[]> BGM_GetSample(int bgmID_) {
     case (1) { return [354814, 7894656]; } //Eternal Dance Engine
     //case (2) { return [0, 10598280]; } //Broken Eternal Dance Engine
     case (2) { return [0, 4298448]; } //Clairvoyant ~ Dream VISION
+    case (3) { return [0, 5511660]; } //Extra Mind
     others { return [0, 0]; }
 }
 
@@ -18,6 +19,7 @@ function<string> BGM_GetPath(int bgmID_) {
     case (1) { return (musicDir ~ "tsurubami1.ogg"); } //Eternal Dance Engine
     //case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
     case (2) { return (musicDir ~ "ending.ogg"); } //Clairvoyant ~ Dream VISION
+    case (3) { return (musicDir ~ "credits.ogg"); } //Extra Mind
     others { return (""); }
 }
 
@@ -52,8 +54,8 @@ Tsurubami's first theme.[r]
 This is the third time that I've arranged EDE (Can you tell[r]
 that it's my favorite?) I think it properly expresses[r]
 Tsurubami's imposing aura now. If their music didn't get that[r]
-across, their danmaku will.[r] Even if it takes a few[r]
-attempts, I'm sure you can triumph!";
+across, their danmaku will. Even if it takes a few attempts,[r]
+I'm sure you can triumph!";
     }
 //     case (2) { //boss 2
 //         name = "Broken Eternal Dance Engine";
@@ -72,6 +74,17 @@ I don't really know what I'm doing when it comes to making[r]
 original tracks ^^;; I only hope that it sounds pleasant, and[r]
 maybe a little melancholy. It's an uncertain kind of song.[r]
 In a way, it's reflective of how I felt composing it.";
+    }
+    case (3) { //credits theme
+        name = "Extra Mind";
+        comment = "
+The staff roll theme.[r]
+I had a few different ideas for this one, but the screen[r]
+ended up looking so similar to EE stage 3 that I don't think[r]
+much else would have worked here. This was arranged in one[r]
+sitting over a few hours, but I'm happy with how it came out[r]
+in the end. It's also worth noting this was the very last[r]
+thing needed before the game demo could be released.";
     }
     others { //default
         name = "Track number " ~ IntToString(bgmID_ + 1);

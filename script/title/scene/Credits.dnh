@@ -34,15 +34,14 @@ bool exit = false;
 task TExit() {
     wait(60);
     ScreenBlackout(240, 190, 0, COLOR_BLACK);
-    ClearBGM();
+    //ClearBGM();
     wait(420);
     if (!DEBUG_MODE) SetSkipModeKey(KEY_INVALID);
     CloseScript(GetOwnScriptID());
 }
 
 task TBackground() {
-    //TODO START BGM
-    //StartBGM(3, 240, 0);
+    StartBGM(3, 150, 120);
     ScreenBlackout(0, 120, 240, COLOR_BLACK);
 
     //objects

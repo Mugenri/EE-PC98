@@ -19,7 +19,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     if (selectedDifficulty >= D_EASYEX) {
         unlockFlag = [
             CD_GetExtraStageFlag(PLAYER_YABUSAME), 
-            //CD_GetExtraStageFlag(PLAYER_TSUBAKURA) TODO not in demo
+            //CD_GetExtraStageFlag(PLAYER_TSUBAKURA) TODO remove for full game
             false
         ];
     }
