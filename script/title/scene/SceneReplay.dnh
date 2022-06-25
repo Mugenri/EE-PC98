@@ -381,9 +381,14 @@ function<bool> SaveReplayPrompt(int continues_) {
             }
         }
 
-        ClearBGM();
-        ScreenBlackout(90, 100, 0, COLOR_BLACK);
-        wait(180);
+        if (indexCurrent == 1) {
+            ClearBGM();
+            ScreenBlackout(90, 100, 0, COLOR_BLACK);
+            wait(180);
+        } else {
+            ScreenBlackout(10, 1, 0, COLOR_BLACK);
+            wait(10);
+        }
 
         exitFlag = true;
 
