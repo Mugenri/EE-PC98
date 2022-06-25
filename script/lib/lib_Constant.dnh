@@ -1,9 +1,9 @@
 //Constants library
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
-const string GAME_VERSION = "0.43a";
+const string GAME_VERSION = "0.50a";
 
 //----------------------------------------------------
 //FONT CONSTANTS
