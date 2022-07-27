@@ -110,7 +110,7 @@ task TFire(int dir_) {
     moving = false;
 
     //explosion
-    int shotNum = [40, 48, 96][_diff];
+    int shotNum = [40, 48, 90][_diff];
     float baseMax = [5.0, 5.8, 6.0][_diff];
     loop (2) {
         float angleT = 90;
@@ -125,7 +125,7 @@ task TFire(int dir_) {
 
     shotNum = [52, 64, 80][_diff];
     float angleT = rand(0, 360);
-    float speed = [2.4, 2.5, 2.6][_diff];
+    float speed = [2.4, 2.5, 2.5][_diff];
     loop (shotNum) {
         CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_RED+CARD, 0, SHOT_RED+CANCEL_FADE);
         angleT += 360 / shotNum;
