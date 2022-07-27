@@ -30,7 +30,10 @@ function<void> Display_Init() {
     TThrillGauge();
     TShotCounter();
     if (!IsReplay()) TFPS();
-    else TReplayFPS();
+    else {
+        TReplayIndicator();
+        TReplayFPS();
+    }
 }
 
 //----------------------------------------------------
@@ -806,6 +809,15 @@ task TShotCounter() {
 		ObjText_SetText(objText, IntToString(shot));
 		yield;
 	}
+}
+
+//----------------------------------------------------
+//Replay Display Indicator
+//----------------------------------------------------
+task TReplayIndicator() {
+    int objText = CreateText(0, 0, RP_UI_MAX, "REPLAY", COLOR_WHITE);
+    ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
+    ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
 }
 
 //----------------------------------------------------
