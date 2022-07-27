@@ -184,11 +184,13 @@ task TFire() {
     int sustain = [30, 45, 10][_diff];
     int delay = [70, 70, 50][_diff];
     for each (shot in shots) { //create straight laser for each shot
+        if (!Boss_Alive(_objBoss)) return;
         TLaser(shot, sustain, delay);
         wait([0, 0, 1][_diff]);
     }
 
     task TLaser(int shot_, int sustain_, int delay_) { //draw laser from boss to shot
+        if (Obj_IsDeleted(shot_) || !Boss_Alive(_objBoss)) return;
         float bX = ObjMove_GetX(_objClone);
         float bY = ObjMove_GetY(_objClone);
         float sX = ObjMove_GetX(shot_);
