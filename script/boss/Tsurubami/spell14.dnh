@@ -266,14 +266,18 @@ task TPhase3() {
 
     TFlower();
 
-    int minLoop = [25, 15, 10][_diff];
-    int maxLoop = [80, 80, 50][_diff];
+    int minLoop = [25, 15, 8][_diff];
+    int maxLoop = [80, 75, 45][_diff];
     int phaseCount = 0;
     int phaseLoop = maxLoop;
 
+    float angleT = rand(0, 360);
+    float increment = [13, 5.5, 9.5][_diff];
+
     while (Boss_Alive(_objBoss)) {
         if (phaseCount % phaseLoop == 0) {
-            TFire();
+            TFire(angleT);
+            angleT += increment;
         }
 
         phaseLoop = Interpolate_Linear(minLoop, maxLoop, Boss_Life(_objBoss) / as_float(maxHealth));
@@ -306,18 +310,18 @@ task TPhase3() {
         }
     }
 
-    task TFire() {
+    task TFire(float angleT_) {
         int numShot = [10, 15, 16][_diff];
         int delayTime = [50, 40, 30][_diff];
         
-        float speed = [10, 12, 13][_diff];
+        float speed = [10, 12, 15][_diff];
         float len = [110, 145, 150][_diff];
 
-        float angleT = rand(0, 360);
+        float angle = angleT_;
         for (int i = 0; i < numShot; i++) {
-            CreateLooseLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, len, COLOR_WHITE, delayTime);
-            Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), angleT, 550, delayTime + 20);
-            angleT += 360 / numShot;
+            CreateLooseLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angle, len, COLOR_WHITE, delayTime);
+            Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), angle, 550, delayTime + 20);
+            angle += 360 / numShot;
         }
         wait(delayTime);
         if (Boss_Alive(_objBoss));
