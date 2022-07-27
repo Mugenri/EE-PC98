@@ -5,7 +5,10 @@
 function<void> Boss_SetID(int obj_, string ID_) { Obj_SetValueI(obj_, BOSS_ID, ID_); }
 function<string> Boss_GetID(int obj_) { return Obj_GetValueDI(obj_, BOSS_ID, "INVALID"); }
 //Boss health > 0
-function<bool> Boss_Alive(int obj_) { return Obj_GetValueDI(obj_, BOSS_ALIVE, true); }
+function<bool> Boss_Alive(int obj_) {
+    if (Obj_IsDeleted(obj_)) return false; 
+    return Obj_GetValueDI(obj_, BOSS_ALIVE, true);
+}
 //Boss bomb barrier currently active?
 function<bool> Boss_IsBombBarrier(int obj_) { return Obj_GetValueDI(obj_, BOSS_BOMB_BARRIER, false); }
 //Boss position
