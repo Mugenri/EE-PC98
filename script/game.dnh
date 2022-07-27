@@ -7,6 +7,7 @@
     AddArchiveFile(GetModuleDirectory() ~ "script/data.dat");
     string path = GetModuleDirectory() ~ "script/package.dnh";
     StartScript(LoadScript(path));
+    UnloadScriptFromCache(path);
     CloseScript(GetOwnScriptID());
 }
 
