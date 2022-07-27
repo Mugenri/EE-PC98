@@ -62,12 +62,11 @@ task TMain() {
                 wait(20);
                 if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
                 wait(45);
-                float angleToPlayer = GetAngleToPlayer(_objBoss);
                 loop (8) {
-                    if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(30, -30), 80 + rand(0, 60), 30, LERP_DECELERATE);
-                    TFireB(1, angleToPlayer);
+                    if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(20, -20), 100 + rand(0, 35), 30, LERP_DECELERATE);
+                    TFireB(1);
                     wait(15);
-                    TFireB(-1, angleToPlayer);
+                    TFireB(-1);
                     wait(15);
                 }
                 ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-120, 120), 60 + rand(20, -20), 30, LERP_DECELERATE);
@@ -111,7 +110,7 @@ task TFireA() {
     int stack = [8, 8, 14][_diff];
     float maxSpeed = [12, 12, 18][_diff];
     float minSpeed = [1.0, 1.4, 2.2][_diff];
-    float safeArc = [40, 35, 25][_diff];
+    float safeArc = [40, 35, 30][_diff];
     float angleT = GetAngleToPlayer(_objBoss) + safeArc / 2;
     //amulets
     for (int i = 0; i < way; i++) {
@@ -135,13 +134,13 @@ task TFireA() {
     CallSFX(SND_SHOT1);
 }
 
-task TFireB(int dir_, float angleT_) {
+task TFireB(int dir_) {
     if (!Boss_Alive(_objBoss)) return;
 
     //amulet with trails
     int way = [4, 5, 6][_diff];
-    float speed = [3.2, 3.6, 3.7][_diff];
-    angleT_ += rand(10, -5) * dir_;
+    float speed = [3.2, 3.6, 4.0][_diff];
+    float angleT_ = 90 + rand(15, 0) * dir_;
     for (int i = 0; i < way; i++) {
         int amulet = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT_, 0, 0, 1 * dir_, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+CANCEL_FADE);
         ObjMove_AddPatternA2(amulet, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0.4 * dir_);
@@ -152,7 +151,7 @@ task TFireB(int dir_, float angleT_) {
     CallSFX(SND_SHOT1);
 
     task TTrail(int obj_) {
-        int waitTime = [7, 6, 6][_diff];
+        int waitTime = [7, 6, 5][_diff];
         int stack = [5, 6, 6][_diff];
         int dir = -dir_;
         float accel = 0.03;
@@ -189,7 +188,7 @@ task TFireC() {
 
     function<void> FireWave(float angleT_, int dir_) {
         angleT_ -= dist * dir_ * 2;
-        float speed = [3.2, 3.5, 4.5][_diff];
+        float speed = [3.2, 3.8, 4.5][_diff];
         loop (loopNum) {
             CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT_, color+NEEDLES, 0, color+SPAWN_S+SIZE_16, color+CANCEL_SPARKLE);
             angleT_ += dist * dir_;
