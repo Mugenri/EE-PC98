@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
-int _loopTime = 90;
+int _loopTime = [90, 85, 70][_diff];
 _spellID = 48 + _diff;
 
 @Event {
@@ -103,7 +103,7 @@ task TSpokes() {
     float yOrg = 60;
 
     int spokes = 3;
-    int ringNum = [16, 20, 20][_diff]; //number of bullet rings
+    int ringNum = [18, 20, 20][_diff]; //number of bullet rings
     float baseAngle = 60;
     float minRad = 16;
     float maxRad = 400;
@@ -135,7 +135,7 @@ task TSpokes() {
         wait(90);
 
         angleT = baseAngle;
-        float baseSpeed = [0.32 , 0.4, 0.5][_diff];
+        float baseSpeed = [0.35 , 0.4, 0.5][_diff];
         float speedCap = [0.4, 0.4, 1.5][_diff];
         float increment = 0;
         while (Boss_Alive(_objBoss)) {
@@ -157,8 +157,8 @@ task TSpokes() {
 task TFire(int dir_) {
     //ring of bullets at a skew
     if (!Boss_Alive(_objBoss)) return;
-    int way = [16, 20, 24][_diff];
-    int stack = [3, 4, 6][_diff];
+    int way = [20, 24, 36][_diff];
+    int stack = [3, 4, 5][_diff];
     int waitTime = [5, 5, 3][_diff];
 
     float speed = [1.0, 1.2, 2.4][_diff];
