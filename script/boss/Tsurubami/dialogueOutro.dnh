@@ -87,7 +87,7 @@ function<void> Dialogue() {
         }
         case(10) {
             Dialogue_SetPortrait(bossCutin, 5);
-            Dialogue_SetText(true, "There are... certain forces,/we'll say, that don't take/kindly to others medding in-");
+            Dialogue_SetText(true, "There are... certain forces,/we'll say, that don't take/kindly to others meddling in-");
         }
         case (11) {
             Dialogue_SetText(true, "-their planes of authority./Dreams are one such plane.");
@@ -130,7 +130,7 @@ function<void> Dialogue() {
         }
         case (21) {
             Dialogue_SetPortrait(playerCutin, 2);
-            Dialogue_SetText(false, "Ooooooh. I think i get it!");
+            Dialogue_SetText(false, "Ooooooh. I think I get it!");
         }
         case (22) {
             Dialogue_SetText(false, "You're trying to go/unnoticed by making this/dream the same over and over?");
@@ -165,7 +165,7 @@ function<void> Dialogue() {
         }
         case (30) {
             Dialogue_SetPortrait(playerCutin, 6);
-            Dialogue_SetText(false, "Can you just tell me what you/want so i can wake up and/forget all this nonsense?");
+            Dialogue_SetText(false, "Can you just tell me what you/want so I can wake up and/forget all this nonsense?");
         }
         case (31) {
             Dialogue_SetPortrait(bossCutin, 1);
