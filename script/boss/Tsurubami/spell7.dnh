@@ -8,7 +8,8 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
-int _loopTime = [110, 110, 85][_diff];
+int _loopTime = [100, 95, 85][_diff];
+int _loopMin = [85, 80, 65][_diff];
 _spellID = 36 + _diff;
 
 @Event {
@@ -65,9 +66,8 @@ task TMain() {
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TScales();
-                _loopTime = max(85, (_loopTime - 1));
+                _loopTime = max(_loopMin, (_loopTime - 1));
                 _count = 0; //prevents spawn time weirdness
-                WriteLog(_loopTime);
             }
         }
         yield;
@@ -77,7 +77,7 @@ task TMain() {
 task TMaze() {
     float exitAngle = 120; //where the hole in the wall is
     int radiusMax = 280; //distance from center
-    int closeTime = [1100, 850, 750][_diff]; //frames from max radius to center
+    int closeTime = [850, 825, 750][_diff]; //frames from max radius to center
     int numShot = 72;
     int minRange = [105, 130, 160][_diff];
     int maxRange = [255, 230, 200][_diff];
@@ -96,7 +96,7 @@ task TMaze() {
     task TSpawnWall(float angle_, int wallNum_) {
         int[] wallShot = [];
         int color = SHOT_GREEN_INV;
-        int increment = numShot + [10, 5, 3][_diff];
+        int increment = numShot + [7, 5, 4][_diff];
         if (wallNum_ == 9) { //last, close circle
             increment = numShot;
             color = SHOT_BLACK;
@@ -134,15 +134,16 @@ task TMaze() {
 }
 
 task TScales() {
-    int numShot = [8, 10, 11][_diff];
-    float speed = [1.0, 0.8, 0.6][_diff];
+    int numShot = [9, 10, 11][_diff];
+    float speed = [0.8, 1.0, Interpolate_Linear(2.0, 0.9, (_loopTime - (_loopTime - _loopMin)) / _loopMin)][_diff];
+    int waitTime = [4, 5, 5][_diff];
 
     float angleT = rand(0, 360);
     for (int i = 0; i < numShot; i++) {
         CreateShotUA1(MID_X, MID_Y, speed, angleT, SHOT_RED+SCALE, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_SPARKLE);
         for (int i = 1; i < 7; i++) {
-            CreateShotUA1(MID_X, MID_Y, speed, angleT + i, i+SCALE, i * 4, i+SPAWN_E+SIZE_16, i+CANCEL_SPARKLE);
-            CreateShotUA1(MID_X, MID_Y, speed, angleT - i, i+SCALE, i * 4, i+SPAWN_E+SIZE_16, i+CANCEL_SPARKLE);
+            CreateShotUA1(MID_X, MID_Y, speed, angleT + i, i+SCALE, i * waitTime, i+SPAWN_E+SIZE_16, i+CANCEL_SPARKLE);
+            CreateShotUA1(MID_X, MID_Y, speed, angleT - i, i+SCALE, i * waitTime, i+SPAWN_E+SIZE_16, i+CANCEL_SPARKLE);
         }
         angleT += 360 / numShot;
     }
