@@ -230,14 +230,15 @@ const int BOSS_X            = 8; //X position of boss
 const int BOSS_Y            = 9; //Y position of boss
 const int BOSS_LIFE         = 10;//Boss health
 const int BOSS_LIFE_PREV    = 11;//Boss health previous frame
-const int BOSS_DMG_SHOT     = 12;//Boss damage ratio to shot
-const int BOSS_DMG_SPELL    = 13;//Boss damage ratio to spells
-const int BOSS_DAMAGED      = 14;//Boss took damage this frame (bool)
+const int BOSS_DMG_PREV     = 12;//Amount of damage the boss took in the previous frame (used for score calculaton)
+const int BOSS_DMG_SHOT     = 13;//Boss damage ratio to shot
+const int BOSS_DMG_SPELL    = 14;//Boss damage ratio to spells
+const int BOSS_DAMAGED      = 15;//Boss took damage this frame (bool)
 //Boss animations
-const int BOSS_CHARGE       = 15;//Boss Charge animation flag
-const int BOSS_SPECIAL      = 16;//Boss Special animation flag
+const int BOSS_CHARGE       = 16;//Boss Charge animation flag
+const int BOSS_SPECIAL      = 17;//Boss Special animation flag
 //Item
-const int ITEM_AUTOCOLLECT  = 17;//Item was autocollected
+const int ITEM_AUTOCOLLECT  = 18;//Item was autocollected
 
 //----------------------------------------------------
 //COLOR CONSTANTS

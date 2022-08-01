@@ -60,6 +60,7 @@ function<void> Boss_Update(int objBoss_) {
     //get object values
     float bossLife = Boss_Life(objBoss_); //current life
     float previousLife = Obj_GetValueDI(objBoss_, BOSS_LIFE_PREV, bossLife); //previous frame life
+    float previousDamage = Obj_GetValueDI(objBoss_, BOSS_DMG_PREV, 0); //leftover decimal damage from last frame (for score calculation)
 
     if (bossLife <= 0) {
         Obj_SetValueI(objBoss_, BOSS_ALIVE, false); //health check
@@ -71,7 +72,8 @@ function<void> Boss_Update(int objBoss_) {
             if (bossLife > 400) CallSFX(SND_DAMAGE);
             else CallSFX(SND_DAMAGE_LOW);
             Obj_SetValueI(objBoss_, BOSS_DAMAGED, true);
-            AddScore(10 * (round(previousLife - bossLife))); //~10 points per point of boss health
+            previousDamage += previousLife - bossLife;
+            AddScore(10 * trunc(previousDamage)); //10 points per whole point of damage taken
         } else {
             CallSFX(SND_INVINCIBLE);
             ObjEnemy_SetLife(objBoss_, ceil(bossLife)); //accounts for how invincibility is handled
@@ -81,6 +83,7 @@ function<void> Boss_Update(int objBoss_) {
     if (!_isSpellVulnerable && !_isSurvival && Boss_IsBombBarrier(objBoss_) == false && IsPlayerSpellActive() && Boss_Alive(_objBoss)) TSpellBarrier(objBoss_); //bomb invulnerability check
 
     Obj_SetValueI(objBoss_, BOSS_LIFE_PREV, bossLife);
+    Obj_SetValueI(objBoss_, BOSS_DMG_PREV, previousDamage - trunc(previousDamage)); //remaining decimal of previous damage
 
     task TSpellBarrier(int objBoss_) {
         Obj_SetValueI(objBoss_, BOSS_BOMB_BARRIER, true);
