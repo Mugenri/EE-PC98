@@ -39,8 +39,8 @@ task TShot() {
                 loop (3) { //unfocus shot
                     int offset = 80;
                     for (int i = 1; i <= 6; i++) {
-                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13 * i * (sin(_count + i * offset)), 1, 1, 1);
-                        int shot2 = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13 * i * (sin(_count + i * offset)), 1, 1, 1);
+                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + 13 * i * (sin(_count + i * offset)), 1.8, 1, 1);
+                        int shot2 = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 - 13 * i * (sin(_count + i * offset)), 1.8, 1, 1);
                         Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                         Obj_SetRenderPriorityI(shot2, RP_STG_PLAYER);
                     }
@@ -51,7 +51,7 @@ task TShot() {
                 loop (3) { //focus shot
                     float modifier = 15 * sin(_count);
                     for (int i = -5; i <= 5; i++) {
-                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier * i, 1, 1, 1);
+                        int shot = CreatePlayerShotA1(GetPlayerX(), GetPlayerY(), 28, 270 + modifier * i, 1.8, 1, 1);
                         Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                     }
                     CallSFX(SND_PL_SHOT);
@@ -97,7 +97,7 @@ task TOption(int dir_) {
                     float[][] enemy = GetEnemyIntersectionPosition(GetPlayerX(), GetPlayerY(), 1);
                     float angle = 270;
                     if (length(enemy) > 0) angle = atan2(enemy[0][1] - optionY, enemy[0][0] - optionX);
-                    int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 3, 1, 2);
+                    int shot = CreatePlayerShotA1(optionX, optionY, 28, angle, 3.5, 1, 2);
                     Obj_SetRenderPriorityI(shot, Obj_GetRenderPriorityI(objOption));
                     wait(3);
                 }
