@@ -46,7 +46,6 @@ task TInitialize() {
     CallSFX(SND_TRANSITION);
     wait(120);
     Boss_SetVulnerable(_objBoss, true);
-    Animation_Charge(_objBoss, true);
 }
 
 task TFinalize() {
@@ -125,6 +124,7 @@ task TSlugShot() {
 }
 
 task TSkewer() {
+    Animation_Charge(_objBoss, true);
     float angleT = GetAngleToPlayer(_objBoss);
     float modif = 0;
     Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), angleT, 280, 45);
