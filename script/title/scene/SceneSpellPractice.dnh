@@ -17,7 +17,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     int selectedPlayer = returnData[0];
     int selectedDiff = returnData[1];
     //arrays of info for each submenu
-    int[] selectMax = [0, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
+    int[] selectMax = [1, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
     int[] indexListSize = [7, 4]; //max number of items on screen (0 indexed)
     int[] indexListTop = [0, 0]; //index at top of list
 
@@ -436,8 +436,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
             }
         }
         case (MENU_SPELL) { //spell id has been seen by any player in main game mode
-            int tempDiff = ScaleDiff(selectedDiff);
-            int spellID = ID_ * numDiff_ + tempDiff; //actual spell ID
+            int spellID = ID_ * numDiff_ + ScaleDiff(selectedDiff); //actual spell ID
             for (int playerType = PLAYER_YABUSAME; playerType <= PLAYER_TSUBAKURA; playerType++) {
                 if (Spell_GetHistory(GAME_MAIN, playerType, indexCurrent[MENU_STAGE], spellID)[0] > 0) isUnlock = true;
             }
@@ -453,8 +452,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
 
     function<int> GetIndexFromSpellID(int stageIndex_, int spellID_) { //get spell menu index from spell ID
         int numDiff_ = length(GetDifficultyList(stageIndex_));
-        int tempDiff = ScaleDiff(selectedDiff);
-        return (spellID_ - tempDiff) / numDiff_;
+        return (spellID_ - ScaleDiff(selectedDiff)) / numDiff_;
     }
 
     function<string> GetSpellHistoryText(int[] historyMain_, int[] historySpell_, int spellScore) {
