@@ -157,10 +157,10 @@ task THighScore() {
 
 	// Digits
 	int count = 9;
-    int scoreRender = 0;
+    int defaultScore = HS_GetDefaultScore(GetGameMode());
+    int scoreRender = HS_GetHighScore(defaultScore);
     //scores and continues
     int score = GetScore();
-    int defaultScore = HS_GetDefaultScore(GetGameMode());
     int highScore = HS_GetHighScore(defaultScore);
     int continues = 0;
     int cPointer = LoadAreaCommonDataValuePointer(AREA_STAGE, "Continues", 0);
