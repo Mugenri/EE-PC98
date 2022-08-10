@@ -40,45 +40,93 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
     alternative (stageIndex_)
     case (0) { //Tsurubami
         alternative (spellID_)
-        case (0, 1, 2)      { return "Nonspell 1"; }
-        case (3, 4)         { return "Drizzle Card \"Inkshower Downpour\""; }               //EZ, EX
+        case (0, 1, 2)      { return "Nonspell 1"; }                                        //1
+        case (3, 4)         { return "Drizzle Card \"Inkshower Downpour\""; }               //2
         case (5)            { return "Storm Card \"Flash Flood\""; }                        //ABEX
-        case (6, 7, 8)      { return "Nonspell 2"; }
-        case (9, 10)        { return "Snare Card \"Talisman Skewer\""; }                    //EZ, EX
+        case (6, 7, 8)      { return "Nonspell 2"; }                                        //3
+        case (9, 10)        { return "Snare Card \"Talisman Skewer\""; }                    //4
         case (11)           { return "Snare Card \"Indiscriminate Hunter\""; }              //ABEX
-        case (12, 13, 14)   { return "Nonspell 3"; }
-        case (15, 16)       { return "Reflection Card \"Moonlight Lattice\""; }             //EZ, EX
+        case (12, 13, 14)   { return "Nonspell 3"; }                                        //5
+        case (15, 16)       { return "Reflection Card \"Moonlight Lattice\""; }             //6
         case (17)           { return "Refraction Card \"Moonbeam Massacre\""; }             //ABEX
-        case (18, 19, 20)   { return "Nonspell 4"; }
-        case (21, 22)       { return "Senri Technique \"Donation Overflow\""; }             //EZ, EX
+        case (18, 19, 20)   { return "Nonspell 4"; }                                        //7
+        case (21, 22)       { return "Senri Technique \"Donation Overflow\""; }             //8
         case (23)           { return "Forbidden Art \"Tax Evasion\""; }                     //ABEX
-        case (24, 25, 26)   { return "Nonspell 5"; }
-        case (27, 28)       { return "Senri Technique \"Ink Projection Youkai Seal\""; }    //EZ, EX
+        case (24, 25, 26)   { return "Nonspell 5"; }                                        //9
+        case (27, 28)       { return "Senri Technique \"Ink Projection Youkai Seal\""; }    //10
         case (29)           { return "Forbidden Art \"Omnilateral Annihilation Seal\""; }   //ABEX
-        case (30, 31, 32)   { return "Nonspell 6"; }
-        case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //EZ, EX
+        case (30, 31, 32)   { return "Nonspell 6"; }                                        //11
+        case (33, 34)       { return "Rending Card \"Burial Under Cloudy Skies\""; }        //12
         case (35)           { return "Severing Card \"Unconventional Grave-Digging\""; }    //ABEX
-        case (36, 37)       { return "Serpent Card \"Orochi Labyrinth\""; }                 //EZ, EX
+        case (36, 37)       { return "Serpent Card \"Orochi Labyrinth\""; }                 //13
         case (38)           { return "\"Super Ouroboros\""; }                               //ABEX
-        case (39, 40, 41)   { return "Nonspell 7"; }
-        case (42, 43)       { return "Disembodiment Card \"Ghoul Attractor\""; }            //EZ, EX
+        case (39, 40, 41)   { return "Nonspell 7"; }                                        //14
+        case (42, 43)       { return "Disembodiment Card \"Ghoul Attractor\""; }            //15
         case (44)           { return "Dismemberment Card \"Necrobrilliance\""; }            //ABEX
-        case (45, 46, 47)   { return "Nonspell 8"; }
-        case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //EZ, EX
+        case (45, 46, 47)   { return "Nonspell 8"; }                                        //16
+        case (48, 49)       { return "Star Card \"North Star Gallop\""; }                   //17
         case (50)           { return "Constellation Card \"Speed-of-Light Rodeo\""; }       //ABEX
-        case (51, 52, 53)   { return "Nonspell 9"; }
-        case (54, 55)       { return "Senri Technique \"Spirit Crossroads\""; }             //EZ, EX
+        case (51, 52, 53)   { return "Nonspell 9"; }                                        //18
+        case (54, 55)       { return "Senri Technique \"Spirit Crossroads\""; }             //19
         case (56)           { return "Forbidden Art \"Soulstream\""; }                      //ABEX
-        case (57, 58, 59)   { return "Nonspell 10"; }
-        case (60, 61)       { return "Ego Card \"Imperious Aurora\""; }                     //EZ, EX
+        case (57, 58, 59)   { return "Nonspell 10"; }                                       //20
+        case (60, 61)       { return "Ego Card \"Imperious Aurora\""; }                     //21
         case (62)           { return "Iron Fist \"Aurora Usurper\""; }                      //ABEX
-        case (63, 64)       { return "Chimera Card \"Ultimate Chimera\""; }                 //EZ, EX
+        case (63, 64)       { return "Chimera Card \"Ultimate Chimera\""; }                 //22
         case (65)           { return "Chimera Bloom \"Flower of the Shadow of Death\""; }   //ABEX
-        case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }    
-        case (69, 70, 71)   { return "Nonspell 11"; }
-        case (72, 73)       { return "Mind's Eye \"Dreamcatcher\""; }                       //EZ, EX
+        case (66, 67, 68)   { return "Other Half \"Supreme Dictator in White Robes\""; }    //23
+        case (69, 70, 71)   { return "Nonspell 11"; }                                       //24
+        case (72, 73)       { return "Mind's Eye \"Dreamcatcher\""; }                       //25
         case (74)           { return "All-Seeing Eye \"Faded Memory\""; }                   //ABEX
         others { return "INVALID"; }
+    }
+    case (1) { //Tsurubami 2 (tsubakura fight)
+        alternative (spellID_)
+        case (0, 1, 2)      { return "Nonspell 1"; }                                        //1
+        others { return "INVALID"; }
+    }
+    others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
+}
+
+//get non/spell filepath based on ID
+function<string> Spell_GetPath(int stageIndex_, int spellID_) {
+    string dir = DIR_STG;
+    alternative (stageIndex_)
+    case (0) { //Tsurubami
+        dir = dir ~ "tsurubami/";
+        alternative (spellID_)
+        case (0, 1, 2)      { return dir ~ "nonspell1.dnh"; }   //1
+        case (3, 4, 5)      { return dir ~ "spell1.dnh"; }      //2
+        case (6, 7, 8)      { return dir ~ "nonspell2.dnh"; }   //3
+        case (9, 10, 11)    { return dir ~ "spell2.dnh"; }      //4
+        case (12, 13, 14)   { return dir ~ "nonspell3.dnh"; }   //5
+        case (15, 16, 17)   { return dir ~ "spell3.dnh"; }      //6
+        case (18, 19, 20)   { return dir ~ "nonspell4.dnh"; }   //7
+        case (21, 22, 23)   { return dir ~ "spell4.dnh"; }      //8
+        case (24, 25, 26)   { return dir ~ "nonspell5.dnh"; }   //9
+        case (27, 28, 29)   { return dir ~ "spell5.dnh"; }      //10
+        case (30, 31, 32)   { return dir ~ "nonspell6.dnh"; }   //11
+        case (33, 34, 35)   { return dir ~ "spell6.dnh"; }      //12
+        case (36, 37, 38)   { return dir ~ "spell7.dnh"; }      //13
+        case (39, 40, 41)   { return dir ~ "nonspell7.dnh"; }   //14
+        case (42, 43, 44)   { return dir ~ "spell8.dnh"; }      //15
+        case (45, 46, 47)   { return dir ~ "nonspell8.dnh"; }   //16
+        case (48, 49, 50)   { return dir ~ "spell9.dnh"; }      //17
+        case (51, 52, 53)   { return dir ~ "nonspell9.dnh"; }   //18
+        case (54, 55, 56)   { return dir ~ "spell10.dnh"; }     //19
+        case (57, 58, 59)   { return dir ~ "nonspell10.dnh"; }  //20
+        case (60, 61, 62)   { return dir ~ "spell11.dnh"; }     //21
+        case (63, 64, 65)   { return dir ~ "spell12.dnh"; }     //22
+        case (66, 67, 68)   { return dir ~ "spell13.dnh"; }     //23
+        case (69, 70, 71)   { return dir ~ "nonspell11.dnh"; }  //24
+        case (72, 73, 74)   { return dir ~ "spell14.dnh"; }     //25
+        others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
+    }
+    case (1) { //Tsurubami 2
+        dir = dir ~ "tsurubami2/";
+        alternative (spellID_)
+        case (0, 1, 2)      { return dir ~ "nonspell1.dnh"; }   //1
+        others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }

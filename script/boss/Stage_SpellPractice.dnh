@@ -5,6 +5,7 @@
 
 #include "./../lib/lib_Common.dnh"
 #include "./../lib/lib_Stage.dnh"
+#include "./../lib/lib_Spell.dnh"
 
 @Initialize {
     Stage_Init();
@@ -25,7 +26,7 @@ task TStage() {
     string bgPath = SpellPractice_GetBackground(stageIndex);
     int bgIndex = SpellPractice_GetBackgroundIndex(stageIndex, spellID);
     int bgmIndex = SpellPractice_GetBGMIndex(stageIndex);
-    string pathSingle = SpellPractice_GetSpellPath(stageIndex, spellID);
+    string pathSingle = Spell_GetPath(stageIndex, spellID);
 
     //load and execute background script
     int bgID = LoadScript(bgPath);
@@ -52,6 +53,7 @@ function<string> SpellPractice_GetBackground(int stageIndex_) {
     string dir = DIR_STG;
     alternative (stageIndex_)
     case (0) { return dir ~ "tsurubami/tsuruBG.dnh"; } //tsurubami
+    case (1) { return dir ~ "tsurubami2/tsuru2BG.dnh"; } //tsurubami 2
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
@@ -73,43 +75,6 @@ function<int> SpellPractice_GetBGMIndex(int stageIndex_) {
     alternative (stageIndex_)
     case (0) { return 1; } //Eternal Dance Engine
     case (1) { return 2; } //Broken Eternal Dance Engine
-    others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
-}
-
-//get non/spell filepath based on ID
-function<string> SpellPractice_GetSpellPath(int stageIndex_, int spellID_) {
-    string dir = DIR_STG;
-    alternative (stageIndex_)
-    case (0) { //Tsurubami
-        dir = dir ~ "tsurubami/";
-        alternative (spellID_)
-        case (0, 1, 2)      { return dir ~ "nonspell1.dnh"; }   //1
-        case (3, 4, 5)      { return dir ~ "spell1.dnh"; }      //2
-        case (6, 7, 8)      { return dir ~ "nonspell2.dnh"; }   //3
-        case (9, 10, 11)    { return dir ~ "spell2.dnh"; }      //4
-        case (12, 13, 14)   { return dir ~ "nonspell3.dnh"; }   //5
-        case (15, 16, 17)   { return dir ~ "spell3.dnh"; }      //6
-        case (18, 19, 20)   { return dir ~ "nonspell4.dnh"; }   //7
-        case (21, 22, 23)   { return dir ~ "spell4.dnh"; }      //8
-        case (24, 25, 26)   { return dir ~ "nonspell5.dnh"; }   //9
-        case (27, 28, 29)   { return dir ~ "spell5.dnh"; }      //10
-        case (30, 31, 32)   { return dir ~ "nonspell6.dnh"; }   //11
-        case (33, 34, 35)   { return dir ~ "spell6.dnh"; }      //12
-        case (36, 37, 38)   { return dir ~ "spell7.dnh"; }      //13
-        case (39, 40, 41)   { return dir ~ "nonspell7.dnh"; }   //14
-        case (42, 43, 44)   { return dir ~ "spell8.dnh"; }      //15
-        case (45, 46, 47)   { return dir ~ "nonspell8.dnh"; }   //16
-        case (48, 49, 50)   { return dir ~ "spell9.dnh"; }      //17
-        case (51, 52, 53)   { return dir ~ "nonspell9.dnh"; }   //18
-        case (54, 55, 56)   { return dir ~ "spell10.dnh"; }     //19
-        case (57, 58, 59)   { return dir ~ "nonspell10.dnh"; }  //20
-        case (60, 61, 62)   { return dir ~ "spell11.dnh"; }     //21
-        case (63, 64, 65)   { return dir ~ "spell12.dnh"; }     //22
-        case (66, 67, 68)   { return dir ~ "spell13.dnh"; }     //23
-        case (69, 70, 71)   { return dir ~ "nonspell11.dnh"; }  //24
-        case (72, 73, 74)   { return dir ~ "spell14.dnh"; }     //25
-        others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
-    }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
