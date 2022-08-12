@@ -6,11 +6,8 @@ float[] tempSpeed = []; //store player speed to stop movement during intro fade
 
 function<void> Stage_Init() {
     SetAreaCommonData(AREA_STAGE, "SCRIPT_STAGE", GetOwnScriptID());
-    if (!IsReplay() && GetGameMode() == GAME_MAIN) {
-        _startingLives = GetStartingLives();
-    } else if (IsReplay()) {
-        _startingLives = GetReplayStartingLives(GetReplayIndex());
-    }
+    if (!IsReplay() && GetGameMode() == GAME_MAIN) _startingLives = GetStartingLives();
+    else if (IsReplay()) _startingLives = GetReplayStartingLives(GetReplayIndex());
     SetPlayerLife(_startingLives);
     SetPlayerSpell(GetGameMode == GAME_MAIN ? 3 : 0);
     //Stop player movement while screen is black
