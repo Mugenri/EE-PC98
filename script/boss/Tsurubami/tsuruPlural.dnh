@@ -1,10 +1,9 @@
 #TouhouDanmakufu[Plural]
 #ScriptVersion[3]
 #Title["Tsurubami Plural"]
-#System["../../system/System.dnh"]
+#System["./../../system/System.dnh"]
 
 #include "./../../lib/lib_Common.dnh"
-#include "./../../lib/lib_Spell.dnh"
 
 @Initialize {
     TPlural();

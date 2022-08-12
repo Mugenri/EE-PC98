@@ -69,13 +69,11 @@ task TStageScene() {
     case (GAME_MAIN) { stageScript = GetStagePath(stageIndex); }
     case (GAME_SPELL) { stageScript = DIR_STG ~ "Stage_SpellPractice.dnh"; }
 
+    if (DEBUG_MODE && GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD) stageScript = DIR_STG ~ "test/testStage.dnh"; //test script
+
     wait(20);
 
     StartStage();
-
-    if (gameMode == GAME_MAIN && !IsReplay()) {
-        Result_AddPlayCount(GetPlayerType(), GetDifficulty());
-    }
 
     loop {
         //--------------------------------------------------------------------
@@ -129,6 +127,11 @@ task TStageScene() {
 
             FinalizeStageScene();
 
+            if (stageScript == DIR_STG ~ "test/testStage.dnh") {
+                ReturnToTitle(false);
+                return;
+            }
+
             int stageResult = GetStageSceneResult();
             alternative (stageResult)
             case (STAGE_RESULT_CLEARED) { //Game Won
@@ -173,7 +176,7 @@ task TStageScene() {
 
     if (IsReplay() && !DEBUG_MODE) SetSkipModeKey(KEY_INVALID);
     if (saveReplay) SceneReplay(0, true);
-    TReturnToTitle();
+    ReturnToTitle(true);
 
     function<void> StartStage() {
         SetStageIndex(stageIndex);
@@ -298,6 +301,7 @@ task TStageScene() {
         Load_LoadTextureEnding(playerType);
         //get ending type, run appropriate script, wait for close
         string pathScript = GetEndingPath(playerType);
+        if (pathScript == "INVALID") return;
         int idScript = LoadScript(pathScript);
         StartScript(idScript);
         UnloadScriptFromCache(pathScript);
@@ -329,13 +333,16 @@ function<void> SetTransitionTexture() { //saves the current frame to be used as 
     RenderToTextureA1(RT_SCREENSHOT, RP_STG_TRANSITION2, RP_UI_MAX, false);
 }
 
-function<void> TReturnToTitle() { //Run title screen
+function<void> ReturnToTitle(bool saveData_) { //Run title screen
     int gameMode = GetGameMode(); //before clearing common data, get game mode
     
-    if (!IsReplay()) {
+    if (!IsReplay() && saveData_) { //save data
         UpdateHighScore();
         //add playtime
-        if (gameMode == GAME_MAIN) Result_AddPlayTime(GetPlayerType(), GetDifficulty(), GetStageTime());
+        if (gameMode == GAME_MAIN) {
+            Result_AddPlayCount(GetPlayerType(), GetDifficulty());
+            Result_AddPlayTime(GetPlayerType(), GetDifficulty(), GetStageTime());
+        }
         //save data
         CD_SaveScore();
         CD_SaveResult();
@@ -373,8 +380,8 @@ function<void> TReturnToTitle() { //Run title screen
 //return stage script using stage index
 function<string> GetStagePath(int index_) {
     alternative (index_)
-    case (0) return DIR_STG ~ "tsurubami/tsuruStage.dnh"; //yabusame stage
-    case (1) return DIR_STG ~ "tsurubami/tsuruStage.dnh"; //tsubakura stage
+    case (0) { return DIR_STG ~ "tsurubami/tsuruStage.dnh"; }//yabusame stage
+    case (1) { return DIR_STG ~ "tsurubami2/tsuru2Stage.dnh"; } //tsubakura stage
     others assert(false, IntToString(index_) ~ " is an invalid stage index.");
 }
 
@@ -382,8 +389,8 @@ function<string> GetEndingPath(int player_) {
     string dir = GetModuleDirectory() ~ "script/title/scene/";
     alternative (player_)
     case (PLAYER_YABUSAME) { return dir ~ "ending/end_Yabusame.dnh"; }
-    case (PLAYER_TSUBAKURA) { return dir ~ "ending/end_Tsubakura.dnh"; }
-    others assert(false, IntToString(player_) ~ " has no ending file.");
+    //case (PLAYER_TSUBAKURA) { return dir ~ "ending/end_Tsubakura.dnh"; }
+    others { return "INVALID"; }
 }
 
 //update high score with conditions

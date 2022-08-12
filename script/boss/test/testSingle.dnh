@@ -3,7 +3,7 @@
 #Title["debug spell"]
 #System["./../../system/System.dnh"]
 
-#include "./../lib/lib_Boss.dnh"
+#include "./../../lib/lib_Boss.dnh"
 
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
@@ -16,11 +16,6 @@ int health = 3000;
     alternative (GetEventType())
         case (EV_REQUEST_LIFE) {
             SetScriptResult(health);
-            //3000 = 20 - 22 seconds, standard nonspell health
-            //3500 = 23 - 26 seconds, standard spell health
-            //4000 ~ 30 seconds without shotgunning, 15 - 25 with shotgunning, longer/slower/complex spell health
-
-            //roughly 134 - 138 average dps
         }
         case (EV_REQUEST_TIMER) {
             SetScriptResult(60 + absolute(_count / 60));
@@ -101,7 +96,7 @@ task TPatternB(int dir_) {
         angleT += 45;
         TMove(obj);
     }
-
+    
     task TMove(int laser_) {
         float x = ObjMove_GetX(laser_);
         loop (50) {
