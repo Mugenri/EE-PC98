@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
-int _loopTime = 240;
+int _loopTime = [220, 220, 200][_diff];
 _spellID = 0 + _diff;
 
 @Event {
@@ -24,11 +24,10 @@ _spellID = 0 + _diff;
 @Initialize {
     Boss_Init(true);
     if (GetGameMode() == GAME_MAIN) _objBoss = Boss_Create(BOSS_ID_TSURUBAMI, MID_X, 60);
-    else _objBoss = Boss_Create(BOSS_ID_TSURUBAMI); //TODO prob change this cause not first spell
+    else _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
     TInitialize();
     TFinalize();
     TMain();
-    TRing();
 }
 
 @MainLoop {
@@ -56,13 +55,71 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-
+                TRing(-1);
+                wait(_loopTime / 2);
+                TRing(1);
             }
         }
         yield;
     }
 }
 
-task TRing() {
-    //ring of shots that spawn additional bullets?
+task TRing(int dir_) {
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, true);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_RED_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_RED_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_GRAY_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_GRAY_D);
+    wait(30);
+    Animation_Charge(_objBoss, false);
+
+    if (!Boss_Alive(_objBoss)) return;
+
+    int way = [4, 4, 3][_diff];
+    int stack = [4, 6, 10][_diff];
+    float sBase = [1.6, 2, 2][_diff];
+    float sMax = [8, 8, 8][_diff];
+    float aBase = rand(0, 360);
+    float aArg = 360 / (way * stack);
+    float wvel = [10, 10, 10][_diff];
+
+    int ring1 = Shot_CreatePattern(_objBoss, PATTERN_RING, way, stack, sMax, -sMax, aBase, aArg, 0, SHOT_RED_INV+CARD, 0);
+    int[] shots = Shot_FirePatternA(ring1, SHOT_RED_INV+CARD, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+
+    for each (shot in shots) {
+        ObjMove_SetAngularVelocity(shot, wvel * dir_);
+        ObjMove_AddPatternA2(shot, 20, sBase, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+        TTrail(shot);
+    }
+
+    CallSFX(SND_SHOT1);
+
+    Boss_MoveRadiusInBounds(_objBoss, 48, 64, 100, MAX_X - 100, 32, 100, 60, LERP_DECELERATE);
+
+    Obj_Delete(ring1);
+
+    task TTrail(int parent_) {
+        wait(60);
+        if (!Boss_Alive(_objBoss)) return;
+
+        float accel = 0.02;
+        float maxSpeed = 0.9;
+        int waitTime = [50, 40, 40][_diff];
+        int colorNum = 0;
+
+        while (!Obj_IsDeleted(parent_) && ObjMove_GetY(parent_) < MAX_Y - 64 && Boss_Alive(_objBoss)) {
+            float angleT = ObjMove_GetAngle(parent_);
+            int color = [SHOT_GRAY, SHOT_WHITE][colorNum % 2];
+            CreateShotUA2(ObjMove_GetX(parent_), ObjMove_GetY(parent_), 0, angleT + 70, accel, maxSpeed, 0, color+PILL_S, 0, color+SPAWN_E+SIZE_16, color+CANCEL_BURST1);
+            CreateShotUA2(ObjMove_GetX(parent_), ObjMove_GetY(parent_), 0, angleT - 70, accel, maxSpeed, 0, color+PILL_S, 0, color+SPAWN_E+SIZE_16, color+CANCEL_BURST1);
+            CreateShotUA2(ObjMove_GetX(parent_), ObjMove_GetY(parent_), 0, angleT - 180, accel, maxSpeed, 0, SHOT_RED+PILL_S, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST1);
+            colorNum++;
+            wait(waitTime);
+        }
+    }
 }

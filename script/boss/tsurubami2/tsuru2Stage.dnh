@@ -39,8 +39,6 @@ task TStage() {
     StartScript(ID);
     StartBGM(1, 180, 0);
 
-    //TODO figure out multiple plurals?
-
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
     wait(150); //last explosion & spell bonus numbers
 
