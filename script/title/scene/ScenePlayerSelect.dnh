@@ -19,11 +19,10 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     if (selectedDifficulty >= D_EASYEX) {
         unlockFlag = [
             CD_GetExtraStageFlag(PLAYER_YABUSAME), 
-            //CD_GetExtraStageFlag(PLAYER_TSUBAKURA) TODO remove for full game
-            false
+            CD_GetExtraStageFlag(PLAYER_TSUBAKURA)
         ];
     }
-    //additional else if branch for practice mode unlocks
+    //additional else if branch for practice mode unlocks (full 6 stage game sort of thing)
 
     //Forbid Indices
     ascent (i in 0..length(unlockFlag)) {
