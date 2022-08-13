@@ -137,6 +137,15 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "spell14.dnh"
         ];
     }
+    case (1) { //Tsurubami 2
+        dir = DIR_STG ~ "tsurubami2/";
+        scriptPath ~= [
+            dir ~ "tsuru2Stage.dnh",
+            dir ~ "tsuru2BG.dnh",
+            dir ~ "tsuru2Plural.dnh",
+            dir ~ "nonspell1.dnh",
+        ];
+    }
 
     //Player scripts
     alternative (playerType_)
@@ -146,6 +155,13 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
     //Spell practice stage script
     alternative (gameMode_)
     case (GAME_SPELL) { scriptPath ~= [DIR_STG ~ "Stage_SpellPractice.dnh"]; }
+
+    //Debug stage
+    scriptPath ~= [
+        DIR_STG ~ "test/testStage.dnh",
+        DIR_STG ~ "test/testPlural.dnh",
+        DIR_STG ~ "test/testSingle.dnh"
+    ];
 
     return scriptPath;
 }

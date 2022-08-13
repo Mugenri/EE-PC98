@@ -1,0 +1,179 @@
+//Tsurubami backgrounds
+#include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Background.dnh"
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    BG_Init(GetScriptArgument(0));
+}
+
+@Event { BG_Event(); }
+
+@MainLoop { yield; }
+
+function<void> ChangeIndex(int index_, int priority_) {
+    //change to index (starts shutdown for current bg)
+    _bIndex = index_;
+    alternative (index_)
+    case (0) { TBackground(index_, priority_, COLOR_BLACK); }
+    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14) { TSpellBackground(index_, priority_); }
+    case (15) { TBackground(index_, priority_, COLOR_RED_DD); }
+    others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
+}
+
+task TBackground(int index_, int priority_, color_) {
+    bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    //bg
+    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+
+    int count = 0;
+    int frames = 90;
+    float[] rad = [121.2, 95.9, 108.8, 108.5, 95.5, 94.0, 111.0, 114.4, 49.8, 53.2, 71.5, 74.2, 55.2, 64.4, 89.9, 105.1];
+    float[] angle = [54.9, 82.7, 83.6, 85.2, 84.5, 91.2, 91.0, 94.0, 99.5, 117.6, 110.0, 115.2, 125.2, 138.2, 122.1, 124.0];
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            async { exitFlag = BG_Exit(); }
+            index_ = _bIndex;
+        }
+        if (count % frames == 0) {
+            TLineEffect();
+            async {
+                wait(37); //accelerate from 0 to 6 = 1 using i / 90
+                ObjRender_SetColor(black, color_);
+                for (int frame = 0; frame <= frames; frame++) {
+                    ObjRender_SetColor(black, Interpolate_X_PackedInt(color_, COLOR_BLACK, frame / as_float(frames), LERP_SMOOTH));
+                    yield;
+                }
+            }
+        }
+        count++;
+        yield;
+    }
+
+    Obj_Delete(bg);
+    Obj_Delete(black);
+
+    task TLineEffect() {
+        int outline = InitPrim2D(PRIMITIVE_LINESTRIP, 32, priority_);
+        ObjRender_SetColor(outline, COLOR_GRAY_D);
+
+        for (int i = 0; i < frames; i++) {
+            //all points are polar, angle & radius for coords
+            float rMult = Interpolate_Accelerate(0, 6.0, i / as_float(frames)); //~1 at i = 37
+
+            for (int j = 0; j < 16; j++) {
+                ObjPrim_SetVertexPosition(outline, j, MID_X + rad[j] * rMult * cos(90 + angle[j]), MID_Y + rad[j] * rMult * sin(90 + angle[j]), 1);
+                ObjPrim_SetVertexPosition(outline, 31 - j, MID_X + rad[j] * rMult * cos(90 - angle[j]), MID_Y + rad[j] * rMult * sin(90 - angle[j]), 1);
+            }
+            yield;
+        }
+        Obj_Delete(outline);
+    }
+}
+
+task TSpellBackground(int index_, int priority_) {
+    bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    //character silhouette
+    int xNum = (index_ - 1) % 5;
+    int yNum = (index_ - 1) / 5;
+    int character = InitSprite2D((MID_X * xNum), MAX_Y + (MID_Y * yNum), (MID_X * xNum) + MID_X, MAX_Y + (MID_Y * yNum) + MID_Y, IMG_BG_TSURUBAMI, priority_ + 1);
+    ObjRender_SetPosition(character, 1, 1, 1);
+    ObjRender_SetScaleXYZ(character, 2, 2, 1);
+    //torii & kanji
+    int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+
+    int count = 30;
+    int color = 0;
+    bool increment = true;
+
+    TLineEffect();
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            async { exitFlag = BG_Exit(); }
+            index_ = _bIndex;
+        }
+        ObjRender_SetColor(black, color, color, color);
+
+        if (increment) count++;
+        else count--;
+
+        if (count >= 209) increment = false;
+        else if (count < 30) increment = true;
+
+        color = trunc(count / 60) * 6;
+        yield;
+    }
+
+    Obj_Delete(black);
+    Obj_Delete(character);
+    Obj_Delete(bg);
+
+    task TLineEffect() {
+        //Used for movement
+        int count = 0;
+
+        //starting point for line columns/rows
+        int xOrigin = -17;
+        int yOrigin = -26;
+
+        int x = xOrigin;
+        int y = yOrigin;
+
+        //Vertical Lines
+        loop (5) {
+            TCreateLine(x, y, 71, 7, true);
+            x += 139;
+        }
+
+        x = xOrigin - 139; //need one point back to cover full range of motion
+        y = yOrigin + 70; //Height of a rectangle
+
+        //Horizontal Lines
+        loop (5) {
+            TCreateLine(x, y, 140, 7, false);
+            y += 70;
+        }
+
+        //Movement
+        while (!exitFlag) {
+            if (count >= 140) count = 0;
+            count++;
+            yield;
+        }
+
+        task TCreateLine(int xStart_, int yStart_, int step_, int points_, bool vertical_) {
+            int[][] positions = [];
+
+            int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
+            for (int i = 0; i < points_; i++) {
+                ObjPrim_SetVertexColor(line, i, COLOR_GRAY_D);
+                ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);
+                positions ~= [[xStart_, yStart_]];
+                if (vertical_) yStart_ += step_;
+                else xStart_ += step_;
+            }
+
+            //set positions based on grid position and multiplier based on distance from the middle
+            while (!exitFlag) {
+                ascent (i in 0..length(positions)) {
+                    int xCurr = positions[i][0] - count;
+                    int yCurr = positions[i][1];
+                    xCurr -= (xCurr - MID_X) * 0.06 * (absolute(yCurr - MID_Y) * 0.02);
+                    yCurr += (yCurr - MID_Y) * 0.06 * (absolute(xCurr - MID_X) * 0.02);
+
+                    ObjPrim_SetVertexPosition(line, i, xCurr, yCurr, 1);
+                }
+                yield;
+            }
+            Obj_Delete(line);
+        }
+    }
+}
