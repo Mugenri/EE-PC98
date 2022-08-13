@@ -13,7 +13,7 @@ int _countShot = 0;
 @Initialize {
     string imageFile = IMG_PLR_TSUBAKURA;
     string shotData = DIR_PLR ~ "TsubaShot.dnh";
-    InitPlayer(imageFile, shotData, 4.5, 2.2, 16, 48);
+    InitPlayer(imageFile, shotData, 4.5, 2.0, 16, 48);
 
     TShot();
 }
