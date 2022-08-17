@@ -80,9 +80,11 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (74)           { return "All-Seeing Eye \"Faded Memory\""; }                   //ABEX
         others { return "INVALID"; }
     }
-    case (1) { //Tsurubami 2 (tsubakura fight)
+    case (1) { //Tsurubami 2
         alternative (spellID_)
         case (0, 1, 2)      { return "Nonspell 1"; }                                        //1
+        case (3, 4)         { return "Charm Card \"Decaying Natural Beauty\""; }            //2
+        case (5)            { return "Superficial Charm \"Love Bombing\""; }                //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -126,6 +128,7 @@ function<string> Spell_GetPath(int stageIndex_, int spellID_) {
         dir = dir ~ "tsurubami2/";
         alternative (spellID_)
         case (0, 1, 2)      { return dir ~ "nonspell1.dnh"; }   //1
+        case (3, 4, 5)      { return dir ~ "spell1.dnh"; }      //2
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

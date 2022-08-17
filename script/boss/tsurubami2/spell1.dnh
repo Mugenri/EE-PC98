@@ -1,0 +1,237 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 1"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = [760, 720, 680][_diff];
+_spellID = 3 + _diff;
+
+int _triggerDistance = [80, 80, 96][_diff];
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3500);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(45 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TTriggerZone();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X + 140, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(1, 0);
+    CallSFX(SND_TRANSITION);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFlowers(1);
+                wait(_loopTime / 2);
+                TFlowers(-1);
+            }
+        }
+        yield;
+    }
+}
+
+task TTriggerZone() {
+    //draw radius line around player
+
+    int triggerZone = Primitive_CreatePolygon2D(GetPlayerX(), GetPlayerY(), 0, 0, 32, COLOR_PINK, false, RP_STG_EFF_LO);
+    int vertices = ObjPrim_GetVertexCount(triggerZone);
+
+    //expand
+    for (int i = 0; i < _triggerDistance; i++) {
+        float rad = Interpolate_Smoother(0, _triggerDistance, i / as_float(_triggerDistance - 1));
+        for (int vertex = 0; vertex < vertices; vertex++) {
+            float angleT = (360 / (vertices - 1)) * vertex;
+            ObjPrim_SetVertexPosition(triggerZone, vertex, GetPlayerX() + rad * cos(angleT), GetPlayerY() + rad * sin(angleT), 1);
+        }
+        yield;
+    }
+
+    float heartSpeed = [-0.4, -0.4, -1.4][_diff];
+    float heartAccel = [0.02, 0.02, 0.12][_diff];
+    float heartMaxSpeed = [1.2, 1.2, 2.0][_diff];
+
+    while (Boss_Alive(_objBoss)) {
+        //update zone
+        for (int vertex = 0; vertex < vertices; vertex++) {
+            float angleT = (360 / (vertices - 1)) * vertex;
+            ObjPrim_SetVertexPosition(triggerZone, vertex, GetPlayerX() + _triggerDistance * cos(angleT), GetPlayerY() + _triggerDistance * sin(angleT), 1);
+        }
+        
+        //affect shots
+        for each (shot in GetShotIdInCircleA2(GetPlayerX(), GetPlayerY(), _triggerDistance, TARGET_ENEMY)) {
+            if (ObjShot_GetImageID(shot) == SHOT_GRAY+HEART_S && ObjMove_GetY(shot) < MAX_Y - 8 && ObjMove_GetX(shot) > MIN_X + 8 && ObjMove_GetX(shot) < MAX_X - 8) {
+                float angleT = GetAngleToPlayer(shot);
+                ObjMove_SetPosition(shot, GetPlayerX() + _triggerDistance * cos(angleT + 180), GetPlayerY() + _triggerDistance * sin(angleT + 180));
+                ObjMove_AddPatternA3(shot, 0, heartSpeed, angleT, heartAccel, heartMaxSpeed, 0, SHOT_RED+HEART_S);
+                Obj_SetValueI(shot, SHOT_EFFECT, SHOT_RED+CANCEL_BURST2);
+                CallSFX(SND_SHOT2);
+            }
+        }
+        yield;
+    }
+
+    for (int i = 0; i < _triggerDistance; i++) {
+        float rad = Interpolate_Smoother(_triggerDistance, 0, i / as_float(_triggerDistance - 1));
+        for (int vertex = 0; vertex < vertices; vertex++) {
+            float angleT = (360 / (vertices - 1)) * vertex;
+            ObjPrim_SetVertexPosition(triggerZone, vertex, GetPlayerX() + rad * cos(angleT), GetPlayerY() + rad * sin(angleT), 1);
+        }
+        yield;
+    }
+}
+
+task TFlowers(int dir_) {
+    if (!Boss_Alive(_objBoss)) return;
+
+    //Charge Anim
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180, 30, 8, COLOR_RED_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180, 30, 8, COLOR_RED_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 90, 30, 8, COLOR_PINK);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 90, 30, 8, COLOR_PURPLE_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 90, 30, 8, COLOR_PURPLE_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -90, 30, 8, COLOR_PINK);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -90, 30, 8, COLOR_PURPLE_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -90, 30, 8, COLOR_PURPLE_L);
+    wait(45);
+    Animation_Charge(_objBoss, false);
+
+    if (!Boss_Alive(_objBoss)) return;
+
+    //flower burst
+    int way = [7, 7, 13][_diff];
+    int stack = [15, 19, 11][_diff];
+    float sBase = [-2.9, -3.2, -4.5][_diff];
+    float sArg = [-1.0, -1.3, -2.2][_diff];
+    int burst = Shot_CreatePattern(_objBoss, PATTERN_ROSE, way, stack, sBase, sArg, (rand(0, 360)), 4, 48, SHOT_PINK_INV+FIRE_S, 0);
+    Shot_FirePatternA(burst, SHOT_PURPLE+FIRE_S, SHOT_PURPLE+SPAWN_S+SIZE_16, SHOT_PURPLE+CANCEL_BURST2);
+    CallSFX(SND_SHOT2);
+    wait(6);
+    Shot_FirePatternA(burst, SHOT_PINK_INV+FIRE_S, SHOT_PINK_INV+SPAWN_S+SIZE_16, SHOT_PINK_INV+CANCEL_BURST2);
+
+    //move, throw flowers, heart bursts
+    int flowerNum = 7;
+    int waitTime = 24;
+    way = [5, 5, 7][_diff];
+    stack = [5, 5, 13][_diff];
+    sBase = [2, 4, 14][_diff];
+    sArg = [1, 1.8, 8][_diff];
+    ObjPatternShot_SetShotCount(burst, way, stack);
+    ObjPatternShot_SetSpeed(burst, sBase, sArg);
+    ObjPatternShot_SetShootRadius(burst, 0);
+    for (int i = 0; i < flowerNum; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        ObjMove_SetDestAtFrame(_objBoss, Interpolate_Linear(MID_X + 140 * dir_, MID_X - 140 * dir_, i / as_float(flowerNum - 1)), rand(40, 100), waitTime, LERP_DECELERATE);
+        wait(waitTime);
+        if (!Boss_Alive(_objBoss)) return;
+        ObjPatternShot_SetAngle(burst, rand(0, 360), 2);
+        Shot_FirePatternA(burst, SHOT_GRAY+HEART_S, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+        TFlower(rand(0, 1));
+        TFlower(rand(0, -1));
+        CallSFX(SND_SHOT1);
+    }
+
+    Obj_Delete(burst);
+
+    task TFlower(float direction_) {
+        float xSpeed = 2 * direction_;
+        if (direction_ > 0) direction_ = 1;
+        else direction_ = -1;
+        float ySpeed = rand(-0.5, -3);
+        float yAccel = 0.2;
+        float xSpeedMin = rand(0.2, 0.8) * direction_;
+        float ySpeedMax = [1.1, 1.3, 5.5][_diff];
+        int center = CreateShotUB2(Boss_X(_objBoss), Boss_Y(_objBoss), xSpeed, ySpeed, -0.08 * direction_, yAccel, xSpeedMin, ySpeedMax, SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_S+SIZE_8, SHOT_YELLOW+CANCEL_SPARKLE);
+
+        int[] petals = [];
+        int numPetal = [6, 7, 11][_diff];
+        int color = [SHOT_PINK, SHOT_WHITE, SHOT_PINK_INV, SHOT_PURPLE][rand_int(0, 3)];
+        loop (numPetal) {
+            petals ~= [CreateShotUA1(ObjMove_GetX(center), ObjMove_GetY(center), 0, 0, color+PILL_S, 0, color+SPAWN_E+SIZE_16, color+CANCEL_BURST2)];
+        }
+
+        float baseAngle = rand(0, 360);
+        float angleMod = (360 / numPetal);
+        float spinSpeed = 2 * direction_;
+        float radius = 12;
+
+        float petalSpeed = [0.9, 1, 1.7][_diff];
+        float petalAccel = 0.015;
+
+        int decaySpeed = [5, 4, 2][_diff];
+
+        //update
+        while (!Obj_IsDeleted(center)) {
+            for (int i = 0; i < numPetal; i++) {
+                ObjMove_SetPosition(petals[i], ObjMove_GetX(center) + ObjMove_GetSpeedX(center) + radius * cos(baseAngle + angleMod * i), ObjMove_GetY(center) + ObjMove_GetSpeedY(center) + radius * sin(baseAngle + angleMod * i));
+                ObjMove_SetAngle(petals[i], baseAngle + angleMod * i);
+            }
+            //break
+            if (GetObjectDistance(center, GetPlayerObjectID()) <= _triggerDistance && ObjMove_GetY(center) < MAX_Y && ObjMove_GetX(center) > MIN_X && ObjMove_GetX(center) < MAX_X) {
+                for (int i = 0; i < numPetal; i++) {
+                    ObjMove_AddPatternA1(petals[i], 0, 0, NO_CHANGE);
+                    ObjMove_AddPatternA3(petals[i], (i + 1) * decaySpeed, 0, NO_CHANGE, petalAccel, petalSpeed, NO_CHANGE, SHOT_GRAY_INV+PILL_S);
+                    Obj_SetValueI(petals[i], SHOT_EFFECT, SHOT_GRAY_INV+CANCEL_BURST2);
+                }
+                ObjMove_AddPatternA3(center, 0, 0, NO_CHANGE, 0, 0, 0, SHOT_GRAY+BOUNCY_BALL);
+                Obj_SetValueI(center, SHOT_EFFECT, SHOT_GRAY+CANCEL_SPARKLE);
+                ObjShot_SetDeleteFrame(center, (numPetal + 1) * decaySpeed);
+                break;
+            }
+
+            baseAngle += spinSpeed;
+            yield;
+        }
+    }
+}

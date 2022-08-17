@@ -44,7 +44,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (Boss_Alive(_objBoss)) yield;
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X + 140, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
@@ -67,14 +67,14 @@ task TMain() {
 task TRing(int dir_) {
     if (!Boss_Alive(_objBoss)) return;
     Animation_Charge(_objBoss, true);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_RED_L);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_RED_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180, 30, 8, COLOR_RED_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180, 30, 8, COLOR_RED_L);
     wait(3);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_GRAY_L);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180, 30, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180, 30, 8, COLOR_GRAY_L);
     wait(3);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180 * dir_, 30, 8, COLOR_GRAY_D);
-    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180 * dir_, 30, 8, COLOR_GRAY_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, 180, 30, 8, COLOR_GRAY_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 120, -180, 30, 8, COLOR_GRAY_D);
     wait(30);
     Animation_Charge(_objBoss, false);
 

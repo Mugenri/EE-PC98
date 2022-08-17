@@ -74,7 +74,7 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
 function<int> SpellPractice_GetBGMIndex(int stageIndex_) {
     alternative (stageIndex_)
     case (0) { return 1; } //Eternal Dance Engine
-    case (1) { return 2; } //Broken Eternal Dance Engine
+    case (1) { return 1; } //Broken Eternal Dance Engine TODO
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
