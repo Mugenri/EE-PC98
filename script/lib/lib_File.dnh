@@ -37,6 +37,7 @@ const string IMG_PORTRAIT_YABUSAME  = DIR_IMG ~ "character/yabusame/yabuPortrait
 const string IMG_STG_TSURUBAMI      = DIR_IMG ~ "character/tsurubami/tsuruSTG.png";
 //Backgrounds
 const string IMG_BG_TSURUBAMI       = DIR_IMG ~ "stg/tsurubamiBG.png";
+const string IMG_BG_TSURUBAMI_2     = DIR_IMG ~ "stg/tsurubami2BG.png";
 
 //HLSL Shaders
 const string HLSL_FADE              = DIR_HLSL ~ "TexFade.hlsl";

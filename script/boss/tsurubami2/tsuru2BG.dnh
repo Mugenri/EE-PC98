@@ -27,7 +27,7 @@ task TBackground(int index_, int priority_, color_) {
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
     //bg
-    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
 
     int count = 0;
     int frames = 90;
@@ -83,11 +83,11 @@ task TSpellBackground(int index_, int priority_) {
     //character silhouette
     int xNum = (index_ - 1) % 5;
     int yNum = (index_ - 1) / 5;
-    int character = InitSprite2D((MID_X * xNum), MAX_Y + (MID_Y * yNum), (MID_X * xNum) + MID_X, MAX_Y + (MID_Y * yNum) + MID_Y, IMG_BG_TSURUBAMI, priority_ + 1);
+    int character = InitSprite2D((MID_X * xNum), MAX_Y + (MID_Y * yNum), (MID_X * xNum) + MID_X, MAX_Y + (MID_Y * yNum) + MID_Y, IMG_BG_TSURUBAMI_2, priority_ + 1);
     ObjRender_SetPosition(character, 1, 1, 1);
     ObjRender_SetScaleXYZ(character, 2, 2, 1);
     //torii & kanji
-    int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI, priority_ + 1);
+    int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
 
     int count = 30;
     int color = 0;

@@ -26,6 +26,12 @@ function<string[]> Load_GetTextureStage(int stageIndex_) {
             IMG_BG_TSURUBAMI
         ];
     }
+    case (1) { //Tsurubami 2
+        texture ~= [
+            IMG_STG_TSURUBAMI,
+            IMG_BG_TSURUBAMI_2
+        ];
+    }
 
     return texture;
 }
@@ -144,6 +150,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "tsuru2BG.dnh",
             dir ~ "tsuru2Plural.dnh",
             dir ~ "nonspell1.dnh",
+            dir ~ "spell1.dnh"
         ];
     }
 
