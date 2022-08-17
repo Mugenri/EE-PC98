@@ -16,7 +16,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
     bool[] unlockFlag = [true, true];
 
     //Extra Unlock
-    if (selectedDifficulty >= D_EASYEX) {
+    if (selectedDifficulty >= D_EASYEX && !DEBUG_MODE) {
         unlockFlag = [
             CD_GetExtraStageFlag(PLAYER_YABUSAME), 
             CD_GetExtraStageFlag(PLAYER_TSUBAKURA)
