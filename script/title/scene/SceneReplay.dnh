@@ -136,7 +136,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
                 UpdateListItem();
                 updateIndex = -1;
             }
-            ObjText_SetVertexColor(objText, 0xFF000000 | (realID == indexCurrent ? COLOR_BLACK : IsValidReplayIndex(realID + 1) ? COLOR_OLIVE_D : COLOR_GRAY_L));
+            ObjText_SetVertexColor(objText, 0xFF000000 | (realID == indexCurrent ? COLOR_BLACK : IsValidReplayIndex(realID + 1) ? (GetReplayVersion(realID + 1) == GAME_VERSION ? COLOR_OLIVE_D : COLOR_RED) : COLOR_GRAY_L));
             yield;
         }
         
@@ -220,6 +220,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
 
     function<string> SaveReplayData() {
         //replay info to be saved
+        SetReplayUserData("VERSION", GAME_VERSION);
         SetReplayUserData("GameMode", GetGameMode());
         SetReplayUserData("PlayerType", GetPlayerType());
         SetReplayUserData("Difficulty", GetDifficulty());

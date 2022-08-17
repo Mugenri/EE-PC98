@@ -22,6 +22,7 @@ function<void> StartDialogueScript(string path_) {
 }
 //Replay Info
 function<int> GetReplayIndex() { return GetAreaCommonData(AREA_TITLE, "ReplayIndex", -1); }
+function<var> GetReplayVersion(int index_) { return GetReplayUserData(index_, "VERSION"); }
 function<int> GetReplayGameMode(int index_) { return GetReplayUserData(index_, "GameMode"); }
 function<int> GetReplayPlayerType(int index_) { return GetReplayUserData(index_, "PlayerType"); }
 function<int> GetReplayDifficulty(int index_) { return GetReplayUserData(index_, "Difficulty"); }
