@@ -88,8 +88,8 @@ task TRing(int dir_) {
     float aArg = 360 / (way * stack);
     float wvel = [10, 10, 10][_diff];
 
-    int ring1 = Shot_CreatePattern(_objBoss, PATTERN_RING, way, stack, sMax, -sMax, aBase, aArg, 0, SHOT_RED_INV+CARD, 0);
-    int[] shots = Shot_FirePatternA(ring1, SHOT_RED_INV+CARD, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+    int ring = Shot_CreatePattern(_objBoss, PATTERN_RING, way, stack, sMax, -sMax, aBase, aArg, 0, 0);
+    int[] shots = Shot_FirePatternA(ring, SHOT_RED_INV+CARD, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
 
     for each (shot in shots) {
         ObjMove_SetAngularVelocity(shot, wvel * dir_);
@@ -101,7 +101,7 @@ task TRing(int dir_) {
 
     Boss_MoveRadiusInBounds(_objBoss, 48, 64, 100, MAX_X - 100, 32, 100, 60, LERP_DECELERATE);
 
-    Obj_Delete(ring1);
+    Obj_Delete(ring);
 
     task TTrail(int parent_) {
         wait(60);

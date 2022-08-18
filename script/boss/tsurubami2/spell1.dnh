@@ -154,7 +154,7 @@ task TFlowers(int dir_) {
     int stack = [15, 19, 11][_diff];
     float sBase = [-2.9, -3.2, -4.5][_diff];
     float sArg = [-1.0, -1.3, -2.2][_diff];
-    int burst = Shot_CreatePattern(_objBoss, PATTERN_ROSE, way, stack, sBase, sArg, (rand(0, 360)), 4, 48, SHOT_PINK_INV+FIRE_S, 0);
+    int burst = Shot_CreatePattern(_objBoss, PATTERN_ROSE, way, stack, sBase, sArg, (rand(0, 360)), 4, 48, 0);
     Shot_FirePatternA(burst, SHOT_PURPLE+FIRE_S, SHOT_PURPLE+SPAWN_S+SIZE_16, SHOT_PURPLE+CANCEL_BURST2);
     CallSFX(SND_SHOT2);
     wait(6);

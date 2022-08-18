@@ -115,7 +115,7 @@ function<int> CreateShotUC2(float x_, float y_, float xSpeed_, float ySpeed_, fl
 //PatternShot Functions
 //----------------------------------------------------
 //with parent
-function<int> Shot_CreatePattern(int parent_, int type_, int way_, int stack_, float sBase_, float sArg_, float aBase_, float aArg_, float rad_, int graphic_, int delay_) {
+function<int> Shot_CreatePattern(int parent_, int type_, int way_, int stack_, float sBase_, float sArg_, float aBase_, float aArg_, float rad_, int delay_) {
     int obj = ObjPatternShot_Create();
     ObjPatternShot_SetShotType(obj, OBJ_SHOT);
     ObjPatternShot_SetParentObject(obj, parent_);
@@ -124,12 +124,11 @@ function<int> Shot_CreatePattern(int parent_, int type_, int way_, int stack_, f
     ObjPatternShot_SetSpeed(obj, sBase_, sArg_);
     ObjPatternShot_SetAngle(obj, aBase_, aArg_);
     ObjPatternShot_SetShootRadius(obj, rad_);
-    ObjPatternShot_SetGraphic(obj, graphic_);
     ObjPatternShot_SetDelay(obj, delay_);
     return obj;
 }
 //with basepoint
-function<int> Shot_CreatePattern(float baseX_, float baseY_, int type_, int way_, int stack_, float sBase_, float sArg_, float aBase_, float aArg_, float rad_, int graphic_, int delay_) {
+function<int> Shot_CreatePattern(float baseX_, float baseY_, int type_, int way_, int stack_, float sBase_, float sArg_, float aBase_, float aArg_, float rad_, int delay_) {
     int obj = ObjPatternShot_Create();
     ObjPatternShot_SetShotType(obj, OBJ_SHOT);
     ObjPatternShot_SetBasePoint(obj, baseX_, baseY_);
@@ -138,12 +137,12 @@ function<int> Shot_CreatePattern(float baseX_, float baseY_, int type_, int way_
     ObjPatternShot_SetSpeed(obj, sBase_, sArg_);
     ObjPatternShot_SetAngle(obj, aBase_, aArg_);
     ObjPatternShot_SetShootRadius(obj, rad_);
-    ObjPatternShot_SetGraphic(obj, graphic_);
     ObjPatternShot_SetDelay(obj, delay_);
     return obj;
 }
 //without spawn animation
-function<int[]> Shot_FirePattern(int obj_, int cancelGraphic_) {
+function<int[]> Shot_FirePattern(int obj_, int graphic_, int cancelGraphic_) {
+    ObjPatternShot_SetGraphic(obj_, graphic_);
     int[] shots = ObjPatternShot_FireReturn(obj_);
     for each (shot in shots) {
         ObjShot_SetAngleRounding(shot, 22.5);
@@ -153,11 +152,11 @@ function<int[]> Shot_FirePattern(int obj_, int cancelGraphic_) {
 }
 //A type movement
 function<int[]> Shot_FirePatternA(int obj_, int graphic_, int animGraphic_, int cancelGraphic_) {
+    ObjPatternShot_SetGraphic(obj_, animGraphic_);
     int[] shots = ObjPatternShot_FireReturn(obj_);
     for each (shot in shots) {
         float speed = ObjMove_GetSpeed(shot);
         ObjMove_SetSpeed(shot, speed / 2);
-        ObjShot_SetGraphic(shot, animGraphic_);
         ObjMove_AddPatternA3(shot, 20, speed, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
         ObjShot_SetAngleRounding(shot, 22.5);
         Obj_SetValueI(shot, SHOT_EFFECT, cancelGraphic_);

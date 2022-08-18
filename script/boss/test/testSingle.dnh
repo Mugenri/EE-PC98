@@ -359,7 +359,7 @@ task TPatternR() { // all shots
 }
 
 task TPatternS() {
-    int pShot = Shot_CreatePattern(MID_X, MID_Y, PATTERN_RING, 7, 1, 1, 1, 90, 5, 0, SHOT_RED+PELLET, 0);
+    int pShot = Shot_CreatePattern(MID_X, MID_Y, PATTERN_RING, 7, 1, 1, 1, 90, 5, 0, 0);
     int[] shots = Shot_FirePatternA(pShot, SHOT_RED+PELLET, SHOT_RED+SPAWN_S+SIZE_8, SHOT_RED+CANCEL_BURST1);
 
     wait(60);
