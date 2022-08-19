@@ -307,12 +307,11 @@ task TGraze(float x_, float y_) { //Summon graze particle, add to particle list
     int frameRate = 2;
     loop (43) {
         ObjParticleList_SetPosition(_particleEffect, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleEffect, frame / frameRate, 2, 0);
+        ObjParticleList_SetExtraData(_particleEffect, (frame / frameRate) % 8, 2, 0);
         ObjParticleList_SetColor(_particleEffect, COLOR_TAN);
         ObjParticleList_AddInstance(_particleEffect);
 
         frame++;
-        if (frame >= 8 * frameRate) frame = 0;
         x_ += xStep;
         y_ += yStep;
         yield;
@@ -329,12 +328,11 @@ task TShotParticle(float x_, float y_) { //shot hit something, spawn shot flake 
     int frameRate = 2;
     loop (40) {
         ObjParticleList_SetPosition(_particleEffect, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleEffect, frame / frameRate, 2, 0);
+        ObjParticleList_SetExtraData(_particleEffect, (frame / frameRate) % 8, 2, 0);
         ObjParticleList_SetColor(_particleEffect, COLOR_GRAY_L);
         ObjParticleList_AddInstance(_particleEffect);
 
         frame++;
-        if (frame >= 8 * frameRate) frame = 0;
         x_ += xStep;
         y_ += yStep;
         yStep += 0.05;
