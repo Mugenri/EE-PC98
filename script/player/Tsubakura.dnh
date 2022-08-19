@@ -116,7 +116,7 @@ task TOption(int offset_) {
             if (GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD || GetVirtualKeyState(VK_SLOWMOVE) == KEY_PUSH) angleMod = 0;
             if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
                 loop (3) {
-                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270 + 10 * angleMod, 1.5, 1, 1);
+                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270 + 10 * angleMod, 1.6, 1, 1);
                     Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
                     wait(3);
                 }
