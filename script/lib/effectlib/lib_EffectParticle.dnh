@@ -1,11 +1,14 @@
 //Particle Effect library
 
 int _effectParticle16;
+int _effectParticle32;
 int _effectParticle64;
 
 function<void> Particle_Init() {
     _effectParticle16 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 16, 16]);
     ParticleListShader(_effectParticle16, 16 / 512, 16 / 512);
+    _effectParticle32 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 32, 32]);
+    ParticleListShader(_effectParticle32, 32 / 512, 32 / 512);
     _effectParticle64 = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_EFF_MID, [0, 0, 64, 64]);
     ParticleListShader(_effectParticle64, 64 / 512, 64 / 512);
 }
@@ -137,4 +140,64 @@ function<void> Particle_RandomExplosionBig(float x_, float y_) { //each of these
     }
 
     Primitive_ScreenFlashFinal();
+}
+
+function<void> Particle_EnemyExplosionSmall(float x_, float y_) {
+    async { //flame
+        int frame = 0;
+        int frameRate = 4;
+        while (frame < 16 * frameRate) {
+            ObjParticleList_SetPosition(_effectParticle32, x_, y_, 1);
+            ObjParticleList_SetExtraData(_effectParticle32, frame / frameRate, 5, 0);
+            ObjParticleList_AddInstance(_effectParticle32);
+
+            frame++;
+            yield;
+        }
+    }
+    async { //spinners
+        float[][] data = []; //xPos, yPos, xSpeed, ySpeed,
+        loop (7) {
+            data ~= [[
+                x_,
+                y_,
+                rand(-7, 7),
+                rand(-7, 7)
+            ]];
+        }
+
+        int frame = 0;
+        int frameRate = 2;
+
+        while (frame < 16 * frameRate) {
+            for (int particle = 0; particle < length(data); particle++) {
+                ObjParticleList_SetPosition(_effectParticle16, data[particle][0], data[particle][1], 1);
+                ObjParticleList_SetColor(_effectParticle16, COLOR_GRAY_L);
+                ObjParticleList_SetExtraData(_effectParticle16, (frame / frameRate) % 8, 2, 0);
+                ObjParticleList_AddInstance(_effectParticle16);
+                data[particle][0] += data[particle][2];
+                data[particle][1] += data[particle][3];
+            }
+            frame++;
+            yield;
+        }
+    }
+    async { //dot circle
+        int dots = InitPrim2D(PRIMITIVE_POINT_LIST, 32, RP_STG_EFF_MID);
+        ObjRender_SetColor(dots, COLOR_WHITE);
+
+        int frames = 16;
+        float radius = 0;
+        loop (frames) {
+            float angleT = 0;
+            for (int i = 0; i < 32; i++) {
+                ObjPrim_SetVertexPosition(dots, i, x_ + radius * cos(angleT), y_ + radius * sin(angleT), 1);
+                angleT += 360 / 32;
+            }
+            radius += 3;
+            yield;
+        }
+
+        Obj_Delete(dots);
+    }
 }
