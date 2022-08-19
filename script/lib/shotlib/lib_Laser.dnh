@@ -233,7 +233,7 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
 }
 
 function<int> CreateCurveLaserUA1(float x_, float y_, float speed_, float angle_, int length_, int color_, int delay_) {
-    int hitbox = CreateCurveLaserA1(x_, y_, speed_, angle_, length_, 24, 1, delay_);
+    int hitbox = CreateCurveLaserA1(x_, y_, speed_, angle_, length_, 32, 1, delay_);
     Obj_SetValueI(hitbox, SHOT_CANCEL, false);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
