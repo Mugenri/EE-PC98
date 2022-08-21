@@ -1,4 +1,4 @@
-shot_image = "./../img/character/tsubakura/tsubaStg.png"
+shot_image = "./../img/character/tsubakura/tsubaSTG.png"
 
 ShotData {
     id = 1
