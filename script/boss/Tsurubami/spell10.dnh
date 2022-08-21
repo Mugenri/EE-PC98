@@ -64,7 +64,7 @@ task TMain() {
             async {
                 TWall(1);
                 TRing(-1);
-                wait (_loopTime / 2);
+                wait(_loopTime / 2);
                 TWall(-1);
                 TRing(1);
             }
