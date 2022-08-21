@@ -366,7 +366,7 @@ task TPatternS() {
 
     for each (shot in shots) {
         ObjPatternShot_SetBasePoint(pShot, ObjMove_GetX(shot), ObjMove_GetY(shot));
-        Shot_FirePattern(pShot, SHOT_RED+CANCEL_BURST1);
+        Shot_FirePattern(pShot, SHOT_RED+PELLET, SHOT_RED+CANCEL_BURST1);
         ObjShot_SetDeleteFrame(shot, 0);
     }
 }
