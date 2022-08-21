@@ -92,6 +92,7 @@ task TRing(int dir_) {
     int[] shots = Shot_FirePatternA(ring, SHOT_RED_INV+CARD, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
 
     for each (shot in shots) {
+        ObjShot_SetSpellResist(shot, true);
         ObjMove_SetAngularVelocity(shot, wvel * dir_);
         ObjMove_AddPatternA2(shot, 20, sBase, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
         TTrail(shot);

@@ -53,7 +53,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (Boss_Alive(_objBoss)) yield;
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 80, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
     Transition_ChangeBG(0, 0);
