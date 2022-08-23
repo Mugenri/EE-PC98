@@ -15,7 +15,7 @@ function<void> ChangeIndex(int index_, int priority_) {
     //change to index (starts shutdown for current bg)
     _bIndex = index_;
     alternative (index_)
-    case (0) { TBackground(index_, priority_, COLOR_BLACK); }
+    case (0) { TBackground(index_, priority_, COLOR_RED_D); }
     case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14) { TSpellBackground(index_, priority_); }
     case (15) { TBackground(index_, priority_, COLOR_RED_DD); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
@@ -26,13 +26,14 @@ task TBackground(int index_, int priority_, color_) {
     //black bg
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
+    //glass
+    int glass = InitSprite2D(768, 0, 1152, 368, IMG_BG_TSURUBAMI_2, priority_);
+    ObjRender_SetColor(glass, COLOR_BLACK);
     //bg
     int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
 
     int count = 0;
     int frames = 90;
-    float[] rad = [121.2, 95.9, 108.8, 108.5, 95.5, 94.0, 111.0, 114.4, 49.8, 53.2, 71.5, 74.2, 55.2, 64.4, 89.9, 105.1];
-    float[] angle = [54.9, 82.7, 83.6, 85.2, 84.5, 91.2, 91.0, 94.0, 99.5, 117.6, 110.0, 115.2, 125.2, 138.2, 122.1, 124.0];
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
@@ -40,9 +41,7 @@ task TBackground(int index_, int priority_, color_) {
             index_ = _bIndex;
         }
         if (count % frames == 0) {
-            TLineEffect();
             async {
-                wait(37); //accelerate from 0 to 6 = 1 using i / 90
                 ObjRender_SetColor(black, color_);
                 for (int frame = 0; frame <= frames; frame++) {
                     ObjRender_SetColor(black, Interpolate_X_PackedInt(color_, COLOR_BLACK, frame / as_float(frames), LERP_SMOOTH));
@@ -55,24 +54,8 @@ task TBackground(int index_, int priority_, color_) {
     }
 
     Obj_Delete(bg);
+    Obj_Delete(glass);
     Obj_Delete(black);
-
-    task TLineEffect() {
-        int outline = InitPrim2D(PRIMITIVE_LINESTRIP, 32, priority_);
-        ObjRender_SetColor(outline, COLOR_GRAY_D);
-
-        for (int i = 0; i < frames; i++) {
-            //all points are polar, angle & radius for coords
-            float rMult = Interpolate_Accelerate(0, 6.0, i / as_float(frames)); //~1 at i = 37
-
-            for (int j = 0; j < 16; j++) {
-                ObjPrim_SetVertexPosition(outline, j, MID_X + rad[j] * rMult * cos(90 + angle[j]), MID_Y + rad[j] * rMult * sin(90 + angle[j]), 1);
-                ObjPrim_SetVertexPosition(outline, 31 - j, MID_X + rad[j] * rMult * cos(90 - angle[j]), MID_Y + rad[j] * rMult * sin(90 - angle[j]), 1);
-            }
-            yield;
-        }
-        Obj_Delete(outline);
-    }
 }
 
 task TSpellBackground(int index_, int priority_) {
