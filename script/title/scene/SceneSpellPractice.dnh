@@ -323,19 +323,24 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         }
 
         task TPlayerDisplay() { //player selection display
-            int playerText = CreateText(16, 332, RP_UI_TEXT, "ERR", COLOR_WHITE);
-            ObjText_SetMaxWidth(playerText, 204);
-            ObjText_SetHorizontalAlignment(playerText, ALIGNMENT_CENTER);
+            int playerText1 = CreateText(16, 332, RP_UI_TEXT, "Yabusame Houren", COLOR_WHITE);
+            int playerText2 = CreateText(16, 348, RP_UI_TEXT, "Tsubakura Enraku", COLOR_WHITE);
+            ObjText_SetMaxWidth(playerText1, 204);
+            ObjText_SetMaxWidth(playerText2, 204);
+            ObjText_SetHorizontalAlignment(playerText1, ALIGNMENT_CENTER);
+            ObjText_SetHorizontalAlignment(playerText2, ALIGNMENT_CENTER);
             int currPlayer = -1;
 
             while (!exitFlag) {
                 if (currPlayer != selectedPlayer) {
                     currPlayer = selectedPlayer;
-                    ObjText_SetText(playerText, ["Yabusame Houren", "Tsubakura Enraku"][currPlayer]);
+                    ObjText_SetVertexColor(playerText1, 0xFF000000 | (currPlayer == PLAYER_YABUSAME ? COLOR_WHITE : COLOR_GRAY));
+                    ObjText_SetVertexColor(playerText2, 0xFF000000 | (currPlayer == PLAYER_TSUBAKURA ? COLOR_WHITE : COLOR_GRAY));
                 }
                 yield;
             }
-            Obj_Delete(playerText);
+            Obj_Delete(playerText1);
+            Obj_Delete(playerText2);
         }
     }
 
