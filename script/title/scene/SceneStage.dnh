@@ -69,7 +69,7 @@ task TStageScene() {
     case (GAME_MAIN) { stageScript = GetStagePath(stageIndex); }
     case (GAME_SPELL) { stageScript = DIR_STG ~ "Stage_SpellPractice.dnh"; }
 
-    if (DEBUG_MODE && GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD) stageScript = DIR_STG ~ "test/testStage.dnh"; //test script
+    if (DEBUG_MODE && GetVirtualKeyState(VK_CANCEL) == KEY_HOLD) stageScript = DIR_STG ~ "test/testStage.dnh"; //test script
 
     wait(20);
 
