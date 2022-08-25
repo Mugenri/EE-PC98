@@ -15,9 +15,10 @@ function<void> ChangeIndex(int index_, int priority_) {
     //change to index (starts shutdown for current bg)
     _bIndex = index_;
     alternative (index_)
-    case (0) { TBackground(index_, priority_, COLOR_RED_D); }
-    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14) { TSpellBackground(index_, priority_); }
-    case (15) { TBackground(index_, priority_, COLOR_RED_DD); }
+    case (0) { TBackground(index_, priority_, COLOR_RED_DD); }
+    case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16) { TSpellBackground(index_, priority_); }
+    case (20) { TBackground(index_, priority_, COLOR_RED_D); }
+    case (21) { TBackground(index_, priority_, COLOR_RED); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
@@ -27,7 +28,7 @@ task TBackground(int index_, int priority_, color_) {
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
     //glass
-    int glass = InitSprite2D(768, 0, 1152, 368, IMG_BG_TSURUBAMI_2, priority_);
+    int glass = InitSprite2D(768, 0, 1152, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
     ObjRender_SetColor(glass, COLOR_BLACK);
     //bg
     int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
@@ -40,15 +41,7 @@ task TBackground(int index_, int priority_, color_) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
-        if (count % frames == 0) {
-            async {
-                ObjRender_SetColor(black, color_);
-                for (int frame = 0; frame <= frames; frame++) {
-                    ObjRender_SetColor(black, Interpolate_X_PackedInt(color_, COLOR_BLACK, frame / as_float(frames), LERP_SMOOTH));
-                    yield;
-                }
-            }
-        }
+        if (count % frames == 0) TEffect();
         count++;
         yield;
     }
@@ -56,6 +49,29 @@ task TBackground(int index_, int priority_, color_) {
     Obj_Delete(bg);
     Obj_Delete(glass);
     Obj_Delete(black);
+
+    task TEffect() {
+        //expanding prim
+        int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 32, priority_);
+        ObjRender_SetColor(circle, color_);
+
+        for (int i = 0; i < frames * 0.25; i++) {
+            float rad = Interpolate_Accelerate(0, 350, i / as_float(frames * 0.25 - 1));
+
+            ObjPrim_SetVertexPosition(circle, 0, MID_X, MID_Y, 1);
+            for (int i = 0; i < 31; i++) {
+                float angleT = 360 / 30 * i;
+                ObjPrim_SetVertexPosition(circle, i + 1, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+            }
+            yield;
+        }
+
+        for (int i = 0; i < frames * 0.75; i++) {
+            ObjRender_SetColor(circle, Interpolate_X_PackedInt(color_, COLOR_BLACK, i / as_float(frames * 0.75 - 1), LERP_SMOOTH));
+            yield;
+        }
+        Obj_Delete(circle);
+    }
 }
 
 task TSpellBackground(int index_, int priority_) {
