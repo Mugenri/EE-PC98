@@ -31,7 +31,7 @@ task TStage() {
 
     while (!_start) yield;
 
-    Stage_SetIntroText("MUGENRI BARRIER?", "Forbidden Dream World");
+    Stage_SetIntroText("MUGENRI BARRIER?", "Unstable Dream World");
     
     string dialoguePath = dir ~ "dialogueIntro.dnh";
     //StartDialogueScript(dialoguePath); TODO
