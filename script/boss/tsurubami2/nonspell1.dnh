@@ -100,7 +100,7 @@ task TRing(int dir_) {
 
     CallSFX(SND_SHOT1);
 
-    Boss_MoveRadiusInBounds(_objBoss, 48, 64, 100, MAX_X - 100, 32, 100, 60, LERP_DECELERATE);
+    Boss_MoveRadiusInBounds(_objBoss, 48, 64, MID_X - 64, MID_X + 64, 32, 100, 60, LERP_DECELERATE);
 
     Obj_Delete(ring);
 
