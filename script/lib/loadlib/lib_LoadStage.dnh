@@ -166,11 +166,13 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
     case (GAME_SPELL) { scriptPath ~= [DIR_STG ~ "Stage_SpellPractice.dnh"]; }
 
     //Debug stage
-    scriptPath ~= [
-        DIR_STG ~ "test/testStage.dnh",
-        DIR_STG ~ "test/testPlural.dnh",
-        DIR_STG ~ "test/testSingle.dnh"
-    ];
+    if (DEBUG_MODE) {
+        scriptPath ~= [
+            DIR_STG ~ "test/testStage.dnh",
+            DIR_STG ~ "test/testPlural.dnh",
+            DIR_STG ~ "test/testSingle.dnh"
+        ];
+    }
 
     return scriptPath;
 }
