@@ -86,6 +86,7 @@ function<void> Boss_MoveInArea(int obj_, float xPos_, float yPos_, float radius_
 }
 //Move a maximum radius bounded by a rectangular area
 function<void> Boss_MoveRadiusInBounds(int obj_, float rMin_, float rMax_, float xMin_, float xMax_, float yMin_, float yMax_, int frames_, int interpolation_) {
+    assert(xMin_ <= xMax_ && yMin_ <= yMax_, "Dumbass");
     float bossX = ObjMove_GetX(obj_);
     float bossY = ObjMove_GetY(obj_);
     float xPos = bossX;
@@ -93,8 +94,9 @@ function<void> Boss_MoveRadiusInBounds(int obj_, float rMin_, float rMax_, float
     //new coords 
     while (distance(bossX, bossY, xPos, yPos) < rMin_) {
         float radius = rand(rMin_, rMax_);
-        xPos = clamp(bossX + radius * cos(rand(0, 360)), xMin_, xMax_);
-        yPos = clamp(bossY + radius * sin(rand(0, 360)), yMin_, yMax_);
+        float angleT = rand(0, 360);
+        xPos = clamp(bossX + radius * cos(angleT), xMin_, xMax_);
+        yPos = clamp(bossY + radius * sin(angleT), yMin_, yMax_);
         rMin_ -= 2;
     }
 
