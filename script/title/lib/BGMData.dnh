@@ -5,9 +5,9 @@ function<int[]> BGM_GetSample(int bgmID_) {
     alternative (bgmID_)
     case (0) { return [0, 4871328]; } //Title Track
     case (1) { return [354814, 7894656]; } //Eternal Dance Engine
-    //case (2) { return [0, 10598280]; } //Broken Eternal Dance Engine
-    case (2) { return [0, 4298448]; } //Clairvoyant ~ Dream VISION
-    case (3) { return [0, 5511660]; } //Extra Mind
+    case (2) { return [343728, 10988208]; } //Broken Eternal Dance Engine
+    case (3) { return [0, 4298448]; } //Clairvoyant ~ Dream VISION
+    case (4) { return [0, 5511660]; } //Extra Mind
     others { return [0, 0]; }
 }
 
@@ -17,9 +17,9 @@ function<string> BGM_GetPath(int bgmID_) {
     alternative (bgmID_)
     case (0) { return (musicDir ~ "title.ogg"); } //To the Village that isn't Real ~ Chain Link?
     case (1) { return (musicDir ~ "tsurubami1.ogg"); } //Eternal Dance Engine
-    //case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
-    case (2) { return (musicDir ~ "ending.ogg"); } //Clairvoyant ~ Dream VISION
-    case (3) { return (musicDir ~ "credits.ogg"); } //Extra Mind
+    case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
+    case (3) { return (musicDir ~ "ending.ogg"); } //Clairvoyant ~ Dream VISION
+    case (4) { return (musicDir ~ "credits.ogg"); } //Extra Mind
     others { return (""); }
 }
 
@@ -57,16 +57,12 @@ Tsurubami's imposing aura now. If their music didn't get that[r]
 across, their danmaku will. Even if it takes a few attempts,[r]
 I'm sure you can triumph!";
     }
-//     case (2) { //boss 2
-//         name = "Broken Eternal Dance Engine";
-//         comment = "
-// Tsurubami's second theme.[r]
-// This is actually part of the same arrangement as[r]
-// their first theme. They've been separated in the[r]
-// game for obvious reasons, but I wanted to include[r]
-// both somehow.";
-//    }
-    case (2) { //ending theme
+    case (2) { //boss 2
+        name = "Broken Eternal Dance Engine";
+        comment = "
+placeholder";
+    }
+    case (3) { //ending theme
         name = "Clairvoyant ~ Dream VISION";
         comment = "
 The ending theme, and my first entirely original composition.[r]
@@ -75,7 +71,7 @@ original tracks ^^;; I only hope that it sounds pleasant, and[r]
 maybe a little melancholy. It's an uncertain kind of song.[r]
 In a way, it's reflective of how I felt composing it.";
     }
-    case (3) { //credits theme
+    case (4) { //credits theme
         name = "Extra Mind";
         comment = "
 The staff roll theme.[r]

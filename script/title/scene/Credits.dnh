@@ -41,7 +41,7 @@ task TExit() {
 }
 
 task TBackground() {
-    StartBGM(3, 150, 120);
+    StartBGM(4, 150, 120);
     ScreenBlackout(0, 120, 240, COLOR_BLACK);
 
     //objects
