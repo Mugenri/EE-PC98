@@ -218,7 +218,7 @@ task TFlowers(int dir_) {
                 ObjMove_SetAngle(petals[i], baseAngle + angleMod * i);
             }
             //break
-            if (GetObjectDistance(center, GetPlayerObjectID()) <= _triggerDistance && ObjMove_GetY(center) < MAX_Y && ObjMove_GetX(center) > MIN_X && ObjMove_GetX(center) < MAX_X) {
+            if (GetObjectDistance(center, _objPlayer) <= _triggerDistance && ObjMove_GetY(center) < MAX_Y && ObjMove_GetX(center) > MIN_X && ObjMove_GetX(center) < MAX_X) {
                 for (int i = 0; i < numPetal; i++) {
                     ObjMove_AddPatternA1(petals[i], 0, 0, NO_CHANGE);
                     ObjMove_AddPatternA3(petals[i], (i + 1) * decaySpeed, 0, NO_CHANGE, petalAccel, petalSpeed, NO_CHANGE, SHOT_GRAY_INV+PILL_S);
