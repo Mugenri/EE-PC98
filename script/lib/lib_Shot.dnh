@@ -13,7 +13,9 @@ function<void> Shot_Init() {
     LoadEnemyShotData(pathShotSpawn);
 }
 
-//CreateShot functions with post-spawn bullet animations
+//----------------------------------------------------
+//Shot Spawning Functions
+//----------------------------------------------------
 //Keep in mind that the shots do not like having 2 addpatterns run on the same frame
 function<int> CreateShotUA1(float x_, float y_, float speed_, float angle_, int graphic_, int delay_, int animGraphic_, int cancelGraphic_) {
     int shotID;
@@ -167,3 +169,14 @@ function<int[]> Shot_FirePatternA(int obj_, int graphic_, int animGraphic_, int 
 function<int[]> Shot_FirePatternB() {
     //TODO
 }
+
+//----------------------------------------------------
+//Shot Utility Functions
+//----------------------------------------------------
+
+function<bool> Shot_IsInBounds(int shot_)               { return (ObjMove_GetX(shot_) > MIN_X && ObjMove_GetX(shot_) < MAX_X && ObjMove_GetY(shot_) > MIN_Y && ObjMove_GetY(shot_) < MAX_Y); }
+function<bool> Shot_IsInBounds(int shot_, int margin_)  { return (ObjMove_GetX(shot_) > MIN_X + margin_ && ObjMove_GetX(shot_) < MAX_X - margin_ && ObjMove_GetY(shot_) > MIN_Y + margin_ && ObjMove_GetY(shot_) < MAX_Y - margin_); }
+function<bool> Shot_IsInBoundsX(int shot_)              { return (ObjMove_GetX(shot_) > MIN_X && ObjMove_GetX(shot_) < MAX_X); }
+function<bool> Shot_IsInBoundsX(int shot_, int margin_) { return (ObjMove_GetX(shot_) > MIN_X + margin_ && ObjMove_GetX(shot_) < MAX_X - margin_); }
+function<bool> Shot_IsInBoundsY(int shot_)              { return (ObjMove_GetY(shot_) > MIN_Y && ObjMove_GetY(shot_) < MAX_Y); }
+function<bool> Shot_IsInBoundsY(int shot_, int margin_) { return (ObjMove_GetY(shot_) > MIN_Y + margin_ && ObjMove_GetY(shot_) < MAX_Y - margin_); }
