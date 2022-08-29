@@ -77,6 +77,8 @@ task TRing(int dir_) {
     wait(30);
     Animation_Charge(_objBoss, false);
 
+    if (!Boss_Alive(_objBoss)) return;
+
     //patternshot ring with angular velocity
     int way = 16;
     float speed = [6, 6, 10][_diff];
@@ -100,6 +102,7 @@ task TRing(int dir_) {
     TSluggy(shots);
 
     wait(frames);
+    if (!Boss_Alive(_objBoss)) return;
     for each (shot in shots) ObjShot_SetAutoDelete(shot, true);
 
     Obj_Delete(ring);
