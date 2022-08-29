@@ -24,6 +24,18 @@ function<void> Particle_ContractRing(float x_, float y_, float angle_, float rad
         }
     }
 }
+//overload with object
+function<void> Particle_ContractRing(int obj_, float angle_, float radius_, float rotation_, int frames_, int count_, int color_) {
+    async {
+        float initRadius = radius_;
+        loop (frames_) {
+            Particle_CreateRing(ObjMove_GetX(obj_), ObjMove_GetY(obj_), angle_, radius_, count_, color_);
+            angle_ += rotation_ / frames_;
+            radius_ -= initRadius / frames_;
+            yield;
+        }
+    }
+}
 
 function<void> Particle_CreateRing(float x_, float y_, float angle_, float radius_, int count_, int color_) {
     loop (count_) {
