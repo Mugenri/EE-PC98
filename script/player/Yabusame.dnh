@@ -243,7 +243,7 @@ task TSpell() {
         TLines(150);
 
         wait(30);
-        CallSFX(SND_CHARGE1);
+        CallSFX(SND_PL_SPELL_Y2);
         wait(30);
         for (int i = 1; i <= frames; i++) { //color shift
             int color = Interpolate_Linear(0, 255, i / as_float(frames));
@@ -291,15 +291,15 @@ task TSpell() {
                 }
                 for (int i = 0; i < length(particleData); i++) {
                     if (particleData[i][4] > 40) continue;
-                    ObjParticleList_SetPosition(_particleEffect, particleData[i][0], particleData[i][1], 1);
-                    ObjParticleList_SetExtraData(_particleEffect, 3 - particleData[i][4] ~/ frameRate, 0, 0);
-                    ObjParticleList_SetColor(_particleEffect, COLOR_WHITE);
-                    ObjParticleList_AddInstance(_particleEffect);
+                    ObjParticleList_SetPosition(_effectParticle16, particleData[i][0], particleData[i][1], 1);
+                    ObjParticleList_SetExtraData(_effectParticle16, 3 - particleData[i][4] ~/ frameRate, 0, 0);
+                    ObjParticleList_SetColor(_effectParticle16, COLOR_WHITE);
+                    ObjParticleList_AddInstance(_effectParticle16);
                     particleData[i][0] += particleData[i][2];
                     particleData[i][1] += particleData[i][3];
                     particleData[i][4]++;
                 }
-                CallSFX(SND_SHOT2);
+                CallSFX(SND_PL_SPELL_Y1);
                 yield;
             }
         }

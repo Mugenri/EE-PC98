@@ -152,19 +152,16 @@ task TSpell() { //TODO tsubakura bomb
     SetForbidPlayerShot(true);
     SetPlayerInvincibilityFrame(310);
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
-    SetPlayerSpeed(2.2, 2.2);
-
-    // CallSFX(SND_PL_T_SPELL1);
-    // CallSFX(SND_PL_T_SPELL2);
+    SetPlayerSpeed(2.0, 2.0);
 
     TEffect();
     
     //spell time
-    wait(250);
+    wait(180);
 
     SetForbidPlayerSpell(true);
     SetForbidPlayerShot(false);
-    SetPlayerSpeed(4.5, 2.2);
+    SetPlayerSpeed(4.5, 2.0);
     Obj_Delete(objManage);
     wait(40);
 
@@ -186,68 +183,33 @@ task TSpell() { //TODO tsubakura bomb
     Obj_Delete(circle);
 
     task TEffect() {
-        float radius = 0;
-        int wCircle = CreateCircle(COLOR_WHITE);
-        int bCircle = CreateCircle(COLOR_BLACK);
+        int flash = InitSprite2D(0, 0, MAX_X, MAX_Y, RP_STG_EFF_MAX);
+        CallSFX(SND_PL_SPELL);
 
-        //Expand Black Circle
-        loop (70) {
-            radius += 600 / 70;
-            ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
-            ascent (i in 1..34) {
-                float angleT = 360 / 32 * i;
-                ObjPrim_SetVertexPosition(bCircle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
-            }
-            DeleteShotInCircle(TYPE_SHOT, TYPE_IMMEDIATE, GetPlayerX(), GetPlayerY(), radius);
+        int frames = 20;
+        for (int i = 1; i <= frames; i++) {
+            ObjRender_SetAlpha(flash, 196 / 14 * as_int(Interpolate_Linear(14, 0, i / as_float(frames))));
             yield;
         }
 
-        //Set White Circle to fill screen behind black circle
-        ascent (i in 1..34) {
-            float angleT = 360 / 32 * i;
-            ObjPrim_SetVertexPosition(wCircle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
-        }
-
-        loop (30) {
-            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
+        //charge
+        int dir = -1;
+        CallSFX(SND_PL_SPELL_T1);
+        loop (12) {
+            dir *= -1;
+            Primitive_ContractPolygon2D(_objPlayer, 0, 550, 0, 45, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+            yield;
+            Particle_ContractRing(_objPlayer, 90, 550, 180 * dir, 45, 18, COLOR_WHITE);
+            yield;
+            Particle_ContractRing(_objPlayer, 90, 550, 180 * -dir, 45, 18, COLOR_BLACK);
             yield;
         }
 
-        //Retract Black Circle
-        //CallSFX(SND_PL_T_SPELL3);
-        loop (45) {
-            ObjPrim_SetVertexPosition(bCircle, 0, GetPlayerX(), GetPlayerY(), 1);
-            ascent (i in 1..34) {
-                float angleT = 360 / 32 * i;
-                ObjPrim_SetVertexPosition(bCircle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
-            }
-            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
-            radius -= 600 / 45;
-            yield;
-        }
-        Obj_Delete(bCircle);
-
-        //Retract White Circle
-        radius = 600;
-        //CallSFX(SND_PL_T_SPELL3);
-        loop (35) {
-            ObjPrim_SetVertexPosition(wCircle, 0, GetPlayerX(), GetPlayerY(), 1);
-            ascent (i in 1..34) {
-                float angleT = 360 / 32 * i;
-                ObjPrim_SetVertexPosition(wCircle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
-            }
-            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
-            radius -= 600 / 35;
-            yield;
-        }
-        Obj_Delete(wCircle);
-
-        //monochrome ray
-        //CallSFX(SND_PL_T_SPELL4);
+        wait(45);
 
         int laser = ObjSpell_Create();
-        ObjSpell_SetEraseShot(laser, false);
-        ObjSpell_SetDamage(laser, 45);
+        ObjSpell_SetEraseShot(laser, true);
+        ObjSpell_SetDamage(laser, 65);
         ObjSpell_Regist(laser);
 
         float hitboxLength = 0;
@@ -256,35 +218,18 @@ task TSpell() { //TODO tsubakura bomb
             TCreateLaserEffect(1);
             TCreateLaserEffect(-1);
             modifier += 360 / 14;
-            ObjSpell_SetIntersectionLine(laser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - hitboxLength, 12);
-            DeleteShotAll(TYPE_SHOT, TYPE_IMMEDIATE);
+            ObjSpell_SetIntersectionLine(laser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - hitboxLength, 44);
             hitboxLength += 28; //bullet speed
+            CallSFX(SND_PL_SPELL_T2);
             yield;
         }
         Obj_Delete(laser);
 
-        function<int> CreateCircle(int color_) {
-            int circle = ObjSpell_Create();
-            ObjSpell_SetDamage(circle, 0);
-            ObjSpell_SetEraseShot(circle, false);
-            ObjPrim_SetPrimitiveType(circle, PRIMITIVE_TRIANGLEFAN);
-            ObjPrim_SetVertexCount(circle, 34);
-            Obj_SetRenderPriorityI(circle, RP_STG_EFF_SPELL);
-            ObjPrim_SetVertexPosition(circle, 0, GetPlayerX(), GetPlayerY(), 1);
-            ObjRender_SetColor(circle, color_);
-            ascent (i in 1..34) {
-                float angleT = 360 / 32 * i;
-                ObjPrim_SetVertexPosition(circle, i, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT), 1);
-            }
-            ObjSpell_Regist(circle);
-            return circle;
-        }
-
         task TCreateLaserEffect(int direction_) {
-            int shot1 = InitSprite2D(144, 0, 160, 16, _pathImg, RP_STG_PLAYER - 2i);
+            int shot1 = InitSprite2D(0, 48, 16, 64, _pathImg, RP_STG_PLAYER - 2i);
             ObjSprite2D_SetDestCenter(shot1);
 
-            int shot2 = InitSprite2D(144, 16, 160, 32, _pathImg, RP_STG_PLAYER - 2i);
+            int shot2 = InitSprite2D(32, 48, 48, 64, _pathImg, RP_STG_PLAYER - 2i);
             ObjSprite2D_SetDestCenter(shot2);
 
             ObjRender_SetPosition(shot1, GetPlayerX() + 20 * direction_ * cos(modifier), GetPlayerY() + direction_ * 4, 1);

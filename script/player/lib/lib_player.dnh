@@ -1,18 +1,19 @@
 //Player Common functions
-#include "../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Effect.dnh"
 
 string _pathImg; //player sprite passed by player script
 string _pathShot; //player shot data passed by player script
 int _itemScope; //Player unfocused item collection radius
 int _focusScope; //Player focused item collection radius
 
-int _particleEffect; //graze, death, shot hit, player bomb particle list
 int _particleShot; //player shot deletion particle list
 
 int thrillLevel = 0; //# of bullets grazed in period of time
 
 function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, float focusSpeed_, int itemScope_, int focusScope_) {
     Common_Init();
+    Particle_Init();
     _pathImg = imageFile_;
     _pathShot = shotFile_;
     _itemScope = itemScope_;
@@ -20,9 +21,6 @@ function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, flo
     TRender();
     TThrillGauge();
     LoadPlayerShotData(_pathShot);
-
-    _particleEffect = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_PLAYER, [0, 0, 16, 16]);
-    ParticleListShader(_particleEffect, 16 / 512, 16 / 512);
     
     _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 16]);
     ParticleListShader(_particleShot, 16 / 256, 16 / 64);
@@ -224,10 +222,10 @@ task TMiss() { //Player died
             int frame = 0;
             int frameRate = 2;
             loop (140) {
-                ObjParticleList_SetPosition(_particleEffect, x, y, 1);
-                ObjParticleList_SetExtraData(_particleEffect, frame / frameRate, 2, 0);
-                ObjParticleList_SetColor(_particleEffect, COLOR_WHITE);
-                ObjParticleList_AddInstance(_particleEffect);
+                ObjParticleList_SetPosition(_effectParticle16, x, y, 1);
+                ObjParticleList_SetExtraData(_effectParticle16, frame / frameRate, 2, 0);
+                ObjParticleList_SetColor(_effectParticle16, COLOR_WHITE);
+                ObjParticleList_AddInstance(_effectParticle16);
 
                 frame++;
                 if (frame >= 7 * frameRate) frame = 0;
@@ -306,10 +304,10 @@ task TGraze(float x_, float y_) { //Summon graze particle, add to particle list
     int frame = 0;
     int frameRate = 2;
     loop (43) {
-        ObjParticleList_SetPosition(_particleEffect, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleEffect, (frame / frameRate) % 8, 2, 0);
-        ObjParticleList_SetColor(_particleEffect, COLOR_TAN);
-        ObjParticleList_AddInstance(_particleEffect);
+        ObjParticleList_SetPosition(_effectParticle16, x_, y_, 1);
+        ObjParticleList_SetExtraData(_effectParticle16, (frame / frameRate) % 8, 2, 0);
+        ObjParticleList_SetColor(_effectParticle16, COLOR_TAN);
+        ObjParticleList_AddInstance(_effectParticle16);
 
         frame++;
         x_ += xStep;
@@ -327,10 +325,10 @@ task TShotParticle(float x_, float y_) { //shot hit something, spawn shot flake 
     int frame = 0;
     int frameRate = 2;
     loop (40) {
-        ObjParticleList_SetPosition(_particleEffect, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleEffect, (frame / frameRate) % 8, 2, 0);
-        ObjParticleList_SetColor(_particleEffect, COLOR_GRAY_L);
-        ObjParticleList_AddInstance(_particleEffect);
+        ObjParticleList_SetPosition(_effectParticle16, x_, y_, 1);
+        ObjParticleList_SetExtraData(_effectParticle16, (frame / frameRate) % 8, 2, 0);
+        ObjParticleList_SetColor(_effectParticle16, COLOR_GRAY_L);
+        ObjParticleList_AddInstance(_effectParticle16);
 
         frame++;
         x_ += xStep;
