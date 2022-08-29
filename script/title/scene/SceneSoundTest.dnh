@@ -103,5 +103,10 @@ function<void> SceneSoundTest() {
         case (SND_TALK) { return "Talk"; }
         case (SND_BOSSTITLE) { return "BossTitle"; }
         case (SND_FIRE) { return "Fire"; }
+        //Duplicates
+        // case (SND_PL_SPELL_Y1) { return "Yabusame Spell 1"; } //duplicate of Shot2
+        // case (SND_PL_SPELL_Y2) { return "Yabusame Spell 2"; } //duplicate of Charge1
+        // case (SND_PL_SPELL_T1) { return "Tsubakura Spell 1"; } //duplicate of Charge2
+        // case (SND_PL_SPELL_T2) { return "Tsubakura Spell 2"; } //duplicate of Shot4
     }
 }

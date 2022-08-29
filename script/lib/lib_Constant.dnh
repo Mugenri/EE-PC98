@@ -110,6 +110,10 @@ const int SND_PL_HIT        = 16;
 const int SND_PL_MISS       = 17;
 const int SND_PL_VULNERABLE = 19;
 const int SND_PL_SPELL      = 20;
+const int SND_PL_SPELL_Y1   = 33;
+const int SND_PL_SPELL_Y2   = 34;
+const int SND_PL_SPELL_T1   = 35;
+const int SND_PL_SPELL_T2   = 36;
 //Stage
 const int SND_SHOT1         = 21;
 const int SND_SHOT2         = 22;
