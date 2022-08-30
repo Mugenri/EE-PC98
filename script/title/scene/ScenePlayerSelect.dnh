@@ -161,6 +161,7 @@ function<int> ScenePlayerSelect(int selectedDefault_) {
 
         int objPlayerImg = InitSprite2D(0 + (288 * index_), 400, 144 + (288 * index_), 640, IMG_TT_PLAYER, RP_UI_IMG);
         ObjRender_SetPosition(objPlayerImg, x, y, 1);
+        if (!unlockFlag[index_]) ObjRender_SetColor(objPlayerImg, COLOR_BLACK);
 
         int objPlayerUnselect = InitSprite2D(144 + (288 * index_), 400, 288 + (288 * index_), 640, IMG_TT_PLAYER, RP_UI_IMG);
         ObjRender_SetPosition(objPlayerUnselect, x, y, 1);
