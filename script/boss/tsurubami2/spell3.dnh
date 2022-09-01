@@ -76,15 +76,15 @@ task TWave() {
     if (!Boss_Alive(_objBoss)) return;
 
     int waitTime = [5, 5, 1][_diff];
-    int shotNum = [9, 11, 1][_diff];
+    int shotNum = [9, 10, 1][_diff];
     int yPos = -rand(0, 64);
     float xSpeedMin = [6.2, 9.6, 16][_diff];
     float xSpeedMax = [7.1, 10.5, 16][_diff];
     float ySpeed = [1.1, 1.8, 4.5][_diff];
     float xAccel = [0.09, 0.2, 4.5][_diff];
-    float coinSpeed = [0.7, 0.8, 1.35][_diff];
+    float coinSpeed = [0.7, 0.85, 1.35][_diff];
     float coinSpeedRange = [0.2, 0.2, 0][_diff];
-    float arc = [70, 60, 3][_diff]; // half arc
+    float arc = [70, 70, 3][_diff]; // half arc
     int color2 = [SHOT_GRAY, SHOT_GRAY, SHOT_RED][_diff];
 
     TBouncy(1);
