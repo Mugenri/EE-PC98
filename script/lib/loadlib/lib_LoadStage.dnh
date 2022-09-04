@@ -29,7 +29,8 @@ function<string[]> Load_GetTextureStage(int stageIndex_) {
     case (1) { //Tsurubami 2
         texture ~= [
             IMG_STG_TSURUBAMI,
-            IMG_BG_TSURUBAMI_2
+            IMG_BG_TSURUBAMI_2,
+            IMG_SHOT_TSURUBAMI
         ];
     }
 
