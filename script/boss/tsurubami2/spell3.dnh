@@ -81,7 +81,7 @@ task TWave() {
     float xSpeedMin = [6.2, 9.6, 16][_diff];
     float xSpeedMax = [7.1, 10.5, 16][_diff];
     float ySpeed = [1.1, 1.8, 4.5][_diff];
-    float xAccel = [0.09, 0.2, 4.5][_diff];
+    float xAccel = [0.09, 0.2, 4.7][_diff];
     float coinSpeed = [0.7, 0.85, 1.35][_diff];
     float coinSpeedRange = [0.2, 0.2, 0][_diff];
     float arc = [70, 70, 3][_diff]; // half arc
