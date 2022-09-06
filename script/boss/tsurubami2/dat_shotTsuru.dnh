@@ -6,13 +6,13 @@ render = ALPHA
 
 ShotData {  id = 1000   fixed_angle = true  collision = 40      //Stick
     AnimationData {
-        animation_data = ( 4, 000, 000, 096, 096 )
-        animation_data = ( 4, 096, 000, 192, 096 )
-        animation_data = ( 4, 192, 000, 288, 096 )
-        animation_data = ( 4, 288, 000, 384, 096 )
-        animation_data = ( 4, 000, 096, 096, 192 )
-        animation_data = ( 4, 096, 096, 192, 192 )
-        animation_data = ( 4, 192, 096, 288, 192 )
-        animation_data = ( 4, 288, 096, 384, 192 )
+        animation_data = ( 2, 000, 000, 096, 096 )
+        animation_data = ( 2, 096, 000, 192, 096 )
+        animation_data = ( 2, 192, 000, 288, 096 )
+        animation_data = ( 2, 288, 000, 384, 096 )
+        animation_data = ( 2, 000, 096, 096, 192 )
+        animation_data = ( 2, 096, 096, 192, 192 )
+        animation_data = ( 2, 192, 096, 288, 192 )
+        animation_data = ( 2, 288, 096, 384, 192 )
     }
 }
