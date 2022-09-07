@@ -32,6 +32,7 @@ function<void> Display_Init() {
     if (!IsReplay()) TFPS();
     else {
         TReplayIndicator();
+        TInputDisplay();
         TReplayFPS();
     }
 }
@@ -818,6 +819,50 @@ task TReplayIndicator() {
     int objText = CreateText(0, 0, RP_UI_MAX, "REPLAY", COLOR_WHITE);
     ObjText_SetHorizontalAlignment(objText, ALIGNMENT_RIGHT);
     ObjText_SetMaxWidth(objText, WINDOW_WIDTH - 8);
+}
+
+//----------------------------------------------------
+//Replay Input Display
+//----------------------------------------------------
+task TInputDisplay() {
+    loop {
+        bool shotPressed = GetVirtualKeyState(VK_SHOT) == KEY_HOLD || GetVirtualKeyState(VK_SHOT) == KEY_PUSH;
+        bool bombPressed = GetVirtualKeyState(VK_BOMB) == KEY_HOLD || GetVirtualKeyState(VK_BOMB) == KEY_PUSH;
+        bool focusPressed = GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD || GetVirtualKeyState(VK_SLOWMOVE) == KEY_PUSH;
+        bool leftPressed = GetVirtualKeyState(VK_LEFT) == KEY_HOLD || GetVirtualKeyState(VK_LEFT) == KEY_PUSH;
+        bool upPressed = GetVirtualKeyState(VK_UP) == KEY_HOLD || GetVirtualKeyState(VK_UP) == KEY_PUSH;
+        bool downPressed = GetVirtualKeyState(VK_DOWN) == KEY_HOLD || GetVirtualKeyState(VK_DOWN) == KEY_PUSH;
+        bool rightPressed = GetVirtualKeyState(VK_RIGHT) == KEY_HOLD || GetVirtualKeyState(VK_RIGHT) == KEY_PUSH;
+        //shot
+        ObjParticleList_SetPosition(_displayList, 32, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 5, 6 + (shotPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //bomb
+        ObjParticleList_SetPosition(_displayList, 48, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 6, 6 + (bombPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //focus
+        ObjParticleList_SetPosition(_displayList, 64, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 7, 6 + (focusPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //left
+        ObjParticleList_SetPosition(_displayList, 80, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 8, 6 + (leftPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //up
+        ObjParticleList_SetPosition(_displayList, 96, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 9, 6 + (upPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //down
+        ObjParticleList_SetPosition(_displayList, 112, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 10, 6 + (downPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        //right
+        ObjParticleList_SetPosition(_displayList, 128, 385, 1);
+        ObjParticleList_SetExtraData(_displayList, 11, 6 + (rightPressed * 7), 0);
+        ObjParticleList_AddInstance(_displayList);
+        yield;
+    }
 }
 
 //----------------------------------------------------
