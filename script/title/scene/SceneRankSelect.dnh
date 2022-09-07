@@ -1,14 +1,13 @@
 //Difficulty Selection Screen
-function<int> SceneRankSelect(int selectedDefault_) {
+function<int> SceneRankSelect(int selectedDefault_, bool extraMode_) {
     bool exitFlag = false; //Delete certain things upon leaving this menu
     int playMode = GetAreaCommonData(AREA_TITLE, "GameMode", GAME_NONE);
 
-    bool extraMode = (selectedDefault_ >= D_EASYEX);
     int[] imgValue = [0, 1, 2, 3];
 
     //Extra Stage menu
-    if (extraMode) {
-        selectedDefault_ -= D_EASYEX;
+    if (extraMode_) {
+        selectedDefault_ = clamp(selectedDefault_ - D_EASYEX, 0, 2);
         imgValue = [4, 5, 6];
     }
 
@@ -55,7 +54,7 @@ function<int> SceneRankSelect(int selectedDefault_) {
         }
     }
     exitFlag = true;
-    if (resultIndex >= 0 && extraMode) resultIndex += D_EASYEX;
+    if (resultIndex >= 0 && extraMode_) resultIndex += D_EASYEX;
     SetAreaCommonData(AREA_TITLE, "Difficulty", resultIndex);
     return resultIndex;
 

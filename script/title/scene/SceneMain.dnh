@@ -260,7 +260,7 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
         int tempSelect = 0;
         loop {
             //Select Difficulty
-            tempSelect = SceneRankSelect(selectedRank);
+            tempSelect = SceneRankSelect(selectedRank, false);
             if (tempSelect < 0) break;
             selectedRank = tempSelect;
             loop {
@@ -289,22 +289,25 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
     task TSelectExtra() {
         exitFlag = true;
         //Declare variables to be set by submenus
-        int selectedRank = D_EXTRA;
-        int selectedPlayer = PLAYER_YABUSAME;
+        int selectedRank = GetAreaCommonData(AREA_TITLE, "previousDiff", -1);
+        selectedRank = selectedRank < 0 ? D_EXTRA : selectedRank;
+        int selectedPlayer = GetAreaCommonData(AREA_TITLE, "previousPlayer", PLAYER_YABUSAME);
         //Main Play Mode
         SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
 
         int tempSelect = 0;
         loop {
             //Select Difficulty
-            tempSelect = SceneRankSelect(selectedRank);
+            tempSelect = SceneRankSelect(selectedRank, true);
             if (tempSelect < 0) break;
             selectedRank = tempSelect;
+            SetAreaCommonData(AREA_TITLE, "previousDiff", selectedRank);
             loop {
                 //Select Player
                 tempSelect = ScenePlayerSelect(selectedPlayer);
                 if (tempSelect < 0) break;
                 selectedPlayer = tempSelect;
+                SetAreaCommonData(AREA_TITLE, "previousPlayer", selectedPlayer);
 
                 //Set CommonData for player selections
                 SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
