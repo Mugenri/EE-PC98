@@ -85,7 +85,7 @@ function<void> Dialogue() {
             Dialogue_SetPortrait(bossCutin, 2);
             Dialogue_SetText(true, "As well as visions and/premonitions and the like,/yes.");
         }
-        case(10) {
+        case (10) {
             Dialogue_SetPortrait(bossCutin, 5);
             Dialogue_SetText(true, "There are... certain forces,/we'll say, that don't take/kindly to others meddling in-");
         }
