@@ -28,7 +28,7 @@ function<string[]> BGM_GetText(int bgmID_) {
     //returns array of name, comment
 /*
 ------------------------------------------------------- <- max name length (55)
-------------------------------------------------------------- <- max comment length (61) & 7 lines
+------------------------------------------------------------- <- max comment length (col 62) & 7 lines
 */
     string name = "";
     string comment = "";
@@ -60,7 +60,13 @@ I'm sure you can triumph!";
     case (2) { //boss 2
         name = "Broken Eternal Dance Engine";
         comment = "
-placeholder";
+Tsurubami's second theme.[r]
+Again, third time I've done an arrangement of this theme.[r]
+It's interesting how I can still pick out things I haven't[r]
+heard before in a song I've heard so much of. I can't cram[r]
+all of the little details into my arrangement because of FM[r]
+channel limit, but I hope it's as chaotic as the original.[r]
+Thank you to Popfan for supplying the bongo sample >///<;";
     }
     case (3) { //ending theme
         name = "Clairvoyant ~ Dream VISION";
