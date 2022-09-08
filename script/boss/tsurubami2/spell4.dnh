@@ -115,7 +115,7 @@ task TWall() {
 }
 
 task TStick() {
-    if(!Boss_Alive(_objBoss)) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //charge
     Animation_Charge(_objBoss, true);
@@ -152,7 +152,7 @@ task TStick() {
     wait(60);
     Animation_Charge(_objBoss, false);
 
-    if(!Boss_Alive(_objBoss)) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     float stickSpeed = [2.4, 2.4, 3][_diff];
     int stick = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), stickSpeed, GetAngleToPlayer(_objBoss), 1000, 0, SHOT_RED+CANCEL_32);

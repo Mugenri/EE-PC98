@@ -121,7 +121,7 @@ task TBowap() {
 
 task TSpark() {
     //bone spark
-    if(!Boss_Alive(_objBoss) || _timeOut) return;
+    if (!Boss_Alive(_objBoss) || _timeOut) return;
     float angleT = GetAngleToPlayer(_objBoss);
     int delayTime = 120;
     float maxWidth = [120, 160, 100][_diff];
@@ -144,14 +144,14 @@ task TSpark() {
     //charge anim
     CallSFX(SND_CHARGE1);
     wait(delayTime);
-    if(!Boss_Alive(_objBoss)) return;
+    if (!Boss_Alive(_objBoss)) return;
 
     //laser & movement
     Animation_Charge(_objBoss, false);
     CallSFX(SND_MASTERSPARK);
     ObjMove_SetDestAtFrame(_objBoss, MID_X + 48 * cos(angleT + 180), 60 + 48 * sin(angleT + 180), sustain / 4, LERP_DECELERATE);
     wait(sustain / 4);
-    if(!Boss_Alive(_objBoss)) return;
+    if (!Boss_Alive(_objBoss)) return;
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, sustain, LERP_SMOOTH);
 }
 
