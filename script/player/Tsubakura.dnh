@@ -146,7 +146,7 @@ task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot del
     }
 }
 
-task TSpell() { //TODO tsubakura bomb
+task TSpell() {
     int objManage = GetSpellManageObject();
 
     SetForbidPlayerShot(true);
