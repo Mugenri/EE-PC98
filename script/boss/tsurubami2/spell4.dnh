@@ -1,0 +1,281 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 4"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = [240, 240, 220][_diff];
+_spellID = 21 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3500);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(50 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1000000);
+    }
+}
+
+@Initialize {
+    //Shot Data
+    const string tsuruShotPath = GetModuleDirectory() ~ "script/boss/tsurubami2/dat_shotTsuru.dnh";
+    LoadEnemyShotData(tsuruShotPath);
+
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TWall();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 45, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Circle(4, 0);
+    CallSFX(SND_TRANSITION);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    int shikiTime = [280, 280, 240][_diff];
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TStick();
+            }
+        }
+        if (_count % shikiTime == 0 && _count >= 0) {
+            async {
+                CreateFamiliar(1);
+                wait(_loopTime / 2);
+                CreateFamiliar(-1);
+            }
+        }
+        yield;
+    }
+}
+
+task TWall() {
+    while (_count < -30) yield;
+    //repeated
+    //^
+    //OO
+    //OO
+    //X
+    //--
+    float speed = [2, 2, 4][_diff];
+    int waitTime = 32 / speed;
+    while (Boss_Alive(_objBoss)) {
+        //top
+        CreateShotUA1(MAX_X + 32, 100, speed, 180, SHOT_GRAY+BALL_L, 0, SHOT_GRAY+CANCEL_32);
+        CreateShotUA1(MAX_X + 32, 80, speed, 180, SHOT_GRAY+BALL_L, 0, SHOT_GRAY+CANCEL_32);
+        CreateShotUA1(MAX_X + 16, 100, speed, 180, SHOT_GRAY+BALL_L, 0, SHOT_GRAY+CANCEL_32);
+        CreateShotUA1(MAX_X + 16, 80, speed, 180, SHOT_GRAY+BALL_L, 0, SHOT_GRAY+CANCEL_32);
+        int heart = CreateShotUA1(MAX_X + 16, 60, speed, 180, SHOT_GRAY+HEART_L, 0, SHOT_GRAY+CANCEL_32);
+        ObjRender_SetAngleZ(heart, 90);
+        //bottom
+        CreateShotUA1(MAX_X + 32, 150, speed, 180, SHOT_GRAY+PILL_L, 0, SHOT_GRAY+CANCEL_32);
+        CreateShotUA1(MAX_X + 16, 150, speed, 180, SHOT_GRAY+PILL_L, 0, SHOT_GRAY+CANCEL_32);
+        //cross
+        int swordL = CreateShotUA1(-16, 128, -speed, 180, SHOT_GRAY+SWORD, 0, SHOT_GRAY+CANCEL_32);
+        int swordR = CreateShotUA1(-16, 128, -speed, 180, SHOT_GRAY+SWORD, 0, SHOT_GRAY+CANCEL_32);
+        int arrow = CreateShotUA1(-16, 128, -speed, 180, SHOT_GRAY+ARROW, 0, SHOT_GRAY+CANCEL_32);
+        ObjRender_SetAngleZ(swordL, 270 - 35);
+        ObjRender_SetAngleZ(swordR, 270 + 35);
+        ObjRender_SetAngleZ(arrow, 270);
+        wait(waitTime);
+    }
+}
+
+task TStick() {
+    if(!Boss_Alive(_objBoss)) return;
+
+    //charge
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+
+    async {
+        int laserL = Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), GetAngleToPlayer(_objBoss), 550, 120);
+        int laserR = Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), GetAngleToPlayer(_objBoss), 550, 120);
+        ObjRender_SetColor(laserL, COLOR_RED);
+        ObjRender_SetColor(laserR, COLOR_RED);
+        for (int i = 0; i < 120; i++) {
+            float angleMod = Interpolate_Linear(12, 0, i / 120.0);
+            float angleT = GetAngleToPlayer(_objBoss);
+            ObjPrim_SetVertexPosition(laserL, 1, Boss_X(_objBoss) + 550 * cos(angleT + angleMod), Boss_Y(_objBoss) + 550 * sin(angleT + angleMod), 1);
+            ObjPrim_SetVertexPosition(laserR, 1, Boss_X(_objBoss) + 550 * cos(angleT - angleMod), Boss_Y(_objBoss) + 550 * sin(angleT - angleMod), 1);
+            yield;
+        }
+    }
+
+    wait(36);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 60, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 180, 60, 8, COLOR_GRAY_L);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -180, 60, 8, COLOR_GRAY_L);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 180, 60, 8, COLOR_GRAY);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -180, 60, 8, COLOR_GRAY);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 180, 60, 8, COLOR_RED_D);
+    wait(4);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -180, 60, 8, COLOR_RED_D);
+    wait(60);
+    Animation_Charge(_objBoss, false);
+
+    if(!Boss_Alive(_objBoss)) return;
+
+    float stickSpeed = [2.4, 2.4, 3][_diff];
+    int stick = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), stickSpeed, GetAngleToPlayer(_objBoss), 1000, 0, SHOT_RED+CANCEL_32);
+    CallSFX(SND_SHOT4);
+
+    Boss_MoveRadiusInBounds(_objBoss, 32, 48, MID_X - 64, MID_X + 64, 40, 50, 60, LERP_DECELERATE);
+
+    float pX = GetPlayerX();
+    float pY = GetPlayerY();
+    float trailSpeed = [1.9, 2, 2.2][_diff];
+    float angle = 22.5;
+
+    while (Boss_Alive(_objBoss) && !Obj_IsDeleted(stick)) {
+        int trail = CreateShotUA1(ObjMove_GetX(stick) + 40 * cos(angle), ObjMove_GetY(stick) + 40 * sin(angle), trailSpeed, angle + 180, SHOT_YELLOW+BEAM, 0, SHOT_YELLOW+CANCEL_SPARKLE);
+        ObjShot_SetDeleteFrame(trail, 40);
+        for each (shot in GetShotIdInCircleA2(ObjMove_GetX(stick), ObjMove_GetY(stick), 50, TARGET_ENEMY)) {
+            float xPos = ObjMove_GetX(shot);
+            float yPos = ObjMove_GetY(shot);
+            alternative (ObjShot_GetImageID(shot))
+            case (SHOT_GRAY+ARROW) {
+                ObjShot_SetDeleteFrame(shot, 0);
+                int delay = [80, 60, 40][_diff];
+                int sustain = [70, 90, 140][_diff];
+                CreateStraightLaserUA1(xPos, yPos, dottheta(xPos, yPos, pX, pY), 550, sustain, COLOR_RED_L, delay);
+                async {
+                    wait(delay);
+                    CallSFX(SND_LASER1);
+                }
+            }
+            case (SHOT_GRAY+SWORD) {
+                float accel = 0.08;
+                float maxSpeed = [2, 2, 2.4][_diff]; 
+                ObjMove_AddPatternA3(shot, 0, 0, ObjRender_GetAngleZ(shot) + 180, accel, maxSpeed, 0, SHOT_RED_INV+SWORD_A);
+                CallSFX(SND_SHOT2);
+            }
+            case (SHOT_GRAY+BALL_L) {
+                int numShot = [6, 7, 8][_diff];
+                float speed = [2, 2.1, 2.3][_diff];
+                float angleT = rand(60, 120);
+                for (int i = 0; i < numShot; i++) {
+                    int beam = CreateShotUA2(xPos, yPos, speed, angleT, 0, 0, rand_int(0, 1) == 0 ? 6 : -6, SHOT_RED+BALL_S, 0, SHOT_RED+CANCEL_BURST1);
+                    ObjMove_AddPatternA3(beam, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0, NO_CHANGE);
+                    angleT += 360 / numShot;
+                }
+                ObjShot_SetDeleteFrame(shot, 0);
+                CallSFX(SND_SHOT2);
+            }
+            case (SHOT_GRAY+HEART_L) {
+                int numShot = [2, 2, 3][_diff];
+                float xSpeed = 0.4;
+                float yMax = [1.5, 1.6, 1.9][_diff];
+                for (int i = -numShot; i <= numShot; i++) {
+                    int shot = CreateShotUB2(xPos, yPos, xSpeed * i + 0.00001, -1.5, 0, 0.04, 0, yMax, SHOT_BLACK+FIRE_S, 0, SHOT_BLACK+CANCEL_BURST1);
+                }
+                ObjShot_SetDeleteFrame(shot, 0);
+                CallSFX(SND_SHOT2);
+            }
+            case (SHOT_GRAY+PILL_L) {
+                int numShot = [1, 2, 4][_diff];
+                int delayMod = 3;
+                for (int i = 0; i < numShot; i++) {
+                    CreateShotUA2(xPos, yPos, 0, dottheta(xPos, yPos, pX, pY), 0.3, 10, 0, SHOT_RED+PILL_L, delayMod * i, SHOT_RED+CANCEL_32);
+                }
+                ObjShot_SetDeleteFrame(shot, 0);
+                CallSFX(SND_SHOT2);
+            }
+        }
+        angle += 16;
+        yield;
+    }
+}
+
+function<int> CreateFamiliar(int dir_) { //make a ink dude
+    int obj = ObjEnemy_Create(OBJ_ENEMY);
+    ObjEnemy_SetLife(obj, 35);
+    Boss_SetID(obj, BOSS_ID_TSURUBAMI);
+    ObjMove_SetPosition(obj, MID_X + (MID_X + 32) * dir_, 160);
+    Animation_DrawBoss(obj);
+    ObjEnemy_Regist(obj);
+    ObjRender_SetColor(obj, COLOR_BLACK);
+    Obj_SetRenderPriorityI(obj, RP_STG_ENEMY);
+
+    int frames = 240;
+    int loopTime = 40;
+    ObjMove_AddPatternD2(obj, 0, MID_X - (MID_X + 32) * dir_, 160, frames, LERP_LINEAR);
+
+    //arrows
+    int numShot = [3, 3, 5][_diff];
+    float speed = [2.5, 2.7, 3][_diff];
+    float arc = [22, 20, 15][_diff];
+    //revenge bullets
+    int revNum = [4, 6, 8][_diff];
+    float revSpeed = [2, 2, 2.4][_diff];
+    float revArc = [12, 11, 9][_diff];
+    wait(20);
+    async {
+        while (!Obj_IsDeleted(obj) && Boss_Alive(_objBoss) && ObjEnemy_GetInfo(obj, INFO_LIFE) > 0) {
+            Boss_SetIntersection(obj, _intersectionShot, _intersectionPlayer);
+            if (_count % loopTime == 0) {
+                float angleT = GetAngleToPlayer(obj) - (arc * (numShot - 1) / 2);
+                for (int i = 0; i < numShot; i++) {
+                    CreateShotUA1(ObjMove_GetX(obj), ObjMove_GetY(obj), speed, angleT, SHOT_RED_INV+ARROW, 0, SHOT_RED_INV+SPAWN_S+SIZE_32, SHOT_RED_INV+CANCEL_32);
+                    angleT += arc;
+                }
+                CallSFX(SND_SHOT1);
+            }
+            yield;
+        }
+
+        if (!Obj_IsDeleted(obj)) {
+            Particle_EnemyExplosionSmall(ObjMove_GetX(obj), ObjMove_GetY(obj));
+            CallSFX(SND_SHOT1);
+
+            if (Boss_Alive(_objBoss)) {
+                float angleT = GetAngleToPlayer(obj) - (revArc * (revNum - 1) / 2);
+                for (int i = 0; i < revNum; i++) {
+                    CreateShotUA1(ObjMove_GetX(obj), ObjMove_GetY(obj), revSpeed, angleT, SHOT_RED_INV+BALL_SS, 0, SHOT_RED_INV+CANCEL_BURST1);
+                    angleT += revArc;
+                }
+            }
+            Obj_Delete(obj);
+        }
+    }
+
+    return obj;
+}
