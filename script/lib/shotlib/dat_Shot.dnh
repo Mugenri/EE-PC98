@@ -1,6 +1,6 @@
 #UserShotData
 
-shot_image = "./../../img/system/mugenriShot.png"
+shot_image = "./../../img/system/MugenriShot.png"
 delay_render = ALPHA
 render = ALPHA
 
