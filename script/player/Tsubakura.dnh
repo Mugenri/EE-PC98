@@ -150,7 +150,7 @@ task TSpell() {
     int objManage = GetSpellManageObject();
 
     SetForbidPlayerShot(true);
-    SetPlayerInvincibilityFrame(310);
+    SetPlayerInvincibilityFrame(240);
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
     SetPlayerSpeed(2.0, 2.0);
 
