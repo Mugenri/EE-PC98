@@ -27,7 +27,7 @@ task TStage() {
     while (!_start) yield;
 
     StartScript(ID);
-    StartBGM(1, 180, 0);
+    StartBGM(1, 60, 0);
 
     while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
     wait(150); //last explosion & spell bonus numbers

@@ -39,6 +39,7 @@ const int EV_STAGE_EVENT        = EV_USER_PACKAGE + 7;  //Package stage script l
 const int EV_GET_BGM_NAME       = EV_USER_PACKAGE + 8;  //returns an array of [name, comment]. pass (bgmID)
 const int EV_STOP_SFX           = EV_USER_PACKAGE + 9;  //Stop currently playing sfx
 const int EV_STAGE_VICTORY      = EV_USER_PACKAGE + 10; //Calls CloseStgScene() through an event
+const int EV_SET_FADE_BGM       = EV_USER_PACKAGE + 11; //Changes the fadeout time for the current playing bgm
 
 //----------------------------------------------------
 //PACKAGE STAGE CONSTANTS

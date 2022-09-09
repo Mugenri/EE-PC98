@@ -259,6 +259,7 @@ task TStageScene() {
         SetTransitionTexture();
         RenderToTextureA1(RT_ENDSCREEN, RP_STG_END, RP_STG_END, true);
         StageCleared();
+        SetFadeBGM(180);
         ClearBGM();
 
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_BG);

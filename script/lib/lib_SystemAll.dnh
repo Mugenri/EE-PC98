@@ -44,6 +44,8 @@ function<void> StartBGM(int trackID_, int fade_, int delay_) {
 function<void> StopBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, true); }
 //Resume track
 function<void> ResumeBGM() { NotifyEvent(GetAudioScriptID(), EV_STOP_BGM, false); }
+//Change current track fade
+function<void> SetFadeBGM(int fade_) { NotifyEvent(GetAudioScriptID(), EV_SET_FADE_BGM, fade_); }
 //Reset track
 function<void> ClearBGM() { NotifyEvent(GetAudioScriptID(), EV_PLAY_BGM, -1, 0, 0); }
 

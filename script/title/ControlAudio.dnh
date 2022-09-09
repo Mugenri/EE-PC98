@@ -2,13 +2,18 @@
 #include "./lib/BGMData.dnh"
 #include "./lib/lib_TitleCommon.dnh"
 
-//BGM globals
-int _objBGM = -1; //used to hold the current playing BGM ID. this is not the actual sound object
-int _currentBGM = -1; //used to check current playing track in TMain
-bool _flagStop = false; //used to pause/restart bgm, changed by EV_STOP_BGM
+//BGM Globals
+const int BGM_END = 0; //Key value for bgm stop
+const int BGM_FADE = 1; //Key value for bgm fade
+int _objBGM = -1; //reference to currently playing sound object
+int _currentBGM = -1; //currently playing track ID
+int _fadeBGM; //fadeout time in frames
+int _delayBGM; //track delay time in frames
+bool _flagStop = false; //used to pause/restart bgm
+bool _newTrack = false; //new track has started, cutoff old
 
-//SFX globals
-int _objSFX = ObjSound_Create();
+//SFX Globals
+int _objSFX;
 const string[] SOUNDS = [
     DIR_SE ~ "seBang1.wav",         //0
     DIR_SE ~ "seBang2.wav",
@@ -60,18 +65,20 @@ const string[] SOUNDS = [
 @Event {
     alternative (GetEventType())
     //BGM events
-    case (EV_PLAY_BGM) { //Set common data for TMain to use
+    case (EV_PLAY_BGM) {
         _currentBGM = GetEventArgument(0);
-        SetAreaCommonData(AREA_TITLE, "BGM_ID", _currentBGM); //track ID in BGMData.dnh
-        SetAreaCommonData(AREA_TITLE, "BGM_Fade", GetEventArgument(1)); //fade out time in frames
-        SetAreaCommonData(AREA_TITLE, "BGM_Delay", GetEventArgument(2)); //delay track start time in frames
+        SetAreaCommonData(AREA_TITLE, "BGM_ID", _currentBGM);
+        _fadeBGM = GetEventArgument(1);
+        _delayBGM = GetEventArgument(2);
     }
     case (EV_STOP_BGM) { //true to pause BGM, false to resume current BGM
         _flagStop = GetEventArgument(0);
     }
+    case (EV_SET_FADE_BGM) { //change fadeout time for currently playing track
+        Obj_SetValueI(_objBGM, BGM_FADE, GetEventArgument(0));
+    }
     case (EV_GET_BGM_NAME) {
-        string[] info = BGM_GetText(GetEventArgument(0));
-        SetScriptResult(info[0]);
+        SetScriptResult(BGM_GetText(GetEventArgument(0))[0]);
     }
     //SFX events
     case (EV_PLAY_SFX) {
@@ -95,88 +102,85 @@ task TMain {
     loop {
         if (BGMID != _currentBGM) {
             BGMID = _currentBGM;
-            int fade = GetAreaCommonData(AREA_TITLE, "BGM_Fade", -1);
-            int delay = GetAreaCommonData(AREA_TITLE, "BGM_Delay", -1);
-            TChangeBGM(BGMID, fade, delay);
+            ChangeBGM(_currentBGM);
         }
         yield;
     }
 }
 
-task TChangeBGM(int trackID_, int fade_, int delay_) {
+function<void> ChangeBGM(int trackID_) {
     //fade out/end current playing track
-    if (!Obj_IsDeleted(_objBGM)) {
-        TClearBGM(_objBGM); //called before _objBGM is assigned a new ID, starts track fadeout
-    }
+    if (!Obj_IsDeleted(_objBGM)) EndBGM(_objBGM);
     //Play new bgm, set heard flag for music room unlock
     if (trackID_ >= 0) {
         _flagStop = false;
-        TPlayBGM(trackID_, fade_, delay_);
+        TPlayBGM(trackID_);
         CD_SetBGMHeard(trackID_);
     }
 }
 
 //BGM_End value tied to specific track object in TPlayBGM
-task TClearBGM(int obj_) {
-    Obj_SetValue(obj_, "BGM_End", true);
+function<void> EndBGM(int obj_) {
+    Obj_SetValueI(obj_, BGM_END, true);
 }
 
-task TPlayBGM(int trackID_, int fade_, int delay_) {
+task TPlayBGM(int trackID_) {
     int ID = ObjSound_Create();
     string path = BGM_GetPath(trackID_);
     int[] sample = BGM_GetSample(trackID_);
 
     ObjSound_Load(ID, path);
     ObjSound_SetSoundDivision(ID, SOUND_BGM);
+    ObjSound_SetVolumeRate(ID, GetBGMVolume());
     ObjSound_SetLoopEnable(ID, true);
     ObjSound_SetResumeEnable(ID, true);
     ObjSound_SetLoopSampleCount(ID, sample[0], sample[1]);
 
-    _objBGM = ID; //both point to same value. different when a new track is played. ID is used to control fade out while _objBGM prepares a new track to be played
+    _objBGM = ID; //set reference
+    Obj_SetValueI(ID, BGM_FADE, _fadeBGM);
 
-    wait(delay_);
+    wait(_delayBGM);
+    _newTrack = true;
 
-    ObjSound_Play(ID);
-
+    ObjSound_Play(ID); 
+    int fade = 0;
     bool stop = false;
-
-    while (!Obj_IsDeleted(ID) && !Obj_GetValueD(ID, "BGM_End", false)) {
-
+    while (!Obj_GetValueDI(ID, BGM_END, false)) {
+        fade = Obj_GetValueDI(ID, BGM_FADE, 0);
         ObjSound_SetVolumeRate(ID, GetBGMVolume());
-        if (stop != _flagStop) {
+        if (stop != _flagStop) { //pause/resume toggle
+            stop = _flagStop;
             if (_flagStop) ObjSound_Stop(ID);
             else ObjSound_Play(ID);
-            stop = _flagStop;
         }
         yield;
     }
-    //fade out
-    if (fade_ > 0 && !stop) { //only fade if track ended while actually playing, else skip
-        float volTimer = 0;
-        while (volTimer < fade_) { //fade time is in frames
-            float volume = GetBGMVolume();
-            float volDecay = volTimer / fade_; //reduce volume linearly
-
-            ObjSound_SetVolumeRate(ID, volume - volDecay * volume);
-
-            volTimer += 1; //1 frame
+    //fade
+    _newTrack = false;
+    if (fade > 0 && !stop) { //if unpaused
+        int volTimer = 0;
+        float volume = GetBGMVolume();
+        while (volTimer < fade && !_newTrack) { //if track changes during fade, break
+            ObjSound_SetVolumeRate(ID, Interpolate_Linear(volume, 0, volTimer / as_float(fade)));
+            volTimer++;
             yield;
         }
     }
     Obj_Delete(ID);
 }
 
-function<void> InitAudio() { //preload all audio files to prevent weird stuttering upon first play
+function<void> InitAudio() { //Preload audio files
     //BGM
-    int tempID = 0;
-    string tempPath = "";
+    int ID = 0;
+    string path = "";
     loop {
-        tempPath = BGM_GetPath(tempID);
-        if (tempPath == "") break;
-        LoadSound(tempPath);
-        tempID++;
+        path = BGM_GetPath(ID);
+        if (path == "") break;
+        LoadSound(path);
+        ID++;
     }
     //SFX
+    _objSFX = ObjSound_Create();
     ObjSound_SetSoundDivision(_objSFX, SOUND_SE);
     for each (sound in SOUNDS) {
         LoadSound(sound);

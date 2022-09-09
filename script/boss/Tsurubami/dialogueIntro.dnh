@@ -188,7 +188,7 @@ function<void> Dialogue() {
             Dialogue_SetText(false, "...Even if it's only in my/dreams, might as well have/fun with this-");
         }
         case (37) {
-            StartBGM(1, 180, 0);
+            StartBGM(1, 60, 0);
             Dialogue_SetPortrait(playerCutin, 10);
             Dialogue_SetText(false, "-and enjoy beating your ass~");
         }
