@@ -47,7 +47,7 @@ _spellID = 36 + _diff;
 task TInitialize() {
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 30, LERP_DECELERATE);
     wait(30);
-    Transition_Zoom(7, 0, COLOR_BLACK);
+    Transition_Spell(2, 7, 0, COLOR_BLACK);
     CallSFX(SND_TRANSITION);
 }
 

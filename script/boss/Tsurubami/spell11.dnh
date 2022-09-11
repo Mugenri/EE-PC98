@@ -43,7 +43,7 @@ _spellID = 60 + _diff;
 task TInitialize() {
     ObjMove_SetDestAtFrame(_objBoss, MID_X, MAX_Y - 32, 30, LERP_DECELERATE);
     wait(30);
-    Transition_Rise(11, 0);
+    Transition_Spell(9, 11, 0);
     CallSFX(SND_TRANSITION);
     wait(370);
     Boss_SetVulnerable(_objBoss, true);
