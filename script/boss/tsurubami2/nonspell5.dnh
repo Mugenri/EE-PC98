@@ -1,0 +1,139 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 5"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = [100, 100, 120][_diff];
+_spellID = 24 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TMovement();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire2(1);
+                TFire2(-1);
+            }
+        }
+        yield;
+    }
+}
+
+task TMovement() {
+    while(_count < 0) yield;
+    wait (23);
+    while (Boss_Alive(_objBoss)) {
+        Boss_MoveRadiusInBounds(_objBoss, 48, 64, MID_X - 64, MID_X + 64, 32, 80, 60, LERP_DECELERATE);
+        wait(_loopTime * 2);
+    }
+}
+
+task TFire2(int dir_) {
+    //fire shot that bursts into expanding spiral
+    if (!Boss_Alive(_objBoss)) return;
+
+    //charge
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 72, 90, 20, 8, COLOR_WHITE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 72, -90, 20, 8, COLOR_WHITE);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 72, 90, 20, 8, COLOR_GRAY_L);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 72, -90, 20, 8, COLOR_GRAY_L);
+    wait(20);
+
+    int bubble = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 12, GetAngleToPlayer(_objBoss) + rand(40, 60) * dir_, -0.7, 0, 0, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
+    ObjShot_SetAutoDelete(bubble, false);
+    ObjShot_SetSpellResist(bubble, true);
+    CallSFX(SND_SHOT3);
+
+    while (ObjMove_GetSpeed(bubble) != 0) yield;
+
+    if (!Boss_Alive(_objBoss)) return;
+
+    async {
+        float xPos = ObjMove_GetX(bubble);
+        float yPos = ObjMove_GetY(bubble);
+        int way = [4, 5, 5][_diff];
+        int stack = [3, 3, 4][_diff];
+        float maxRad = [100, 110, 130][_diff];
+        float accel = [0.025, 0.025, 1][_diff];
+        float maxSpeed = [2.2, 2.2, 2.6][_diff];
+        float angleBase = ObjMove_GetAngle(bubble);
+        float angleStep = [0.8, 1.0, 0.4][_diff];
+        float angleInc = [20, 25, 27][_diff];
+        int delayTime = 3;
+        int loopTime = [3, 3, 4][_diff];
+
+        int counter = 0;
+        int steps = [15, 17, 28][_diff];
+        while (Boss_Alive(_objBoss) && counter < steps) {
+            float angleT = angleBase;
+            float radius = Interpolate_Decelerate(0, maxRad, counter / as_float(steps / 2));
+            for (int i = 0; i < way; i++) {
+                int color = SHOT_RED;
+                int type = CROSS_PELLET;
+                float angleTemp = angleT;
+                for (int j = 0; j < stack; j++) {
+                    float shotX = xPos + radius * cos(angleTemp);
+                    float shotY = yPos + radius * sin(angleTemp);
+                    if (distance(shotX, shotY, GetPlayerX(), GetPlayerY()) < 12) continue;
+                    int shot = CreateShotUA2(shotX, shotY, 0, angleTemp + 180, accel, maxSpeed, 0, color+type, j * delayTime, SHOT_GREEN+SPAWN_S+SIZE_8, color+CANCEL_FADE);
+                    ObjShot_SetAutoDelete(shot, false);
+                    ObjShot_SetDeleteFrame(shot, 420);
+                    angleTemp += angleStep * dir_;
+                    color = SHOT_WHITE;
+                    type = PELLET;
+                }
+                angleT += 360 / way * dir_;
+            }
+            CallSFX(SND_SHOT2);
+            angleBase += angleInc * dir_;
+            counter++;
+            wait(loopTime);
+        }
+    }
+    ObjShot_SetDeleteFrame(bubble, 1);
+}

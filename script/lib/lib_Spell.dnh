@@ -93,7 +93,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (17)           { return "Forbidden Art \"Blood Money Market\""; }              //ABEX
         case (18, 19, 20)   { return "Nonspell 4"; }                                        //7
         case (21, 22)       { return "Fortress Card \"Siege Engine\""; }                    //8
-        case (23)           { return "Dragonfly Fortress \"Haze Castle Crashing\""; }       //ABEX                                 //ABEX
+        case (23)           { return "Dragonfly Fortress \"Haze Castle Crashing\""; }       //ABEX
+        case (24, 25, 26)   { return "Nonspell 5"; }                                        //9
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -144,6 +145,7 @@ function<string> Spell_GetPath(int stageIndex_, int spellID_) {
         case (15, 16, 17)   { return dir ~ "spell3.dnh"; }      //6
         case (18, 19, 20)   { return dir ~ "nonspell4.dnh"; }   //7
         case (21, 22, 23)   { return dir ~ "spell4.dnh"; }      //8
+        case (24, 25, 26)   { return dir ~ "nonspell5.dnh"; }   //9
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
