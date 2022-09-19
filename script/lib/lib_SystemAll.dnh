@@ -80,7 +80,7 @@ function<int> CheckVirtualKeyPressed(int[] keys_) { //waits and returns the firs
                 SetCommonData("hold", 0);
             }
             if (holdKey > 30) { //if held long enough, pass most recent key value and set hold value
-                SetCommonData("hold", 20);
+                SetCommonData("hold", 24);
                 return keyValue;
             }
             yield;
