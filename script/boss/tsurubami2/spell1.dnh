@@ -11,7 +11,7 @@ int _count = -120;
 int _loopTime = [760, 720, 680][_diff];
 _spellID = 3 + _diff;
 
-int _triggerDistance = [80, 80, 96][_diff];
+int _triggerDistance = [80, 96, 112][_diff];
 
 @Event {
     alternative (GetEventType())
@@ -91,8 +91,8 @@ task TTriggerZone() {
     }
 
     float heartSpeed = [-0.4, -0.4, -1.4][_diff];
-    float heartAccel = [0.02, 0.02, 0.12][_diff];
-    float heartMaxSpeed = [1.2, 1.2, 2.0][_diff];
+    float heartAccel = [0.04, 0.08, 0.12][_diff];
+    float heartMaxSpeed = [1.2, 1.5, 2.0][_diff];
 
     while (Boss_Alive(_objBoss)) {
         //update zone
@@ -150,10 +150,10 @@ task TFlowers(int dir_) {
     if (!Boss_Alive(_objBoss)) return;
 
     //flower burst
-    int way = [7, 7, 13][_diff];
+    int way = [7, 13, 19][_diff];
     int stack = [15, 19, 11][_diff];
-    float sBase = [-2.9, -3.2, -4.5][_diff];
-    float sArg = [-1.0, -1.3, -2.2][_diff];
+    float sBase = [-3.0, -3.2, -4.5][_diff];
+    float sArg = [-1.3, -1.3, -2.2][_diff];
     int burst = Shot_CreatePattern(_objBoss, PATTERN_ROSE, way, stack, sBase, sArg, (rand(0, 360)), 4, 48, 0);
     Shot_FirePatternA(burst, SHOT_PURPLE+FIRE_S, SHOT_PURPLE+SPAWN_S+SIZE_16, SHOT_PURPLE+CANCEL_BURST2);
     CallSFX(SND_SHOT2);
@@ -165,8 +165,8 @@ task TFlowers(int dir_) {
     int waitTime = 24;
     way = [5, 5, 7][_diff];
     stack = [5, 5, 13][_diff];
-    sBase = [2, 4, 14][_diff];
-    sArg = [1, 1.8, 8][_diff];
+    sBase = [4, 6, 14][_diff];
+    sArg = [1.4, 1.8, 8][_diff];
     ObjPatternShot_SetShotCount(burst, way, stack);
     ObjPatternShot_SetSpeed(burst, sBase, sArg);
     ObjPatternShot_SetShootRadius(burst, 0);
@@ -179,23 +179,24 @@ task TFlowers(int dir_) {
         Shot_FirePatternA(burst, SHOT_GRAY+HEART_S, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
         TFlower(rand(0, 1));
         TFlower(rand(0, -1));
+        TFlower(rand(-1, 1));
         CallSFX(SND_SHOT1);
     }
 
     Obj_Delete(burst);
 
     task TFlower(float direction_) {
-        float xSpeed = 2 * direction_;
+        float xSpeed = 4 * direction_;
         if (direction_ > 0) direction_ = 1;
         else direction_ = -1;
         float ySpeed = rand(-0.5, -3);
         float yAccel = 0.2;
         float xSpeedMin = rand(0.2, 0.8) * direction_;
-        float ySpeedMax = [1.1, 1.3, 5.5][_diff];
+        float ySpeedMax = [1.3, 1.8, rand(4.5, 5.5)][_diff];
         int center = CreateShotUB2(Boss_X(_objBoss), Boss_Y(_objBoss), xSpeed, ySpeed, -0.08 * direction_, yAccel, xSpeedMin, ySpeedMax, SHOT_YELLOW+BALL_SS, 0, SHOT_YELLOW+SPAWN_S+SIZE_8, SHOT_YELLOW+CANCEL_SPARKLE);
 
         int[] petals = [];
-        int numPetal = [6, 7, 11][_diff];
+        int numPetal = [6, 9, 13][_diff];
         int color = [SHOT_PINK, SHOT_WHITE, SHOT_PINK_INV, SHOT_PURPLE][rand_int(0, 3)];
         loop (numPetal) {
             petals ~= [CreateShotUA1(ObjMove_GetX(center), ObjMove_GetY(center), 0, 0, color+PILL_S, 0, color+SPAWN_E+SIZE_16, color+CANCEL_BURST2)];
