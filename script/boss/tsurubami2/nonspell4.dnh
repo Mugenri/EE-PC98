@@ -102,8 +102,9 @@ task TRing(int dir_) {
 
     for (int i = 0; i < numShot; i++) {
         int color = [SHOT_GRAY, SHOT_BLACK][i % 2];
-        int shot = CreateShotUA1(xPos, yPos, 0, 0, color+CARD, 0, color+SPAWN_S+SIZE_8, color+CANCEL_BURST1);
+        int shot = CreateShotUA1(xPos, yPos, 0, 0, color+CARD, 0, color+CANCEL_BURST1);
         ObjShot_SetAutoDelete(shot, false);
+        ObjShot_SetFixedAngle(shot, true);
         TTrack(shot, i);
     }
     CallSFX(SND_SHOT1);
@@ -142,6 +143,7 @@ task TRing(int dir_) {
             }
             float angleT = baseAngle + (360 / numShot * index_) * dir_;
             ObjMove_AddPatternD2(shot_, 0, xPos + rad * cos(angleT), yPos + rad * sin(angleT), 1, LERP_LINEAR);
+            ObjRender_SetAngleZ(shot_, angleT + 90 + (90 * dir_));
 
             if ((frame + transformTime) % (numShot * delay) == 0) {
                 async {
