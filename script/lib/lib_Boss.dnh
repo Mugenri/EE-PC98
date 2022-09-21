@@ -103,6 +103,7 @@ function<void> Boss_Finalize(int obj_) {
     float yPos = ObjMove_GetY(obj_);
     SetAreaCommonData(AREA_STAGE, "Pos_Bonus", [xPos, yPos]); //Spell bonus yellow ascii text position
 
+    int gameMode = GetGameMode();
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
     bool isFinal = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_LAST_STEP);
     bool isCapture = Boss_IsSpellCaptured();
@@ -112,7 +113,7 @@ function<void> Boss_Finalize(int obj_) {
     int currentSpell = Spell_GetCurrent();
     if (isCapture) Spell_Captured(currentStage, currentSpell);
 
-    if (isFinal) {
+    if (isFinal && gameMode == GAME_MAIN) {
         ObjMove_CancelMovement(obj_); //stop movement if final spell/spell practice
         SetPlayerInvincibilityFrame(60);
         Particle_RandomExplosionBig(xPos, yPos); //this function is blocking
@@ -120,6 +121,7 @@ function<void> Boss_Finalize(int obj_) {
         StartSlow(TARGET_ALL, 30);
     } else {
         Particle_RandomExplosionSmall(xPos, yPos);
+        if (gameMode == GAME_SPELL) ObjMove_SetDestAtFrame(obj_, -64, -64, 60, LERP_ACCELERATE);
     }
 
     //Boss drops 5 point items regardless
