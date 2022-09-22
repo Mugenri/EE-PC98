@@ -177,7 +177,7 @@ task TWall(int dir_) {
     int stack = [3, 4, 6][_diff];
     float wallSpeed = [1, 1, 1.4][_diff];
     int waitTime = [27, 22, 16][_diff];
-    float angleBase = 360 / way;
+    float angleBase = 90 + 540 / way;
 
     //create shots
     for (int i = 0; i < stack; i++) {
