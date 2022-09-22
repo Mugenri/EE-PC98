@@ -235,6 +235,7 @@ function<int> CreateFamiliar(int dir_) { //make a ink dude
     ObjRender_SetColor(obj, COLOR_BLACK);
     Obj_SetRenderPriorityI(obj, RP_STG_ENEMY);
 
+    int frame = 0;
     int frames = 240;
     int loopTime = 40;
     ObjMove_AddPatternD2(obj, 0, MID_X - (MID_X + 32) * dir_, 160, frames, LERP_LINEAR);
@@ -249,7 +250,7 @@ function<int> CreateFamiliar(int dir_) { //make a ink dude
     float revArc = [12, 11, 9][_diff];
     wait(20);
     async {
-        while (!Obj_IsDeleted(obj) && Boss_Alive(_objBoss) && ObjEnemy_GetInfo(obj, INFO_LIFE) > 0) {
+        while (!Obj_IsDeleted(obj) && Boss_Alive(_objBoss) && ObjEnemy_GetInfo(obj, INFO_LIFE) > 0 && frame < frames) {
             Boss_SetIntersection(obj, _intersectionShot, _intersectionPlayer);
             if (_count % loopTime == 0) {
                 float angleT = GetAngleToPlayer(obj) - (arc * (numShot - 1) / 2);
@@ -259,10 +260,11 @@ function<int> CreateFamiliar(int dir_) { //make a ink dude
                 }
                 CallSFX(SND_SHOT1);
             }
+            frame++;
             yield;
         }
 
-        if (!Obj_IsDeleted(obj)) {
+        if (!Obj_IsDeleted(obj) && frame < frames) {
             Particle_EnemyExplosionSmall(ObjMove_GetX(obj), ObjMove_GetY(obj));
             CallSFX(SND_SHOT1);
 
@@ -273,6 +275,8 @@ function<int> CreateFamiliar(int dir_) { //make a ink dude
                     angleT += revArc;
                 }
             }
+            Obj_Delete(obj);
+        } else if (!Obj_IsDeleted(obj)) {
             Obj_Delete(obj);
         }
     }
