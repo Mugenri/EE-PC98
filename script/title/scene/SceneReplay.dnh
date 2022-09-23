@@ -354,8 +354,10 @@ function<bool> SaveReplayPrompt(int continues_) {
             CheckVirtualKeyPressed([VK_OK, VK_CANCEL, VK_PAUSE]);
             break;
         }
-        ScreenBlackout(60, 60, 0, COLOR_BLACK);
-        wait(60);
+        CallSFX(SND_TT_CANCEL);
+        ClearBGM();
+        ScreenBlackout(90, 100, 0, COLOR_BLACK);
+        wait(180);
     } else {
         ObjText_SetText(text, "Save a replay?");
         bool exitFlag = false;
