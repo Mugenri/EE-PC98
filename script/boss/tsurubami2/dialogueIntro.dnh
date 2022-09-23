@@ -47,7 +47,7 @@ function<void> Dialogue() {
         alternative (line)
         case (0) {
             Dialogue_SetPortrait(playerCutin, 0);
-            Dialogue_SetText(false, "I must be dreaming. It's been/years since I've seen the/shrine road like this.");
+            Dialogue_SetText(false, "I must be dreaming. It's been/years since I've seen this/place.");
         }
         case (1) {
             Dialogue_SetPortrait(playerCutin, 2);
