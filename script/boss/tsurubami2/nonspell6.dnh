@@ -1,0 +1,118 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 6"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = 120;
+_spellID = 30 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TShots();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            Boss_MoveRadiusInBounds(_objBoss, 48, 64, MID_X - 64, MID_X + 64, 32, 100, 60, LERP_DECELERATE);
+        }
+        yield;
+    }
+}
+
+task TShots() {
+    while (_count < 0) yield;
+
+    alternative (_diff)
+    case (0) { //EZEX
+        TFire(1, 40, 32, 2.1, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        wait(60);
+        TFire(-1, 40, 32, 2.1, 180, -60, 1.0, 1.1, SHOT_RED, 4);
+        wait(60);
+        TFire(-1, 40, 32, 2.4, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
+        wait(60);
+        TFire(1, 40, 32, 2.4, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
+    }
+    case (1) { //EX
+        TFire(1, 40, 32, 2.3, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        TFire(1, 40, 32, 2.2, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        wait(60);
+        TFire(-1, 40, 32, 2.3, 180, -60, 1.0, 1.1, SHOT_RED, 4);
+        TFire(-1, 40, 32, 2.2, 180, 0, 1.0, 1.1, SHOT_RED, 3);
+        wait(60);
+        TFire(-1, 48, 32, 2.5, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
+        wait(60);
+        TFire(1, 48, 32, 2.5, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
+    }
+    case (2) { //ABEX
+        TFire(1, 32, 48, 2.3, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        wait(10);
+        TFire(1, 32, 48, 2.2, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        wait(10);
+        TFire(1, 32, 48, 2.1, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        wait(10);
+        TFire(-1, 32, 64, 2.3, 180, -60, 1.0, 1.1, SHOT_RED, 3);
+        wait(10);
+        TFire(-1, 32, 64, 2.2, 180, 0, 1.0, 1.1, SHOT_RED, 2);
+        wait(10);
+        TFire(-1, 40, 32, 2.5, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
+        wait(10);
+        TFire(1, 40, 32, 2.5, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
+    }
+
+}
+
+task TFire(int dir_, int numShot_, int radius_, float speed_, float angleT_, float angleMod_, float xMod_, float yMod_, int color_, int waitTime_) {
+    //amulet circle
+    loop {
+        for (int i = 0; i < numShot_; i++) {
+            if (!Boss_Alive(_objBoss)) return;
+            int shot = CreateShotUA1(Boss_X(_objBoss) + radius_ * cos(angleT_ * xMod_), Boss_Y(_objBoss) + radius_ * sin(angleT_ * yMod_), speed_, angleT_ + angleMod_ * dir_, color_+CARD, 0, color_+SPAWN_S+SIZE_16, color_+CANCEL_FADE);
+            ObjMove_AddPatternA2(shot, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, -5 * dir_);
+            ObjMove_AddPatternA2(shot, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+            angleT_ += 360 / numShot_ * dir_;
+            CallSFX(SND_SHOT1);
+            wait(waitTime_);
+        }
+    }
+}
