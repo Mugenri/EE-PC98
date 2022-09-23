@@ -150,6 +150,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "tsuru2Stage.dnh",
             dir ~ "tsuru2BG.dnh",
             dir ~ "tsuru2Plural.dnh",
+            dir ~ "dialogueIntro.dnh",
             dir ~ "nonspell1.dnh",
             dir ~ "nonspell2.dnh",
             dir ~ "nonspell3.dnh",

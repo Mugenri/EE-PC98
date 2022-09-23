@@ -1,0 +1,292 @@
+//Pre-fight dialogue
+#include "./../../lib/lib_Dialogue.dnh" //dialogue functions
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TBackground();
+    TMain();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TBackground() {
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_MIN);
+}
+
+//dialogue function
+task TMain() {
+    Dialogue_Start(); //pause game, create text boxes
+    Dialogue(); //main dialogue function
+    Dialogue_End(); //remove text boxes
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Dialogue() {
+    //create player/enemy portraits and text fields
+    int playerCutin = Dialogue_CreatePortrait(BOSS_ID_TSUBAKURA, false);
+    int bossCutin = Dialogue_CreatePortrait(BOSS_ID_TSURUBAMI, true);
+
+    //dialogue line position
+    int line = 0;
+    loop {
+        bool end = DialogueLine(line);
+        if (end) break;
+        line++;
+        Dialogue_Wait();
+    }
+    //Dialogue end
+    Obj_Delete(playerCutin);
+    Obj_Delete(bossCutin);
+
+    function<bool> DialogueLine(int line_) {
+        //-----------------------------
+        alternative (line)
+        case (0) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "I must be dreaming. It's been/years since I've seen the/shrine road like this.");
+        }
+        case (1) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "Well... sorta./This looks a bit more/nightmarish than I remember.");
+        }
+        case (2) {
+            Dialogue_SetText(true, "Sorry about the mess!");
+        }
+        case (3) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Ah, you.");
+        }
+        case (4) {
+            Dialogue_SummonBoss(20, 10, 20, BOSS_ID_TSURUBAMI, MID_X, 60);
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_BossTitle("The Inexplicable Hakama/T s u r u b a m i  S e n r i");
+        }
+        case (5) {
+            Dialogue_SetText(true, "Maintaining this place is/becoming more difficult by/the moment...");
+        }
+        case (6) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "You're a terrible exterior/decorator.");
+        }
+        case (7) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "That's no way to greet your/current employer, now is it?");
+        }
+        case (8) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Wait- after all this time.../It's really you?");
+        }
+        case (9) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "In the flesh~/...mostly.");
+        }
+        case (10) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "I'm not actually sure what/dreams are made of...");
+        }
+        case (11) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "That's a topic for another/time.");
+        }
+        case (12) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "How are you in my dream?/It's a little creepy.");
+        }
+        case (13) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Not even a \"How've you been\"?/So cold~");
+        }
+        case (14) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "...");
+        }
+        case (15) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "Uhh, ahem.");
+        }
+        case (16) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Metaphysical communication is/one of my abilities as a/Senri Priest.");
+        }
+        case (17) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "However, you're a little more/difficult to reach than your/white-haired friend.");
+        }
+        case (18) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "Manipulating the dream world/is not one of my most/practiced skills, you see.");
+        }
+        case (19) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "I needed a little bit of help/to contact you...");
+        }
+        case (20) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "So you had Yabusame do/something weird to my coffee,/didn't you?");
+        }
+        case (21) {
+            Dialogue_SetPortrait(bossCutin, 4);
+            Dialogue_SetText(true, "Precisely! You catch on/quickly, both of you. It's/very convenient~");
+        }
+        case (22) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "You sneaky bastard. What the/hell did you drug me with!?");
+        }
+        case (23) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Nothing harmful, I promise./The exact contents are a bit/of a trade secret, however.");
+        }
+        case (24) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "We're both Shinto priests.");
+        }
+        case (25) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "Ah, that is true isn't it...");
+        }
+        case (26) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "...");
+        }
+        case (27) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "...");
+        }
+        case (28) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "I figured as much...");
+        }
+        case (29) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "As long as it isn't going to/make my eyes explode or/something horrible...");
+        }
+        case (30) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "No side effects of the sort./Just a little something to/make reaching you easier.");
+        }
+        case (31) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "Not much I'd be able to do at/this point if it were/toxic...");
+        }
+        case (32) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "That's the spirit~");
+        }
+        case (33) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Very reassuring...");
+        }
+        case (34) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Anyway, I'm not dumb enough/to think you don't want/something from me.");
+        }
+        case (35) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "Right to the chase, I see./Not even up for some small/talk between old friends?");
+        }
+        case (36) {
+            Dialogue_SetPortrait(playerCutin, 1);
+            Dialogue_SetText(false, "That's rich, now spill.");
+        }
+        case (37) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "I suppose doing this quickly/is for the best...");
+        }
+        case (38) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "I need to test how well/you've acclimated to living/in Mugenri.");
+        }
+        case (39) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "I've acclimated fine enough.");
+        }
+        case (40) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "We just dealt with a war. The/only thing being tested is my/patience.");
+        }
+        case (41) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "I just need to be sure of/something. It's vitally/important.");
+        }
+        case (42) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "It should only take fifteen,/maybe twenty, minutes.");
+        }
+        case (43) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "Fine, fine. If it's that big/a deal to you, I guess I can/spare a bit of time.");
+        }
+        case (44) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "Not like I can leave.../What's your test, then?");
+        }
+        case (45) {
+            Dialogue_SetPortrait(bossCutin, 10);
+            Dialogue_SetText(true, "The usual.");
+        }
+        case (46) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "...");
+        }
+        case (47) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Ughh, how troublesome...");
+        }
+        case (48) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "Quickly now, we don't have/much time left.");
+        }
+        case (49) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "You mean YOU don't have much/time left. I didn't ask to/have my dreams invaded.");
+        }
+        case (50) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "It will be you who is short/on time if you are not yet/strong enough.");
+        }
+        case (51) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "Well, that's foreboding...");
+        }
+        case (52) {
+            Dialogue_SetText(true, "I assure you that this is/very serious.");
+        }
+        case (53) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "You're sayin' my life depends/on it?");
+        }
+        case (54) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "'Tis almost certain.");
+        }
+        case (55) {
+            Dialogue_SetPortrait(playerCutin, 5);
+            Dialogue_SetText(false, "Damn...");
+        }
+        case (56) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "We have no time to waste./Now then...");
+        }
+        case (57) {
+            StartBGM(2, 60, 0);
+            Dialogue_SetPortrait(bossCutin, 11);
+            Dialogue_SetText(true, "Shall we dance?");
+        }
+        case (58) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "If you're really leaving me/no choice...");
+        }
+        case (59) {
+            Dialogue_SetPortrait(playerCutin, 10);
+            Dialogue_SetText(false, "...then I'll make sure you/feel this in the morning!");
+        }
+        others {
+            return true;
+        }
+        return false;
+    }
+}
