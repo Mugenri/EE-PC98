@@ -226,6 +226,7 @@ task TStick() {
 }
 
 function<int> CreateFamiliar(int dir_) { //make a ink dude
+    if (!Boss_Alive(_objBoss)) return;
     int obj = ObjEnemy_Create(OBJ_ENEMY);
     ObjEnemy_SetLife(obj, 35);
     Boss_SetID(obj, BOSS_ID_TSURUBAMI);
