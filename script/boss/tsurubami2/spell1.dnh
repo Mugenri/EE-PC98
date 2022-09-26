@@ -161,8 +161,8 @@ task TFlowers(int dir_) {
     Shot_FirePatternA(burst, SHOT_PINK_INV+FIRE_S, SHOT_PINK_INV+SPAWN_S+SIZE_16, SHOT_PINK_INV+CANCEL_BURST2);
 
     //move, throw flowers, heart bursts
-    int flowerNum = 7;
-    int waitTime = 24;
+    int flowerNum = [7, 7, 9][_diff];
+    int waitTime = [24, 24, 20][_diff];
     way = [5, 5, 7][_diff];
     stack = [5, 5, 13][_diff];
     sBase = [4, 6, 14][_diff];
