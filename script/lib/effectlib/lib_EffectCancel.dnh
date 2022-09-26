@@ -25,7 +25,7 @@ function<void> Cancel_Shot(int obj_) { //Shot cancel effect
     //32 = 72-89
     //64 = 90-107
     int frame = 0;
-    int frameRate = 4;
+    int frameRate = 6;
 
     if (effect < 72) TDelete16();
     else if (effect < 90) TDelete32();
