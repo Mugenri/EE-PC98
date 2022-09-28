@@ -25,7 +25,7 @@ function<int> CreateShotUA1(float x_, float y_, float speed_, float angle_, int 
         shotID = CreateShotA1(x_, y_, speed_ / 2, angle_, animGraphic_, delay_);
         ObjMove_AddPatternA3(shotID, 20, speed_, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -41,7 +41,7 @@ function<int> CreateShotUA2(float x_, float y_, float speed_, float angle_, floa
         shotID = CreateShotA2(x_, y_, speed_ / 2, angle_, 0, 0, wVel_ / 2, animGraphic_, delay_); //unaffected by accel for spawn animation
         ObjMove_AddPatternA3(shotID, 20, speed_, NO_CHANGE, accel_, maxSpeed_, wVel_, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -57,7 +57,7 @@ function<int> CreateShotUB1(float x_, float y_, float xSpeed_, float ySpeed_, in
         shotID = CreateShotB1(x_, y_, xSpeed_ / 2, ySpeed_ / 2, animGraphic_, delay_);
         ObjMove_AddPatternB3(shotID, 20, xSpeed_, ySpeed_, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -73,7 +73,7 @@ function<int> CreateShotUB2(float x_, float y_, float xSpeed_, float ySpeed_, fl
         shotID = CreateShotB2(x_, y_, xSpeed_ / 2, ySpeed_ / 2, 0, 0, 0, 0, animGraphic_, delay_); //unaffected by accel for spawn animation
         ObjMove_AddPatternB3(shotID, 20, xSpeed_, ySpeed_, xAccel_, yAccel_, maxSpeedX_, maxSpeedY_, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -89,7 +89,7 @@ function<int> CreateShotUC1(float x_, float y_, float xSpeed_, float ySpeed_, fl
         shotID = CreateShotC1(x_, y_, xSpeed_ / 2, ySpeed_ / 2, wOffset_, animGraphic_, delay_);
         ObjMove_AddPatternC3(shotID, 20, xSpeed_, ySpeed_, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -105,7 +105,7 @@ function<int> CreateShotUC2(float x_, float y_, float xSpeed_, float ySpeed_, fl
         shotID = CreateShotC2(x_, y_, xSpeed_ / 2, ySpeed_ / 2, 0, 0, 0, 0, wOffset_, wVel_ / 2, animGraphic_, delay_); //unaffected by accel for spawn animation
         ObjMove_AddPatternC3(shotID, 20, xSpeed_, ySpeed_, xAccel_, yAccel_, maxSpeedX_, maxSpeedY_, NO_CHANGE, wVel_, graphic_);
     }
-    ObjShot_SetAngleRounding(shotID, 22.5);
+    ObjShot_SetAngleRounding(shotID, 11.25);
     Obj_SetValueI(shotID, SHOT_EFFECT, cancelGraphic_);
     return shotID;
 }
@@ -147,7 +147,7 @@ function<int[]> Shot_FirePattern(int obj_, int graphic_, int cancelGraphic_) {
     ObjPatternShot_SetGraphic(obj_, graphic_);
     int[] shots = ObjPatternShot_FireReturn(obj_);
     for each (shot in shots) {
-        ObjShot_SetAngleRounding(shot, 22.5);
+        ObjShot_SetAngleRounding(shot, 11.25);
         Obj_SetValueI(shot, SHOT_EFFECT, cancelGraphic_);
     }
     return shots;
@@ -160,7 +160,7 @@ function<int[]> Shot_FirePatternA(int obj_, int graphic_, int animGraphic_, int 
         float speed = ObjMove_GetSpeed(shot);
         ObjMove_SetSpeed(shot, speed / 2);
         ObjMove_AddPatternA3(shot, 20, speed, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, graphic_);
-        ObjShot_SetAngleRounding(shot, 22.5);
+        ObjShot_SetAngleRounding(shot, 11.25);
         Obj_SetValueI(shot, SHOT_EFFECT, cancelGraphic_);
     }
     return shots;
