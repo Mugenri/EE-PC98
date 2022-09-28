@@ -1,0 +1,198 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 7"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = [100, 80, 80][_diff];
+_spellID = 36 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(2750);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TCharge();
+    TKnife();
+    TLaser();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 202) {
+            async {
+                TKunai();
+            }
+        }
+        yield;
+    }
+}
+
+task TCharge() {
+    //charge anim
+    while (_count < 120) yield;
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    //anim
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_BLACK);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_BLACK);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_GRAY_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_GRAY_D);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_GRAY_D);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_GRAY);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_GRAY);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_GRAY_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_GRAY_L);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_WHITE);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_WHITE);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 150, 0, 40, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, 90, 40, 8, COLOR_RED_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 150, -90, 40, 8, COLOR_RED_L);
+    wait(3);
+    wait(60);
+}
+
+//knife spawn w circle
+task TKnife() {
+    while (_count < 0) yield;
+    
+    float arc = [12, 16, 18][_diff];
+    int frames = 20;
+    float speed = [4.4, 4.6, 6.2][_diff];
+    int waitTime = 60;
+    int waitMin = [12, 10, 6][_diff];
+
+    while (Boss_Alive(_objBoss)) {
+        float xPos = rand(MIN_X + 10, MAX_X - 10);
+        float yPos = rand(MIN_Y + 16, MIN_Y + 72);
+        Primitive_ContractPolygon2D(xPos, yPos, 0, 92, 0, frames, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+        int sword = CreateShotUA2(xPos, yPos, 0, 0, 0, 0, 360 / frames, SHOT_RED+SWORD, 0, SHOT_RED+CANCEL_32);
+        ObjMove_SetAngle(sword, GetAngleToPlayer(sword) + rand(-arc, arc));
+        ObjMove_AddPatternA3(sword, frames, speed, NO_CHANGE, 0, 0, 0, SHOT_RED+SWORD_A);
+        CallSFX(SND_SHOT1);
+        wait(waitTime);
+        if (waitTime > waitMin) waitTime = max(waitMin, waitTime * 0.75);
+    }
+}
+
+//kunai stream
+task TKunai() {
+    WriteLog(_count);
+    if (!Boss_Alive(_objBoss)) return;
+    int numShot = [18, 18, 24][_diff];
+    float xPos = Boss_X(_objBoss);
+    float yPos = Boss_Y(_objBoss);
+    float speed = [5.1, 5.5, 5.9][_diff];
+    float speedMod = 0.4;
+    float arc = 40;
+    int waitTime = 2;
+    float angleT = GetAngleToPlayer(_objBoss);
+
+    loop (numShot) {
+        if (!Boss_Alive(_objBoss)) return;
+        //r
+        CreateShotUA1(xPos + 32, yPos, speed, angleT, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+        int shot = CreateShotUA1(xPos + 32, yPos, speed + speedMod, angleT + arc, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        CurveShot(shot, -1);
+        shot = CreateShotUA1(xPos + 32, yPos, speed + speedMod, angleT - arc, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        CurveShot(shot, 1);
+        //l
+        CreateShotUA1(xPos - 32, yPos, speed, angleT, SHOT_RED_INV+CARD, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+        shot = CreateShotUA1(xPos - 32, yPos, speed + speedMod, angleT + arc, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        CurveShot(shot, -1);
+        shot = CreateShotUA1(xPos - 32, yPos, speed + speedMod, angleT - arc, SHOT_BLACK+CARD, 0, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+        CurveShot(shot, 1);
+        CallSFX(SND_SHOT3);
+        wait(waitTime);
+    }
+
+    function<void> CurveShot(int shot_, int dir_) {
+        int frames = 20;
+        for (int i = 0; i < 12; i++) {
+            ObjMove_AddPatternA2(shot_, frames * i, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 4 * dir_);
+            dir_ *= -1;
+        }
+    }
+}
+
+//laser
+task TLaser() {
+    while (ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE) > 1000) yield;
+
+    int waitTime = [32, 24, 20][_diff];
+    float speed = [7, 8, 9][_diff];
+    int len = [130, 150, 175][_diff];
+
+    while (Boss_Alive(_objBoss)) {
+        //laser
+        async {
+            float xPos = rand(Boss_X(_objBoss) + 90, Boss_X(_objBoss) - 90);
+            float yPos = Boss_Y(_objBoss);
+            Particle_ContractRing(xPos, yPos, 0, 120, 90, 24, 8, COLOR_RED_L);
+            Particle_ContractRing(xPos, yPos, 0, 120, -90, 24, 8, COLOR_RED_L);
+            wait(waitTime);
+            if (!Boss_Alive(_objBoss)) return;
+            float angle = dottheta(xPos, yPos, GetPlayerX(), GetPlayerY());
+            CreateLooseLaserUA1(xPos, yPos, speed, angle, len, COLOR_RED, 0);
+            CallSFX(SND_LASER2);
+        }
+        wait(waitTime);
+    }
+}
