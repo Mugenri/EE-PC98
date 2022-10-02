@@ -127,6 +127,7 @@ task TStick() {
         ObjRender_SetColor(laserL, COLOR_RED);
         ObjRender_SetColor(laserR, COLOR_RED);
         for (int i = 0; i < 120; i++) {
+            if (!Boss_Alive(_objBoss)) return;
             float angleMod = Interpolate_Linear(12, 0, i / 120.0);
             float angleT = GetAngleToPlayer(_objBoss);
             ObjPrim_SetVertexPosition(laserL, 1, Boss_X(_objBoss) + 550 * cos(angleT + angleMod), Boss_Y(_objBoss) + 550 * sin(angleT + angleMod), 1);
@@ -179,6 +180,7 @@ task TStick() {
                 CreateStraightLaserUA1(xPos, yPos, dottheta(xPos, yPos, pX, pY), 550, sustain, COLOR_RED_L, delay);
                 async {
                     wait(delay);
+                    if (!Boss_Alive(_objBoss)) return;
                     CallSFX(SND_LASER1);
                 }
             }
