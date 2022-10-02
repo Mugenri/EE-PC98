@@ -142,6 +142,7 @@ task TBackground() {
             ObjPrim_SetVertexPosition(square, 4, 320 + radius * cos(0 - angleMod), 200 + radius * sin(0 - angleMod), 1);
             yield;
         }
+        Obj_Delete(square);
     }
 
     task TMoveParticle(float x_, float y_, float angle_) {
