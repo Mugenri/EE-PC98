@@ -386,6 +386,9 @@ task TBossTimer() {
     ObjRender_SetPosition(icon, 572, 158, 0);
     Obj_SetVisible(icon, false);
 
+    int digits = CreateText(428, 153, RP_UI_MAX, "", COLOR_WHITE);
+    Obj_SetVisible(digits, false);
+
 	loop {
 		if (_objScene != ID_INVALID) RenderTimer();
 		yield;
@@ -408,6 +411,11 @@ task TBossTimer() {
         ObjRender_SetPosition(icon, 445 + 128 * (timer / timerTotal), 158, 0);
         Obj_SetVisible(icon, timer > 0);
         ObjRender_SetColor(icon, timerColor);
+
+        //number stuff
+        ObjText_SetText(digits, vtos("02d", timer / 60));
+        Obj_SetVisible(digits, timer > 0);
+        ObjText_SetVertexColor(digits, 0xFF000000 | timerColor);
 
         //sound
         if (timerColor == COLOR_RED && timer % 60 == 0 && bossLife > 0) { //timer <= 10 seconds every second if boss alive
