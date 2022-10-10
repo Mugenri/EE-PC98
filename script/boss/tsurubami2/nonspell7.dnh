@@ -46,7 +46,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (Boss_Alive(_objBoss)) yield;
-    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MAX_Y - 32, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
@@ -134,7 +134,6 @@ task TKnife() {
 
 //kunai stream
 task TKunai() {
-    WriteLog(_count);
     if (!Boss_Alive(_objBoss)) return;
     int numShot = [18, 18, 24][_diff];
     float xPos = Boss_X(_objBoss);

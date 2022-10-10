@@ -1,0 +1,182 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 7"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = 90;
+_spellID = 39 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(30 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1500000);
+    }
+    case (EV_REQUEST_IS_DURABLE_SPELL) {
+        SetScriptResult(true);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TCircle();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MAX_Y - 32, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(18, 7, 0);
+    CallSFX(SND_TRANSITION);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+    if (GetGameMode() == GAME_MAIN) CreateItem(MID_X, 60, ITEM_EXTEND); //TODO fuck with position
+}
+
+task TMain() {
+    while (_count < 0) yield;
+    int moveTime = 180;
+    while (Boss_Alive(_objBoss)) {
+        if (_count % _loopTime == 0) {
+            async {
+                TSwords(1);
+                wait(_loopTime / 2);
+                TSwords(-1);
+            }
+        }
+        if (_count % moveTime == 0) {
+            float bossX = Boss_X(_objBoss);
+            float xPos = clamp(GetPlayerX() + rand(32, -32), bossX - 60, bossX + 60);
+            ObjMove_SetDestAtFrame(_objBoss, xPos, MAX_Y - 32, 60, LERP_DECELERATE);
+        }
+        yield;
+    }
+}
+
+task TSwords(int dir_) {
+    //amulets that split off into swords
+    if (!Boss_Alive(_objBoss)) return;
+
+    float speed = [2, 2, 2.5][_diff];
+    float angleT = 80 * dir_;
+    float accel = -0.3;
+    float initSpeed = 4;
+    float minSpeed = [1.1, 1.3, 1.6][_diff];
+    int waitMin = [20, 15, 11][_diff];
+    int waitMax = [30, 25, 16][_diff];
+    int waitTime = Interpolate_Linear(waitMax, waitMin, _count / 1800);
+    int deleteTime = 360;
+
+    int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, 0.5, SHOT_ORANGE_INV+CARD, 0, SHOT_ORANGE_INV+CANCEL_FADE);
+    TSplit(shot);
+    shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, 179.5, SHOT_ORANGE_INV+CARD, 0, SHOT_ORANGE_INV+CANCEL_FADE);
+    TSplit(shot);
+    CallSFX(SND_SHOT1);
+
+    task TSplit(int shot_) {
+        wait(7);
+        if (!Boss_Alive(_objBoss)) return;
+        ObjShot_SetSpellResist(shot_, true);
+        ObjShot_SetAutoDelete(shot_, false);
+        ObjShot_SetDeleteFrame(shot_, 180);
+        while (Boss_Alive(_objBoss) && !Obj_IsDeleted(shot_)) {
+            int sword = CreateShotUA2(ObjMove_GetX(shot_), ObjMove_GetY(shot_), initSpeed, ObjMove_GetAngle(shot_) + angleT, accel, minSpeed, 0, SHOT_YELLOW_INV+SWORD, 0, SHOT_YELLOW+SPAWN_S+SIZE_16, SHOT_YELLOW+CANCEL_32);
+            ObjShot_SetAutoDelete(sword, false);
+            ObjShot_SetDeleteFrame(sword, deleteTime);
+            sword = CreateShotUA2(ObjMove_GetX(shot_), ObjMove_GetY(shot_), initSpeed, ObjMove_GetAngle(shot_) + angleT + 180, accel, minSpeed, 0, SHOT_ORANGE+SWORD, 0, SHOT_ORANGE+SPAWN_S+SIZE_16, SHOT_ORANGE+CANCEL_32);
+            ObjShot_SetAutoDelete(sword, false);
+            ObjShot_SetDeleteFrame(sword, deleteTime);
+            if (Shot_IsInBounds(sword)) CallSFX(SND_SHOT2);
+            wait(waitTime);
+        }
+    }
+}
+
+task TCircle() {
+    while (_count < 0) yield;
+
+    //setup
+    int dir = 1;
+    int frames = 120;
+    int loopTime = 150;
+    //shots
+    int numMin = [2, 3, 4][_diff];
+    int numMax = [5, 6, 7][_diff];
+    float angleT = rand(0, 360);
+    float angleRot = [1.2, 1.5, 2][_diff];
+    int radMax = 550;
+    int radMin = [80, 70, 60][_diff];
+
+    //loop
+    loop (12) { //total number of sword circles in 30 seconds
+        async {
+            CallSFX(SND_CHARGE1);
+            //prim
+            int shape = Primitive_CreatePolygon2D(0, 0, 0, 0, 32, COLOR_ORANGE, false, RP_STG_EFF_MID);
+            int vertices = ObjPrim_GetVertexCount(shape);
+
+            int numShot = Interpolate_Linear(numMin, numMax + 1, _count / 1800); //time left on spell (30 seconds)
+            int _dir = dir;
+            dir *= -1;
+            //create shots
+            int[] shots = [];
+            for (int i = 0; i < numShot; i++) {
+                int shot = CreateShotUA1(-64, -64, 0, 0, SHOT_ORANGE_INV+SWORD, 0, SHOT_ORANGE_INV+CANCEL_32);
+                ObjShot_SetSpellResist(shot, true);
+                ObjShot_SetAutoDelete(shot, false);
+                shots ~= [shot];
+            }
+
+            //shot movement
+            for (int i = 0; i < frames; i++) {
+                if (!Boss_Alive(_objBoss)) return;
+                float radius = Interpolate_Decelerate(radMax, radMin, i / as_float(frames));
+                for each (shot in shots) {
+                    ObjMove_SetPosition(shot, GetPlayerX() + radius * cos(angleT), GetPlayerY() + radius * sin(angleT));
+                    ObjMove_SetAngle(shot, angleT + 180);
+                    angleT += 360 / numShot;
+                }
+                float angleV = 0;
+                for (int i = 0; i < vertices; i++) {
+                    ObjPrim_SetVertexPosition(shape, i, GetPlayerX() + radius * cos(angleV), GetPlayerY() + radius * sin(angleV), 1);
+                    angleV += 360 / (vertices - 1);
+                }
+                angleT += angleRot * _dir;
+                yield;
+            }
+
+            for each (shot in shots) {
+                ObjMove_AddPatternA3(shot, 0, 0, NO_CHANGE, 0.1, 3, 0, SHOT_ORANGE_INV+SWORD_A);
+            }
+            Obj_Delete(shape);
+            CallSFX(SND_SHOT1);
+        }
+        wait(loopTime);
+    }
+}
