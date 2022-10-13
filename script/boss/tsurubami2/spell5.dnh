@@ -113,7 +113,7 @@ task TCross() {
 
     int rad = 0;
     float angleT = 90;
-    float increment = [0.60, 0.65, 0.75][_diff];
+    float increment = [0.50, 0.65, 0.75][_diff];
 
     int waitTime = 48; //stack * delay * 4
     async {
