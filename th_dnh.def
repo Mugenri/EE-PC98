@@ -2,4 +2,4 @@ package.script.main = script/game.dnh
 window.title = 連縁无現里 ~ Misremembered Memories v0.57a
 screen.width = 640
 screen.height = 400
-window.size.list = 640x400, 1280x800
+window.size.list = 640x400, 1280x800, 1920x1200
