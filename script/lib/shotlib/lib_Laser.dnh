@@ -136,8 +136,12 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
         //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is complete
         float angle = ObjStLaser_GetAngle(hitbox);
         float len = ObjLaser_GetLength(hitbox);
+        bool doRetract = true; //do retraction animation
         loop (max(0, delay_ - 9)) {
-            if (Obj_IsDeleted(hitbox)) break;
+            if (Obj_IsDeleted(hitbox)) {
+                doRetract = false;
+                break;
+            }
             UpdatePosition(0);
             yield;
         }
@@ -160,7 +164,7 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
             yield;
         }
         if (radius > 2) radius = 2;
-        while (radius >= 0.5) { //contract laser
+        while (radius >= 0.5 && doRetract) { //contract laser
             loop (3) {
                 UpdatePosition(radius);
                 yield;
