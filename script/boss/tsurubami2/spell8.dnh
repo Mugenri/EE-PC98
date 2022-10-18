@@ -1,0 +1,353 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 8"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = 60;
+_spellID = 42 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(45 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1500000);
+    }
+    case (EV_REQUEST_IS_DURABLE_SPELL) {
+        SetScriptResult(true);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(19, 8, 0);
+    CallSFX(SND_TRANSITION);
+    wait(120);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < 0) yield;
+    TSpell();
+    while (Boss_Alive(_objBoss)) {
+        yield;
+    }
+}
+
+task TSpell() {
+    //charge anim
+    async {
+        wait(60);
+        CallSFX(SND_CHARGE1);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_MAGENTA_L, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_RED_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_RED);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_BLUE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_RED_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_RED);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_BLUE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_PURPLE_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_MAGENTA);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_MAGENTA);
+    }
+
+    //TRing params
+    int ringNumShot = [10, 12, 16][_diff];
+    int ringRadius = 300;
+    int ringRadMin = [86, 82, 72][_diff];
+
+    //large crystal burst
+    float angleT = 0;
+    float wvel = [1.1, 1.3, 1.5][_diff];
+    for (int i = 0; i < ringNumShot; i++) {
+        shot = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 0, -angleT, 0.06, 4, -wvel, SHOT_BLUE+CRYSTAL_A, 0, SHOT_BLUE+SPAWN_S+SIZE_32, SHOT_BLUE+CANCEL_32);
+        ObjMove_AddPatternA2(shot, 120, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+        ObjShot_SetSpellResist(shot, true);
+        int shot = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 0, angleT, 0.06, 4, wvel, SHOT_RED+CRYSTAL_A, 0, SHOT_RED+SPAWN_S+SIZE_32, SHOT_RED+CANCEL_32);
+        ObjMove_AddPatternA2(shot, 120, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+        ObjShot_SetSpellResist(shot, true);
+        angleT += 360 / ringNumShot;
+    }
+    CallSFX(SND_SHOT3);
+    wait(30);
+
+    bool doLines = true;
+    TLines();
+
+    wait(90);
+    bool doLasers = true;
+    TLasers();
+
+    //contract crystal ring
+    TRing();
+    int frames = 240;
+    for (int i = 0; i < frames; i++) {
+        ringRadius = Interpolate_Smoother(300, ringRadMin, i / as_float(frames - 1));
+        yield;
+    }
+
+    //movement
+    angleT = 0;
+    float angleStep = [0.67, 0.7, 0.72][_diff];
+    int transitionFrames = 300;
+    int holdFrames = 1000;
+    float bossRadius = 0;
+    float bossRadMax = [100, 110, 110][_diff];
+
+    //expand
+    for (int i = 0; i < transitionFrames; i++) {
+        bossRadius = Interpolate_Smoother(0, bossRadMax, i / as_float(transitionFrames - 1));
+        ObjMove_SetDestAtFrame(_objBoss, MID_X + bossRadius * cos(angleT), MID_Y + bossRadius * sin(angleT), 1, LERP_LINEAR);
+        angleT += angleStep;
+        yield;
+    }
+    //hold
+    for (int i = 0; i < holdFrames; i++) {
+        ObjMove_SetDestAtFrame(_objBoss, MID_X + bossRadius * cos(angleT), MID_Y + bossRadius * sin(angleT), 1, LERP_LINEAR);
+        angleT += angleStep;
+        yield;
+    }
+    async {
+        wait(160);
+        doLines = false;
+    }
+    //retract
+    CallSFX(SND_SHOT2);
+    for (int i = 0; i < transitionFrames; i++) {
+        bossRadius = Interpolate_Smoother(bossRadMax, 0, i / as_float(transitionFrames - 1));
+        ObjMove_SetDestAtFrame(_objBoss, MID_X + bossRadius * cos(angleT), MID_Y + bossRadius * sin(angleT), 1, LERP_LINEAR);
+        angleT += angleStep;
+        yield;
+    }
+    doLasers = false;
+
+    //741 frames left at this point
+    frames = 741;
+
+    async {
+        CallSFX(SND_CHARGE1);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 160, 0, 30, 32, COLOR_MAGENTA_L, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_MAGENTA);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_MAGENTA);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_MAGENTA);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_MAGENTA);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_PURPLE_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_PURPLE_L);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, -90, 30, 12, COLOR_MAGENTA);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 160, 90, 30, 12, COLOR_MAGENTA);
+    }
+    
+    //ring
+    float ringRadMax = ringRadMin;
+    ringRadMin = [40, 34, 32][_diff];
+    //lasers
+    float angleInc = 0;
+    float angleIncMax = [28, 38, 38][_diff];
+    float angleIncMin = [12, 18, 22][_diff];
+
+    async {
+        wait(141);
+        TSans();
+    }
+    //decrease
+    for (int i = 0; i < frames; i++) {
+        ringRadius = Interpolate_Linear(ringRadMax, ringRadMin, i / as_float(frames - 1));
+        angleInc = Interpolate_Linear(angleIncMin, angleIncMax, i / as_float(frames - 1));
+        yield;
+    }
+
+    task TLines() {
+        int[] shotH = []; //reds
+        int[] shotV = []; //blues
+
+        int hNum = [6, 6, 7][_diff];
+        int vNum = [6, 6, 7][_diff];
+        int frames = 90; //movetime
+        float lineSpeed = [0.8, 1, 1.2][_diff]; //line shot speed
+
+        //shot creation
+        for (int i = 0; i < hNum; i++) {
+            float xPos = i % 2 == 0 ? MIN_X : MAX_X;
+            float yPos = Interpolate_Linear(MIN_Y, MAX_Y, (i + 1) / as_float(hNum + 1));
+            int shot = CreateShotUA1(MID_X, MID_Y, 0, 0, SHOT_RED+CARD, 0, SHOT_RED+CANCEL_32);
+            ObjMove_AddPatternD2(shot, 0, xPos, yPos, frames, LERP_ACCELERATE);
+            ObjShot_SetSpellResist(shot, true);
+            shotH ~= [shot];
+        }
+        for (int i = 0; i < vNum; i++) {
+            float xPos = Interpolate_Linear(MIN_X, MAX_X, (i + 1) / as_float(vNum + 1));
+            float yPos = i % 2 == 0 ? MAX_Y : MIN_Y;
+            int shot = CreateShotUA1(MID_X, MID_Y, 0, 0, SHOT_BLUE+CARD, 0, SHOT_BLUE+CANCEL_32);
+            ObjMove_AddPatternD2(shot, 0, xPos, yPos, frames, LERP_ACCELERATE);
+            ObjShot_SetSpellResist(shot, true);
+            shotV ~= [shot];
+        }
+
+        //stick
+        wait(frames);
+        for each (shot in shotH) {
+            ObjShot_SetGraphic(shot, SHOT_RED+CRYSTAL_A);
+            ObjMove_CancelMovement(shot);
+            ObjMove_SetAngle(shot, ObjMove_GetX(shot) > MID_X ? 180 : 0);
+            ObjShot_SetDeleteFrame(shot, 1930);
+            int warning = Laser_WarningLine(ObjMove_GetX(shot), ObjMove_GetY(shot), ObjMove_GetAngle(shot), 390, 1930);
+            ObjRender_SetColor(warning, COLOR_RED_D);
+        }
+        for each (shot in shotV) {
+            ObjShot_SetGraphic(shot, SHOT_BLUE+CRYSTAL_A);
+            ObjMove_CancelMovement(shot);
+            ObjMove_SetAngle(shot, ObjMove_GetY(shot) > MID_Y ? 270 : 90);
+            ObjShot_SetDeleteFrame(shot, 1930);
+            int warning = Laser_WarningLine(ObjMove_GetX(shot), ObjMove_GetY(shot), ObjMove_GetAngle(shot), 390, 1930);
+            ObjRender_SetColor(warning, COLOR_INDIGO_D);
+        }
+        CallSFX(SND_SHOT2);
+
+        //shot loop
+        int frame = 1;
+        int loopTime = [65, 50, 44][_diff]; //shot interval
+        while (doLines) {
+            if (frame % loopTime == 0) {
+                for each (shot in shotH) {
+                    CreateShotUA1(ObjMove_GetX(shot), ObjMove_GetY(shot), lineSpeed, ObjMove_GetAngle(shot), SHOT_RED+BALL_S, 0, SHOT_RED+CANCEL_FADE);
+                }
+                for each (shot in shotV) {
+                    CreateShotUA1(ObjMove_GetX(shot), ObjMove_GetY(shot), lineSpeed, ObjMove_GetAngle(shot), SHOT_BLUE+BALL_S, 0, SHOT_BLUE+CANCEL_FADE);
+                }
+                CallSFX(SND_SHOT1);
+            }
+            frame++;
+            yield;
+        }
+    }
+
+    task TLasers() {
+        //shoot 4 lasers from corners aimed at player
+        int loopTime = [160, 150, 135][_diff];
+        int sustain = 10;
+        while(doLasers && Boss_Alive(_objBoss)) {
+            async {
+                CallSFX(SND_CHARGE1);
+                CreateStraightLaserUA1(MIN_X, MIN_Y, dottheta(MIN_X, MIN_Y, GetPlayerX(), GetPlayerY()), 550, sustain, COLOR_MAGENTA, 90);
+                CreateStraightLaserUA1(MAX_X, MIN_Y, dottheta(MAX_X, MIN_Y, GetPlayerX(), GetPlayerY()), 550, sustain, COLOR_MAGENTA, 90);
+                CreateStraightLaserUA1(MIN_X, MAX_Y, dottheta(MIN_X, MAX_Y, GetPlayerX(), GetPlayerY()), 550, sustain, COLOR_MAGENTA, 90);
+                CreateStraightLaserUA1(MAX_X, MAX_Y, dottheta(MAX_X, MAX_Y, GetPlayerX(), GetPlayerY()), 550, sustain, COLOR_MAGENTA, 90);
+                wait(90);
+                if (Boss_Alive(_objBoss)) CallSFX(SND_LASER1);
+            }
+            wait(loopTime);
+        }
+    }
+
+    task TRing() {
+        int waitTime = 4;
+        float angleBase = 0;
+        float accel = 0.3;
+        int ring = Shot_CreatePattern(_objBoss, PATTERN_RING, ringNumShot, 1, 1, 0, 0, 0, ringRadius, 0);
+        ObjPatternShot_AddTransform(ring, TRANSFORM_TO_SPEED_ANGLE, 60, 5, NO_CHANGE);
+
+        int prim = InitPrim2D(PRIMITIVE_LINESTRIP, 33, RP_STG_LASER_HI);
+        ObjRender_SetColor(prim, COLOR_MAGENTA_L);
+
+        while(Boss_Alive(_objBoss)) {
+            ObjPatternShot_SetShootRadius(ring, ringRadius);
+            ObjPatternShot_SetAngle(ring, angleBase, 0);
+            int[] shots = Shot_FirePatternA(ring, SHOT_RED_INV+CRYSTAL_S, SHOT_RED_INV+SPAWN_S+SIZE_8, SHOT_RED_INV+CANCEL_SPARKLE);
+            ObjPatternShot_SetAngle(ring, -angleBase, 0);
+            shots = Shot_FirePatternA(ring, SHOT_BLUE_INV+CRYSTAL_S, SHOT_BLUE_INV+SPAWN_S+SIZE_8, SHOT_BLUE_INV+CANCEL_SPARKLE);
+            angleBase += 4.6;
+
+            loop (waitTime) {
+                //update prim
+                float angleT = angleBase;
+                for (int i = 0; i < 33; i++) {
+                    ObjPrim_SetVertexPosition(prim, i, Boss_X(_objBoss) + ringRadius * cos(angleT), Boss_Y(_objBoss) + ringRadius * sin(angleT), 1);
+                    angleT += 360 / 32;
+                }
+                yield;
+            }
+        }
+        Obj_Delete(prim);
+    }
+
+    task TSans() {
+        //rotating lasers that gain speed
+        int waitTime = 30;
+        int waitMin = [13, 10, 7][_diff];
+        int decrement = [1.2, 1.5, 2][_diff];
+        int sustain = [10, 8, 7][_diff];
+
+        float angleT = 90;
+        while (Boss_Alive(_objBoss)) {
+            CallSFX(SND_CHARGE1);
+            CreateStraightLaserUA1(MID_X + 300 * cos(angleT), MID_Y + 300 * sin(angleT), angleT + 180, 650, sustain, COLOR_MAGENTA, 50);
+            async {
+                wait(60);
+                if (Boss_Alive(_objBoss)) CallSFX(SND_LASER1);
+            }
+            angleT += angleInc;
+            wait(waitTime);
+            waitTime = max(waitMin, waitTime - decrement);
+        }
+    }
+}
