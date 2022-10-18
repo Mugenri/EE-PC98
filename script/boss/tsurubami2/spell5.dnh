@@ -167,6 +167,9 @@ task TCross() {
             radius += speed;
             yield;
         }
+        for each (shot in shots) {
+            if (!Obj_IsDeleted(shot)) Obj_Delete(shot);
+        }
     }
 }
 
@@ -203,7 +206,7 @@ task TWall(int dir_) {
         int[] lasers = [];
         float angleT = angleBase;
         for (int i = 0; i < way; i++) {
-            int laser = CreateStraightLaserUA1(xPos, yPos, angleT + ((90 + 180 / way) * dir_), 0, 400, COLOR_GREEN, 0);
+            int laser = CreateStraightLaserUA1(xPos, yPos, angleT + ((90 + 180 / way) * dir_), 0, 320, COLOR_GREEN, 0);
             ObjShot_SetSpellResist(laser, true);
             lasers ~= [laser];
             angleT += 360 / way; //every other lane
