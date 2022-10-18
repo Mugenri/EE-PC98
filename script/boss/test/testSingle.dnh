@@ -61,7 +61,7 @@ task TMain() {
                 //TPatternB(1);
                 //TPatternI();
                 //CreateItem(MID_X, 90, ITEM_BOMB);
-                TPatternS();
+                TPatternT();
             }
         }
         yield;
@@ -358,7 +358,7 @@ task TPatternR() { // all shots
     }
 }
 
-task TPatternS() {
+task TPatternS() { //pattern shot test
     int pShot = Shot_CreatePattern(MID_X, MID_Y, PATTERN_RING, 7, 1, 1, 1, 90, 5, 0, 0);
     int[] shots = Shot_FirePatternA(pShot, SHOT_RED+PELLET, SHOT_RED+SPAWN_S+SIZE_8, SHOT_RED+CANCEL_BURST1);
 
@@ -369,4 +369,10 @@ task TPatternS() {
         Shot_FirePattern(pShot, SHOT_RED+PELLET, SHOT_RED+CANCEL_BURST1);
         ObjShot_SetDeleteFrame(shot, 0);
     }
+}
+
+task TPatternT() { //laser lag test
+    SetPlayerInvincibilityFrame(1000);
+    CreateStraightLaserUA1(MID_X, MID_Y, rand(0, 360), 300, 100000, COLOR_BLUE, 0);
+    CallSFX(SND_LASER1);
 }

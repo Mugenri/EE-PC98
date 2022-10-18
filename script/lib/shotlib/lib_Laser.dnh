@@ -66,26 +66,32 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
 
         function<void> UpdateCircle(float x_, float y_) {
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
-            ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
-            ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
+            int xInt = as_int(x_);
+            int yInt = as_int(y_);
+            ObjPrim_SetVertexPosition(circle1, 0, xInt, yInt, 1); //colored
+            ObjPrim_SetVertexPosition(circle2, 0, xInt, yInt, 1); //white
             for (int i = 1; i < 14; i++) {
                 float angleT = 360 / 12 * i;
-                ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + 6 * cos(angleT), as_int(y_) + 6 * sin(angleT), 1);
-                ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + 4 * cos(angleT), as_int(y_) + 4 * sin(angleT), 1);
+                float thetaX = cos(angleT);
+                float thetaY = sin(angleT);
+                ObjPrim_SetVertexPosition(circle1, i, xInt + 6 * thetaX, yInt + 6 * thetaY, 1);
+                ObjPrim_SetVertexPosition(circle2, i, xInt + 4 * thetaX, yInt + 4 * thetaY, 1);
             }
         }
 
         function<void> UpdateLine(float x_, float y_, float angle_, float length_) {
+            float thetaX = cos(angle_);
+            float thetaY = sin(angle_);
             //colored
-            ObjPrim_SetVertexPosition(line1, 0, x_ + 4 * cos(angle_ + 90), y_ + 4 * sin(angle_ + 90), 1);
-            ObjPrim_SetVertexPosition(line1, 1, x_ + 4 * cos(angle_ - 90), y_ + 4 * sin(angle_ - 90), 1);
-            ObjPrim_SetVertexPosition(line1, 2, x_ + 4 * cos(angle_ + 90) + length_ * cos(angle_), y_ + 4 * sin(angle_ + 90) + length_ * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(line1, 3, x_ + 4 * cos(angle_ - 90) + length_ * cos(angle_), y_ + 4 * sin(angle_ - 90) + length_ * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(line1, 0, x_ + 4 * -thetaY, y_ + 4 * thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 1, x_ + 4 * thetaY, y_ + 4 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 2, x_ + 4 * -thetaY + length_ * thetaX, y_ + 4 * thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line1, 3, x_ + 4 * thetaY + length_ * thetaX, y_ + 4 * -thetaX + length_ * thetaY, 1);
             //white
-            ObjPrim_SetVertexPosition(line2, 0, x_ + 2 * cos(angle_ + 90), y_ + 2 * sin(angle_ + 90), 1);
-            ObjPrim_SetVertexPosition(line2, 1, x_ + 2 * cos(angle_ - 90), y_ + 2 * sin(angle_ - 90), 1);
-            ObjPrim_SetVertexPosition(line2, 2, x_ + 2 * cos(angle_ + 90) + length_ * cos(angle_), y_ + 2 * sin(angle_ + 90) + length_ * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(line2, 3, x_ + 2 * cos(angle_ - 90) + length_ * cos(angle_), y_ + 2 * sin(angle_ - 90) + length_ * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(line2, 0, x_ + 2 * -thetaY, y_ + 2 * thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 1, x_ + 2 * thetaY, y_ + 2 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 2, x_ + 2 * -thetaY + length_ * thetaX, y_ + 2 * thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line2, 3, x_ + 2 * thetaY + length_ * thetaX, y_ + 2 * -thetaX + length_ * thetaY, 1);
         }
     }
 
@@ -186,32 +192,42 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
                 angle = ObjStLaser_GetAngle(hitbox);
                 len = ObjLaser_GetLength(hitbox);
             }
+            float thetaX = cos(angle);
+            float thetaY = sin(angle);
             //delay laser
             if (!Obj_IsDeleted(guide1)) {
                 ObjPrim_SetVertexPosition(guide1, 0, x_, y_, 1);
-                ObjPrim_SetVertexPosition(guide1, 1, x_ + len * cos(angle), y_ + len * sin(angle), 1);
+                ObjPrim_SetVertexPosition(guide1, 1, x_ + len * thetaX, y_ + len * thetaY, 1);
             }
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
-            ObjPrim_SetVertexPosition(guide2, 0, as_int(x_), as_int(y_), 1);
-            ObjPrim_SetVertexPosition(circle1, 0, as_int(x_), as_int(y_), 1); //colored
-            ObjPrim_SetVertexPosition(circle2, 0, as_int(x_), as_int(y_), 1); //white
+            int xInt = as_int(x_);
+            int yInt = as_int(y_);
+            ObjPrim_SetVertexPosition(guide2, 0, xInt, yInt, 1);
+            ObjPrim_SetVertexPosition(circle1, 0, xInt, yInt, 1); //colored
+            ObjPrim_SetVertexPosition(circle2, 0, xInt, yInt, 1); //white
             for (int i = 1; i < 14; i++) {
                 float angleT = 360 / 12 * i;
-                ObjPrim_SetVertexPosition(guide2, i, as_int(x_) + 2 * cos(angleT), as_int(y_) + 2 * sin(angleT), 1);
-                ObjPrim_SetVertexPosition(circle1, i, as_int(x_) + (radius_ * 2 + 2) * cos(angleT), as_int(y_) + (radius_ * 2 + 2) * sin(angleT), 1);
-                ObjPrim_SetVertexPosition(circle2, i, as_int(x_) + (radius_ * 2) * cos(angleT), as_int(y_) + (radius_ * 2) * sin(angleT), 1);
+                float tX = cos(angleT);
+                float tY = sin(angleT);
+                ObjPrim_SetVertexPosition(guide2, i, xInt + 2 * tX, yInt + 2 * tY, 1);
+                ObjPrim_SetVertexPosition(circle1, i, xInt + (radius_ * 2 + 2) * tX, yInt + (radius_ * 2 + 2) * tY, 1);
+                ObjPrim_SetVertexPosition(circle2, i, xInt + (radius_ * 2) * tX, yInt + (radius_ * 2) * tY, 1);
             }
-            //lines
+            //line angles
+            // float cos(angle + 90) = -thetaY;
+            // float cos(angle - 90) = thetaY;
+            // float sin(angle + 90) = thetaX;
+            // float sin(angle - 90) = -thetaX;
             //colored
-            ObjPrim_SetVertexPosition(line1, 0, x_ + (radius_ + 2) * cos(angle + 90), y_ + (radius_ + 2) * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line1, 1, x_ + (radius_ + 2) * cos(angle - 90), y_ + (radius_ + 2) * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line1, 2, x_ + (radius_ + 2) * cos(angle + 90) + len * cos(angle), y_ + (radius_ + 2) * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line1, 3, x_ + (radius_ + 2) * cos(angle - 90) + len * cos(angle), y_ + (radius_ + 2) * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line1, 0, x_ + (radius_ + 2) * -thetaY, y_ + (radius_ + 2) * thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 1, x_ + (radius_ + 2) * thetaY, y_ + (radius_ + 2) * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 2, x_ + (radius_ + 2) * -thetaY + len * thetaX, y_ + (radius_ + 2) * thetaX + len * thetaY, 1);
+            ObjPrim_SetVertexPosition(line1, 3, x_ + (radius_ + 2) * thetaY + len * thetaX, y_ + (radius_ + 2) * -thetaX + len * thetaY, 1);
             //white
-            ObjPrim_SetVertexPosition(line2, 0, x_ + radius_ * cos(angle + 90), y_ + radius_ * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line2, 1, x_ + radius_ * cos(angle - 90), y_ + radius_ * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line2, 2, x_ + radius_ * cos(angle + 90) + len * cos(angle), y_ + radius_ * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line2, 3, x_ + radius_ * cos(angle - 90) + len * cos(angle), y_ + radius_ * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line2, 0, x_ + radius_ * -thetaY, y_ + radius_ * thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 1, x_ + radius_ * thetaY, y_ + radius_ * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 2, x_ + radius_ * -thetaY + len * thetaX, y_ + radius_ * thetaX + len * thetaY, 1);
+            ObjPrim_SetVertexPosition(line2, 3, x_ + radius_ * thetaY + len * thetaX, y_ + radius_ * -thetaX + len * thetaY, 1);
         }
     }
 
@@ -335,18 +351,20 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
                 angle = ObjStLaser_GetAngle(controller);
                 len = ObjLaser_GetLength(controller) - radius_; //length of laser after the center of the circular part
             }
+            float thetaX = cos(angle);
+            float thetaY = sin(angle);
             //center of circular part, base of line part
-            float x = x_ + radiusOut * cos(angle);
-            float y = y_ + radiusOut * sin(angle);
+            float x = x_ + radiusOut * thetaX;
+            float y = y_ + radiusOut * thetaY;
             
             //delay laser
             if (!Obj_IsDeleted(guide1)) {
                 ObjPrim_SetVertexPosition(guide1, 0, x, y, 1);
-                ObjPrim_SetVertexPosition(guide1, 1, x + len * cos(angle), y + len * sin(angle), 1);
+                ObjPrim_SetVertexPosition(guide1, 1, x + len * thetaX, y + len * thetaY, 1);
             }
             if (radius_ > 0) {
                 SetShotIntersectionCircle(x, y, radius_);
-                SetShotIntersectionLine(x, y, x + len * cos(angle), y + len * sin(angle), radius_ * 2);
+                SetShotIntersectionLine(x, y, x + len * thetaX, y + len * thetaY, radius_ * 2);
             }
             //uses half circles to save on vertices but still look smooth at large sizes
             //circles
@@ -355,26 +373,28 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
             ObjPrim_SetVertexPosition(circle3, 0, x, y, 1); //white
             for (int i = 1; i < 34; i++) {
                 float angleT = 360 / 64 * (i - 1) + angle + 90;
-                ObjPrim_SetVertexPosition(circle1, i, x + (radiusOut) * cos(angleT), y + (radiusOut) * sin(angleT), 1);
-                ObjPrim_SetVertexPosition(circle2, i, x + (radiusIn) * cos(angleT), y + (radiusIn) * sin(angleT), 1);
-                ObjPrim_SetVertexPosition(circle3, i, x + (radius_) * cos(angleT), y + (radius_) * sin(angleT), 1);
+                float tX = cos(angleT);
+                float tY = sin(angleT);
+                ObjPrim_SetVertexPosition(circle1, i, x + (radiusOut) * tX, y + (radiusOut) * tY, 1);
+                ObjPrim_SetVertexPosition(circle2, i, x + (radiusIn) * tX, y + (radiusIn) * tY, 1);
+                ObjPrim_SetVertexPosition(circle3, i, x + (radius_) * tX, y + (radius_) * tY, 1);
             }
             //lines
             //colorOut
-            ObjPrim_SetVertexPosition(line1, 0, x + (radiusOut) * cos(angle + 90), y + (radiusOut) * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line1, 1, x + (radiusOut) * cos(angle - 90), y + (radiusOut) * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line1, 2, x + (radiusOut) * cos(angle + 90) + len * cos(angle), y + (radiusOut) * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line1, 3, x + (radiusOut) * cos(angle - 90) + len * cos(angle), y + (radiusOut) * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line1, 0, x + (radiusOut) * -thetaY, y + (radiusOut) * thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 1, x + (radiusOut) * thetaY, y + (radiusOut) * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 2, x + (radiusOut) * -thetaY + len * thetaX, y + (radiusOut) * thetaX + len * thetaY, 1);
+            ObjPrim_SetVertexPosition(line1, 3, x + (radiusOut) * thetaY + len * thetaX, y + (radiusOut) * -thetaX + len * thetaY, 1);
             //colorIn
-            ObjPrim_SetVertexPosition(line2, 0, x + (radiusIn) * cos(angle + 90), y + (radiusIn) * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line2, 1, x + (radiusIn) * cos(angle - 90), y + (radiusIn) * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line2, 2, x + (radiusIn) * cos(angle + 90) + len * cos(angle), y + (radiusIn) * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line2, 3, x + (radiusIn) * cos(angle - 90) + len * cos(angle), y + (radiusIn) * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line2, 0, x + (radiusIn) * -thetaY, y + (radiusIn) * thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 1, x + (radiusIn) * thetaY, y + (radiusIn) * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 2, x + (radiusIn) * -thetaY + len * thetaX, y + (radiusIn) * thetaX + len * thetaY, 1);
+            ObjPrim_SetVertexPosition(line2, 3, x + (radiusIn) * thetaY + len * thetaX, y + (radiusIn) * -thetaX + len * thetaY, 1);
             //white
-            ObjPrim_SetVertexPosition(line3, 0, x + radius_ * cos(angle + 90), y + radius_ * sin(angle + 90), 1);
-            ObjPrim_SetVertexPosition(line3, 1, x + radius_ * cos(angle - 90), y + radius_ * sin(angle - 90), 1);
-            ObjPrim_SetVertexPosition(line3, 2, x + radius_ * cos(angle + 90) + len * cos(angle), y + radius_ * sin(angle + 90) + len * sin(angle), 1);
-            ObjPrim_SetVertexPosition(line3, 3, x + radius_ * cos(angle - 90) + len * cos(angle), y + radius_ * sin(angle - 90) + len * sin(angle), 1);
+            ObjPrim_SetVertexPosition(line3, 0, x + radius_ * -thetaY, y + radius_ * thetaX, 1);
+            ObjPrim_SetVertexPosition(line3, 1, x + radius_ * thetaY, y + radius_ * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line3, 2, x + radius_ * -thetaY + len * thetaX, y + radius_ * thetaX + len * thetaY, 1);
+            ObjPrim_SetVertexPosition(line3, 3, x + radius_ * thetaY + len * thetaX, y + radius_ * -thetaX + len * thetaY, 1);
         }
     }
 
@@ -433,13 +453,15 @@ function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, fl
             float y_ = ObjMove_GetY(controller);
             float angle_ = ObjStLaser_GetAngle(controller);
             float len = ObjLaser_GetLength(controller);
+            float thetaX = cos(angle_);
+            float thetaY = sin(angle_);
 
-            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * cos(angle_ - 90), y_ + 8 * sin(angle_ - 90), 1);
-            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * cos(angle_ + 90), y_ + 8 * sin(angle_ + 90), 1);
-            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * cos(angle_ - 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len - 7) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * cos(angle_ + 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len - 7) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * cos(angle_ - 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len + 8) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * cos(angle_ + 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len + 8) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * thetaY, y_ + 8 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * -thetaY, y_ + 8 * thetaX, 1);
+            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * thetaY + (len - 7) * thetaX, y_ + 8 * -thetaX + (len - 7) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * -thetaY + (len - 7) * thetaX, y_ + 8 * thetaX + (len - 7) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * thetaY + (len + 8) * thetaX, y_ + 8 * -thetaX + (len + 8) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * -thetaY + (len + 8) * thetaX, y_ + 8 * thetaX + (len + 8) * thetaY, 1);
         }
     }
 
@@ -480,13 +502,15 @@ function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, in
             float y_ = ObjMove_GetY(controller);
             float angle_ = ObjStLaser_GetAngle(controller);
             float len = ObjLaser_GetLength(controller);
+            float thetaX = cos(angle_);
+            float thetaY = sin(angle_);
 
-            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * cos(angle_ - 90), y_ + 8 * sin(angle_ - 90), 1);
-            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * cos(angle_ + 90), y_ + 8 * sin(angle_ + 90), 1);
-            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * cos(angle_ - 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len - 7) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * cos(angle_ + 90) + (len - 7) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len - 7) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * cos(angle_ - 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ - 90) + (len + 8) * sin(angle_), 1);
-            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * cos(angle_ + 90) + (len + 8) * cos(angle_), y_ + 8 * sin(angle_ + 90) + (len + 8) * sin(angle_), 1);
+            ObjPrim_SetVertexPosition(laser, 0, x_ + 8 * thetaY, y_ + 8 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(laser, 1, x_ + 8 * -thetaY, y_ + 8 * thetaX, 1);
+            ObjPrim_SetVertexPosition(laser, 2, x_ + 8 * thetaY + (len - 7) * thetaX, y_ + 8 * -thetaX + (len - 7) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 3, x_ + 8 * -thetaY + (len - 7) * thetaX, y_ + 8 * thetaX + (len - 7) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 4, x_ + 8 * thetaY + (len + 8) * thetaX, y_ + 8 * -thetaX + (len + 8) * thetaY, 1);
+            ObjPrim_SetVertexPosition(laser, 5, x_ + 8 * -thetaY + (len + 8) * thetaX, y_ + 8 * thetaX + (len + 8) * thetaY, 1);
         }
     }
 
