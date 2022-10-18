@@ -62,8 +62,6 @@ task TFinalize() {
 task TMain() {
     while (_count < 0) yield;
 
-    //SetPlayerInvincibilityFrame(10000);
-
     TDisappearAnimation(false);
     wait(45);
 
