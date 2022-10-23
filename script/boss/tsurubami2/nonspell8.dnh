@@ -1,0 +1,146 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 8"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = [160, 150, 120][_diff];
+_spellID = 45 + _diff;
+float _shotSpeed = 0;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    int moveTime = 180;
+    float shotSpeedMin = [2.4, 2.4, 3.0][_diff];
+    float shotSpeedMax = [3.3, 3.5, 4.0][_diff];
+    bool antiCheese = false;
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+
+        int bossHealth = ObjEnemyBossScene_GetInfo(_objScene, INFO_CURRENT_LIFE);
+        _shotSpeed = Interpolate_Linear(shotSpeedMax, shotSpeedMin, bossHealth / 3000.0);
+
+        float timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMER);
+        if (!antiCheese && timer < 10 && bossHealth > 1500) antiCheese = true;
+        if (antiCheese) _shotSpeed = 4.0;
+        
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TRing();
+            }
+        }
+        if (_count % moveTime == 0 && _count >= 0) {
+            Boss_MoveRadiusInBounds(_objBoss, 32, 48, MID_X - 64, MID_X + 64, 60, 80, 60, LERP_DECELERATE);
+        }
+        yield;
+    }
+}
+
+task TRing() {
+    if (!Boss_Alive(_objBoss)) return;
+    //charge anim
+    Particle_ContractRing(_objBoss, 0, 120, 0, 30, 8, COLOR_BLUE_L);
+    wait(3);
+    Particle_ContractRing(_objBoss, 0, 120, 0, 30, 8, COLOR_BLUE_L);
+    Particle_ContractRing(_objBoss, 22.5, 120, 0, 30, 8, COLOR_BLUE);
+    wait(3);
+    Particle_ContractRing(_objBoss, 22.5, 120, 0, 30, 8, COLOR_BLUE);
+    Particle_ContractRing(_objBoss, 0, 120, 0, 30, 8, COLOR_RED_L);
+    wait(3);
+    Particle_ContractRing(_objBoss, 0, 120, 0, 30, 8, COLOR_RED_L);
+    Particle_ContractRing(_objBoss, 22.5, 120, 0, 30, 8, COLOR_RED);
+    wait(3);
+    Particle_ContractRing(_objBoss, 22.5, 120, 0, 30, 8, COLOR_RED);
+    wait(30);
+
+    if (!Boss_Alive(_objBoss)) return;
+    int numShot = [18, 20, 20][_diff];
+    float xPos = Boss_X(_objBoss);
+    float yPos = Boss_Y(_objBoss);
+    float angleT = rand(0, 360);
+    float arc = [3.8, 4, 4][_diff];
+    float arc2 = [2, 2, 2][_diff];
+
+    int[] graphics = [SHOT_BLUE+BUBBLE, SHOT_BLUE+BALL_L, SHOT_BLUE+BALL_S];
+
+    int[] shots = [];
+    for (int i = 0; i < numShot; i++) {
+        float thetaX = cos(angleT);
+        float thetaY = sin(angleT);
+        shots ~= [CreateShotUA1(xPos, yPos, _shotSpeed, angleT + arc + arc2, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+CANCEL_FADE)];
+        shots ~= [CreateShotUA1(xPos, yPos, _shotSpeed, angleT - arc - arc2, SHOT_BLUE+BALL_S, 0, SHOT_BLUE+CANCEL_FADE)];
+        shots ~= [CreateShotUA1(xPos, yPos, _shotSpeed, angleT + arc, SHOT_BLUE+BALL_L, 0, SHOT_BLUE+CANCEL_32)];
+        shots ~= [CreateShotUA1(xPos, yPos, _shotSpeed, angleT - arc, SHOT_BLUE+BALL_L, 0, SHOT_BLUE+CANCEL_32)];
+        shots ~= [CreateShotUA1(xPos, yPos, _shotSpeed, angleT, SHOT_BLUE+BUBBLE, 0, SHOT_BLUE+CANCEL_64)];
+        angleT += 360 / numShot;
+    }
+    CallSFX(SND_SHOT3);
+
+    while (Boss_Alive(_objBoss)) {
+        int count = 0;
+        for each (shot in shots) {
+            int graphic = ObjShot_GetImageID(shot);
+            if (contains(graphics, graphic) && !Obj_IsDeleted(shot)) {
+                ObjMove_SetSpeed(shot, _shotSpeed);
+                if (!Shot_IsInBoundsX(shot)) {
+                    float xPos = ObjMove_GetX(shot);
+                    ObjMove_SetAngle(shot, ReflectAngle(ObjMove_GetAngle(shot), 90));
+                    ObjMove_SetX(shot, xPos < 0 ? -xPos : MAX_X - (xPos - MAX_X));
+                    ObjShot_SetGraphic(shot, graphic - 4);
+                    Obj_SetValueI(shot, SHOT_EFFECT, Obj_GetValueI(shot, SHOT_EFFECT) - 4);
+                    if (graphic == SHOT_BLUE+BUBBLE) CallSFX(SND_SHOT2);
+                } else if (ObjMove_GetY(shot) < MIN_Y) {
+                    ObjMove_SetAngle(shot, ReflectAngle(ObjMove_GetAngle(shot), 0));
+                    ObjMove_SetY(shot, -ObjMove_GetY(shot));
+                    ObjShot_SetGraphic(shot, graphic - 4);
+                    Obj_SetValueI(shot, SHOT_EFFECT, Obj_GetValueI(shot, SHOT_EFFECT) - 4);
+                    if (graphic == SHOT_BLUE+BUBBLE) CallSFX(SND_SHOT2);
+                }
+                count++;
+            }
+        }
+        if (count == 0) break;
+        yield;
+    }
+}
