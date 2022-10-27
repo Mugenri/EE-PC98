@@ -84,6 +84,8 @@ task TFire2(int dir_) {
     Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 72, -90, 20, 8, COLOR_GRAY_L);
     wait(20);
 
+    if (!Boss_Alive(_objBoss)) return;
+
     int bubble = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 12, GetAngleToPlayer(_objBoss) + rand(40, 60) * dir_, -0.7, 0, 0, SHOT_GRAY+BUBBLE, 0, SHOT_GRAY+CANCEL_64);
     ObjShot_SetAutoDelete(bubble, false);
     ObjShot_SetSpellResist(bubble, true);
