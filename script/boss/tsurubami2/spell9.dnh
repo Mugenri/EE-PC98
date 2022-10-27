@@ -128,6 +128,8 @@ task TSpell() {
     int dashTime = [30, 30, 15][_diff];
     int graceTime = [60, 60, 45][_diff];
 
+    int iceColor = [SHOT_BLUE, SHOT_BLUE, SHOT_BLACK][_diff];
+
     for (int i = 0; i < alignTime; i++) {
         float angleC = ObjMove_GetAngle(claw);
         float xMod = Interpolate_Overshoot(0, 40, 2, i / as_float(alignTime - 1));
@@ -207,7 +209,7 @@ task TSpell() {
                 wait(15);
                 if (!Boss_Alive(_objBoss)) return;
                 ObjPatternShot_SetTransform(shotRotate, 0, TRANSFORM_ANGULAR_MOVE, 60, wVel, 0);
-                Shot_FirePatternA(shotRotate, SHOT_BLACK+SNOWFLAKE, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+                Shot_FirePatternA(shotRotate, iceColor+SNOWFLAKE, iceColor+SPAWN_S+SIZE_16, iceColor+CANCEL_FADE);
                 CallSFX(SND_SHOT2);
                 wVel *= -1;
                 wait(15);
