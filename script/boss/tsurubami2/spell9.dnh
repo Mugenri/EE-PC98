@@ -1,0 +1,318 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 9"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+_spellID = 48 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(50 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TSpell();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(20, 9, 0);
+    CallSFX(SND_TRANSITION);
+    wait(250);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        yield;
+    }
+}
+
+task TSpell() {
+    while (_count < 0) yield;
+
+    TRain();
+
+    //charge anim
+    async {
+        Animation_Charge(_objBoss, true);
+        CallSFX(SND_CHARGE1);
+
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 30, 32, COLOR_YELLOW, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90, 30, 8, COLOR_YELLOW);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90, 30, 8, COLOR_YELLOW_D);
+        wait(3);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 30, 32, COLOR_ORANGE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90, 30, 8, COLOR_ORANGE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90, 30, 8, COLOR_BROWN);
+        wait(60);
+
+        Animation_Charge(_objBoss, false);
+    }
+
+    wait(30);
+
+    int claw = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss) + 64, 0, 90, SHOT_YELLOW+BALL_L, 0, SHOT_YELLOW+CANCEL_32);
+    Obj_SetVisible(claw, false);
+    ObjShot_SetGrazeFrame(claw, 100000); //no graze this one
+    ObjShot_SetSpellResist(claw, true);
+    ObjShot_SetAutoDelete(claw, false);
+    TClaw(claw);
+
+    //patternshots
+    int way = 9;
+    int stack = 9;
+    float sBase = 2.2;
+    float sArg = 7.5;
+    float aArg = 25;
+    int shotBurst = Shot_CreatePattern(claw, PATTERN_SCATTER, way, stack, sBase, sArg, 0, aArg, 0, 0);
+
+    way = [26, 32, 40][_diff];
+    stack = [2, 2, 3][_diff];
+    sBase = [2.2, 2.2, 2.5][_diff];
+    sArg = [2.1, 2.1, 2.3][_diff];
+    int shotRing = Shot_CreatePattern(_objBoss, PATTERN_RING, way, stack, sArg, sBase, 0, 0, 32, 0);
+
+    way = [16, 20, 20][_diff];
+    stack = [3, 3, 4][_diff];
+    sBase = [2.3, 2.3, 2.7][_diff];
+    float wVel = [1, 1, 1.3][_diff];
+    int shotRotate = Shot_CreatePattern(_objBoss, PATTERN_RING, way, stack, sBase, sBase, 0, -1.5, 32, 0);
+    ObjPatternShot_AddTransform(shotRotate, TRANSFORM_ANGULAR_MOVE, 60, wVel, 0);
+
+    wait(40);
+
+    int alignTime = 80;
+    int chargeTime = 80;
+    int lockTime = 40;
+    int dashTime = [30, 30, 15][_diff];
+    int graceTime = [60, 60, 45][_diff];
+
+    for (int i = 0; i < alignTime; i++) {
+        float angleC = ObjMove_GetAngle(claw);
+        float xMod = Interpolate_Overshoot(0, 40, 2, i / as_float(alignTime - 1));
+        float yMod = Interpolate_Overshoot(0, 64, 2, i / as_float(alignTime - 1));
+        float angle = Interpolate_Accelerate(angleC, angleC + AngularDistance(angleC, GetAngleToPlayer(claw)), i / as_float(alignTime - 1));
+        ObjMove_SetPosition(claw, Boss_X(_objBoss) + xMod, Boss_Y(_objBoss) + 64 - yMod);
+        ObjMove_SetAngle(claw, angle);
+        angleC = ObjMove_GetAngle(claw);
+        yield;
+    }
+
+    while (Boss_Alive(_objBoss)) {
+        int warning = Laser_WarningLine(Boss_X(_objBoss), Boss_Y(_objBoss), GetAngleToPlayer(_objBoss), 550, chargeTime + lockTime);
+        CallSFX(SND_CHARGE1);
+
+        //anim
+        Animation_Charge(_objBoss, true);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 128, 90, chargeTime + lockTime, 8, COLOR_INDIGO_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 128, -90, chargeTime + lockTime, 8, COLOR_INDIGO_L);
+
+        loop (chargeTime) {
+            if (!Boss_Alive(_objBoss)) {
+                Obj_Delete(warning);
+                return;
+            }
+            float angle = GetAngleToPlayer(_objBoss);
+            ObjMove_SetAngle(claw, GetAngleToPlayer(claw));
+            ObjPrim_SetVertexPosition(warning, 1, GetPlayerX(), GetPlayerY(), 1);
+            yield;
+        }
+
+        //claw pos relative to boss
+        float cX = ObjMove_GetX(claw) - Boss_X(_objBoss);
+        float cY = ObjMove_GetY(claw) - Boss_Y(_objBoss);
+        //player pos
+        float pX = GetPlayerX();
+        float pY = GetPlayerY();
+        float angleT = GetAngleToPlayer(_objBoss);
+        float angleC = ObjMove_GetAngle(claw);
+        //destination pos relative to boss
+        float dX = 40 * cos(angleT);
+        float dY = 40 * sin(angleT);
+        //patternshot angles
+        ObjPatternShot_SetAngle(shotBurst, angleT, aArg);
+        ObjPatternShot_SetAngle(shotRing, angleT, 0);
+
+        ObjRender_SetColor(warning, COLOR_RED);
+        loop (lockTime) {
+            if (!Boss_Alive(_objBoss)) {
+                Obj_Delete(warning);
+                return;
+            }
+            yield;
+        }
+
+        //dash
+        Animation_Charge(_objBoss, false);
+        ObjMove_SetDestAtFrame(_objBoss, pX, pY, dashTime, LERP_LINEAR);
+        for (int i = 0; i < dashTime; i++) {
+            if (!Boss_Alive(_objBoss)) return;
+            float xMod = Interpolate_Accelerate(cX, dX, i / as_float(dashTime - 1));
+            float yMod = Interpolate_Accelerate(cY, dY, i / as_float(dashTime - 1));
+            float angle = Interpolate_Linear(angleC, angleC + AngularDistance(angleC, angleT), i / as_float(dashTime - 1));
+            ObjMove_SetPosition(claw, Boss_X(_objBoss) + xMod, Boss_Y(_objBoss) + yMod);
+            ObjMove_SetAngle(claw, angle);
+            yield;
+        }
+        Shot_FirePatternA(shotBurst, SHOT_WHITE+CRYSTAL_S, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+        CallSFX(SND_SHOT4);
+
+        async {
+            wait(20);
+            loop (4) {
+                if (!Boss_Alive(_objBoss)) return;
+                Shot_FirePatternA(shotRing, SHOT_BLUE+PILL_S, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST2);
+                CallSFX(SND_SHOT1);
+                wait(15);
+                if (!Boss_Alive(_objBoss)) return;
+                ObjPatternShot_SetTransform(shotRotate, 0, TRANSFORM_ANGULAR_MOVE, 60, wVel, 0);
+                Shot_FirePatternA(shotRotate, SHOT_BLACK+SNOWFLAKE, SHOT_BLACK+SPAWN_S+SIZE_16, SHOT_BLACK+CANCEL_FADE);
+                CallSFX(SND_SHOT2);
+                wVel *= -1;
+                wait(15);
+            }
+        }
+        
+        wait(graceTime);
+
+        angleC = ObjMove_GetAngle(claw);
+        for (int i = 0; i < alignTime; i++) {
+            float angle = Interpolate_Accelerate(angleC, angleC + AngularDistance(angleC, GetAngleToPlayer(claw)), i / as_float(alignTime - 1));
+            ObjMove_SetAngle(claw, angle);
+            angleC = ObjMove_GetAngle(claw);
+            yield;
+        }
+    }
+
+    task TClaw(int core_) {
+        //claw orbiting shots
+        int[] shots = [];
+
+        //spawning animation
+        int numJoint = 4;
+        int maxRad = 64;
+        float xPos = ObjMove_GetX(core_);
+        float yPos = ObjMove_GetY(core_);
+        float angleT = ObjMove_GetAngle(core_);
+        float arc = 25;
+        float rad = 0;
+
+        int center = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss) + 64, 0, 90, SHOT_YELLOW+BALL_L, 0, SHOT_YELLOW+SPAWN_E+SIZE_32, SHOT_YELLOW+CANCEL_32);
+        ObjShot_SetSpellResist(center, true);
+        ObjShot_SetAutoDelete(center, false);
+
+        for (int i = 0; i < numJoint; i++) {
+            rad = Interpolate_Linear(0, maxRad, i / as_float(numJoint + 1)) + 18;
+            shots ~= [CreateShotUA1(xPos + rad * cos(angleT), yPos + rad * sin(angleT), 0, angleT, SHOT_YELLOW+BEAM, 0, SHOT_YELLOW+SPAWN_E+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE)];
+            shots ~= [CreateShotUA1(xPos + rad * cos(angleT + arc), yPos + rad * sin(angleT + arc), 0, angleT + arc, SHOT_YELLOW+BEAM, 0, SHOT_YELLOW+SPAWN_E+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE)];
+            shots ~= [CreateShotUA1(xPos + rad * cos(angleT - arc), yPos + rad * sin(angleT - arc), 0, angleT - arc, SHOT_YELLOW+BEAM, 0, SHOT_YELLOW+SPAWN_E+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE)];
+            shots ~= [CreateShotUA1(xPos + (rad / 2 + 9) * cos(angleT + 180), yPos + (rad / 2 + 9) * sin(angleT + 180), 0, angleT + 180, SHOT_YELLOW+BEAM, 0, SHOT_YELLOW+SPAWN_E+SIZE_16, SHOT_YELLOW+CANCEL_SPARKLE)];
+            CallSFX(SND_SHOT2);
+            wait(8);
+        }
+
+        rad = maxRad;
+        shots ~= [CreateShotUA1(xPos + rad * cos(angleT), yPos + rad * sin(angleT), 0, angleT, SHOT_ORANGE+SCALE, 0, SHOT_ORANGE+SPAWN_E+SIZE_16, SHOT_ORANGE+CANCEL_SPARKLE)];
+        shots ~= [CreateShotUA1(xPos + rad * cos(angleT + arc), yPos + rad * sin(angleT + arc), 0, angleT + arc, SHOT_ORANGE+SCALE, 0, SHOT_ORANGE+SPAWN_E+SIZE_16, SHOT_ORANGE+CANCEL_SPARKLE)];
+        shots ~= [CreateShotUA1(xPos + rad * cos(angleT - arc), yPos + rad * sin(angleT - arc), 0, angleT - arc, SHOT_ORANGE+SCALE, 0, SHOT_ORANGE+SPAWN_E+SIZE_16, SHOT_ORANGE+CANCEL_SPARKLE)];
+        shots ~= [CreateShotUA1(xPos + (rad / 2 + 18) * cos(angleT + 180), yPos + (rad / 2 + 18) * sin(angleT + 180), 0, angleT + 180, SHOT_ORANGE+SCALE, 0, SHOT_ORANGE+SPAWN_E+SIZE_16, SHOT_ORANGE+CANCEL_SPARKLE)];
+        CallSFX(SND_SHOT2);
+
+        for each (shot in shots) {
+            ObjShot_SetSpellResist(shot, true);
+            ObjShot_SetAutoDelete(shot, false);
+        }
+
+        //update loop
+        while (Boss_Alive(_objBoss)) {
+            for (int i = 0; i < 16; i += 4) {
+                xPos = ObjMove_GetX(core_);
+                yPos = ObjMove_GetY(core_);
+                angleT = ObjMove_GetAngle(core_);
+                rad = Interpolate_Linear(0, maxRad, (i / 4) / as_float(numJoint + 1)) + 18;
+                ObjMove_SetPosition(shots[i], xPos + rad * cos(angleT), yPos + rad * sin(angleT));
+                ObjMove_SetAngle(shots[i], angleT);
+                ObjMove_SetPosition(shots[i + 1], xPos + rad * cos(angleT + arc), yPos + rad * sin(angleT + arc));
+                ObjMove_SetAngle(shots[i + 1], angleT + arc);
+                ObjMove_SetPosition(shots[i + 2], xPos + rad * cos(angleT - arc), yPos + rad * sin(angleT - arc));
+                ObjMove_SetAngle(shots[i + 2], angleT - arc);
+                ObjMove_SetPosition(shots[i + 3], xPos + (rad / 2 + 9) * cos(angleT + 180), yPos + (rad / 2 + 9) * sin(angleT + 180));
+                ObjMove_SetAngle(shots[i + 3], angleT + 180);
+            }
+            rad = maxRad;
+            ObjMove_SetPosition(shots[-4], xPos + rad * cos(angleT), yPos + rad * sin(angleT));
+            ObjMove_SetAngle(shots[-4], angleT);
+            ObjMove_SetPosition(shots[-3], xPos + rad * cos(angleT + arc), yPos + rad * sin(angleT + arc));
+            ObjMove_SetAngle(shots[-3], angleT + arc);
+            ObjMove_SetPosition(shots[-2], xPos + rad * cos(angleT - arc), yPos + rad * sin(angleT - arc));
+            ObjMove_SetAngle(shots[-2], angleT - arc);
+            ObjMove_SetPosition(shots[-1], xPos + (rad / 2 + 9) * cos(angleT + 180), yPos + (rad / 2 + 9) * sin(angleT + 180));
+            ObjMove_SetAngle(shots[-1], angleT + 180);
+
+            ObjMove_SetPosition(center, xPos, yPos);
+            yield;
+        }
+    }
+}
+
+task TRain() {
+    //rain falling from top
+    int way = [2, 3, 3][_diff];
+
+    float speed = 2;
+    float angleT = 0;
+    float accel = [0.02, 0.02, 0.05][_diff];
+    float arc = 360 / way;
+    float inc = 16.5;
+    int waitTime = [20, 18, 14][_diff];
+
+    while (Boss_Alive(_objBoss)) {
+        for (float i = 0; i < way; i++) {
+            float xPos = MID_X + MID_X * sin(angleT + i * arc);
+            CreateShotUA2(xPos, 0, 0, rand(89, 91), accel, speed, 0, SHOT_BLUE_INV+FIRE_S, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST1);
+        }
+        angleT += inc;
+        wait(waitTime);
+    }
+}

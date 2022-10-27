@@ -106,6 +106,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (42, 43)       { return "Senri Technique \"Trauma Awakening\""; }              //15
         case (44)           { return "Forbidden Art \"Nightmare Phantasmagoria\""; }        //ABEX
         case (45, 46, 47)   { return "Nonspell 8"; }                                        //16
+        case (48, 49)       { return "Arctic Card \"Blizzard Claw\""; }                     //17
+        case (50)           { return "Antarctic Card \"Black Ice Claw\""; }                 //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -164,6 +166,7 @@ function<string> Spell_GetPath(int stageIndex_, int spellID_) {
         case (39, 40, 41)   { return dir ~ "spell7.dnh"; }      //14
         case (42, 43, 44)   { return dir ~ "spell8.dnh"; }      //15
         case (45, 46, 47)   { return dir ~ "nonspell8.dnh"; }   //16
+        case (48, 49, 50)   { return dir ~ "spell9.dnh"; }      //17
         others { assert(false, IntToString(spellID_) ~ " is an invalid spell ID."); }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
