@@ -1,0 +1,115 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 9"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = [200, 200, 180][_diff];
+_spellID = 51 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire();
+            }
+        }
+        yield;
+    }
+}
+
+//laser cascades tied to amulets
+task TFire() {
+    if (!Boss_Alive(_objBoss)) return;
+    
+    //charge anim
+    Animation_Charge(_objBoss, true);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 100, 0, 30, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, 90, 30, 8, COLOR_RED_L);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 100, -90, 30, 8, COLOR_RED);
+    wait(30);
+    Animation_Charge(_objBoss, false);
+
+    if (!Boss_Alive(_objBoss)) return;
+
+    int way = [6, 6, 6][_diff];
+    int stack = [4, 5, 5][_diff];
+    float speed = 2;
+    float angleT = rand(0, 360);
+    int delayMod = 5;
+    int waitTime = [35, 30, 25][_diff];
+    int delayMax = delayMod * stack;
+    int laserDelay = 60;
+
+    for (int i = 0; i < stack; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        loop (way) {
+            int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_RED+CARD, 0, SHOT_RED+CANCEL_FADE);
+            TLaser(shot, delayMax - delayMod * i);
+            angleT += 360 / way;
+        }
+        CallSFX(SND_SHOT1);
+        wait(8);
+    }
+
+    Boss_MoveRadiusInBounds(_objBoss, 32, 48, MID_X - 64, MID_X + 64, 60, 80, 60, LERP_DECELERATE);
+
+    task TLaser(int obj_, int delay_) {
+        while (!Obj_IsDeleted(obj_) && Boss_Alive(_objBoss)) {
+            async {
+                wait(delay_);
+                if (Obj_IsDeleted(obj_)) return;
+                CreateStraightLaserUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), ObjMove_GetAngle(obj_) + 90, 550, 6, COLOR_ORANGE, laserDelay);
+                CreateStraightLaserUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), ObjMove_GetAngle(obj_) - 90, 550, 6, COLOR_YELLOW_L, laserDelay);
+                wait(laserDelay);
+                if (Boss_Alive(_objBoss)) CallSFX(SND_LASER1);
+            }
+            wait(waitTime);
+        }
+    }
+}
