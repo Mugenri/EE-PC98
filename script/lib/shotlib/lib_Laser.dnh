@@ -1,6 +1,6 @@
 //Custom laser behavior library
 
-int _laserParticle = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_LASER, [0, 48, 16, 64]); //curvy laser particle list
+int _laserParticle = InitParticleList(IMG_EFFECT_PARTICLE, RP_STG_LASER1, [0, 48, 16, 64]); //curvy laser particle list
 
 function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_, float maxLength_, int color_, int delay_) {
     //Object Creation
@@ -98,7 +98,7 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     return hitbox;
 
     function<int> CreateCircle(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER1);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -107,7 +107,7 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     }
 
     function<int> CreateLine(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER1);
         Obj_SetVisible(obj, false);
         //set color
         int color = colored_ ? color_ : COLOR_WHITE;
@@ -131,14 +131,14 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
     int circle2 = CreateCircle(false);
     int line2 = CreateLine(false);
     //delay laser
-    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1);
     //delay laser origin
-    int guide2 = CreateCircle(false);
-    Obj_SetVisible(guide2, true);
+    int guide2 = InitSprite2D(16, 0, 32, 16, IMG_EFFECT_PARTICLE, RP_STG_LASER1);
+    ObjSprite2D_SetDestCenter(guide2);
 
     //Update loop 
     async {
-        float radius = 0.5; //radius of white part
+        float radius = 0; //radius of white part
         //declared in this scope so they can be stored if the hitbox is deleted before the laser animation is complete
         float angle = ObjStLaser_GetAngle(hitbox);
         float len = ObjLaser_GetLength(hitbox);
@@ -161,7 +161,7 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
                 UpdatePosition(radius);
                 yield;
             }
-            radius *= 2;
+            radius++;
         }
         ObjShot_SetIntersectionEnable(hitbox, true);
         loop (sustain_) {
@@ -170,12 +170,12 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
             yield;
         }
         if (radius > 2) radius = 2;
-        while (radius >= 0.5 && doRetract) { //contract laser
+        while (radius >= 0 && doRetract) { //contract laser
             loop (3) {
                 UpdatePosition(radius);
                 yield;
             }
-            radius /= 2;
+            radius--;
         }
 
         Obj_Delete(guide1);
@@ -186,6 +186,7 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
         Obj_Delete(line2);
 
         function<void> UpdatePosition(int radius_) {
+            float scale = radius_ / 3;
             if (!Obj_IsDeleted(hitbox)) {
                 x_ = ObjMove_GetX(hitbox);
                 y_ = ObjMove_GetY(hitbox);
@@ -200,19 +201,11 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
                 ObjPrim_SetVertexPosition(guide1, 1, x_ + len * thetaX, y_ + len * thetaY, 1);
             }
             //all circles' positions are casted as integers so their shape is the same regardless of location on screen
-            int xInt = as_int(x_);
-            int yInt = as_int(y_);
-            ObjPrim_SetVertexPosition(guide2, 0, xInt, yInt, 1);
-            ObjPrim_SetVertexPosition(circle1, 0, xInt, yInt, 1); //colored
-            ObjPrim_SetVertexPosition(circle2, 0, xInt, yInt, 1); //white
-            for (int i = 1; i < 14; i++) {
-                float angleT = 360 / 12 * i;
-                float tX = cos(angleT);
-                float tY = sin(angleT);
-                ObjPrim_SetVertexPosition(guide2, i, xInt + 2 * tX, yInt + 2 * tY, 1);
-                ObjPrim_SetVertexPosition(circle1, i, xInt + (radius_ * 2 + 2) * tX, yInt + (radius_ * 2 + 2) * tY, 1);
-                ObjPrim_SetVertexPosition(circle2, i, xInt + (radius_ * 2) * tX, yInt + (radius_ * 2) * tY, 1);
-            }
+            ObjRender_SetPosition(guide2, x_, y_, 1);
+            ObjRender_SetPosition(circle1, x_, y_, 1); //colored
+            ObjRender_SetPosition(circle2, x_, y_, 1); //white
+            ObjRender_SetScaleXYZ(circle1, scale, scale, 1);
+            ObjRender_SetScaleXYZ(circle2, scale, scale, 1);
             //line angles
             // float cos(angle + 90) = -thetaY;
             // float cos(angle - 90) = thetaY;
@@ -234,20 +227,17 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
     return hitbox;
 
     function<int> CreateCircle(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER);
+        int obj = InitSprite2D(32 - 32 * colored_, 128, 64 - 32 * colored_, 160, IMG_EFFECT_PARTICLE, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
         Obj_SetVisible(obj, false);
-        //set color
-        int color = colored_ ? color_ : COLOR_WHITE;
-        ObjRender_SetColor(obj, color);
+        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
+        ObjSprite2D_SetDestCenter(obj);
         return obj;
     }
 
     function<int> CreateLine(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
         Obj_SetVisible(obj, false);
-        //set color
-        int color = colored_ ? color_ : COLOR_WHITE;
-        ObjRender_SetColor(obj, color);
+        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
         return obj;
     }
 }
@@ -295,7 +285,7 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
     int line3 = CreateLine(COLOR_WHITE);
 
     //delay laser
-    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+    int guide1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1);
 
     //Update loop 
     async {
@@ -401,7 +391,7 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
     return controller;
 
     function<int> CreateCircle(int color_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 34, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 34, RP_STG_LASER1);
         Obj_SetVisible(obj, false);
         //set color
         ObjRender_SetColor(obj, color_);
@@ -409,7 +399,7 @@ function<int> CreateMasterSpark(float x_, float y_, float angle_, float length_,
     }
 
     function<int> CreateLine(int color_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER1);
         Obj_SetVisible(obj, false);
         //set color
         ObjRender_SetColor(obj, color_);
@@ -518,7 +508,7 @@ function<int> CreateFireLaser(float x_, float y_, float angle_, int sustain_, in
 }
 
 function<int> Laser_WarningLine(float x_, float y_, float angle_, int length_, int time_) {
-    int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+    int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1);
     ObjPrim_SetVertexPosition(line, 0, x_, y_, 1);
     ObjPrim_SetVertexPosition(line, 1, x_ + length_ * cos(angle_), y_ + length_ * sin(angle_), 1);
     async {

@@ -120,8 +120,8 @@ task TBottom() {
     while (Boss_Alive(_objBoss)) {
         for (int i = 0; i < 23; i++) {
             if (!Boss_Alive(_objBoss)) return;
-            int fireL = CreateFireLaser(8 + i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
-            int fireR = CreateFireLaser(MAX_X - 8 - i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER);
+            int fireL = CreateFireLaser(8 + i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER1);
+            int fireR = CreateFireLaser(MAX_X - 8 - i * 16, MAX_Y + 32, -90, frames, maxLength, SHOT_WHITE, RP_STG_LASER1);
             wait(waitTime);
         }
     }

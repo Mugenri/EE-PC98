@@ -89,8 +89,8 @@ function<void> Cancel_Laser(int obj_) { //Laser cancel effect
     float len = ObjLaser_GetLength(obj_);
     float speed = 4.5;
 
-    int deleteLine1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //clockwise to laser
-    int deleteLine2 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER); //counterclockwise to laser
+    int deleteLine1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1); //clockwise to laser
+    int deleteLine2 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1); //counterclockwise to laser
 
     async {
         float dist = 0; //distance of delete line to the original laser center

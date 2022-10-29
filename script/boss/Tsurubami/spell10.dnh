@@ -86,7 +86,7 @@ task TWall(int dir_) {
     task TFireWall(float yPos_) {
         int frames = [135, 150, 160][_diff];
         float maxLength = [210, 220, 235][_diff];
-        int laser = CreateFireLaser(MID_X + (MID_X + 16) * dir_, yPos_, 90 + 90 * dir_, frames, maxLength, SHOT_BLUE, RP_STG_LASER);
+        int laser = CreateFireLaser(MID_X + (MID_X + 16) * dir_, yPos_, 90 + 90 * dir_, frames, maxLength, SHOT_BLUE, RP_STG_LASER1);
     }
 }
 

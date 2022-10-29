@@ -372,7 +372,7 @@ task TMain() {
                         int waitTime = [6, 6, 4][_diff];
                         for (int i = 0; i < 24; i++) {
                             if (!Boss_Alive(_objBoss)) return;
-                            CreateFireLaser(xStart_, yStart_, angleT_, frames, maxLength_, SHOT_BLACK, RP_STG_LASER);
+                            CreateFireLaser(xStart_, yStart_, angleT_, frames, maxLength_, SHOT_BLACK, RP_STG_LASER1);
                             xStart_ += xInc_;
                             yStart_ += yInc_;
                             wait(waitTime);

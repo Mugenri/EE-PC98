@@ -92,7 +92,7 @@ task TFireA() {
     task TKnives(float arcAdd_) {
         arcAdd_ = 360 / pointNum * arcAdd_; //extra distance along full rotation
 
-        int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER);
+        int line = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1);
         ObjPrim_SetVertexPosition(line, 0, Boss_X(_objBoss), Boss_Y(_objBoss), 1);
 
         int loopCount = 0;

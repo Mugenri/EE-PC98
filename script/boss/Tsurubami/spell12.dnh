@@ -198,7 +198,7 @@ task TFireD() {
     task TFireWall(float xPos_) {
         int frames = 60;
         float maxLength = [58, 64, 80][_diff];
-        int laser = CreateFireLaser(xPos_, MAX_Y + 32, 270, frames, maxLength, SHOT_PINK, RP_STG_LASER);
+        int laser = CreateFireLaser(xPos_, MAX_Y + 32, 270, frames, maxLength, SHOT_PINK, RP_STG_LASER1);
     }
 }
 
