@@ -324,8 +324,7 @@ task TPhase3() {
             angle += 360 / numShot;
         }
         wait(delayTime);
-        if (Boss_Alive(_objBoss));
-        CallSFX(SND_LASER1);
+        if (Boss_Alive(_objBoss)) CallSFX(SND_LASER1);
     }
 
 }
