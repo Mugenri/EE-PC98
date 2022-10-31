@@ -1,0 +1,200 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 10"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = 120;
+_spellID = 54 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3500);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(45 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(1000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TFireB();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(21, 10, 0);
+    CallSFX(SND_TRANSITION);
+    wait(240);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    int moveTime = 120;
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= _loopTime) {
+            async {
+                TFireA();
+            }
+        }
+        if (_count % moveTime == 0 && _count >= _loopTime + 1) {
+            Boss_MoveRadiusInBounds(_objBoss, 20, 40, MID_X - 64, MID_X + 64, 32, 100, 60, LERP_DECELERATE);
+        }
+        yield;
+    }
+}
+
+task TFireA() {
+    //amulets that spawn lasers
+    if (!Boss_Alive(_objBoss)) return;
+    //shot
+    int numShot = 6;
+    float speed = [2.7, 2.9, 3.5][_diff];
+    float angleT = 0;
+    float waitTime = 0;
+    //laser
+    float numLaser = 6;
+    int sustain = 8;
+    int delay = 60;
+    int laserWait = [6, 4, 3][_diff];
+
+    for (int i = 0; i < numShot; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_RED+CARD, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_FADE);
+        ObjShot_SetSpellResist(shot, true);
+        TLasers(shot);
+        angleT += 360 / numShot;
+        CallSFX(SND_SHOT1);
+        wait(waitTime);
+    }
+
+    task TLasers(int obj_) {
+        wait(20);
+        float angleT = ObjMove_GetAngle(obj_);
+        int color = COLOR_YELLOW_L;
+        while (Boss_Alive(_objBoss) && !Obj_IsDeleted(obj_)) {
+            CreateStraightLaserUA1(ObjMove_GetX(obj_), ObjMove_GetY(obj_), angleT, 550, sustain, color, delay);
+            color = color == COLOR_ORANGE ? COLOR_YELLOW_L : COLOR_ORANGE;
+            async {
+                wait(delay);
+                if (Boss_Alive(_objBoss)) CallSFX(SND_LASER1);
+            }
+            angleT += 360 / numLaser;
+            wait(laserWait);
+        }
+    }
+}
+
+task TFireB() {
+    //star of david shape
+    while (_count < 0) yield;
+
+    //charge anim
+    async {
+        Animation_Charge(_objBoss, true);
+        CallSFX(SND_CHARGE1);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 200, 0, 30, 32, COLOR_RED, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_BLUE);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_INDIGO_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_INDIGO_L);
+        wait(3);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 200, 0, 30, 32, COLOR_RED, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_BLUE);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_INDIGO_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_INDIGO_L);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 200, 0, 30, 32, COLOR_BLUE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_BLUE);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_INDIGO_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, 90, 30, 6, COLOR_INDIGO_L);
+        wait(3);
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 200, 0, 30, 32, COLOR_BLUE, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_BLUE);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_BLUE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_INDIGO_L);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 200, -90, 30, 6, COLOR_INDIGO_L);
+        wait(30);
+        CallSFX(SND_SHOT2);
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 90, 32, COLOR_INDIGO_L, false, RP_STG_EFF_MID);
+        wait(3);
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 90, 32, COLOR_BLUE, false, RP_STG_EFF_MID);
+        Animation_Charge(_objBoss, false);
+    }
+
+    int numShot = 13; //shots per arc
+    int color = SHOT_BLUE;
+    int radius = 96;
+    float speed = [2.3, 2.4, 2.5][_diff];
+    float angleShot = 0;
+    float angleInc = 120 / numShot;
+    float accel = 0.04;
+    int waitTime = [3, 2, 1][_diff];
+    int accelDelay = numShot * waitTime * 3;
+
+    float angleT = 0;
+    while (Boss_Alive(_objBoss)) {
+        //angles relative to boss
+        float x1 = cos(angleT);
+        float y1 = sin(angleT);
+        float x2 = cos(angleT + 120);
+        float y2 = sin(angleT + 120);
+
+        for (int i = 0; i < numShot; i++) {
+            if (!Boss_Alive(_objBoss)) return;
+            float xMod = Interpolate_Linear(x1, x2, i / as_float(numShot));
+            float yMod = Interpolate_Linear(y1, y2, i / as_float(numShot));
+            float bossX = Boss_X(_objBoss);
+            float bossY = Boss_Y(_objBoss);
+
+            int shot = CreateShotUA2(bossX + radius * xMod, bossY + radius * yMod, 0, angleShot, 0, 0, 0, color+STAR_S, 0, color+SPAWN_S+SIZE_16, color+CANCEL_SPARKLE);
+            ObjMove_AddPatternA2(shot, accelDelay, 0, NO_CHANGE, accel, speed, 0);
+            shot = CreateShotUA2(bossX + radius * -xMod, bossY + radius * -yMod, 0, angleShot + 180, 0, 0, 0, color+STAR_S, 0, color+SPAWN_S+SIZE_16, color+CANCEL_SPARKLE);
+            ObjMove_AddPatternA2(shot, accelDelay, 0, NO_CHANGE, accel, speed, 0);
+            angleShot += angleInc;
+            CallSFX(SND_SHOT1);
+            wait(waitTime);
+        }
+        color = color == SHOT_BLUE ? SHOT_BLUE_INV : SHOT_BLUE;
+        angleT += 120;
+    }
+}

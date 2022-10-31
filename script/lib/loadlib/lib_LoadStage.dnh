@@ -168,7 +168,8 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "spell6.dnh",
             dir ~ "spell7.dnh",
             dir ~ "spell8.dnh",
-            dir ~ "spell9.dnh"
+            dir ~ "spell9.dnh",
+            dir ~ "spell10.dnh"
         ];
     }
 
