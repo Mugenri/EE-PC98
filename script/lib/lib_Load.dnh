@@ -1,6 +1,7 @@
 //Script/Texture Loading and Unloading Library
 
 #include "./loadlib/lib_LoadStage.dnh"
+#include "./lib_Spell.dnh" //spell path lists
 
 function<void> Load_LoadTextureBase() { //load universal textures (generic textures used in all stages)
     for each (img in Load_GetTextureBase()) {

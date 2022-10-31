@@ -108,6 +108,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
     ];
 
     //Stage scripts
+    scriptPath ~= Spell_GetPathList(stageIndex_);
     alternative (stageIndex_)
     case (0) { //Tsurubami
         dir = DIR_STG ~ "tsurubami/";
@@ -116,32 +117,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "tsuruBG.dnh",
             dir ~ "tsuruPlural.dnh",
             dir ~ "dialogueIntro.dnh",
-            dir ~ "dialogueOutro.dnh",
-            dir ~ "nonspell1.dnh",
-            dir ~ "nonspell2.dnh",
-            dir ~ "nonspell3.dnh",
-            dir ~ "nonspell4.dnh",
-            dir ~ "nonspell5.dnh",
-            dir ~ "nonspell6.dnh",
-            dir ~ "nonspell7.dnh",
-            dir ~ "nonspell8.dnh",
-            dir ~ "nonspell9.dnh",
-            dir ~ "nonspell10.dnh",
-            dir ~ "nonspell11.dnh",
-            dir ~ "spell1.dnh",
-            dir ~ "spell2.dnh",
-            dir ~ "spell3.dnh",
-            dir ~ "spell4.dnh",
-            dir ~ "spell5.dnh",
-            dir ~ "spell6.dnh",
-            dir ~ "spell7.dnh",
-            dir ~ "spell8.dnh",
-            dir ~ "spell9.dnh",
-            dir ~ "spell10.dnh",
-            dir ~ "spell11.dnh",
-            dir ~ "spell12.dnh",
-            dir ~ "spell13.dnh",
-            dir ~ "spell14.dnh"
+            dir ~ "dialogueOutro.dnh"
         ];
     }
     case (1) { //Tsurubami 2
@@ -150,26 +126,7 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "tsuru2Stage.dnh",
             dir ~ "tsuru2BG.dnh",
             dir ~ "tsuru2Plural.dnh",
-            dir ~ "dialogueIntro.dnh",
-            dir ~ "nonspell1.dnh",
-            dir ~ "nonspell2.dnh",
-            dir ~ "nonspell3.dnh",
-            dir ~ "nonspell4.dnh",
-            dir ~ "nonspell5.dnh",
-            dir ~ "nonspell6.dnh",
-            dir ~ "nonspell7.dnh",
-            dir ~ "nonspell8.dnh",
-            dir ~ "nonspell9.dnh",
-            dir ~ "spell1.dnh",
-            dir ~ "spell2.dnh",
-            dir ~ "spell3.dnh",
-            dir ~ "spell4.dnh",
-            dir ~ "spell5.dnh",
-            dir ~ "spell6.dnh",
-            dir ~ "spell7.dnh",
-            dir ~ "spell8.dnh",
-            dir ~ "spell9.dnh",
-            dir ~ "spell10.dnh"
+            dir ~ "dialogueIntro.dnh"
         ];
     }
 
