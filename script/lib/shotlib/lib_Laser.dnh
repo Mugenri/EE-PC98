@@ -6,7 +6,7 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     //Object Creation
     //Hitbox and position/angle
     int time = 550 / speed_ + maxLength_ / speed_; //rough amount of frames it will take the laser to leave the screen (550px is hypotenuse of stg window)
-    int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 16, time + delay_, 1, 0);
+    int hitbox = CreateStraightLaserA1(x_, y_, angle_, 0, 12, time + delay_, 1, 0);
     ObjShot_SetIntersectionEnable(hitbox, false);
     Obj_SetValueI(hitbox, SHOT_CANCEL, true);
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
@@ -65,53 +65,44 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
         Obj_Delete(line2);
 
         function<void> UpdateCircle(float x_, float y_) {
-            //all circles' positions are casted as integers so their shape is the same regardless of location on screen
-            int xInt = as_int(x_);
-            int yInt = as_int(y_);
-            ObjPrim_SetVertexPosition(circle1, 0, xInt, yInt, 1); //colored
-            ObjPrim_SetVertexPosition(circle2, 0, xInt, yInt, 1); //white
-            for (int i = 1; i < 14; i++) {
-                float angleT = 360 / 12 * i;
-                float thetaX = cos(angleT);
-                float thetaY = sin(angleT);
-                ObjPrim_SetVertexPosition(circle1, i, xInt + 6 * thetaX, yInt + 6 * thetaY, 1);
-                ObjPrim_SetVertexPosition(circle2, i, xInt + 4 * thetaX, yInt + 4 * thetaY, 1);
-            }
+            x_ = round(x_);
+            y_ = round(y_);
+            ObjRender_SetPosition(circle1, x_, y_, 1); //colored
+            ObjRender_SetPosition(circle2, x_, y_, 1); //white
         }
 
         function<void> UpdateLine(float x_, float y_, float angle_, float length_) {
+            x_ = round(x_);
+            y_ = round(y_);
             float thetaX = cos(angle_);
             float thetaY = sin(angle_);
             //colored
-            ObjPrim_SetVertexPosition(line1, 0, x_ + 4 * -thetaY, y_ + 4 * thetaX, 1);
-            ObjPrim_SetVertexPosition(line1, 1, x_ + 4 * thetaY, y_ + 4 * -thetaX, 1);
-            ObjPrim_SetVertexPosition(line1, 2, x_ + 4 * -thetaY + length_ * thetaX, y_ + 4 * thetaX + length_ * thetaY, 1);
-            ObjPrim_SetVertexPosition(line1, 3, x_ + 4 * thetaY + length_ * thetaX, y_ + 4 * -thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line1, 0, x_ + 3.5 * -thetaY, y_ + 3.5 * thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 1, x_ + 3.5 * thetaY, y_ + 3.5 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line1, 2, x_ + 3.5 * -thetaY + length_ * thetaX, y_ + 3.5 * thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line1, 3, x_ + 3.5 * thetaY + length_ * thetaX, y_ + 3.5 * -thetaX + length_ * thetaY, 1);
             //white
-            ObjPrim_SetVertexPosition(line2, 0, x_ + 2 * -thetaY, y_ + 2 * thetaX, 1);
-            ObjPrim_SetVertexPosition(line2, 1, x_ + 2 * thetaY, y_ + 2 * -thetaX, 1);
-            ObjPrim_SetVertexPosition(line2, 2, x_ + 2 * -thetaY + length_ * thetaX, y_ + 2 * thetaX + length_ * thetaY, 1);
-            ObjPrim_SetVertexPosition(line2, 3, x_ + 2 * thetaY + length_ * thetaX, y_ + 2 * -thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line2, 0, x_ + 1.5 * -thetaY, y_ + 1.5 * thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 1, x_ + 1.5 * thetaY, y_ + 1.5 * -thetaX, 1);
+            ObjPrim_SetVertexPosition(line2, 2, x_ + 1.5 * -thetaY + length_ * thetaX, y_ + 1.5 * thetaX + length_ * thetaY, 1);
+            ObjPrim_SetVertexPosition(line2, 3, x_ + 1.5 * thetaY + length_ * thetaX, y_ + 1.5 * -thetaX + length_ * thetaY, 1);
         }
     }
 
     return hitbox;
 
     function<int> CreateCircle(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 14, RP_STG_LASER1);
+        int obj = InitSprite2D(16 - 16 * colored_, 64, 32 - 16 * colored_, 80, IMG_EFFECT_PARTICLE, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
         Obj_SetVisible(obj, false);
-        //set color
-        int color = colored_ ? color_ : COLOR_WHITE;
-        ObjRender_SetColor(obj, color);
+        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
+        ObjSprite2D_SetDestCenter(obj);
         return obj;
     }
 
     function<int> CreateLine(bool colored_) {
-        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, RP_STG_LASER1);
+        int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
         Obj_SetVisible(obj, false);
-        //set color
-        int color = colored_ ? color_ : COLOR_WHITE;
-        ObjRender_SetColor(obj, color);
+        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
         return obj;
     }
 }

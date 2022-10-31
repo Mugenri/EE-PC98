@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -60;
-int _loopTime = 300;
+int _loopTime = 10;
 _spellID = 999;
 int health = 3000;
 
@@ -373,6 +373,7 @@ task TPatternS() { //pattern shot test
 
 task TPatternT() { //laser lag test
     SetPlayerInvincibilityFrame(1000);
-    CreateStraightLaserUA1(MID_X, MID_Y, rand(0, 360), 300, 100000, COLOR_BLUE, 0);
+    //CreateStraightLaserUA1(MID_X, MID_Y, rand(0, 360), 300, 100000, COLOR_BLUE, 0);
+    CreateLooseLaserUA1(rand(MIN_X, MAX_X), rand(MIN_Y, MAX_Y), 1, 90, 30, COLOR_BLUE, 0);
     CallSFX(SND_LASER1);
 }
