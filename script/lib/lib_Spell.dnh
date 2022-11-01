@@ -111,6 +111,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (51, 52, 53)   { return "Nonspell 9"; }                                        //17
         case (54, 55)       { return "Senri Technique \"Six-Point Sealing Circle\""; }      //18
         case (56)           { return "Forbidden Art \"Heaven-sent Binding Star\""; }        //ABEX
+        case (57, 58, 59)   { return "Nonspell 10"; }                                       //19
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -179,7 +180,8 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
             dir ~ "nonspell8.dnh",      //15
             dir ~ "spell9.dnh",         //16
             dir ~ "nonspell9.dnh",      //17
-            dir ~ "spell10.dnh"         //18
+            dir ~ "spell10.dnh",        //18
+            dir ~ "nonspell10.dnh"      //19
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
