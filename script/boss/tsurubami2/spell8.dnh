@@ -134,7 +134,7 @@ task TSpell() {
 
     //movement
     angleT = 0;
-    float angleStep = [0.67, 0.7, 0.72][_diff];
+    float angleStep = [0.5, 0.7, 0.72][_diff];
     int transitionFrames = 300;
     int holdFrames = 1000;
     float bossRadius = 0;
@@ -265,7 +265,7 @@ task TSpell() {
 
         //shot loop
         int frame = 1;
-        int loopTime = [65, 50, 44][_diff]; //shot interval
+        int loopTime = [70, 50, 44][_diff]; //shot interval
         while (doLines) {
             if (frame % loopTime == 0) {
                 for each (shot in shotH) {
