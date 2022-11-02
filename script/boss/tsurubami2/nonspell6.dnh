@@ -65,39 +65,41 @@ task TShots() {
 
     alternative (_diff)
     case (0) { //EZEX
-        TFire(1, 40, 32, 2.1, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        TFire(1, 40, 32, 2.4, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        TFire(1, 40, 32, 2.3, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
         wait(60);
-        TFire(-1, 40, 32, 2.1, 180, -60, 1.0, 1.1, SHOT_RED, 4);
+        TFire(-1, 40, 32, 2.4, 180, -60, 1.0, 1.1, SHOT_RED, 4);
+        TFire(-1, 40, 32, 2.3, 180, 0, 1.0, 1.1, SHOT_RED, 3);
         wait(60);
         TFire(-1, 40, 32, 2.4, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
         wait(60);
         TFire(1, 40, 32, 2.4, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
     }
     case (1) { //EX
-        TFire(1, 40, 32, 2.3, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
-        TFire(1, 40, 32, 2.2, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        TFire(1, 40, 32, 2.6, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        TFire(1, 40, 32, 2.5, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
         wait(60);
-        TFire(-1, 40, 32, 2.3, 180, -60, 1.0, 1.1, SHOT_RED, 4);
-        TFire(-1, 40, 32, 2.2, 180, 0, 1.0, 1.1, SHOT_RED, 3);
+        TFire(-1, 40, 32, 2.6, 180, -60, 1.0, 1.1, SHOT_RED, 4);
+        TFire(-1, 40, 32, 2.5, 180, 0, 1.0, 1.1, SHOT_RED, 3);
         wait(60);
-        TFire(-1, 48, 32, 2.5, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
+        TFire(-1, 48, 32, 2.6, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
         wait(60);
-        TFire(1, 48, 32, 2.5, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
+        TFire(1, 48, 32, 2.6, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
     }
     case (2) { //ABEX
-        TFire(1, 32, 48, 2.3, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
+        TFire(1, 32, 48, 2.8, 0, 60, 1.1, 1.0, SHOT_GRAY, 3);
         wait(10);
-        TFire(1, 32, 48, 2.2, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        TFire(1, 32, 48, 2.7, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
         wait(10);
-        TFire(1, 32, 48, 2.1, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
+        TFire(1, 32, 48, 2.6, 0, 0, 1.1, 1.0, SHOT_GRAY, 2);
         wait(10);
-        TFire(-1, 32, 64, 2.3, 180, -60, 1.0, 1.1, SHOT_RED, 3);
+        TFire(-1, 32, 64, 2.8, 180, -60, 1.0, 1.1, SHOT_RED, 3);
         wait(10);
-        TFire(-1, 32, 64, 2.2, 180, 0, 1.0, 1.1, SHOT_RED, 2);
+        TFire(-1, 32, 64, 2.7, 180, 0, 1.0, 1.1, SHOT_RED, 2);
         wait(10);
-        TFire(-1, 40, 32, 2.5, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
+        TFire(-1, 40, 32, 3, 90, 0, 1.5, 1.0, SHOT_RED_INV, 2);
         wait(10);
-        TFire(1, 40, 32, 2.5, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
+        TFire(1, 40, 32, 3, 270, 170, 1.0, 1.5, SHOT_BLACK, 2);
     }
 
 }
