@@ -84,8 +84,8 @@ task TRing(int dir_) {
     float yAccel = 0.03;
     float yMax = [1.6, 1.6, 2][_diff];
     //ring
-    int cap = [36, 46, 56][_diff];
-    int numShot = min(cap, [30, 40, 48][_diff] + (_count / _loopTime));
+    int cap = [40, 48, 56][_diff];
+    int numShot = min(cap, [34, 42, 48][_diff] + (_count / _loopTime));
     float rad = 0;
     float radMax = [220, 220, 235][_diff];
     float baseAngle = 90 + 60 * dir_;
