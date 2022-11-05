@@ -232,24 +232,24 @@ ShotData {  id = 180    rect = ( 272, 096, 288, 112 )   fixed_angle = false coll
 
 //Kunai
 //----------------------------------------------------
-ShotData {  id = 181    rect = ( 000, 112, 016, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Red
-ShotData {  id = 182    rect = ( 016, 112, 032, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Orange
-ShotData {  id = 183    rect = ( 032, 112, 048, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Yellow
-ShotData {  id = 184    rect = ( 048, 112, 064, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Green
-ShotData {  id = 185    rect = ( 064, 112, 080, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Blue
-ShotData {  id = 186    rect = ( 080, 112, 096, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Purple
-ShotData {  id = 187    rect = ( 096, 112, 112, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Pink
-ShotData {  id = 188    rect = ( 112, 112, 128, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Gray
-ShotData {  id = 189    rect = ( 128, 112, 144, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //White
-ShotData {  id = 190    rect = ( 144, 112, 160, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Red (Invert)
-ShotData {  id = 191    rect = ( 160, 112, 176, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Orange (Invert)
-ShotData {  id = 192    rect = ( 176, 112, 192, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Yellow (Invert)
-ShotData {  id = 193    rect = ( 192, 112, 208, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Green (Invert)
-ShotData {  id = 194    rect = ( 208, 112, 224, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Blue (Invert)
-ShotData {  id = 195    rect = ( 224, 112, 240, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Purple (Invert)
-ShotData {  id = 196    rect = ( 240, 112, 256, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Pink (Invert)
-ShotData {  id = 197    rect = ( 256, 112, 272, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Gray (Invert)
-ShotData {  id = 198    rect = ( 272, 112, 288, 128 )   fixed_angle = false collision = ( 2.5, 0, 2 ) } //Black
+ShotData {  id = 181    rect = ( 000, 112, 016, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Red
+ShotData {  id = 182    rect = ( 016, 112, 032, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Orange
+ShotData {  id = 183    rect = ( 032, 112, 048, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Yellow
+ShotData {  id = 184    rect = ( 048, 112, 064, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Green
+ShotData {  id = 185    rect = ( 064, 112, 080, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Blue
+ShotData {  id = 186    rect = ( 080, 112, 096, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Purple
+ShotData {  id = 187    rect = ( 096, 112, 112, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Pink
+ShotData {  id = 188    rect = ( 112, 112, 128, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Gray
+ShotData {  id = 189    rect = ( 128, 112, 144, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //White
+ShotData {  id = 190    rect = ( 144, 112, 160, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Red (Invert)
+ShotData {  id = 191    rect = ( 160, 112, 176, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Orange (Invert)
+ShotData {  id = 192    rect = ( 176, 112, 192, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Yellow (Invert)
+ShotData {  id = 193    rect = ( 192, 112, 208, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Green (Invert)
+ShotData {  id = 194    rect = ( 208, 112, 224, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Blue (Invert)
+ShotData {  id = 195    rect = ( 224, 112, 240, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Purple (Invert)
+ShotData {  id = 196    rect = ( 240, 112, 256, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Pink (Invert)
+ShotData {  id = 197    rect = ( 256, 112, 272, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Gray (Invert)
+ShotData {  id = 198    rect = ( 272, 112, 288, 128 )   fixed_angle = false collision = ( 2, 0, 2 ) } //Black
 
 //Small Fire
 //----------------------------------------------------
