@@ -68,7 +68,8 @@ function<void> Transition_Spell(int row_, int index_, int delay_) {
         19,     //18 Stripes
         21,     //19 Eye
         20,     //20 Snowflake
-        19      //21 Hexagram
+        19,     //21 Hexagram
+        16      //22 Dissolve
     ][row_];
 
     int transitionObj = GetTransitionObject(true);
