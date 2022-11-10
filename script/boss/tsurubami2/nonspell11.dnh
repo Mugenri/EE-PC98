@@ -1,0 +1,146 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 11"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = 350;
+_spellID = 63 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3200);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(42 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 105, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TFire(40, 140);
+                wait(150);
+                TFire(40, rand(150, 200));
+                wait(100);
+                TFire(60, rand(190, 250));
+            }
+        }
+        if (_count % _loopTime == 95 && _count >= 0) {
+            Boss_MoveRadiusInBounds(_objBoss, 48, 64, MID_X - 64, MID_X + 64, 95, 115, 60, LERP_DECELERATE);
+        }
+        yield;
+    }
+}
+
+task TFire(float angleMin_, float angleMax_) {
+    if (!Boss_Alive(_objBoss)) return;
+    int[] shots = [];
+    int way = [4, 6, 9][_diff];
+    float speedMin = 3.4;
+    float speedMax = 4.0;
+    float decel = 0.08;
+    int decelTime = speedMax / decel;
+    int graceTime = 8;
+    int waitTime = [4, 4, 2][_diff];
+
+    CallSFX(SND_CHARGE1);
+    Animation_Charge(_objBoss, true);
+    for (int i = 0; i < way; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        float speed = Interpolate_Linear(speedMin, speedMax, i / as_float(way - 1));
+        float angleT = Interpolate_Linear(angleMin_, angleMax_, i / as_float(way - 1));
+        int shot = CreateShotUA2(xPos, yPos, speed, 270 + angleT, -decel, 0, 0, SHOT_BLACK+BALL_L, 0, SHOT_BLACK+CANCEL_32);
+        Laser_WarningLine(xPos, yPos, 270 + angleT, 550, 30);
+        ObjShot_SetSpellResist(shot, true);
+        ObjShot_SetDeleteFrame(shot, 180);
+        shots ~= [shot];
+        shot = CreateShotUA2(xPos, yPos, speed, 270 - angleT, -decel, 0, 0, SHOT_BLACK+BALL_L, 0, SHOT_BLACK+CANCEL_32);
+        Laser_WarningLine(xPos, yPos, 270 - angleT, 550, 30);
+        ObjShot_SetSpellResist(shot, true);
+        ObjShot_SetDeleteFrame(shot, 180);
+        shots ~= [shot];
+        CallSFX(SND_SHOT3);
+        wait(waitTime);
+    }
+
+    wait(decelTime + graceTime);
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, false);
+    
+    float xPos = Boss_X(_objBoss);
+    float yPos = Boss_Y(_objBoss);
+    float speed = [8, 12, 15][_diff];
+    for each (shot in shots) {
+        float angleT = dottheta(xPos, yPos, ObjMove_GetX(shot), ObjMove_GetY(shot));
+        async {
+            int trigger = CreateShotUA1(xPos, yPos, speed, angleT, SHOT_BLACK+CARD, 0, SHOT_BLACK+CANCEL_BURST2);
+            ObjShot_SetSpellResist(trigger, true);
+            CreateShotUA1(xPos, yPos, speed, angleT, SHOT_GRAY+CARD, 2, SHOT_GRAY+CANCEL_BURST2);
+            CreateShotUA1(xPos, yPos, speed, angleT, SHOT_BLACK+CARD, 4, SHOT_BLACK+CANCEL_BURST2);
+            CreateShotUA1(xPos, yPos, speed, angleT, SHOT_GRAY+CARD, 6, SHOT_GRAY+CANCEL_BURST2);
+            CreateShotUA1(xPos, yPos, speed, angleT, SHOT_BLACK+CARD, 8, SHOT_BLACK+CANCEL_BURST2);
+            while (!Obj_IsDeleted(trigger)) {
+                int[] targets = GetShotIdInCircleA2(ObjMove_GetX(trigger), ObjMove_GetY(trigger), 8, TARGET_ENEMY);
+                for each (target in targets) {
+                    if (ObjShot_GetImageID(target) == SHOT_BLACK+BALL_L) {
+                        TBurst(ObjMove_GetX(target), ObjMove_GetY(target), ObjMove_GetAngle(target));
+                        ObjShot_SetDeleteFrame(target, 0);
+                    }
+                }
+                yield;
+            }
+        }
+    }
+    CallSFX(SND_SHOT1);
+}
+
+task TBurst(float xPos_, float yPos_, float angle_) {
+    int way = [10, 10, 9][_diff];
+    float speed1 = [2.2, 2.4, 1.7][_diff];
+    float speed2 = [1.6, 1.8, 1.0][_diff];
+
+    for (int i = 0; i < way; i++) {
+        CreateShotUA1(xPos_, yPos_, speed1, angle_, SHOT_WHITE+BULLET, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST2);
+        CreateShotUA1(xPos_, yPos_, speed2, angle_ + (180 / way), SHOT_GRAY+BULLET, 0, SHOT_GRAY+SPAWN_S+SIZE_16, SHOT_GRAY+CANCEL_BURST2);
+        angle_ += 360 / way;
+    }
+    CallSFX(SND_SHOT2);
+}

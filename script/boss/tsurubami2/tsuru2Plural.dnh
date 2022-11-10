@@ -38,6 +38,7 @@ task TPlural() {
     ObjEnemyBossScene_Add(_objScene, 9, dir ~ "spell10.dnh");
     ObjEnemyBossScene_Add(_objScene, 10, dir ~ "nonspell10.dnh");
     ObjEnemyBossScene_Add(_objScene, 10, dir ~ "spell11.dnh");
+    ObjEnemyBossScene_Add(_objScene, 11, dir ~ "nonspell11.dnh");
 
     ObjEnemyBossScene_LoadInThread(_objScene);
     ObjEnemyBossScene_Regist(_objScene);
