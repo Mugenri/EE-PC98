@@ -115,6 +115,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (60, 61)       { return "Arrow Card \"Phoenix Arrow -Realize-\""; }            //20
         case (62)           { return "Legendary Bow \"Tsurunami\""; }                       //ABEX
         case (63, 64, 65)   { return "Nonspell 11"; }                                       //21
+        case (66, 67)       { return "Burst Fire Card \"Imperial Airstrike\""; }            //22
+        case (68)           { return "Stratosphere Strike \"Ikaros Cannon\""; }             //ABEX
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -186,7 +188,8 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
             dir ~ "spell10.dnh",        //18
             dir ~ "nonspell10.dnh",     //19
             dir ~ "spell11.dnh",        //20
-            dir ~ "nonspell11.dnh"      //21
+            dir ~ "nonspell11.dnh",     //21
+            dir ~ "spell12.dnh"         //22
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
