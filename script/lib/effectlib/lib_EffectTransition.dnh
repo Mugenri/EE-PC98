@@ -70,7 +70,8 @@ function<void> Transition_Spell(int row_, int index_, int delay_) {
         20,     //20 Snowflake
         19,     //21 Hexagram
         16,     //22 Dissolve
-        17      //23 Crosshair
+        18,     //23 Crosshair
+        14      //24 Glass
     ][row_];
 
     int transitionObj = GetTransitionObject(true);
