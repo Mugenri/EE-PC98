@@ -76,10 +76,12 @@ function<void> Boss_SetIndicator(int parent_) {
 //MOVEMENT FUNCTIONS
 //Move randomly in rectangular area
 function<void> Boss_MoveInArea(int obj_, float xMin_, float xMax_, float yMin_, float yMax_, int frames_, int interpolation_) {
+    if (!Boss_Alive(obj_)) return;
     ObjMove_SetDestAtFrame(obj_, rand(xMin_, xMax_), rand(yMin_, yMax_), frames_, interpolation_);
 }
 //Move randomly in circular area
 function<void> Boss_MoveInArea(int obj_, float xPos_, float yPos_, float radius_, int frames_, int interpolation_) {
+    if (!Boss_Alive(obj_)) return;
     float angleT = rand(0, 360);
     float dist = rand(0, radius_);
     ObjMove_SetDestAtFrame(obj_, xPos_ + dist * cos(angleT), yPos_ + dist * sin(angleT), frames_, interpolation_);
@@ -87,6 +89,7 @@ function<void> Boss_MoveInArea(int obj_, float xPos_, float yPos_, float radius_
 //Move a maximum radius bounded by a rectangular area
 function<void> Boss_MoveRadiusInBounds(int obj_, float rMin_, float rMax_, float xMin_, float xMax_, float yMin_, float yMax_, int frames_, int interpolation_) {
     assert(xMin_ <= xMax_ && yMin_ <= yMax_, "Dumbass");
+    if (!Boss_Alive(obj_)) return;
     float bossX = ObjMove_GetX(obj_);
     float bossY = ObjMove_GetY(obj_);
     float xPos = bossX;
