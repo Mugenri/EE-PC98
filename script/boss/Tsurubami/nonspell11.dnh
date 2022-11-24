@@ -69,7 +69,7 @@ task TMain() {
                     TFireB(-1);
                     wait(15);
                 }
-                ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-120, 120), 60 + rand(20, -20), 30, LERP_DECELERATE);
+                if (Boss_Alive(_objBoss)) ObjMove_SetDestAtFrame(_objBoss, MID_X + rand(-120, 120), 60 + rand(20, -20), 30, LERP_DECELERATE);
                 wait(45);
                 TFireC();
             }
