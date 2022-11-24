@@ -1,0 +1,150 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Nonspell 12"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -60;
+int _loopTime = 220;
+_spellID = 72 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(2500);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(true);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TRing();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                TRay();
+            }
+        }
+        yield;
+    }
+}
+
+//spawn ring on tsurubami
+task TRing() {
+    while (_count < 60) yield;
+
+    int way = [28, 32, 32][_diff]; //even only
+    float speedMin = [1.6, 1.8, 2.2][_diff];
+    float speedMax = 7;
+    float decel = 1;
+    float angleT = 90;
+    float inc = 360 / way;
+    int waitTime = 30;
+    int color = SHOT_BLACK;
+    int count = 0;
+
+    int type = [BALL_S, BALL_S, BALL_L][_diff];
+    int spawn = [SIZE_16, SIZE_16, SIZE_32][_diff];
+    int cancel = [CANCEL_FADE, CANCEL_FADE, CANCEL_32][_diff];
+
+    while (Boss_Alive(_objBoss)) {
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        for (int i = 0; i < way; i++) {
+            color = color == SHOT_BLACK ? SHOT_GRAY : SHOT_BLACK;
+            CreateShotUA2(xPos, yPos, speedMax, angleT, -decel, speedMin, 0, color+type, 0, color+SPAWN_S+spawn, color+cancel);
+            angleT += inc;
+        }
+        count++;
+        CallSFX(SND_SHOT1);
+        angleT += inc / 2;
+        wait(waitTime);
+    }
+}
+
+//monochrome ray
+task TRay() {
+    if (!Boss_Alive(_objBoss)) return;
+
+    //setup
+    Animation_Charge(_objBoss, true);
+    float xPos = Boss_X(_objBoss);
+    float yPos = Boss_Y(_objBoss);
+    int way = 5;
+    int stack = 60;
+    float outSpeed = [7, 9, 18][_diff];
+    float inSpeed = [1.1, 1.4, 3.4][_diff];
+    float speed = [8, 9, 9][_diff];
+    float angleMod = 0;
+    float arc = 216 / stack;
+    int stopTime = 20;
+    int waitTime = 40;
+
+    //fire
+    CallSFX(SND_CHARGE2);
+    for (int i = 0; i < stack; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        int[] shotTemp = [];
+        float angleT = 90;
+        for (int j = 0; j < way; j++) {
+            int color = (angleT == 90 || angleT == 234) ? SHOT_BLACK : SHOT_GRAY;
+            shotTemp ~= [CreateShotUA1(xPos, yPos, outSpeed, angleT + angleMod, color+BEAM, 0, color+SPAWN_E+SIZE_16, color+CANCEL_SPARKLE)];
+            shotTemp ~= [CreateShotUA1(xPos, yPos, outSpeed, angleT - angleMod, color+BEAM, 0, color+SPAWN_E+SIZE_16, color+CANCEL_SPARKLE)];
+            angleT += 72;
+        }
+        async { //stop, wait, aim
+            int[] shots = shotTemp;
+            for each (shot in shots) {
+                ObjShot_SetAutoDelete(shot, false);
+                ObjMove_AddPatternA1(shot, stopTime, -inSpeed, NO_CHANGE);
+            }
+            wait(stopTime + waitTime);
+            if (!Boss_Alive(_objBoss)) return;
+            for each (shot in shots) {
+                ObjShot_SetAutoDelete(shot, true);
+                ObjMove_AddPatternA1(shot, 0, speed, GetAngleToPlayer(_objBoss));
+            }
+            CallSFX(SND_SHOT4);
+        }
+        angleMod += arc;
+        CallSFX(SND_SHOT1);
+        yield;
+    }
+    wait(stopTime + waitTime);
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, false);
+    Boss_MoveRadiusInBounds(_objBoss, 32, 48, MID_X - 64, MID_X + 64, 60, 80, 60, LERP_DECELERATE);
+}
