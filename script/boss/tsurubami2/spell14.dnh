@@ -1,0 +1,191 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 14"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = 1000;
+_spellID = 75 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3800);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(35 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(3000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TSpell();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 120, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(25, 14, 0);
+    CallSFX(SND_TRANSITION);
+    wait(360);
+    Boss_SetVulnerable(_objBoss, true);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        yield;
+    }
+}
+
+task TSpell() {
+    while (_count < 0) yield;
+    Animation_Charge(_objBoss, true);
+    //patternshot
+    int way = 1;
+    int stack = [8, 12, 16][_diff];
+    float speed1 = [1.2, 1.2, 1.2][_diff];
+    float speed2 = [3.0, 3.5, 4.8][_diff];
+    int initWait = [65, 65, 60][_diff];
+    int waitTime = [10, 14, 4][_diff];
+    int slowTime = 40;
+    float sBase = [3.0, 3.2, 3.4][_diff];
+    float sArg = [1.6, 1.4, 1.2][_diff];
+    int shotTime = [3, 4, 5][_diff];
+    int line = Shot_CreatePattern(_objBoss, PATTERN_FAN, way, stack, sBase, sArg, 0, 0, 0, 0);
+    //movement mess
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, initWait);
+    ObjPatternShot_AddTransform(line, TRANSFORM_TO_SPEED_ANGLE, slowTime, 0, NO_CHANGE);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, slowTime);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_GRAY+BALL_S);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, waitTime);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_RED+BALL_S);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, waitTime);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_RED+CARD);
+    ObjPatternShot_AddTransform(line, TRANSFORM_TO_SPEED_ANGLE, 1, speed1, TOPLAYER_CHANGE);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, 1);
+    ObjPatternShot_AddTransform(line, TRANSFORM_TO_SPEED_ANGLE, slowTime + 20, 0, NO_CHANGE);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, slowTime + 20);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_RED+BALL_S);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, waitTime);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_PURPLE+BALL_S);
+    ObjPatternShot_AddTransform(line, TRANSFORM_WAIT, waitTime);
+    ObjPatternShot_AddTransform(line, TRANSFORM_GRAPHIC_CHANGE, SHOT_PURPLE+CARD);
+    ObjPatternShot_AddTransform(line, TRANSFORM_TO_SPEED_ANGLE, 1, speed2, TOPLAYER_CHANGE);
+
+    //spawners
+    int[] orbs = [];
+    int[] colors = [SHOT_BLACK, SHOT_RED, SHOT_ORANGE, SHOT_YELLOW, SHOT_GREEN, SHOT_BLUE, SHOT_PURPLE, SHOT_PINK];
+    for (int i = 0; i < 8; i++) {
+        int color = colors[i];
+        int shot = CreateShotUA1(0, 0, 0, 0, color+YINYANG_A, 0, color+SPAWN_S+SIZE_32, color+CANCEL_32);
+        ObjShot_SetSpellResist(shot, true);
+        ObjShot_SetAutoDelete(shot, false);
+        ObjRender_SetScaleX(shot, i % 2 == 0 ? 1 : -1);
+        orbs ~= [shot];
+    }
+    CallSFX(SND_SHOT1);
+
+    TSpin();
+
+    wait(120); //get to maxRad
+
+    float angleMod = -90;
+    loop {
+        for each (orb in orbs) {
+            //patternshot fire
+            if (!Boss_Alive(_objBoss)) return;
+            int[] temp = [];
+            ObjPatternShot_SetParentObject(line, orb);
+            float angleT = ObjMove_GetAngle(orb);
+            Laser_WarningLine(ObjMove_GetX(orb), ObjMove_GetY(orb), angleT + angleMod, 550, 10);
+            ObjPatternShot_SetAngle(line, angleT + angleMod + 1, 0);
+            temp ~= Shot_FirePattern(line, SHOT_GRAY+CARD, SHOT_GRAY+CANCEL_FADE);
+            ObjPatternShot_SetAngle(line, angleT + angleMod - 1, 0);
+            temp ~= Shot_FirePattern(line, SHOT_GRAY+CARD, SHOT_GRAY+CANCEL_FADE);
+            CallSFX(SND_SHOT1);
+            for each (shot in temp) {
+                ObjShot_SetAutoDelete(shot, false);
+                ObjShot_SetDeleteFrame(shot, 450);
+            }
+            async {
+                int[] shots = temp;
+                wait(initWait + slowTime + waitTime);
+                if (!Boss_Alive(_objBoss)) return;
+                for each (shot in shots) {
+                    Obj_SetValueI(shot, SHOT_EFFECT, SHOT_RED+CANCEL_FADE);
+                }
+                CallSFX(SND_SHOT2);
+                wait(20 + slowTime + waitTime + waitTime);
+                if (!Boss_Alive(_objBoss)) return;
+                for each (shot in shots) {
+                    Obj_SetValueI(shot, SHOT_EFFECT, SHOT_PURPLE+CANCEL_FADE);
+                }
+                CallSFX(SND_SHOT2);
+            }
+            wait(shotTime);
+        }
+        angleMod *= -1;
+        wait(60);
+        if (!Boss_Alive(_objBoss)) return;
+        CallSFX(SND_CHARGE1);
+        wait(20);
+        if (!Boss_Alive(_objBoss)) return;
+        Animation_Charge(_objBoss, false);
+        Boss_MoveRadiusInBounds(_objBoss, 32, 48, MID_X - 32, MID_X + 32, 110, 130, 60, LERP_DECELERATE);
+        wait(60);
+        if (!Boss_Alive(_objBoss)) return;
+        Animation_Charge(_objBoss, true);
+        wait(20);
+    }
+
+    task TSpin() {
+        //oscillate between two full rotations (720 * sin(_count % 240 * 360)) in 4 seconds
+        //angleT = 720 * sin(_count * 0.66)
+        float angleT = 0;
+        float rad = 0;
+        float maxRad = [48, 48, 64][_diff];
+
+        while (Boss_Alive(_objBoss)) {
+            if (_count <= 120) rad = Interpolate_Smoother(0, maxRad, _count / 120);
+            float angleT = 22.5 + 360 * sin(_count * 0.66 + 130);
+            float xPos = Boss_X(_objBoss);
+            float yPos = Boss_Y(_objBoss);
+            for (int i = 0; i < length(orbs); i++) {
+                int orb = orbs[i];
+                ObjMove_SetPosition(orb, xPos + rad * cos(angleT), yPos + rad * sin(angleT));
+                ObjMove_AddPatternD2(orb, 0, xPos + rad * cos(angleT), yPos + rad * sin(angleT), 1, LERP_LINEAR);
+                ObjMove_SetAngle(orb, angleT);
+                angleT += 45;
+            }
+            yield;
+        }
+    }
+}
