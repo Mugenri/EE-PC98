@@ -198,7 +198,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
 
         ObjSpriteList2D_CloseVertex(sceneSprites);
 
-        TRenderArrows();
+        TUpdateGraphic();
 
         //prim bg
         //inner
@@ -248,7 +248,8 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         Obj_Delete(cInner);
         Obj_Delete(cLines);
 
-        task TRenderArrows() {
+        task TUpdateGraphic() {
+            //arrows
             int uStage = InitSprite2D(208, 112, 224, 128, IMG_TT_SPELL, RP_UI_IMG);
             ObjRender_SetPosition(uStage, 110, 126, 1);
             int uSpell = InitSprite2D(208, 112, 224, 128, IMG_TT_SPELL, RP_UI_IMG);
@@ -258,23 +259,39 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
             int dSpell = InitSprite2D(224, 112, 240, 128, IMG_TT_SPELL, RP_UI_IMG);
             ObjRender_SetPosition(dSpell, 432, 368, 1);
 
+            //scroll bar
+            int scroll = InitSprite2D(432, 0, 440, 227, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(scroll, 625, 139, 1);
+            int bar = InitSprite2D(448, 0, 464, 16, IMG_TT_SPELL, RP_UI_IMG);
+            ObjRender_SetPosition(bar, 621, 135, 1);
+
             while (!exitFlag) {
                 int stMax = selectMax[MENU_STAGE];
                 int stSize = indexListSize[MENU_STAGE];
                 int stTop = indexListTop[MENU_STAGE];
+                int spCur = indexCurrent[MENU_SPELL];
                 int spMax = selectMax[MENU_SPELL];
                 int spSize = indexListSize[MENU_SPELL];
                 int spTop = indexListTop[MENU_SPELL];
+                //arrows
                 Obj_SetVisible(uStage, stTop != 0);
                 Obj_SetVisible(uSpell, spTop != 0);
                 Obj_SetVisible(dStage, stTop + stSize < stMax);
                 Obj_SetVisible(dSpell, spTop + spSize < spMax);
+
+                //scroll bar
+                float yPos = Interpolate_Linear(0, 219, spCur / as_float(spMax));
+                ObjRender_SetPosition(bar, 621, 135 + yPos, 1);
                 yield;
             }
+            //arrows
             Obj_Delete(uStage);
             Obj_Delete(uSpell);
             Obj_Delete(dStage);
             Obj_Delete(dSpell);
+            //scroll bar
+            Obj_Delete(scroll);
+            Obj_Delete(bar);
         }
 
         task TMove() {
