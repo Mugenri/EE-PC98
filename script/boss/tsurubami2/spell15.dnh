@@ -1,0 +1,341 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 15"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -120;
+int _loopTime = 1000;
+_spellID = 78 + _diff;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3500);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(50 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(5000000);
+    }
+    case (EV_REQUEST_IS_DURABLE_SPELL) {
+        SetScriptResult(true);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TSpell();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, MID_Y, 30, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(26, 15, 0);
+    CallSFX(SND_TRANSITION);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(0, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 4, TARGET_ENEMY)) {
+            if (ObjShot_GetImageID(shot) == SHOT_GRAY+COIN) {
+                ObjShot_SetGraphic(shot, SHOT_YELLOW+COIN);
+                CallSFX(SND_SHOT2);
+            }
+        }
+        yield;
+    }
+}
+
+task TSpell() {
+    while (_count < 0) yield;
+
+    //laser
+    float laserSpeed = [0.4, 0.6, 1][_diff];
+    TLaser(laserSpeed);
+
+    //ring info
+    float speed = [1.3, 1.8, 2.2][_diff];
+    int gracePeriod = [20, 20, 0][_diff];
+    float ringSpeed = [1.1, 1.4, 1.6][_diff];
+    float ringAccel = 0.03;
+    int particleDelay = 120;
+
+    //shot burst stats
+    float burstNum = 8;
+    float burstSpeed = 3;
+    float burstAccel = 0.2;
+
+    float tempAng = rand(0, 360);
+    float tempColor = rand_int(0, 1);
+    alternative(_diff)
+    case (0) { //EZEX
+        CreateWheel(1, 6, 4, speed, -35, 180, 112, 240, 239, 60, true);
+        wait(380);
+        CreateWheel(3, 1, 7, speed, rand(0, 360), 90, 112, 240, 239, 60, false);
+        wait(380);
+        CreateWheel(1, 4, 7, speed, rand(0, 360), 90, 112, 240, 239, 60, true);
+        wait(380);
+
+        CreateWheel(1, 3, 8, -speed, tempAng, 120, 112, 240, 239, 60, true);
+        CreateWheel(1, 3, 8, -speed, tempAng, 90, 144, 240, 239, 60, true);
+        wait(380);
+
+        tempAng = rand(0, 360);
+        CreateWheel(2, 2, 9, speed, tempAng, 120, 112, 240, 239, 60, false);
+        CreateWheel(2, 2, 9, speed, tempAng, 90, 144, 240, 239, 60, false);
+        wait(380);
+
+        // Removed phase
+        // CreateWheel(3, 3, 9, -speed, rand(0, 360), 90, 112, 200, 199, 100, tempColor);
+        // wait(300);
+        
+        tempAng = rand(0, 360);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 112, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 112, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng - 11, 90, 138, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng - 11, 90, 154, 240, 239, 30, true);
+        wait(380);
+
+        tempAng = rand(0, 360);
+        float tempSize = 0;
+        loop (8) {
+            CreateWheel(5, 1, 6, speed / 2, tempAng + 49, 90, 148 + tempSize, 240, 239, 30, false);
+            tempAng += 6;
+            tempSize += 4;
+            wait(20);
+        }
+    }
+    case (1) { //EX
+        CreateWheel(1, 6, 4, speed, -80, 180, 96, 240, 239, 60, true);
+        wait(300);
+        CreateWheel(3, 1, 9, speed, rand(0, 360), 90, 96, 240, 239, 60, false);
+        wait(300);
+        CreateWheel(1, 4, 9, speed, rand(0, 360), 90, 96, 240, 239, 60, true);
+        wait(360);
+
+        CreateWheel(1, 3, 9, -speed, tempAng, 120, 96, 240, 239, 60, true);
+        wait(5);
+        CreateWheel(1, 3, 9, -speed, tempAng, 90, 128, 235, 234, 60, true);
+        wait(360);
+
+        tempAng = rand(0, 360);
+        CreateWheel(2, 2, 9, speed, tempAng, 120, 96, 240, 239, 60, false);
+        wait(5);
+        CreateWheel(2, 2, 9, speed, tempAng, 90, 128, 235, 234, 60, false);
+        wait(360);
+
+        CreateWheel(3, 3, 9, -speed, rand(0, 360), 90, 96, 200, 199, 100, tempColor);
+        wait(300);
+        
+        tempAng = rand(0, 360);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 96, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 112, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 138, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 154, 240, 239, 30, true);
+        wait(380);
+
+        tempAng = rand(0, 360);
+        float tempSize = 0;
+        loop (10) {
+            CreateWheel(5, 1, 8, speed / 2, tempAng + 49, 90, 148 + tempSize, 240, 239, 30, false);
+            tempAng += 10;
+            tempSize += 4;
+            wait(20);
+        }
+    }
+    case (2) { //ABEX
+        CreateWheel(1, 9, 4, speed, -8, 180, 96, 240, 239, 60, false);
+        wait(280);
+        CreateWheel(3, 1, 11, speed, rand(0, 360), 90, 96, 240, 239, 60, true);
+        wait(280);
+        tempAng = rand(0, 360);
+        CreateWheel(2, 4, 10, speed, tempAng, 90, 96, 240, 239, 60, false);
+        wait(100);
+        CreateWheel(2, 4, 10, speed, tempAng + 18, 90, 112, 240, 239, 60, false);
+        wait(100);
+        CreateWheel(2, 4, 10, speed, tempAng, 90, 128, 240, 239, 60, false);
+        wait(280);
+
+        tempAng = rand(0, 360);
+        CreateWheel(1, 4, 10, -speed, tempAng, 120, 112, 240, 239, 60, true);
+        CreateWheel(1, 4, 10, -speed, tempAng + 4, 120, 128, 240, 239, 60, true);
+        CreateWheel(1, 4, 10, -speed, tempAng + 8, 120, 144, 240, 239, 60, true);
+        wait(360);
+
+        tempAng = rand(0, 360);
+        tempColor = rand_int(0, 1);
+        CreateWheel(2, 2, 13, speed, tempAng, 90, 96, 240, 239, 60, tempColor);
+        CreateWheel(2, 2, 13, speed, tempAng + 6, 90, 128, 240, 239, 60, tempColor);
+        wait(360);
+
+        tempColor = rand_int(0, 1);
+        CreateWheel(2, 2, 13, -speed, rand(0, 360), 90, 112, 200, 199, 100, tempColor);
+        wait(300);
+        
+        tempAng = rand(0, 360);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 112, 240, 239, 30, true);
+        wait(5);
+        CreateWheel(1, 4, 9, speed / 2, tempAng - 20, 90, 136, 240, 239, 30, true);
+        wait(5);
+        CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 160, 240, 239, 30, true);
+        wait(5);
+        CreateWheel(1, 4, 9, speed / 2, tempAng - 20, 90, 184, 240, 239, 30, true);
+        wait(380);
+
+        tempAng = rand(0, 360);
+        float tempSize = 0;
+        loop (20) {
+            CreateWheel(5, 1, 9, speed / 2, tempAng + 49, 90, 156 + tempSize, 240, 239, 30, false);
+            tempAng += 5.4;
+            tempSize = min(96, tempSize + 4);
+            wait(10);
+        }
+    }
+
+    task CreateWheel(int reds_, int blacks_, int repeat_, float spinSpeed_, float angleT_, int shrinkFrames_, int radMin_, int spinFrames_, int transformFrames_, int slowFrames_, bool isRed_) {
+        int modulus = reds_ + blacks_;
+        int[] shots = [];
+
+        //shot creation
+        for (int i = 0; i < repeat_; i++) {
+            loop (reds_) {
+                int shot = CreateShotUA1(0, 0, 0, 0, SHOT_RED+COIN, 0, SHOT_RED+CANCEL_SPARKLE);
+                ObjShot_SetSpellResist(shot, true);
+                ObjShot_SetAutoDelete(shot, false);
+                shots ~= [shot];
+            }
+            loop (blacks_) {
+                int shot = CreateShotUA1(0, 0, 0, 0, SHOT_BLACK+COIN, 0, SHOT_BLACK+CANCEL_SPARKLE);
+                ObjShot_SetSpellResist(shot, true);
+                ObjShot_SetAutoDelete(shot, false);
+                shots ~= [shot];
+            }
+        }
+        CallSFX(SND_SHOT2);
+
+        //wheel info
+        int numShot = length(shots);
+        float radius = 280;
+        float speedMax = spinSpeed_;
+
+        //charge particles
+        async {
+            int color = isRed_ ? COLOR_RED : COLOR_WHITE;
+            wait(transformFrames_ - particleDelay);
+            float spin = 360 * (absolute(spinSpeed_) / spinSpeed_);
+            Particle_ContractRing(_objBoss, 0, 120, spin, 120, 8, color);
+            Particle_ContractRing(_objBoss, 0, 120, spin, 110, 8, color);
+            Particle_ContractRing(_objBoss, 0, 120, spin, 100, 8, color);
+        }
+        //sfx
+        async {
+            wait(spinFrames_ + slowFrames_ - 120);
+            CallSFX(SND_CHARGE1);
+        }
+
+        //spin
+        for (int i = 0; i < spinFrames_; i++) {
+            if (i <= shrinkFrames_) radius = Interpolate_Decelerate(280, radMin_, i / as_float(shrinkFrames_)); //contract
+            if (i == transformFrames_) { //turn gray
+                for each (shot in shots) {
+                    ObjShot_SetGraphic(shot, SHOT_GRAY+COIN);
+                }
+                CallSFX(SND_SHOT2);
+            }
+            //move
+            for (int j = 0; j < numShot; j++) {
+                ObjMove_SetDestAtFrame(shots[j], MID_X + radius * cos(angleT_), MID_Y + radius * sin(angleT_), 1, LERP_LINEAR);
+                angleT_ += 360 / numShot;
+            }
+            angleT_ += spinSpeed_;
+            yield;
+        }
+
+        //slow
+        for (int i = 1; i <= slowFrames_; i++) {
+            spinSpeed_ = Interpolate_Linear(speedMax, 0, i / as_float(slowFrames_));
+            //move
+            for (int j = 0; j < numShot; j++) {
+                ObjMove_SetDestAtFrame(shots[j], MID_X + radius * cos(angleT_), MID_Y + radius * sin(angleT_), 1, LERP_LINEAR);
+                angleT_ += 360 / numShot;
+            }
+            angleT_ += spinSpeed_;
+            yield;
+        }
+
+        wait(gracePeriod);
+
+        //do shooty logic and decide which shots are getting blown tf up (explode outward to prevent sitting outside the ring)
+        for (int i = 0; i < numShot; i++) {
+            int shot = shots[i];
+            float angleOut = dottheta(MID_X, MID_Y, ObjMove_GetX(shot), ObjMove_GetY(shot));
+            if (isRed_ && i % modulus < reds_) { //shot is red & red is selected
+                CreateStraightLaserUA1(MID_X, MID_Y, angleOut, 300, 10, COLOR_RED, 0);
+                ShotBurst(shot, angleOut, SHOT_RED);
+            } else if (!isRed_ && i % modulus >= reds_) { //shot is black & black is selected
+                CreateStraightLaserUA1(MID_X, MID_Y, angleOut, 300, 10, COLOR_BLACK, 0);
+                ShotBurst(shot, angleOut, SHOT_BLACK);
+            } else {
+                ObjMove_SetAngle(shot, angleOut + 180);
+                ObjMove_AddPatternA2(shot, 30, 0, NO_CHANGE, ringAccel, ringSpeed, 0);
+                ObjShot_SetAutoDelete(shot, true);
+            }
+        }
+        CallSFX(SND_SHOT1);
+        CallSFX(SND_LASER1);
+    }
+
+
+    function<void> ShotBurst(int obj_, float angle_, int color_) {
+        //burst outward 180 degree arc
+        for (int i = 0; i < burstNum; i++) {
+            float angleT = Interpolate_Linear(-90, 90, i / as_float(burstNum - 1));
+            CreateShotUA2(ObjMove_GetX(obj_), ObjMove_GetY(obj_), 0, angle_ + angleT, burstAccel, burstSpeed, 0, color_+PELLET, 0, color_+CANCEL_BURST1);
+        }
+        ObjShot_SetDeleteFrame(obj_, 1);
+    }
+
+    task TLaser(float speed_) { //rotating laser
+        int laser = CreateStraightLaserUA1(MID_X, MID_Y, -90, 300, 10000, COLOR_YELLOW, 60);
+        float angle = -90;
+        float speedInc = 0;
+        int count = 0;
+        int frames = 120;
+        wait(60);
+        CallSFX(SND_SHOT1);
+
+        while (Boss_Alive(_objBoss)) {
+            if (speedInc < speed_) speedInc = Interpolate_Linear(0, speed_, count / as_float(frames));
+            ObjStLaser_SetAngle(laser, angle);
+            angle += speedInc;
+            count++;
+            yield;
+        }
+        ObjShot_SetDeleteFrame(laser, 1);
+    }
+}
