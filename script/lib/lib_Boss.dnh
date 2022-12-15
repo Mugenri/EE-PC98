@@ -32,6 +32,7 @@ function<void> Boss_Init(bool isVulnerable_) {
     if (_isSurvival) _isSpellVulnerable = false; //just in case
 
     Shot_Init();
+    Laser_Init();
 }
 //Initialize a boss object
 function<int> Boss_Create(string bossID_) {
