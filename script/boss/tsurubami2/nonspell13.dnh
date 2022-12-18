@@ -96,6 +96,7 @@ task TRings() {
         float temp = angleT;
         for (int k = 0; k < way; k++) {
             CreateLooseLaserUA1(xPos, yPos, lMin + lInc * i, temp, laserLen, colorL, 0);
+            CreateShotUA1(xPos, yPos, lMin + lInc * i, temp, color+KNIFE, 0, color+CANCEL_32);
             temp += 360 / way;
         }
         CallSFX(SND_LASER2);
@@ -148,6 +149,7 @@ task TRings() {
         float angle = angleT;
         for (int j = 0; j < way; j++) {
             CreateLooseLaserUA1(xPos, yPos, lMin + lInc * 4, angle, 500, COLOR_BLACK, 0);
+            CreateShotUA1(xPos, yPos, lMin + lInc * 4, angle, SHOT_BLACK+KNIFE, 0, SHOT_BLACK+CANCEL_32);
             angle += 360 / way;
         }
         temp += 360 / numRing;
