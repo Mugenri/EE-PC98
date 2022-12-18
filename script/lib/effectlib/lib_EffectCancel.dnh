@@ -89,23 +89,23 @@ function<void> Cancel_Laser(int obj_) { //Laser cancel effect
     float len = ObjLaser_GetLength(obj_);
     float speed = 4.5;
 
-    int deleteLine1 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1); //clockwise to laser
-    int deleteLine2 = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_STG_LASER1); //counterclockwise to laser
+    int deleteLine = InitPrim2D(PRIMITIVE_LINELIST, 4, RP_STG_LASER1);
 
     async {
         float dist = 0; //distance of delete line to the original laser center
         loop (15) {
-            ObjPrim_SetVertexPosition(deleteLine1, 0, x + dist * -thetaY, y + dist * thetaX, 1);
-            ObjPrim_SetVertexPosition(deleteLine1, 1, x + dist * -thetaY + len * thetaX, y + dist * thetaX + len * thetaY, 1);
-            ObjPrim_SetVertexPosition(deleteLine2, 0, x + dist * thetaY, y + dist * -thetaX, 1);
-            ObjPrim_SetVertexPosition(deleteLine2, 1, x + dist * thetaY + len * thetaX, y + dist * -thetaX + len * thetaY, 1);
+            //clockwise to laser
+            ObjPrim_SetVertexPosition(deleteLine, 0, x + dist * -thetaY, y + dist * thetaX, 1);
+            ObjPrim_SetVertexPosition(deleteLine, 1, x + dist * -thetaY + len * thetaX, y + dist * thetaX + len * thetaY, 1);
+            //counterclockwise to laser
+            ObjPrim_SetVertexPosition(deleteLine, 2, x + dist * thetaY, y + dist * -thetaX, 1);
+            ObjPrim_SetVertexPosition(deleteLine, 3, x + dist * thetaY + len * thetaX, y + dist * -thetaX + len * thetaY, 1);
 
             x += speed * thetaX / 2;
             y += speed * thetaY / 2;
             dist += 0.5;
             yield;
         }
-        Obj_Delete(deleteLine1);
-        Obj_Delete(deleteLine2);
+        Obj_Delete(deleteLine);
     }
 }

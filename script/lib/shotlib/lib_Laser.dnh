@@ -20,18 +20,14 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     ObjLaser_SetInvalidLength(hitbox, 0, 0);
     Obj_SetVisible(hitbox, false);
     //colored
-    int circle1 = CreateCircle(true);
     int line1 = CreateLine(true);
     //white
-    int circle2 = CreateCircle(false);
     int line2 = CreateLine(false);
 
     //Update loop 
     async {
         wait(delay_);
-        Obj_SetVisible(circle1, true);
         Obj_SetVisible(line1, true);
-        Obj_SetVisible(circle2, true);
         Obj_SetVisible(line2, true);
 
         float laserLength = 0;
@@ -52,8 +48,6 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
                 UpdateCircle(x, y);
             } else if (!full) {
                 full = true;
-                Obj_Delete(circle1);
-                Obj_Delete(circle2);
             }
             
             if (full) {
@@ -67,16 +61,22 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
             yield;
         }
 
-        if (!Obj_IsDeleted(circle1)) Obj_Delete(circle1);
-        if (!Obj_IsDeleted(circle2)) Obj_Delete(circle2);
         Obj_Delete(line1);
         Obj_Delete(line2);
 
         function<void> UpdateCircle(float x_, float y_) {
             x_ = round(x_);
             y_ = round(y_);
-            ObjRender_SetPosition(circle1, x_, y_, 1); //colored
-            ObjRender_SetPosition(circle2, x_, y_, 1); //white
+            //color
+            ObjParticleList_SetPosition(_laserParticle1, x_, y_, 1);
+            ObjParticleList_SetExtraData(_laserParticle1, 6, 3, 0);
+            ObjParticleList_SetColor(_laserParticle1, color_);
+            ObjParticleList_AddInstance(_laserParticle1);
+            //white
+            ObjParticleList_SetPosition(_laserParticle2, x_, y_, 1);
+            ObjParticleList_SetExtraData(_laserParticle2, 6, 4, 0);
+            ObjParticleList_SetColor(_laserParticle2, COLOR_WHITE);
+            ObjParticleList_AddInstance(_laserParticle2);
         }
 
         function<void> UpdateLine(float x_, float y_, float angle_, float length_) {
@@ -98,14 +98,6 @@ function<int> CreateLooseLaserUA1(float x_, float y_, float speed_, float angle_
     }
 
     return hitbox;
-
-    function<int> CreateCircle(bool colored_) {
-        int obj = InitSprite2D(16 - 16 * colored_, 48, 32 - 16 * colored_, 64, IMG_EFFECT_PARTICLE, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
-        Obj_SetVisible(obj, false);
-        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
-        ObjSprite2D_SetDestCenter(obj);
-        return obj;
-    }
 
     function<int> CreateLine(bool colored_) {
         int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
@@ -219,14 +211,6 @@ function<int> CreateStraightLaserUA1(float x_, float y_, float angle_, float len
     }
 
     return hitbox;
-
-    function<int> CreateCircle(bool colored_) {
-        int obj = InitSprite2D(32 - 32 * colored_, 128, 64 - 32 * colored_, 160, IMG_EFFECT_PARTICLE, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
-        Obj_SetVisible(obj, false);
-        ObjRender_SetColor(obj, colored_ ? color_ : COLOR_WHITE);
-        ObjSprite2D_SetDestCenter(obj);
-        return obj;
-    }
 
     function<int> CreateLine(bool colored_) {
         int obj = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, 4, colored_ ? RP_STG_LASER1 : RP_STG_LASER2);
