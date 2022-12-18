@@ -124,6 +124,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (77)           { return "\"Unreal Nature\""; }                                 //ABEX
         case (78, 79)       { return "Probability Card \"Mugenri Roulette\""; }             //26
         case (80)           { return "\"The Clock That Doesn't Pay Debts\""; }              //ABEX
+        case (81, 82, 83)   { return "Nonspell 13"; }                                       //27
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -200,7 +201,8 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
             dir ~ "spell13.dnh",        //23
             dir ~ "nonspell12.dnh",     //24
             dir ~ "spell14.dnh",        //25
-            dir ~ "spell15.dnh"         //26
+            dir ~ "spell15.dnh",        //26
+            dir ~ "nonspell13.dnh"      //27
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
