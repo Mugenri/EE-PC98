@@ -61,7 +61,7 @@ task TMain() {
     while (_count < -30) yield;
     while (Boss_Alive(_objBoss)) {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
-        if (_count % _loopTime == 0 && _count >= 0) {
+        if (_count % _loopTime == 0 && _count >= 120) {
             async {
                 TRing(1);
                 wait(_loopTime / 2);
