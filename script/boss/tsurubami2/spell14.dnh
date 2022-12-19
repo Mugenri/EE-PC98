@@ -136,19 +136,23 @@ task TSpell() {
                 ObjShot_SetDeleteFrame(shot, 450);
             }
             async {
+                bool playSFX = false;
                 int[] shots = temp;
                 wait(initWait + slowTime + waitTime);
                 if (!Boss_Alive(_objBoss)) return;
                 for each (shot in shots) {
                     Obj_SetValueI(shot, SHOT_EFFECT, SHOT_RED+CANCEL_FADE);
+                    if (!Obj_IsDeleted(shot)) playSFX = true;
                 }
-                CallSFX(SND_SHOT2);
+                if (playSFX) CallSFX(SND_SHOT2);
+                playSFX = false;
                 wait(20 + slowTime + waitTime + waitTime);
                 if (!Boss_Alive(_objBoss)) return;
                 for each (shot in shots) {
                     Obj_SetValueI(shot, SHOT_EFFECT, SHOT_PURPLE+CANCEL_FADE);
+                    if (!Obj_IsDeleted(shot)) playSFX = true;
                 }
-                CallSFX(SND_SHOT2);
+                if (playSFX) CallSFX(SND_SHOT2);
             }
             wait(shotTime);
         }
