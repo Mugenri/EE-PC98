@@ -65,8 +65,13 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
         others { return 0; }
     }
     case (1) {
-        alternative (spellID_)
-        others { return 0; }
+        if (spellID_ < 42) {
+            return 0;
+        } else if (spellID_ < 81) {
+            return 20;
+        } else {
+            return 21;
+        }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }

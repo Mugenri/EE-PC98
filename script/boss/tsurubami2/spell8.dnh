@@ -56,7 +56,7 @@ task TFinalize() {
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 60, LERP_DECELERATE);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
-    Transition_ChangeBG(0, 0);
+    Transition_ChangeBG(20, 0);
 }
 
 task TMain() {
