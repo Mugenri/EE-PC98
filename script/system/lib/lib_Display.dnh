@@ -379,8 +379,8 @@ task TBossLife() {
 //Timer Display
 //----------------------------------------------------
 task TBossTimer() {
-    int obj = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT); //timer line
-    ObjRender_SetPosition(obj, 448, 162, 1);
+    int bar = InitPrim2D(PRIMITIVE_LINESTRIP, 2, RP_UI_TEXT); //timer line
+    ObjRender_SetPosition(bar, 448, 162, 1);
 
     int icon = InitSprite2D(192, 336, 199, 343, IMG_SYSTEM_UI, RP_UI_TEXT);
     ObjRender_SetPosition(icon, 572, 158, 0);
@@ -403,9 +403,10 @@ task TBossTimer() {
 
         if (bossLife <= 0) timer = 0;
 
-        ObjPrim_SetVertexPosition(obj, 0, 0, 0, 1);
-        ObjPrim_SetVertexPosition(obj, 1, 128 * (timer / timerTotal) , 0, 1);
-        ObjRender_SetColor(obj, timerColor);
+        //bar stuff
+        ObjPrim_SetVertexPosition(bar, 0, 0, 0, 1);
+        ObjPrim_SetVertexPosition(bar, 1, 128 * (timer / timerTotal) , 0, 1);
+        ObjRender_SetColor(bar, timerColor);
 
         //icon stuff
         ObjRender_SetPosition(icon, 445 + 128 * (timer / timerTotal), 158, 0);
@@ -413,7 +414,7 @@ task TBossTimer() {
         ObjRender_SetColor(icon, timerColor);
 
         //number stuff
-        ObjText_SetText(digits, vtos("02d", timer / 60));
+        ObjText_SetText(digits, vtos("02d", min(timer, 5940) / 60)); //cap to 99 seconds
         Obj_SetVisible(digits, timer > 0);
         ObjText_SetVertexColor(digits, 0xFF000000 | timerColor);
 
