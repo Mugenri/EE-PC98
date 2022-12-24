@@ -3,7 +3,7 @@
 function<void> Primitive_ExpandPolygon2D(float x_, float y_, float angle_, float radius_, float maxRadius_, float rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(x_, y_, angle_, 0, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
-    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    int startVertex = solid_ ? 1 : 0;
     maxRadius_ -= radius_;
     async {
         loop (frames_) {
@@ -23,13 +23,17 @@ function<void> Primitive_ExpandPolygon2D(float x_, float y_, float angle_, float
 function<void> Primitive_ExpandPolygon2D(int obj_, float angle_, float radius_, float maxRadius_, float rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(ObjMove_GetX(obj_), ObjMove_GetY(obj_), angle_, 0, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
-    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    int startVertex = solid_ ? 1 : 0;
     maxRadius_ -= radius_;
     async {
         loop (frames_) {
+            if (Obj_IsDeleted(obj_)) break;
+            float xPos = ObjMove_GetX(obj_);
+            float yPos = ObjMove_GetY(obj_);
             float angleT = angle_;
+            if (solid_) ObjPrim_SetVertexPosition(polygon, 0, xPos, yPos, 1);
             for (int i = startVertex; i < vertices; i++) {
-                ObjPrim_SetVertexPosition(polygon, i, ObjMove_GetX(obj_) + radius_ * cos(angleT), ObjMove_GetY(obj_) + radius_ * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(polygon, i, xPos + radius_ * cos(angleT), yPos + radius_ * sin(angleT), 1);
                 angleT += 360 / sides_;
             }
             angle_ += rotation_ / frames_;
@@ -63,13 +67,17 @@ function<void> Primitive_ContractPolygon2D(float x_, float y_, float angle_, flo
 function<void> Primitive_ContractPolygon2D(int obj_, float angle_, float radius_, float rotation_, int frames_, int sides_, int color_, bool solid_, int priority_) {
     int polygon = Primitive_CreatePolygon2D(ObjMove_GetX(obj_), ObjMove_GetY(obj_), angle_, radius_, sides_, color_, solid_, priority_);
     int vertices = ObjPrim_GetVertexCount(polygon);
-    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    int startVertex = solid_ ? 1 : 0;
     async {
         float initRadius = radius_;
         loop (frames_) {
+            if (Obj_IsDeleted(obj_)) break;
+            float xPos = ObjMove_GetX(obj_);
+            float yPos = ObjMove_GetY(obj_);
             float angleT = angle_;
+            if (solid_) ObjPrim_SetVertexPosition(polygon, 0, xPos, yPos, 1);
             for (int i = startVertex; i < vertices; i++) {
-                ObjPrim_SetVertexPosition(polygon, i, ObjMove_GetX(obj_) + radius_ * cos(angleT), ObjMove_GetY(obj_) + radius_ * sin(angleT), 1);
+                ObjPrim_SetVertexPosition(polygon, i, xPos + radius_ * cos(angleT), yPos + radius_ * sin(angleT), 1);
                 angleT += 360 / sides_;
             }
             angle_ += rotation_ / frames_;
@@ -82,8 +90,8 @@ function<void> Primitive_ContractPolygon2D(int obj_, float angle_, float radius_
 
 function<int> Primitive_CreatePolygon2D(float x_, float y_, float angle_, float radius_, int sides_, int color_, bool solid_, int priority_) {
     int type = solid_ ? PRIMITIVE_TRIANGLEFAN : PRIMITIVE_LINESTRIP;
-    int vertices = type == PRIMITIVE_TRIANGLEFAN ? sides_ + 2 : sides_ + 1;
-    int startVertex = vertices == sides_ + 2 ? 1 : 0;
+    int vertices = solid_ ? sides_ + 2 : sides_ + 1;
+    int startVertex = solid_ ? 1 : 0;
 
     int polygon = InitPrim2D(type, vertices, priority_);
 
