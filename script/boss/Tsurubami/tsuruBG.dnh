@@ -100,15 +100,11 @@ task TSpellBackground(int index_, int priority_) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
+        color = round(Interpolate_Linear(0, 3, sin(count - 180) * 0.5 + 0.5));
+        color *= 6;
+
         ObjRender_SetColor(black, color, color, color);
-
-        if (increment) count++;
-        else count--;
-
-        if (count >= 209) increment = false;
-        else if (count < 30) increment = true;
-
-        color = trunc(count / 60) * 6;
+        count++;
         yield;
     }
 

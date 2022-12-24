@@ -88,26 +88,34 @@ task TSpellBackground(int index_, int priority_) {
     //torii & kanji
     int bg = InitSprite2D(384, 0, 768, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
 
-    int count = 30;
+    int count = 0;
     int color = 0;
+    int lineColor = COLOR_RED_D;
+    int cMin = 0;
+    int cMax = 3;
     bool increment = true;
 
-    TLineEffect();
+    if (index_ >= 16) {
+        ObjSprite2D_SetSourceRect(bg, 1152, 0, 1536, 368);
+        cMin = 18;
+        cMax = 21;
+        lineColor = COLOR_GRAY_D;
+    }
+
+    TLineEffect(lineColor);
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
-        ObjRender_SetColor(black, color, 0, 0);
 
-        if (increment) count++;
-        else count--;
+        color = round(Interpolate_Linear(cMin, cMax, sin(count - 180) * 0.5 + 0.5));
+        color *= 12;
 
-        if (count >= 209) increment = false;
-        else if (count < 30) increment = true;
-
-        color = trunc(count / 60) * 8;
+        if (index_ < 16) ObjRender_SetColor(black, color, 0, 0);
+        else ObjRender_SetColor(black, color, color, color);
+        count++;
         yield;
     }
 
@@ -115,7 +123,7 @@ task TSpellBackground(int index_, int priority_) {
     Obj_Delete(character);
     Obj_Delete(bg);
 
-    task TLineEffect() {
+    task TLineEffect(int lineColor_) {
         //Used for movement
         int count = 0;
 
@@ -153,7 +161,7 @@ task TSpellBackground(int index_, int priority_) {
 
             int line = InitPrim2D(PRIMITIVE_LINESTRIP, points_, priority_);
             for (int i = 0; i < points_; i++) {
-                ObjPrim_SetVertexColor(line, i, COLOR_RED_D);
+                ObjPrim_SetVertexColor(line, i, lineColor_);
                 ObjPrim_SetVertexPosition(line, i, xStart_, yStart_, 1);
                 positions ~= [[xStart_, yStart_]];
                 if (vertical_) yStart_ += step_;
