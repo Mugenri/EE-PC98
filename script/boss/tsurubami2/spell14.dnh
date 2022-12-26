@@ -111,7 +111,7 @@ task TSpell() {
         ObjRender_SetScaleX(shot, i % 2 == 0 ? 1 : -1);
         orbs ~= [shot];
     }
-    CallSFX(SND_SHOT1);
+    CallSFX(SND_SHOT2);
 
     TSpin();
 
@@ -119,6 +119,7 @@ task TSpell() {
 
     float angleMod = -90;
     loop {
+        TRainbow(shotTime);
         for each (orb in orbs) {
             //patternshot fire
             if (!Boss_Alive(_objBoss)) return;
@@ -191,5 +192,32 @@ task TSpell() {
             }
             yield;
         }
+    }
+
+    task TRainbow(int wait_) {
+        //rainbow waves
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_RED, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_ORANGE, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_YELLOW, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_GREEN, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_BLUE, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_PURPLE_L, false, RP_STG_EFF_MID);
+        wait(wait_);
+        if (!Boss_Alive(_objBoss)) return;
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 120, 32, COLOR_PINK, false, RP_STG_EFF_MID);
     }
 }
