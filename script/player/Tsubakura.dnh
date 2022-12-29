@@ -129,8 +129,8 @@ task TOption(int offset_) {
 task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot deletion effect
     if (graphic_ != 1) return;
     float angle = ObjMove_GetAngle(obj_);
-    float speed = ObjMove_GetSpeed(obj_);
-    y_ -= speed * sin(angle);
+    float xStep = 3 * cos(angle);
+    float yStep = 3 * sin(angle);
     if (rand_int(1, 8) == 1) TShotParticle(x_, y_);
 
     int frame = 0;
@@ -141,7 +141,8 @@ task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot del
         ObjParticleList_AddInstance(_particleShot);
 
         frame++;
-        y_ -= 1;
+        x_ += xStep;
+        y_ += yStep;
         yield;
     }
 }
