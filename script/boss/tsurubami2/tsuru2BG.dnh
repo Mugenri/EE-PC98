@@ -19,6 +19,7 @@ function<void> ChangeIndex(int index_, int priority_) {
     case (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18) { TSpellBackground(index_, priority_); }
     case (20) { TBackground(index_, priority_, COLOR_RED_D); }
     case (21) { TBackground(index_, priority_, COLOR_RED); }
+    case (22) { TLastBackground(index_, priority_); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
@@ -181,6 +182,52 @@ task TSpellBackground(int index_, int priority_) {
                 yield;
             }
             Obj_Delete(line);
+        }
+    }
+}
+
+task TLastBackground(int index_, int priority_) {
+    bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
+    //torii
+    int bg = InitSprite2D(1536, 0, 1920, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
+
+    TParticles();
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            async { exitFlag = BG_Exit(); }
+            index_ = _bIndex;
+        }
+        yield;
+    }
+
+    task TParticles() {
+        int bgParticle = InitParticleList(IMG_EFFECT_PARTICLE, priority_, [0, 0, 16, 16]);
+        ParticleListShader(bgParticle, 16 / 512, 16 / 512);
+        int frames = 4;
+        int frameRate = 40;
+        while (!exitFlag) {
+            async {
+                int frame = 0;
+                float x = rand(MIN_X, MAX_X);
+                float y = 235;
+                float xSpeed = rand(-0.2, 0.2);
+                float ySpeed = rand(-0.8, -1);
+                while (frame < frames * frameRate) {
+                    ObjParticleList_SetPosition(bgParticle, x, y, 1);
+                    ObjParticleList_SetExtraData(bgParticle, (frames - 1) - frame / frameRate, 0, 0);
+                    ObjParticleList_SetColor(bgParticle, Interpolate_X_PackedInt(COLOR_GRAY_D, COLOR_BLACK, frame / frameRate / as_float(frames), LERP_LINEAR));
+                    ObjParticleList_AddInstance(bgParticle);
+                    frame++;
+                    x += xSpeed;
+                    y += ySpeed;
+                    yield;
+                }
+            }
+            yield;
         }
     }
 }
