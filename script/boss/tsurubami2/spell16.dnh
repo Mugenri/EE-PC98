@@ -1,0 +1,579 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 16"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Boss.dnh"
+
+int _objBoss;
+int _diff = GetDifficulty() - D_EASYEX;
+int _count = -240;
+int _loopTime = 1000;
+_spellID = 84 + _diff;
+
+bool _timeOut = false;
+int _health = 12000;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(12000); //12000
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(120 + absolute(_count / 60));
+    }
+    case (EV_REQUEST_SPELL_SCORE) {
+        SetScriptResult(5000000);
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_TSURUBAMI);
+    TInitialize();
+    TFinalize();
+    TMain();
+    TPhase1();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+    Transition_ChangeBG(22, 0);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
+        _health = ObjEnemy_GetInfo(_objBoss, INFO_LIFE);
+        if (ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF) < 1800 && Boss_Life(_objBoss) > 2000) _timeOut = true;
+        yield;
+    }
+    _health = ObjEnemy_GetInfo(_objBoss, INFO_LIFE); //just in case
+}
+
+//hamee
+//shot reversal
+//rubberbanding knife waves
+task TPhase1() {
+    while (_count < -210) yield;
+    //charge anim
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    CallSFX(SND_SHOT2);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    wait(60);
+    CallSFX(SND_SHOT2);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    wait(60);
+    CallSFX(SND_SHOT2);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 150, 32, COLOR_GRAY, false, RP_STG_EFF_MID);
+    //spell banner
+    Transition_Spell(27, 16, 0);
+    CallSFX(SND_TRANSITION);
+    ObjEnemyBossScene_StartSpell(_objScene);
+    wait(120);
+    Animation_Charge(_objBoss, false);
+    Boss_SetVulnerable(_objBoss, true);
+
+    while (_count < 0) yield;
+    int count = 0;
+    int threshold = 8000; //_health
+    int loopTime = [200, 200, 180][_diff];
+    int rOffset = 120; //time before reverse (spawn shots with animations no sooner than 20 frames before)
+    int rTime = 40; //reverse time (less than loop time)
+
+    TReverse();
+
+    while (Boss_Life(_objBoss) > threshold && !_timeOut) {
+        if (count % loopTime == 0) {
+            if (count == 0) TFireA();
+            else {
+                async {
+                    TFireB(1);
+                    wait(48);
+                    TFireB(-1);
+                    wait(48);
+                    if (Boss_Life(_objBoss) > threshold && !_timeOut) Boss_MoveRadiusInBounds(_objBoss, 32, 64, MID_X - 64, MID_X + 64, 60, 100, 60, LERP_DECELERATE);
+                    wait(64);
+                    TFireC();
+                }
+            }
+        }
+        count++;
+        yield;
+    }
+
+    DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
+    Boss_SetVulnerable(_objBoss, false);
+    Particle_RandomExplosionSmall(Boss_X(_objBoss), Boss_Y(_objBoss));
+    if (_timeOut) TPhase3();
+    else TPhase2();
+
+    task TFireA() { //intro phase
+        //spiral inward, angular velocity interp
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        //shot info
+        int way = 8;
+        int stack = [10, 12, 18][_diff];
+        float wMin = 0;
+        float wMax = 0.3;
+        float radMax = 64;
+        float speed = [2.2, 2.2, 3.0][_diff];
+        float angleT = 90;
+        float aMod = 2;
+        float inc = 7;
+        int waitTime = [7, 6, 4][_diff];
+        int dFrame = 239;
+
+        for (int i = 0; i < stack; i++) {
+            if (Boss_Life(_objBoss) <= threshold || _timeOut) return;
+            float wVel = Interpolate_Linear(wMin, wMax, i / as_float(stack - 1));
+            float rad = Interpolate_Linear(radMax, 0, i / as_float(stack - 1));
+            for (int j = 0; j < way; j++) {
+                int shot = CreateShotUA2(xPos + rad * cos(angleT + aMod), yPos + rad * sin(angleT + aMod), speed, angleT + aMod, 0, 0, wVel, SHOT_BLUE+NEEDLES, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_BURST2);
+                ObjShot_SetAutoDelete(shot, false);
+                ObjShot_SetDeleteFrame(shot, dFrame);
+                Obj_SetValueI(shot, 999, wVel);
+                shot = CreateShotUA2(xPos + rad * cos(angleT - aMod), yPos + rad * sin(angleT - aMod), speed, angleT - aMod, 0, 0, -wVel, SHOT_BLUE_INV+NEEDLES, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST2);
+                ObjShot_SetAutoDelete(shot, false);
+                ObjShot_SetDeleteFrame(shot, dFrame);
+                Obj_SetValueI(shot, 999, -wVel);
+                angleT += 360 / way;
+            }
+            CallSFX(SND_SHOT1);
+            aMod += inc;
+            wait(waitTime);
+        }
+    }
+
+    task TFireB(int dir_) {
+        if (Boss_Life(_objBoss) <= threshold || _timeOut) return;
+        //shinki invert lanes
+        Particle_ContractRing(_objBoss, 0, 90, 90 * dir_, 30, 8, COLOR_BLUE);
+        int way = [8, 9, 10][_diff];
+        int stack = [7, 10, 10][_diff];
+        float sMin = [1.2, 1.4, 1.6][_diff];
+        float sMax = [3.6, 3.8, 4.0][_diff];
+        float angleT = GetAngleToPlayer(_objBoss) + 30 * dir_ + rand(-30, 30);
+        float increment = [4.0, 3.8, 4.5][_diff];
+        int waitTime = 2;
+        int dFrame = [600, 400, 400][_diff];
+        
+        for (int i = 0; i < stack; i++) {
+            if (Boss_Life(_objBoss) <= threshold || _timeOut) return;
+            float speed = Interpolate_Linear(sMin, sMax, i / as_float(stack - 1));
+            for (int j = 0; j < way; j++) {
+                int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_BLUE_INV+SWORD, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_BURST2);
+                ObjShot_SetDeleteFrame(shot, dFrame);
+                ObjShot_SetAutoDelete(shot, false);
+                angleT += 360 / way;
+            }
+            angleT += increment * dir_;
+            CallSFX(SND_SHOT1);
+            wait(waitTime);
+        }
+    }
+
+    task TFireC() {
+        if (Boss_Life(_objBoss) <= threshold || _timeOut) return;
+        //crossing amulets
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        int way = [26, 32, 32][_diff];
+        float speed = [1.8, 1.8, 2.4][_diff];
+        float angleT = rand(0, 360);
+        int rad = 64;
+        int dFrame = [600, 400, 400][_diff];
+
+        for (int i = 0; i < way; i++) {
+            int shot = CreateShotUA1(xPos + rad * cos(angleT), yPos + rad * sin(angleT), speed, angleT + 90, SHOT_BLUE+CARD, 0, SHOT_BLUE+SPAWN_S+SIZE_16, SHOT_BLUE+CANCEL_FADE);
+            ObjShot_SetDeleteFrame(shot, dFrame);
+            ObjShot_SetAutoDelete(shot, false);
+            shot = CreateShotUA1(xPos + rad * cos(angleT), yPos + rad * sin(angleT), speed, angleT - 90, SHOT_BLUE_INV+CARD, 0, SHOT_BLUE_INV+SPAWN_S+SIZE_16, SHOT_BLUE_INV+CANCEL_FADE);
+            ObjShot_SetDeleteFrame(shot, dFrame);
+            ObjShot_SetAutoDelete(shot, false);
+            angleT += 360 / way;
+        }
+        CallSFX(SND_SHOT1);
+    }
+
+
+    task TReverse() {
+        wait(rOffset);
+        //do for all bullets on screen
+        while (_health > threshold && !_timeOut) {
+            for each (shot in GetShotIdInCircleA2(MID_X, MID_Y, 550, TARGET_ENEMY)) {
+                int shotID = ObjShot_GetImageID(shot);
+                int revID = shotID + (18 - (shotID % 18)) % 18; //black color of shot type DO NOT USE BLACK BULLETS
+                float speed = ObjMove_GetSpeed(shot);
+                float wVel = Obj_GetValueDI(shot, 999, 0); //key/value placeholder for angular velocity
+                float ratio = [1.1, 1.4, 1.4][_diff]; //reverse speed ratio
+                float mult = [1.0, 1.4, 1.4][_diff]; //resume speed multiplier
+
+                ObjMove_AddPatternA3(shot, 0, -speed * ratio, NO_CHANGE, NO_CHANGE, NO_CHANGE, -wVel * ratio, revID);
+                ObjMove_AddPatternA3(shot, rTime, speed * mult, NO_CHANGE, NO_CHANGE, NO_CHANGE, wVel * mult, shotID);
+            }
+            if (_health <= threshold || _timeOut) break;
+            if (length(GetShotIdInCircleA2(MID_X, MID_Y, 550, TARGET_ENEMY)) != 0) CallSFX(SND_CHARGE2);
+            wait(rTime);
+            if (_health <= threshold || _timeOut) break;
+            if (length(GetShotIdInCircleA2(MID_X, MID_Y, 550, TARGET_ENEMY)) != 0) CallSFX(SND_SHOT2);
+            wait(loopTime - rTime);
+        }
+    }
+}
+
+//ardey
+//closing in fire walls
+//rotating knives ellipse
+task TPhase2() {
+    //setup
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 90, 60, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(4, 17, 0, COLOR_WHITE);
+    CallSFX(SND_TRANSITION);
+    wait(30);
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 220, 0, 45, 32, COLOR_RED_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, 180, 45, 18, COLOR_RED_D);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 220, 0, 45, 32, COLOR_RED, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, -180, 45, 18, COLOR_RED);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 220, 0, 45, 32, COLOR_RED_L, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, 180, 45, 18, COLOR_RED_L);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 220, 0, 45, 32, COLOR_PURPLE, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, 180, 45, 18, COLOR_PURPLE);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, -180, 45, 18, COLOR_PURPLE);
+    wait(3);
+    Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 220, 0, 45, 32, COLOR_PURPLE_D, false, RP_STG_EFF_MID);
+    wait(3);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, 180, 45, 18, COLOR_PURPLE_D);
+    Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 220, -180, 45, 18, COLOR_PURPLE_D);
+    wait(73);
+    Boss_SetVulnerable(_objBoss, true);
+
+    int count = 0;
+    int threshold = 4000;
+    int loopTime = [100, 80, 60][_diff];
+    int dir = 1;
+
+    TWalls();
+    TRing();
+
+    while (Boss_Life(_objBoss) > threshold && !_timeOut) {
+        if (count % loopTime == 0) {
+            TAim(dir);
+            dir *= -1;
+        }
+        count++;
+        yield;
+    }
+
+    DeleteShotAll(TYPE_CHILD, TYPE_IMMEDIATE);
+    Boss_SetVulnerable(_objBoss, false);
+    Animation_Charge(_objBoss, false);
+    Particle_RandomExplosionSmall(Boss_X(_objBoss), Boss_Y(_objBoss));
+    TPhase3();
+
+    task TWalls() {
+        //oscillating fire walls
+        int lMax = [150, 155, 160][_diff];
+        float sRatio = 6; //oscillation speed
+        int variance = 8; //+-length variation
+        int vStep = 35; //sin frame step between lasers
+
+        int[] walls = [];
+        for (int i = 0; i < 23; i++) {
+            int laser = CreateFireLaser(-32, MAX_Y - i * 16 - 8, 0, 4000, SHOT_RED, RP_STG_LASER1);
+            walls ~= [laser];
+            laser = CreateFireLaser(MAX_X + 32, MAX_Y - i * 16 - 8, 180, 4000, SHOT_RED, RP_STG_LASER1);
+            walls ~= [laser];
+        }
+
+        float len = 0;
+        while (_health > threshold && !_timeOut) {
+            if (_health > 4500) len = Interpolate_Smooth(lMax, 0, (_health - 4500) / 3500);
+            for (int i = 0; i < 23; i++) {
+                ObjLaser_SetLength(walls[i * 2], len + variance * sin(count * sRatio + i * vStep));
+                ObjLaser_SetLength(walls[i * 2 + 1], len + variance * sin(count * sRatio + i * vStep));
+            }
+            yield;
+        }
+    }
+
+    task TRing() {
+        //increment knives in an ellipse
+        int dir = 1;
+        int xRad = 120;
+        int yRad = 30;
+        float speedMax = 4;
+        float speedMin = [2.7, 3.1, 3.1][_diff];
+        float decel = 0.08;
+        float angleT = 0;
+        float aInc = [7.35, 7.35, 8.35][_diff];
+        float aVar = [45, 45, 90][_diff];
+
+        float waitTime = [20, 20, 10][_diff];
+        int waitMin = [3, 2, 2][_diff];
+        while (_health > threshold && !_timeOut) {
+            float xPos = Boss_X(_objBoss);
+            float yPos = Boss_Y(_objBoss);
+            //clockwise
+            CreateShotUA2(xPos + xRad * cos(angleT), yPos + yRad * sin(angleT), speedMax, angleT + (aVar * dir), -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_32);
+            CreateShotUA2(xPos + xRad * cos(angleT + 180), yPos + yRad * sin(angleT + 180), speedMax, angleT + (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_32);
+            //counterclockwise
+            CreateShotUA2(xPos + xRad * cos(-angleT), yPos + yRad * sin(-angleT), speedMax, -angleT - (aVar * dir), -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_32);
+            CreateShotUA2(xPos + xRad * cos(-angleT + 180), yPos + yRad * sin(-angleT + 180), speedMax, -angleT - (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_32);
+            CallSFX(SND_SHOT1);
+
+            angleT += aInc;
+            dir *= -1;
+            waitTime = max(waitMin, waitTime * 0.95);
+            wait(waitTime);
+        }
+    }
+
+    task TAim(int dir_) {
+        //aimed rotating large ring
+        if (_health <= threshold || _timeOut) return;
+        //parent shot
+        float accel = 0.1;
+        float speed = [4, 4, 6][_diff];
+        int parent = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 0, GetAngleToPlayer(_objBoss), accel, speed, 0, SHOT_PURPLE+HEART_L, 0, SHOT_PURPLE+SPAWN_S+SIZE_32, SHOT_PURPLE+CANCEL_32);
+        ObjShot_SetAutoDelete(parent, false);
+        Obj_SetVisible(parent, false);
+        ObjShot_SetDeleteFrame(parent, 180);
+        int counter = 1;
+        int frames = 100;
+        //shot info
+        int[] shots = [];
+        int maxRad = 96;
+        int minRad = [24, 32, 24][_diff];
+        int way = [6, 10, 6][_diff];
+        float angleT = 0;
+        float inc = 2;
+        //create shots
+        for (int i = 0; i < way; i++) {
+            int shot = CreateShotUA1(ObjMove_GetX(parent), ObjMove_GetY(parent), 0, angleT, SHOT_PURPLE_INV+BALL_L, 0, SHOT_PURPLE_INV+SPAWN_E+SIZE_32, SHOT_PURPLE_INV+CANCEL_32);
+            ObjShot_SetAutoDelete(shot, false);
+            shots ~= [shot];
+        }
+        int heart = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), 0, GetAngleToPlayer(_objBoss), accel, speed, 0, SHOT_PURPLE+HEART_L, 0, SHOT_PURPLE+SPAWN_S+SIZE_32, SHOT_PURPLE+CANCEL_32);
+        CallSFX(SND_SHOT2);
+        //VFX
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 90, 32, COLOR_PURPLE, false, RP_STG_EFF_MID);
+        Primitive_ExpandPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 0, 550, 0, 95, 32, COLOR_PURPLE_D, false, RP_STG_EFF_MID);
+        //update
+        while (!Obj_IsDeleted(parent)) {
+            float xPos = ObjMove_GetX(parent);
+            float yPos = ObjMove_GetY(parent);
+            float rad = Interpolate_Decelerate(maxRad, minRad, counter / as_float(frames));
+            for (int i = 0; i < way; i++) {
+                ObjMove_SetDestAtFrame(shots[i], xPos + rad * cos(angleT), yPos + rad * sin(angleT), 1, LERP_LINEAR);
+                angleT += 360 / way;
+            }
+            ObjMove_SetDestAtFrame(heart, xPos, yPos, 1, LERP_LINEAR);
+            angleT += inc * dir_;
+            counter = min(frames, counter + 1);
+            yield;
+        }
+        for each (shot in shots) {
+            ObjShot_SetDeleteFrame(shot, 1);
+        }
+    }
+}
+
+//benny
+//stacking pattern
+//monochrome bivalence/PDH esque
+task TPhase3() {
+    //setup
+    ObjMove_SetDestAtFrame(_objBoss, MID_X, 90, 60, LERP_DECELERATE);
+    wait(30);
+    Transition_Spell(4, 18, 0, COLOR_WHITE);
+    CallSFX(SND_TRANSITION);
+    wait(30);
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    int dir = 1;
+    loop (10) {
+        Primitive_ContractPolygon2D(Boss_X(_objBoss), Boss_Y(_objBoss), 45, 500, 0, 60, 32, COLOR_PURPLE_L, false, RP_STG_EFF_MID);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, 360 * dir, 60, 18, COLOR_PURPLE);
+        wait(3);
+        Particle_ContractRing(Boss_X(_objBoss), Boss_Y(_objBoss), 0, 500, -360 * dir, 60, 18, COLOR_PURPLE_L);
+        wait(3);
+        dir *= -1;
+    }
+    CallSFX(SND_CHARGE2);
+    wait(60);
+    Boss_SetVulnerable(_objBoss, true);
+
+    async {
+        while (Boss_Alive(_objBoss)) {
+            yield;
+        }
+    }
+
+    //spell
+    TFireA();
+    while (_health > 3200 && !_timeOut) yield;
+    TFireB();
+    while (_health > 2000 && !_timeOut) yield;
+    TFireC();
+
+    task TFireA() {
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        int stack = 3;
+        float speedMin = 2.8;
+        float speedMax = 4;
+        float speedSlow = [1.4, 1.6, 1.6][_diff];
+        float angleT = 0;
+        float accel = 0.05;
+        float inc = [18.72, 16.72, 16.72][_diff];
+        float spread = 1.2;
+        float wVelAccel = 0.18;
+        float wVelMax = 20;
+        int waitTime = [7, 5, 4][_diff];
+
+        while (Boss_Alive(_objBoss)) {
+            float speedTemp = max(speedMin, Interpolate_Linear(speedMax, speedMin, _health / 4000));
+            for (int i = 0; i < stack; i++) {
+                float tempAng = spread * (stack - 1) / 2;
+                int shot = CreateShotUC1(xPos, yPos, speedTemp, speedTemp, angleT + 45 - tempAng + i * spread, SHOT_PURPLE_INV+CARD, 0, SHOT_PURPLE_INV+SPAWN_E+SIZE_16, SHOT_PURPLE_INV+CANCEL_FADE);
+                ShotCurve(shot, 1);
+                shot = CreateShotUC1(xPos, yPos, speedTemp, speedTemp, angleT + 45 - tempAng + i * spread + 180, SHOT_PURPLE+CARD, 0, SHOT_PURPLE+SPAWN_E+SIZE_16, SHOT_PURPLE+CANCEL_FADE);
+                ShotCurve(shot, 1);
+                shot = CreateShotUC1(xPos, yPos, speedTemp, speedTemp, -angleT + 45 - tempAng + i * spread, SHOT_PURPLE_INV+CARD, 0, SHOT_PURPLE_INV+SPAWN_E+SIZE_16, SHOT_PURPLE_INV+CANCEL_FADE);
+                ShotCurve(shot, -1);
+                shot = CreateShotUC1(xPos, yPos, speedTemp, speedTemp, -angleT + 45 - tempAng + i * spread + 180, SHOT_PURPLE+CARD, 0, SHOT_PURPLE+SPAWN_E+SIZE_16, SHOT_PURPLE+CANCEL_FADE);
+                ShotCurve(shot, -1);
+            }
+            angleT += inc;
+            CallSFX(SND_SHOT1);
+            wait(waitTime);
+        }
+
+        function<void> ShotCurve(int obj_, int dir_) {
+            ObjMove_AddPatternC4(obj_, 20, NO_CHANGE, NO_CHANGE, -accel, -accel, 0, 0, NO_CHANGE, NO_CHANGE, wVelAccel * dir_, wVelMax * dir_, NO_CHANGE);
+            ObjMove_AddPatternC4(obj_, 50, NO_CHANGE, NO_CHANGE, accel, accel, speedSlow, speedSlow, NO_CHANGE, NO_CHANGE, -wVelAccel * dir_, 0, NO_CHANGE);
+            ObjMove_AddPatternC4(obj_, 90, NO_CHANGE, NO_CHANGE, -accel, -accel, 0, 0, NO_CHANGE, NO_CHANGE, -wVelAccel * dir_, -wVelMax * dir_, NO_CHANGE);
+            ObjMove_AddPatternC4(obj_, 120, NO_CHANGE, NO_CHANGE, accel, accel, speedSlow, speedSlow, NO_CHANGE, NO_CHANGE, wVelAccel * dir_, 0, NO_CHANGE);
+        }
+    }
+
+    task TFireB() { //monochrome bivalence
+        //charge
+        CallSFX(SND_CHARGE2);
+        wait(60);
+        CallSFX(SND_SHOT4);
+        CallSFX(SND_FIRE);
+
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+        int frames = 10;
+        //shots
+        int way = 5;
+        int stack = 4;
+        float speedMin = 5;
+        float speedMax = 7;
+        float arc = [28, 35, 35][_diff]; //half of arc length
+        float wVel1 = 7;
+        float wVel2 = 180 / frames;
+        int waitTime = 5;
+        //loop
+        int counter = 0;
+        float ratio = [2.3, 2.5, 2.8][_diff];
+        while (Boss_Alive(_objBoss)) {
+            float angleT = (90 + 180 / way) + arc * sin(counter * ratio);
+            for (int i = 0; i < way; i++) {
+                for (int j = 0; j < stack; j++) {
+                    float speed = Interpolate_Linear(speedMin, speedMax, j / as_float(stack - 1));
+                    int color = j % 2 == 0 ? SHOT_GRAY : SHOT_BLACK;
+                    int shot = CreateShotUA2(xPos, yPos, speed, angleT, 0, 0, 0, color+REST, 0, color+CANCEL_SPARKLE);
+                    ObjShot_SetSpellResist(shot, true);
+                    ShotCurve(shot, wVel1, wVel2, 1);
+                    shot = CreateShotUA2(xPos, yPos, speed, angleT, 0, 0, 0, color+REST, 0, color+CANCEL_SPARKLE);
+                    ObjShot_SetSpellResist(shot, true);
+                    ShotCurve(shot, wVel1, wVel2, -1);
+                }
+                angleT += 360 / way;
+            }
+            counter++;
+            wait(waitTime);
+        }
+
+        function<void> ShotCurve(int obj_, float wVel1_, float wVel2_, int dir_) {
+            ObjMove_AddPatternA2(obj_, 0, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, wVel1_ * dir_);
+            ObjMove_AddPatternA2(obj_, 5, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, -wVel1_ * dir_);
+        
+            for (int i = 1; i < 20; i += 2) {
+                ObjMove_AddPatternA2(obj_, i * frames, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, wVel2_ * dir_);
+                ObjMove_AddPatternA2(obj_, (i + 1) * frames, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, -wVel2_ * dir_);
+            }
+        }
+    }
+
+    task TFireC() {
+        float xPos = Boss_X(_objBoss);
+        float yPos = Boss_Y(_objBoss);
+
+        int way = [20, 24, 24][_diff];
+        float speedMax = 5;
+        float speedMin = [1.8, 1.8, 2.0][_diff];
+        float decel = 0.3;
+
+        int waitTime = [80, 60, 40][_diff];
+        while (Boss_Alive(_objBoss)) {
+            float xPos = rand(MID_X - 120, MID_X + 120);
+            float angleT = rand(0, 360);
+            for (int i = 0; i < way; i++) {
+                CreateShotUA2(xPos, yPos, speedMax, angleT, -decel, speedMin, 0, SHOT_RED_INV+SCALE, 4, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+                CreateShotUA2(xPos, yPos, speedMax, angleT, -decel, speedMin, 0, SHOT_RED+SCALE, 2, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_FADE);
+                CreateShotUA2(xPos, yPos, speedMax, angleT, -decel, speedMin, 0, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+                if (_health <= 1000 || _timeOut) {
+                    CreateShotUA2(xPos, yPos, speedMin, angleT + 180 / way, -decel, speedMin, 0, SHOT_RED+SCALE, 4, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_FADE);
+                    CreateShotUA2(xPos, yPos, speedMin, angleT + 180 / way, -decel, speedMin, 0, SHOT_RED_INV+SCALE, 2, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+                    CreateShotUA2(xPos, yPos, speedMin, angleT + 180 / way, -decel, speedMin, 0, SHOT_RED+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_FADE);
+                }
+                angleT += 360 / way;
+            }
+            CallSFX(SND_SHOT2);
+            wait(waitTime);
+        }
+    }
+}
