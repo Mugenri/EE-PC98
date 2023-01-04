@@ -158,6 +158,7 @@ task TFlowers(int dir_) {
     Shot_FirePatternA(burst, SHOT_PURPLE+FIRE_S, SHOT_PURPLE+SPAWN_S+SIZE_16, SHOT_PURPLE+CANCEL_BURST2);
     CallSFX(SND_SHOT2);
     wait(6);
+    if (!Boss_Alive(_objBoss)) return;
     Shot_FirePatternA(burst, SHOT_PINK_INV+FIRE_S, SHOT_PINK_INV+SPAWN_S+SIZE_16, SHOT_PINK_INV+CANCEL_BURST2);
 
     //move, throw flowers, heart bursts
