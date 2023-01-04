@@ -352,11 +352,11 @@ task TPhase2() {
             float xPos = Boss_X(_objBoss);
             float yPos = Boss_Y(_objBoss);
             //clockwise
-            CreateShotUA2(xPos + xRad * cos(angleT), yPos + yRad * sin(angleT), speedMax, angleT + (aVar * dir), -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_32);
-            CreateShotUA2(xPos + xRad * cos(angleT + 180), yPos + yRad * sin(angleT + 180), speedMax, angleT + (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_32);
+            CreateShotUA2(xPos + xRad * cos(angleT), yPos + yRad * sin(angleT), speedMax, angleT + (aVar * dir), -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
+            CreateShotUA2(xPos + xRad * cos(angleT + 180), yPos + yRad * sin(angleT + 180), speedMax, angleT + (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
             //counterclockwise
-            CreateShotUA2(xPos + xRad * cos(-angleT), yPos + yRad * sin(-angleT), speedMax, -angleT - (aVar * dir), -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_32);
-            CreateShotUA2(xPos + xRad * cos(-angleT + 180), yPos + yRad * sin(-angleT + 180), speedMax, -angleT - (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_32);
+            CreateShotUA2(xPos + xRad * cos(-angleT), yPos + yRad * sin(-angleT), speedMax, -angleT - (aVar * dir), -decel, speedMin, 0, SHOT_RED_INV+KNIFE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
+            CreateShotUA2(xPos + xRad * cos(-angleT + 180), yPos + yRad * sin(-angleT + 180), speedMax, -angleT - (aVar * dir) + 180, -decel, speedMin, 0, SHOT_RED+KNIFE, 0, SHOT_RED+SPAWN_S+SIZE_16, SHOT_RED+CANCEL_BURST2);
             CallSFX(SND_SHOT1);
 
             angleT += aInc;
