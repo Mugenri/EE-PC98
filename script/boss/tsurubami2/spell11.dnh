@@ -8,7 +8,7 @@
 int _objBoss;
 int _diff = GetDifficulty() - D_EASYEX;
 int _count = -120;
-int _loopTime = [240, 240, 200][_diff];
+int _loopTime = [260, 240, 200][_diff];
 _spellID = 60 + _diff;
 
 @Event {
@@ -137,9 +137,9 @@ task TArrow(int dir_) {
     CallSFX(SND_SHOT2);
 
     task TRing() { //lol stolen from last non
-        int numShot = [22, 22, 24][_diff];
+        int numShot = [20, 22, 24][_diff];
         float speed = [1.7, 1.8, 1.9][_diff];
-        int trailNum = [3, 4, 6][_diff];
+        int trailNum = [2, 3, 6][_diff];
         float trailInc = [1.2, 1.2, 0.75][_diff];
         int trailDelay = [4, 5, 2][_diff];
         float angleT = rand(0, 360);
