@@ -525,10 +525,8 @@ task TPhase3() {
                     float speed = Interpolate_Linear(speedMin, speedMax, j / as_float(stack - 1));
                     int color = j % 2 == 0 ? SHOT_GRAY : SHOT_BLACK;
                     int shot = CreateShotUA2(xPos, yPos, speed, angleT, 0, 0, 0, color+REST, 0, color+CANCEL_SPARKLE);
-                    ObjShot_SetSpellResist(shot, true);
                     ShotCurve(shot, wVel1, wVel2, 1);
                     shot = CreateShotUA2(xPos, yPos, speed, angleT, 0, 0, 0, color+REST, 0, color+CANCEL_SPARKLE);
-                    ObjShot_SetSpellResist(shot, true);
                     ShotCurve(shot, wVel1, wVel2, -1);
                 }
                 angleT += 360 / way;
