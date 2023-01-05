@@ -14,7 +14,7 @@ _spellID = 57 + _diff;
 @Event {
     alternative (GetEventType())
     case (EV_REQUEST_LIFE) {
-        SetScriptResult(2400);
+        SetScriptResult(2600);
     }
     case (EV_REQUEST_TIMER) {
         SetScriptResult(40 + absolute(_count / 60));
@@ -73,13 +73,13 @@ task TMain() {
 task TWave(int dir_) {
     if (!Boss_Alive(_objBoss)) return;
     int color = dir_ == 1 ? SHOT_GRAY : SHOT_BLACK;
-    int numShot = [10, 12, 15][_diff];
+    int numShot = [8, 12, 15][_diff];
     float speed1 = [3.2, 4.2, 4.8][_diff];
     float speed2 = [6.2, 7, 8.5][_diff];
     float angleT = GetAngleToPlayer(_objBoss) + 90 * dir_;
     float decel = 0.08;
     float accel = 0.06;
-    int waitTime = [6, 5, 4][_diff];
+    int waitTime = [7, 5, 4][_diff];
     int transformTime = 60;
 
     for (int i = 0; i < numShot; i++) {
