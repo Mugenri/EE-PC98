@@ -90,17 +90,16 @@ task TLasers(int dir_) {
     float speed = 6;
     int len = 40;
     float maxSpeed = [3.1, 3.1, 3.4][_diff];
-    float wVel = [5.5, 6, 6][_diff];
-    int decelFrames = 90;
+    float wVel = [0.55, 0.6, 0.6][_diff];
+    int decelFrames = 30;
 
     Boss_MoveRadiusInBounds(_objBoss, 40, 60, MID_X - 60, MID_X + 60, 60, 80, _loopTime / 2, LERP_DECELERATE);
 
     for (int i = 0; i < laserNum; i++) {
         if (!Boss_Alive(_objBoss)) return;
         int laser = CreateCurveLaserUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 6, angleT, len, [COLOR_ICE, COLOR_GREEN][i % 2], 0);
-        ObjMove_AddPatternA2(laser, 0, NO_CHANGE, angleT, -(speed / decelFrames), 0, wVel * dir_);
-        ObjMove_AddPatternA2(laser, decelFrames, 0, NO_CHANGE, (speed / decelFrames), maxSpeed, -wVel * dir_ / 10);
-        ObjMove_AddPatternA2(laser, decelFrames * 3, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+        ObjMove_AddPatternA2(laser, 0, NO_CHANGE, angleT, -(speed / decelFrames), 0, wVel * 2 * dir_);
+        ObjMove_AddPatternA2(laser, decelFrames, 0, NO_CHANGE, (speed / decelFrames), maxSpeed, -wVel * dir_);
         angleT += 360 / laserNum * dir_;
         CallSFX(SND_LASER1);
 
