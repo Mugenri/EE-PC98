@@ -313,6 +313,7 @@ task TStageScene() {
     }
 
     function<void> RunCredits() {
+        if (playerType != PLAYER_TSUBAKURA) return;
         //run credits script
         string pathScript = GetModuleDirectory() ~ "script/title/scene/Credits.dnh";
         int idScript = LoadScript(pathScript);
