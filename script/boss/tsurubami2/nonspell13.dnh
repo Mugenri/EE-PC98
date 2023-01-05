@@ -67,8 +67,8 @@ task TRings() {
     int loopNum = 4;
     int way = [38, 48, 64][_diff];
     int color = SHOT_GRAY;
-    float sMin = [2.3, 2.3, 2.9][_diff];
-    float sMax = [2.6, 2.6, 3.3][_diff];
+    float sMin = [2.4, 2.6, 2.9][_diff];
+    float sMax = [2.7, 2.9, 3.3][_diff];
     float lMin = [3, 5, 8][_diff];
     float lInc = [2.2, 3, 3][_diff];
     float angleT = rand(0, 360);
