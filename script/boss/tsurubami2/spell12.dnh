@@ -78,6 +78,7 @@ task TJump() {
     float y1 = Boss_Y(_objBoss);
     float xDist = 20;
     float yDist = 30;
+    float xRange = [36, 72, 72][_diff]; //distance from middle
 
     CallSFX(SND_SHOT2);
     for (int i = 0; i < frames; i++) {
@@ -104,7 +105,7 @@ task TJump() {
     //wait
     wait(30);
     if (!Boss_Alive(_objBoss)) return;
-    float xDest = rand(MID_X - 72, MID_X + 72);
+    float xDest = rand(MID_X - xRange, MID_X + xRange);
     ObjMove_SetPosition(_objBoss, xDest, -80);
     wait(30);
     //down
@@ -125,8 +126,8 @@ task TJump() {
         float xPos = Boss_X(_objBoss);
         float yPos = Boss_Y(_objBoss);
         float speedMin = [2, 2, 2.4][_diff];
-        float speedMax = [6.4, 6.4, 7][_diff];
-        float arc = [26, 25, 22][_diff];
+        float speedMax = [5.8, 6.4, 7][_diff];
+        float arc = [48, 28, 22][_diff];
         float spread = 2;
         int delay = 3;
 
