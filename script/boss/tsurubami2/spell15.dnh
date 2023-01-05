@@ -145,7 +145,7 @@ task TSpell() {
         wait(360);
 
         tempAng = rand(0, 360);
-        CreateWheel(2, 2, 9, speed, tempAng, 120, 96, 240, 239, 60, false);
+        CreateWheel(2, 2, 9, speed, tempAng, 120, 112, 240, 239, 60, false);
         wait(5);
         CreateWheel(2, 2, 9, speed, tempAng, 90, 128, 235, 234, 60, false);
         wait(360);
@@ -156,8 +156,8 @@ task TSpell() {
         tempAng = rand(0, 360);
         CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 96, 240, 239, 30, true);
         CreateWheel(1, 4, 9, -speed / 2, tempAng, 90, 112, 240, 239, 30, true);
-        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 138, 240, 239, 30, true);
-        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 154, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 142, 240, 239, 30, true);
+        CreateWheel(1, 4, 9, speed / 2, tempAng + 2, 90, 158, 240, 239, 30, true);
         wait(380);
 
         tempAng = rand(0, 360);
@@ -190,7 +190,7 @@ task TSpell() {
 
         tempAng = rand(0, 360);
         tempColor = rand_int(0, 1);
-        CreateWheel(2, 2, 13, speed, tempAng, 90, 96, 240, 239, 60, tempColor);
+        CreateWheel(2, 2, 13, speed, tempAng, 90, 112, 240, 239, 60, tempColor);
         CreateWheel(2, 2, 13, speed, tempAng + 6, 90, 128, 240, 239, 60, tempColor);
         wait(360);
 
