@@ -344,10 +344,10 @@ task TPhase2() {
         float decel = 0.08;
         float angleT = 0;
         float aInc = [7.35, 7.35, 8.35][_diff];
-        float aVar = [45, 45, 90][_diff];
+        float aVar = [45, 60, 90][_diff];
 
         float waitTime = [20, 20, 10][_diff];
-        int waitMin = [3, 2, 2][_diff];
+        int waitMin = 2;
         while (_health > threshold && !_timeOut) {
             float xPos = Boss_X(_objBoss);
             float yPos = Boss_Y(_objBoss);
@@ -468,7 +468,7 @@ task TPhase3() {
         float spread = 1.2;
         float wVelAccel = 0.18;
         float wVelMax = 20;
-        int waitTime = [7, 5, 4][_diff];
+        int waitTime = [6, 5, 4][_diff];
 
         while (Boss_Alive(_objBoss)) {
             float speedTemp = max(speedMin, Interpolate_Linear(speedMax, speedMin, _health / 4000));
@@ -511,7 +511,7 @@ task TPhase3() {
         int stack = 4;
         float speedMin = 5;
         float speedMax = 7;
-        float arc = [28, 35, 35][_diff]; //half of arc length
+        float arc = 35; //half of arc length
         float wVel1 = 7;
         float wVel2 = 180 / frames;
         int waitTime = 5;
@@ -555,7 +555,7 @@ task TPhase3() {
         float speedMin = [1.8, 1.8, 2.0][_diff];
         float decel = 0.3;
 
-        int waitTime = [80, 60, 40][_diff];
+        int waitTime = [70, 60, 40][_diff];
         while (Boss_Alive(_objBoss)) {
             float xPos = rand(MID_X - 120, MID_X + 120);
             float angleT = rand(0, 360);
