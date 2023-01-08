@@ -1,5 +1,5 @@
 //Constants library
-const bool DEBUG_MODE = true;
+const bool DEBUG_MODE = false;
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
@@ -141,6 +141,7 @@ const int SND_GAUGE_FULL    = 6;
 //Other
 const int SND_TALK          = 30;
 const int SND_BOSSTITLE     = 31;
+const int SND_PRESSB        = 37;
 
 //----------------------------------------------------
 //RENDER PRIORITY CONSTANTS
