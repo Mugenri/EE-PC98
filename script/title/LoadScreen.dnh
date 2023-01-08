@@ -9,6 +9,9 @@ function<void> Load_Init() {
 
 task TLoadScene() { //loading screen
 
+    //Window Title
+    if (rand_int(1, 1000) == 420) SetWindowTitle("鏈縁无現里 ~ Misremembered Memories v" ~ GAME_VERSION);
+
     //Disable fast forward
     if (!DEBUG_MODE) SetSkipModeKey(KEY_INVALID);
 
