@@ -163,7 +163,7 @@ function<void> Ending() {
         }
         case (30) {
             _color = COLOR_GREEN_L;
-            End_SetText("ENDING #01", "Strange Dreams Under Strange Circumstances/To be continued in Misremembered Memories v1.00/Yabusame's Scenario Cleared - Congratulations!");
+            End_SetText("ENDING #01", "Strange Dreams Under Strange Circumstances/Yabusame's Scenario Cleared - Congratulations!/Tsubakura's Scenario Unlocked!");
         }
         others { return true; }
         return false;
