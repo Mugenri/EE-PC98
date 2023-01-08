@@ -1,5 +1,5 @@
 //Constants library
-const bool DEBUG_MODE = false;
+const bool DEBUG_MODE = true;
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
