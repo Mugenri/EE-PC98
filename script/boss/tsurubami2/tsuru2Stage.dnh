@@ -43,7 +43,7 @@ task TStage() {
     wait(150); //last explosion & spell bonus numbers
 
     dialoguePath = dir ~ "dialogueOutro.dnh";
-    //StartDialogueScript(dialoguePath); TODO
+    StartDialogueScript(dialoguePath);
 
     Stage_EndScreen(10000);
     Stage_End();

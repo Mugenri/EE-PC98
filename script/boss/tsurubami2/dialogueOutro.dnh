@@ -1,0 +1,181 @@
+//Pre-fight dialogue
+#include "./../../lib/lib_Dialogue.dnh" //dialogue functions
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TBackground();
+    TMain();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TBackground() {
+    int obj = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_SCREENSHOT, RP_UI_MIN);
+}
+
+//dialogue function
+task TMain() {
+    Dialogue_Start(); //pause game, create text boxes
+    Dialogue(); //main dialogue function
+    Dialogue_End(); //remove text boxes
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Dialogue() {
+    //create player/enemy portraits and text fields
+    int playerCutin = Dialogue_CreatePortrait(BOSS_ID_TSUBAKURA, false);
+    int bossCutin = Dialogue_CreatePortrait(BOSS_ID_TSURUBAMI, true);
+
+    //dialogue line position
+    int line = 0;
+    loop {
+        bool end = DialogueLine(line);
+        if (end) break;
+        line++;
+        Dialogue_Wait();
+    }
+    //Dialogue end
+    Obj_Delete(playerCutin);
+    Obj_Delete(bossCutin);
+
+    function<bool> DialogueLine(int line_) {
+        //-----------------------------
+        alternative (line)
+        case (0) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(false, "Aaagh! What the hell?!");
+        }
+        case (1) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "That ought to do it./I assume you remember now,/don't you?");
+        }
+        case (2) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "Yeah... I do./Ugh...");
+        }
+        case (3) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "That bitch! Suzumi can erase/memories too?!");
+        }
+        case (4) {
+            Dialogue_SetPortrait(bossCutin, 8);
+            Dialogue_SetText(true, "Ah, that name again.../I get the feeling they're a/pain to everyone they meet.");
+        }
+        case (5) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "Preaching to the choir...");
+        }
+        case (6) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "Wait... how do you know them?/You've been gone for a while.");
+        }
+        case (7) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "There's no way they've been/in Mugenri that long.");
+        }
+        case (8) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "That's part of what I'm/concerned about.");
+        }
+        case (9) {
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "When we first met.../My memory of that time is/fragmented.");
+        }
+        case (10) {
+            Dialogue_SetText(true, "It's almost as if there were/two different versions of/that day.");
+        }
+        case (11) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "I don't know the extent of/their abilities, but I met/Suzumi that day, somehow.");
+        }
+        case (12) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "That damn rat finds some way/to follow me everywhere I go,/even here.");
+        }
+        case (13) {
+            Dialogue_SetPortrait(bossCutin, 6);
+            Dialogue_SetText(true, "A rat indeed; I have no idea/how they got into Mugenri/without my knowledge.");
+        }
+        case (14) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "However, I'm confident you/will be able to handle/whatever arises.");
+        }
+        case (15) {
+            Dialogue_SetPortrait(playerCutin, 2);
+            Dialogue_SetText(false, "What makes you think that?/I couldn't even remember them/being in Mugenri.");
+        }
+        case (16) {
+            Dialogue_SetPortrait(bossCutin, 10);
+            Dialogue_SetText(true, "Ah, but your white-haired/friend does.");
+        }
+        case (17) {
+            Dialogue_SetPortrait(playerCutin, 8);
+            Dialogue_SetText(false, "That idiot is unaffected?/Oh... they tried to tell me,/but I didn't listen. Damn it.");
+        }
+        case (18) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "Guess that makes me the/dumbass, heh.");
+        }
+        case (19) {
+            Dialogue_SetPortrait(bossCutin, 2);
+            Dialogue_SetText(true, "Don't worry about it too/much; I'm quite satisfied/with your performance.");
+        }
+        case (20) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "With your own strength and/Yabusame's unaffected memory,/you'll probably be fine.");
+        }
+        case (21) {
+            Dialogue_SetPortrait(playerCutin, 4);
+            Dialogue_SetText(false, "Probably.../Well, I also have my memory/back.");
+        }
+        case (22) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "Ah, um, about that...");
+        }
+        case (23) {
+            Dialogue_SetPortrait(playerCutin, 6);
+            Dialogue_SetText(false, "You've gotta be kidding me.");
+        }
+        case (24) {
+            Dialogue_SetPortrait(bossCutin, 0);
+            Dialogue_SetText(true, "It's very likely that you/won't remember anything when/you awaken.");
+        }
+        case (25) {
+            Dialogue_SetPortrait(playerCutin, 7);
+            Dialogue_SetText(false, "Then what the hell was the/point of all this?!");
+        }
+        case (26) {
+            Dialogue_SetPortrait(bossCutin, 5);
+            Dialogue_SetText(true, "I needed to be certain of/your survival. If you were to/die...");
+        }
+        case (27) {
+            Dialogue_SetPortrait(bossCutin, 3);
+            Dialogue_SetText(true, "I'd have to end my vacation/early~");
+        }
+        case (28) {
+            Dialogue_SetPortrait(playerCutin, 0);
+            Dialogue_SetText(false, "...");
+        }
+        case (29) {
+            Dialogue_SetPortrait(bossCutin, 1);
+            Dialogue_SetText(true, "...");
+        }
+        case (30) {
+            Dialogue_SetPortrait(playerCutin, 11);
+            Dialogue_SetText(false, "You are absolutely/unbelievable.");
+        }
+        case (31) {
+            Dialogue_SetPortrait(bossCutin, 9);
+            Dialogue_SetText(true, "I get that a lot.");
+        }
+        others {
+            return true;
+        }
+        return false;
+    }
+}
