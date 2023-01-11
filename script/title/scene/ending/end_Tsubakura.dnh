@@ -1,0 +1,50 @@
+//Yabusame ending
+#include "./../../lib/lib_Ending.dnh"
+
+int _colorTsuba = 0xBBBBBB;
+
+@Initialize {
+    SetAutoDeleteObject(true);
+    TMain();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TMain() {
+    ScreenBlackout(60, 30, 60, COLOR_WHITE);
+    wait(60);
+    End_Init(PLAYER_TSUBAKURA);
+    End_SetImage(0, false);
+    Ending();
+    ScreenBlackout(180, 60, 0, COLOR_BLACK);
+    ClearBGM();
+    wait(240);
+    CloseScript(GetOwnScriptID());
+}
+
+function<void> Ending() {
+    int step = 0;
+    loop {
+        bool end = EndStep(step);
+        if (end) break;
+        step++;
+        End_Wait();
+    }
+
+    function<bool> EndStep(int step_) {
+        //------------------------------------------------------- 55 char limit
+        alternative (step_)
+        case (0) {
+            End_SetBG(IMG_END_TSUBAKURA_BG);
+            wait(90);
+            StartBGM(3, 240, 0);
+            End_SetText("Placeholder.");
+        }
+        others { return true; }
+        return false;
+    }
+}

@@ -82,7 +82,8 @@ function<string[]> Load_GetTextureEnding(int playerType_) {
     }
     case (PLAYER_TSUBAKURA) {
         texture ~= [
-            //IMG_END_TSUBAKURA
+            IMG_END_TSUBAKURA_BG,
+            IMG_END_TSUBAKURA
         ];
     }
 

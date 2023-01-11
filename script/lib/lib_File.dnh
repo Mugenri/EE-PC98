@@ -50,8 +50,8 @@ const string HLSL_WHITE             = DIR_HLSL ~ "TexWhite.hlsl";
 
 //Ending Images
 const string IMG_END_TEXTBOX        = DIR_IMG ~ "ending/endTextbox.png";
-//const string IMG_END_TSUBAKURA      = DIR_IMG ~ "ending/endTsubakura.png";
-//const string IMG_END_TSUBAKURA_BG   = DIR_IMG ~ "ending/endTsubakuraBG.png";
+const string IMG_END_TSUBAKURA      = DIR_IMG ~ "ending/endTsubakura.png";
+const string IMG_END_TSUBAKURA_BG   = DIR_IMG ~ "ending/endTsubakuraBG.png";
 const string IMG_END_YABUSAME       = DIR_IMG ~ "ending/endYabusame.png";
 const string IMG_END_YABUSAME_BG    = DIR_IMG ~ "ending/endYabusameBG.png";
 

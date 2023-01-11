@@ -15,7 +15,7 @@ bool _skip = false; //flag for skipping text
 function<void> End_Init(int playerType_) {
     alternative (playerType_)
     case (PLAYER_YABUSAME) { _panelTexture = IMG_END_YABUSAME; }
-    //case (PLAYER_TSUBAKURA) { _panelTexture = IMG_END_TSUBAKURA; }
+    case (PLAYER_TSUBAKURA) { _panelTexture = IMG_END_TSUBAKURA; }
 
     _bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_END_YABUSAME_BG, RP_UI_BG); //placeholder bg for source/dest rect settings
     _text = CreateText(24, WINDOW_HEIGHT - 57, RP_UI_TEXT, "", COLOR_WHITE);
