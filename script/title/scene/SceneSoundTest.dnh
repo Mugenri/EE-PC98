@@ -3,7 +3,7 @@
 function<void> SceneSoundTest() {
     bool exitFlag = false;
 
-    int listSize = GetAreaCommonData(AREA_TITLE, "SFX_NUM", 0) - 4; //0 indexed, -4 for player spell noises
+    int listSize = GetAreaCommonData(AREA_TITLE, "SFX_NUM", 0) - 5; //0 indexed, -4 for player spell noises, -1 for b to blow
     int indexCurrent = 0;
 
     TCreateMenuGraphicsSound();
@@ -38,12 +38,14 @@ function<void> SceneSoundTest() {
     task TCreateMenuGraphicsSound() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
         int logo = InitSprite2D(640, 0, 967, 87, IMG_TT_BG, RP_UI_TEXT);
+        int objText = CreateText(1, GetScreenHeight() - 16, "Version " ~GAME_VERSION, COLOR_BLACK);
 
         ObjRender_SetPosition(logo, 5, 3, 1);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
         Obj_Delete(logo);
+        Obj_Delete(objText);
     }
 
     task TMenuItem() {
@@ -108,5 +110,7 @@ function<void> SceneSoundTest() {
         // case (SND_PL_SPELL_Y2) { return "Yabusame Spell 2"; } //duplicate of Charge1
         // case (SND_PL_SPELL_T1) { return "Tsubakura Spell 1"; } //duplicate of Charge2
         // case (SND_PL_SPELL_T2) { return "Tsubakura Spell 2"; } //duplicate of Shot4
+        //Unlisted
+        // case (SND_PRESSB) { return "B to Blow"; } //easter egg
     }
 }

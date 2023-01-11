@@ -88,12 +88,14 @@ function<void> SceneOption() {
     task TCreateMenuGraphicsOption() {
         int bg = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, IMG_TT_BG, RP_UI_BG);
         int logo = InitSprite2D(640, 0, 967, 87, IMG_TT_BG, RP_UI_TEXT);
+        int objText = CreateText(1, GetScreenHeight() - 16, "Version " ~GAME_VERSION, COLOR_BLACK);
 
         ObjRender_SetPosition(logo, 5, 3, 1);
 
         while (!exitFlag) yield;
         Obj_Delete(bg);
         Obj_Delete(logo);
+        Obj_Delete(objText);
     }
 
     task TCreateMenuItemOption(int index_, int x_, int y_, int xOff_, int yOff_, string text_) {
