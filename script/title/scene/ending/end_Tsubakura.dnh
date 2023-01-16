@@ -42,7 +42,41 @@ function<void> Ending() {
             End_SetBG(IMG_END_TSUBAKURA_BG);
             wait(90);
             StartBGM(3, 240, 0);
-            End_SetText("Placeholder.");
+            End_SetText("The next morning, at the Senri Shrine.../A moody genius has awoken from their fitful slumber,/having not gotten much rest at all.");
+        }
+        case (1) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"Ow, my head.../I slept like garbage. Why does it feel like I've just/been in a fight?\"");
+        }
+        case (2) {
+            End_SetText("Tsubakura", "\"Seems like that coffee was worse than I thought;/I'll make sure to wring their neck out for it later.\"");
+        }
+        case (3) {
+            _color = COLOR_WHITE;
+            End_SetText("True to the former priest's word, Tsubakura forgot/the events of the night before.");
+        }
+        case (4) {
+            _color = _colorTsuba;
+            End_SetText("Tsubakura", "\"Ugh, no sense in layin' in bed. Might as well go out/and do something.\"");
+        }
+        case (5) {
+            End_SetImage(1, true);
+            _color = COLOR_WHITE;
+            End_SetText("And so, in search of something to entertain themselves,/Tsubakura left the shrine once more.");
+        }
+        case (6) {
+            End_SetText("It was an idyllic day outside, as most days in Mugenri/were. Perhaps they would find good sake to drink, or/annoying people to beat up, or something else entirely.");
+        }
+        case (7) {
+            End_SetText("Either way, it didn't matter to them; Tsubakura was as/carefree as ever, even if that foreboding feeling in/the back of their mind wouldn't go away.");
+        }
+        case (8) {
+            End_SetImage(2, true);
+            End_SetText("Surely it'd be fine to just ignore it?");
+        }
+        case (9) {
+            _color = COLOR_GREEN_L;
+            End_SetText("ENDING #02", "Once Remembered and Twice Forgotten Memories/Tsubakura's Scenario Cleared - Congratulations!/To be continued...?");
         }
         others { return true; }
         return false;
