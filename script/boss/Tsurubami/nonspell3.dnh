@@ -54,12 +54,12 @@ task TMain() {
         Boss_SetIntersection(_objBoss, _intersectionShot, _intersectionPlayer);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                Animation_Charge(_objBoss, true);
+                if (Boss_Alive(_objBoss)) Animation_Charge(_objBoss, true);
                 TFireA(1);
                 wait(_loopTime / 3);
                 Animation_Charge(_objBoss, false);
                 wait(_loopTime / 6);
-                Animation_Charge(_objBoss, true);
+                if (Boss_Alive(_objBoss)) Animation_Charge(_objBoss, true);
                 TFireA(-1);
                 wait(_loopTime / 3);
                 Animation_Charge(_objBoss, false);
