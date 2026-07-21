@@ -10,7 +10,7 @@ render = ALPHA
 
 //Animated Talisman
 //----------------------------------------------------
-ShotData {  id = 613    fixed_angle = true  collision = 2.5     //Red
+ShotData {  id = 613    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Red
     AnimationData {
         animation_data = ( 4, 288, 000, 304, 016 )
         animation_data = ( 4, 304, 000, 320, 016 )
@@ -22,7 +22,7 @@ ShotData {  id = 613    fixed_angle = true  collision = 2.5     //Red
         animation_data = ( 4, 400, 000, 416, 016 )
     }
 }
-ShotData {  id = 614    fixed_angle = true  collision = 2.5     //Orange
+ShotData {  id = 614    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Orange
     AnimationData {
         animation_data = ( 4, 288, 016, 304, 032 )
         animation_data = ( 4, 304, 016, 320, 032 )
@@ -34,7 +34,7 @@ ShotData {  id = 614    fixed_angle = true  collision = 2.5     //Orange
         animation_data = ( 4, 400, 016, 416, 032 )
     }
 }
-ShotData {  id = 615    fixed_angle = true  collision = 2.5     //Yellow
+ShotData {  id = 615    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Yellow
     AnimationData {
         animation_data = ( 4, 288, 032, 304, 048 )
         animation_data = ( 4, 304, 032, 320, 048 )
@@ -46,7 +46,7 @@ ShotData {  id = 615    fixed_angle = true  collision = 2.5     //Yellow
         animation_data = ( 4, 400, 032, 416, 048 )
     }
 }
-ShotData {  id = 616    fixed_angle = true  collision = 2.5     //Green
+ShotData {  id = 616    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Green
     AnimationData {
         animation_data = ( 4, 288, 048, 304, 064 )
         animation_data = ( 4, 304, 048, 320, 064 )
@@ -58,7 +58,7 @@ ShotData {  id = 616    fixed_angle = true  collision = 2.5     //Green
         animation_data = ( 4, 400, 048, 416, 064 )
     }
 }
-ShotData {  id = 617    fixed_angle = true  collision = 2.5     //Blue
+ShotData {  id = 617    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Blue
     AnimationData {
         animation_data = ( 4, 288, 064, 304, 080 )
         animation_data = ( 4, 304, 064, 320, 080 )
@@ -70,7 +70,7 @@ ShotData {  id = 617    fixed_angle = true  collision = 2.5     //Blue
         animation_data = ( 4, 400, 064, 416, 080 )
     }
 }
-ShotData {  id = 618    fixed_angle = true  collision = 2.5     //Purple
+ShotData {  id = 618    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Purple
     AnimationData {
         animation_data = ( 4, 288, 080, 304, 096 )
         animation_data = ( 4, 304, 080, 320, 096 )
@@ -82,7 +82,7 @@ ShotData {  id = 618    fixed_angle = true  collision = 2.5     //Purple
         animation_data = ( 4, 400, 080, 416, 096 )
     }
 }
-ShotData {  id = 619    fixed_angle = true  collision = 2.5     //Pink
+ShotData {  id = 619    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Pink
     AnimationData {
         animation_data = ( 4, 288, 096, 304, 112 )
         animation_data = ( 4, 304, 096, 320, 112 )
@@ -94,7 +94,7 @@ ShotData {  id = 619    fixed_angle = true  collision = 2.5     //Pink
         animation_data = ( 4, 400, 096, 416, 112 )
     }
 }
-ShotData {  id = 620    fixed_angle = true  collision = 2.5     //Gray
+ShotData {  id = 620    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Gray
     AnimationData {
         animation_data = ( 4, 288, 112, 304, 128 )
         animation_data = ( 4, 304, 112, 320, 128 )
@@ -106,7 +106,7 @@ ShotData {  id = 620    fixed_angle = true  collision = 2.5     //Gray
         animation_data = ( 4, 400, 112, 416, 128 )
     }
 }
-ShotData {  id = 621    fixed_angle = true  collision = 2.5     //White
+ShotData {  id = 621    fixed_angle = true  collision = ( 2.5, 0, 0 )     //White
     AnimationData {
         animation_data = ( 4, 288, 128, 304, 144 )
         animation_data = ( 4, 304, 128, 320, 144 )
@@ -118,7 +118,7 @@ ShotData {  id = 621    fixed_angle = true  collision = 2.5     //White
         animation_data = ( 4, 400, 128, 416, 144 )
     }
 }
-ShotData {  id = 622    fixed_angle = true  collision = 2.5     //Red (Invert)
+ShotData {  id = 622    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Red (Invert)
     AnimationData {
         animation_data = ( 4, 288, 144, 304, 160 )
         animation_data = ( 4, 304, 144, 320, 160 )
@@ -130,7 +130,7 @@ ShotData {  id = 622    fixed_angle = true  collision = 2.5     //Red (Invert)
         animation_data = ( 4, 400, 144, 416, 160 )
     }
 }
-ShotData {  id = 623    fixed_angle = true  collision = 2.5     //Orange (Invert)
+ShotData {  id = 623    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Orange (Invert)
     AnimationData {
         animation_data = ( 4, 288, 160, 304, 176 )
         animation_data = ( 4, 304, 160, 320, 176 )
@@ -142,7 +142,7 @@ ShotData {  id = 623    fixed_angle = true  collision = 2.5     //Orange (Invert
         animation_data = ( 4, 400, 160, 416, 176 )
     }
 }
-ShotData {  id = 624    fixed_angle = true  collision = 2.5     //Yellow (Invert)
+ShotData {  id = 624    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Yellow (Invert)
     AnimationData {
         animation_data = ( 4, 288, 176, 304, 192 )
         animation_data = ( 4, 304, 176, 320, 192 )
@@ -154,7 +154,7 @@ ShotData {  id = 624    fixed_angle = true  collision = 2.5     //Yellow (Invert
         animation_data = ( 4, 400, 176, 416, 192 )
     }
 }
-ShotData {  id = 625    fixed_angle = true  collision = 2.5     //Green (Invert)
+ShotData {  id = 625    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Green (Invert)
     AnimationData {
         animation_data = ( 4, 288, 192, 304, 208 )
         animation_data = ( 4, 304, 192, 320, 208 )
@@ -166,7 +166,7 @@ ShotData {  id = 625    fixed_angle = true  collision = 2.5     //Green (Invert)
         animation_data = ( 4, 400, 192, 416, 208 )
     }
 }
-ShotData {  id = 626    fixed_angle = true  collision = 2.5     //Blue (Invert)
+ShotData {  id = 626    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Blue (Invert)
     AnimationData {
         animation_data = ( 4, 288, 208, 304, 224 )
         animation_data = ( 4, 304, 208, 320, 224 )
@@ -178,7 +178,7 @@ ShotData {  id = 626    fixed_angle = true  collision = 2.5     //Blue (Invert)
         animation_data = ( 4, 400, 208, 416, 224 )
     }
 }
-ShotData {  id = 627    fixed_angle = true  collision = 2.5     //Purple (Invert)
+ShotData {  id = 627    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Purple (Invert)
     AnimationData {
         animation_data = ( 4, 288, 224, 304, 240 )
         animation_data = ( 4, 304, 224, 320, 240 )
@@ -190,7 +190,7 @@ ShotData {  id = 627    fixed_angle = true  collision = 2.5     //Purple (Invert
         animation_data = ( 4, 400, 224, 416, 240 )
     }
 }
-ShotData {  id = 628    fixed_angle = true  collision = 2.5     //Pink (Invert)
+ShotData {  id = 628    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Pink (Invert)
     AnimationData {
         animation_data = ( 4, 288, 240, 304, 256 )
         animation_data = ( 4, 304, 240, 320, 256 )
@@ -202,7 +202,7 @@ ShotData {  id = 628    fixed_angle = true  collision = 2.5     //Pink (Invert)
         animation_data = ( 4, 400, 240, 416, 256 )
     }
 }
-ShotData {  id = 629    fixed_angle = true  collision = 2.5     //Gray (Invert)
+ShotData {  id = 629    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Gray (Invert)
     AnimationData {
         animation_data = ( 4, 288, 256, 304, 272 )
         animation_data = ( 4, 304, 256, 320, 272 )
@@ -214,7 +214,7 @@ ShotData {  id = 629    fixed_angle = true  collision = 2.5     //Gray (Invert)
         animation_data = ( 4, 400, 256, 416, 272 )
     }
 }
-ShotData {  id = 630    fixed_angle = true  collision = 2.5     //Black
+ShotData {  id = 630    fixed_angle = true  collision = ( 2.5, 0, 0 )     //Black
     AnimationData {
         animation_data = ( 4, 288, 272, 304, 288 )
         animation_data = ( 4, 304, 272, 320, 288 )
@@ -233,7 +233,7 @@ ShotData {  id = 630    fixed_angle = true  collision = 2.5     //Black
 
 //Animated Yin Yang Orb
 //----------------------------------------------------
-ShotData {  id = 631    fixed_angle = true  collision = 11      //Red
+ShotData {  id = 631    fixed_angle = true  collision = ( 11, 0, 0 )      //Red
     AnimationData {
         animation_data = ( 3, 000, 320, 032, 352 )
         animation_data = ( 3, 032, 320, 064, 352 )
@@ -241,7 +241,7 @@ ShotData {  id = 631    fixed_angle = true  collision = 11      //Red
         animation_data = ( 3, 096, 320, 128, 352 )
     }
 }
-ShotData {  id = 632    fixed_angle = true  collision = 11      //Orange
+ShotData {  id = 632    fixed_angle = true  collision = ( 11, 0, 0 )      //Orange
     AnimationData {
         animation_data = ( 3, 000, 352, 032, 384 )
         animation_data = ( 3, 032, 352, 064, 384 )
@@ -249,7 +249,7 @@ ShotData {  id = 632    fixed_angle = true  collision = 11      //Orange
         animation_data = ( 3, 096, 352, 128, 384 )
     }
 }
-ShotData {  id = 633    fixed_angle = true  collision = 11      //Yellow
+ShotData {  id = 633    fixed_angle = true  collision = ( 11, 0, 0 )      //Yellow
     AnimationData {
         animation_data = ( 3, 000, 384, 032, 416 )
         animation_data = ( 3, 032, 384, 064, 416 )
@@ -257,7 +257,7 @@ ShotData {  id = 633    fixed_angle = true  collision = 11      //Yellow
         animation_data = ( 3, 096, 384, 128, 416 )
     }
 }
-ShotData {  id = 634    fixed_angle = true  collision = 11      //Green
+ShotData {  id = 634    fixed_angle = true  collision = ( 11, 0, 0 )      //Green
     AnimationData {
         animation_data = ( 3, 000, 416, 032, 448 )
         animation_data = ( 3, 032, 416, 064, 448 )
@@ -265,7 +265,7 @@ ShotData {  id = 634    fixed_angle = true  collision = 11      //Green
         animation_data = ( 3, 096, 416, 128, 448 )
     }
 }
-ShotData {  id = 635    fixed_angle = true  collision = 11      //Blue
+ShotData {  id = 635    fixed_angle = true  collision = ( 11, 0, 0 )      //Blue
     AnimationData {
         animation_data = ( 3, 000, 448, 032, 480 )
         animation_data = ( 3, 032, 448, 064, 480 )
@@ -273,7 +273,7 @@ ShotData {  id = 635    fixed_angle = true  collision = 11      //Blue
         animation_data = ( 3, 096, 448, 128, 480 )
     }
 }
-ShotData {  id = 636    fixed_angle = true  collision = 11      //Purple
+ShotData {  id = 636    fixed_angle = true  collision = ( 11, 0, 0 )      //Purple
     AnimationData {
         animation_data = ( 3, 000, 480, 032, 512 )
         animation_data = ( 3, 032, 480, 064, 512 )
@@ -281,7 +281,7 @@ ShotData {  id = 636    fixed_angle = true  collision = 11      //Purple
         animation_data = ( 3, 096, 480, 128, 512 )
     }
 }
-ShotData {  id = 637    fixed_angle = true  collision = 11      //Pink
+ShotData {  id = 637    fixed_angle = true  collision = ( 11, 0, 0 )      //Pink
     AnimationData {
         animation_data = ( 3, 000, 512, 032, 544 )
         animation_data = ( 3, 032, 512, 064, 544 )
@@ -289,7 +289,7 @@ ShotData {  id = 637    fixed_angle = true  collision = 11      //Pink
         animation_data = ( 3, 096, 512, 128, 544 )
     }
 }
-ShotData {  id = 638    fixed_angle = true  collision = 11      //Gray
+ShotData {  id = 638    fixed_angle = true  collision = ( 11, 0, 0 )      //Gray
     AnimationData {
         animation_data = ( 3, 000, 544, 032, 576 )
         animation_data = ( 3, 032, 544, 064, 576 )
@@ -297,7 +297,7 @@ ShotData {  id = 638    fixed_angle = true  collision = 11      //Gray
         animation_data = ( 3, 096, 544, 128, 576 )
     }
 }
-ShotData {  id = 639    fixed_angle = true  collision = 11      //White
+ShotData {  id = 639    fixed_angle = true  collision = ( 11, 0, 0 )      //White
     AnimationData {
         animation_data = ( 3, 000, 576, 032, 608 )
         animation_data = ( 3, 032, 576, 064, 608 )
@@ -305,7 +305,7 @@ ShotData {  id = 639    fixed_angle = true  collision = 11      //White
         animation_data = ( 3, 096, 576, 128, 608 )
     }
 }
-ShotData {  id = 640    fixed_angle = true  collision = 11      //Red (Invert)
+ShotData {  id = 640    fixed_angle = true  collision = ( 11, 0, 0 )      //Red (Invert)
     AnimationData {
         animation_data = ( 3, 128, 320, 160, 352 )
         animation_data = ( 3, 160, 320, 192, 352 )
@@ -313,7 +313,7 @@ ShotData {  id = 640    fixed_angle = true  collision = 11      //Red (Invert)
         animation_data = ( 3, 224, 320, 256, 352 )
     }
 }
-ShotData {  id = 641    fixed_angle = true  collision = 11      //Orange (Invert)
+ShotData {  id = 641    fixed_angle = true  collision = ( 11, 0, 0 )      //Orange (Invert)
     AnimationData {
         animation_data = ( 3, 128, 352, 160, 384 )
         animation_data = ( 3, 160, 352, 192, 384 )
@@ -321,7 +321,7 @@ ShotData {  id = 641    fixed_angle = true  collision = 11      //Orange (Invert
         animation_data = ( 3, 224, 352, 256, 384 )
     }
 }
-ShotData {  id = 642    fixed_angle = true  collision = 11      //Yellow (Invert)
+ShotData {  id = 642    fixed_angle = true  collision = ( 11, 0, 0 )      //Yellow (Invert)
     AnimationData {
         animation_data = ( 3, 128, 384, 160, 416 )
         animation_data = ( 3, 160, 384, 192, 416 )
@@ -329,7 +329,7 @@ ShotData {  id = 642    fixed_angle = true  collision = 11      //Yellow (Invert
         animation_data = ( 3, 224, 384, 256, 416 )
     }
 }
-ShotData {  id = 643    fixed_angle = true  collision = 11      //Green (Invert)
+ShotData {  id = 643    fixed_angle = true  collision = ( 11, 0, 0 )      //Green (Invert)
     AnimationData {
         animation_data = ( 3, 128, 416, 160, 448 )
         animation_data = ( 3, 160, 416, 192, 448 )
@@ -337,7 +337,7 @@ ShotData {  id = 643    fixed_angle = true  collision = 11      //Green (Invert)
         animation_data = ( 3, 224, 416, 256, 448 )
     }
 }
-ShotData {  id = 644    fixed_angle = true  collision = 11      //Blue (Invert)
+ShotData {  id = 644    fixed_angle = true  collision = ( 11, 0, 0 )      //Blue (Invert)
     AnimationData {
         animation_data = ( 3, 128, 448, 160, 480 )
         animation_data = ( 3, 160, 448, 192, 480 )
@@ -345,7 +345,7 @@ ShotData {  id = 644    fixed_angle = true  collision = 11      //Blue (Invert)
         animation_data = ( 3, 224, 448, 256, 480 )
     }
 }
-ShotData {  id = 645    fixed_angle = true  collision = 11      //Purple (Invert)
+ShotData {  id = 645    fixed_angle = true  collision = ( 11, 0, 0 )      //Purple (Invert)
     AnimationData {
         animation_data = ( 3, 128, 480, 160, 512 )
         animation_data = ( 3, 160, 480, 192, 512 )
@@ -353,7 +353,7 @@ ShotData {  id = 645    fixed_angle = true  collision = 11      //Purple (Invert
         animation_data = ( 3, 224, 480, 256, 512 )
     }
 }
-ShotData {  id = 646    fixed_angle = true  collision = 11      //Pink (Invert)
+ShotData {  id = 646    fixed_angle = true  collision = ( 11, 0, 0 )      //Pink (Invert)
     AnimationData {
         animation_data = ( 3, 128, 512, 160, 544 )
         animation_data = ( 3, 160, 512, 192, 544 )
@@ -361,7 +361,7 @@ ShotData {  id = 646    fixed_angle = true  collision = 11      //Pink (Invert)
         animation_data = ( 3, 224, 512, 256, 544 )
     }
 }
-ShotData {  id = 647    fixed_angle = true  collision = 11      //Gray (Invert)
+ShotData {  id = 647    fixed_angle = true  collision = ( 11, 0, 0 )      //Gray (Invert)
     AnimationData {
         animation_data = ( 3, 128, 544, 160, 576 )
         animation_data = ( 3, 160, 544, 192, 576 )
@@ -369,7 +369,7 @@ ShotData {  id = 647    fixed_angle = true  collision = 11      //Gray (Invert)
         animation_data = ( 3, 224, 544, 256, 576 )
     }
 }
-ShotData {  id = 648    fixed_angle = true  collision = 11      //Black
+ShotData {  id = 648    fixed_angle = true  collision = ( 11, 0, 0 )      //Black
     AnimationData {
         animation_data = ( 3, 128, 576, 160, 608 )
         animation_data = ( 3, 160, 576, 192, 608 )
@@ -380,7 +380,7 @@ ShotData {  id = 648    fixed_angle = true  collision = 11      //Black
 
 //Animated Pill
 //----------------------------------------------------
-ShotData {  id = 649    fixed_angle = true  collision = 7       //Red
+ShotData {  id = 649    fixed_angle = true  collision = ( 7, 0, 0 )       //Red
     AnimationData {
         animation_data = ( 2, 256, 320, 288, 352 )
         animation_data = ( 2, 288, 320, 320, 352 )
@@ -388,7 +388,7 @@ ShotData {  id = 649    fixed_angle = true  collision = 7       //Red
         animation_data = ( 2, 352, 320, 384, 352 )
     }
 }
-ShotData {  id = 650    fixed_angle = true  collision = 7       //Orange
+ShotData {  id = 650    fixed_angle = true  collision = ( 7, 0, 0 )       //Orange
     AnimationData {
         animation_data = ( 2, 256, 352, 288, 384 )
         animation_data = ( 2, 288, 352, 320, 384 )
@@ -396,7 +396,7 @@ ShotData {  id = 650    fixed_angle = true  collision = 7       //Orange
         animation_data = ( 2, 352, 352, 384, 384 )
     }
 }
-ShotData {  id = 651    fixed_angle = true  collision = 7       //Yellow
+ShotData {  id = 651    fixed_angle = true  collision = ( 7, 0, 0 )       //Yellow
     AnimationData {
         animation_data = ( 2, 256, 384, 288, 416 )
         animation_data = ( 2, 288, 384, 320, 416 )
@@ -404,7 +404,7 @@ ShotData {  id = 651    fixed_angle = true  collision = 7       //Yellow
         animation_data = ( 2, 352, 384, 384, 416 )
     }
 }
-ShotData {  id = 652    fixed_angle = true  collision = 7       //Green
+ShotData {  id = 652    fixed_angle = true  collision = ( 7, 0, 0 )       //Green
     AnimationData {
         animation_data = ( 2, 256, 416, 288, 448 )
         animation_data = ( 2, 288, 416, 320, 448 )
@@ -412,7 +412,7 @@ ShotData {  id = 652    fixed_angle = true  collision = 7       //Green
         animation_data = ( 2, 352, 416, 384, 448 )
     }
 }
-ShotData {  id = 653    fixed_angle = true  collision = 7       //Blue
+ShotData {  id = 653    fixed_angle = true  collision = ( 7, 0, 0 )       //Blue
     AnimationData {
         animation_data = ( 2, 256, 448, 288, 480 )
         animation_data = ( 2, 288, 448, 320, 480 )
@@ -420,7 +420,7 @@ ShotData {  id = 653    fixed_angle = true  collision = 7       //Blue
         animation_data = ( 2, 352, 448, 384, 480 )
     }
 }
-ShotData {  id = 654    fixed_angle = true  collision = 7       //Purple
+ShotData {  id = 654    fixed_angle = true  collision = ( 7, 0, 0 )       //Purple
     AnimationData {
         animation_data = ( 2, 256, 480, 288, 512 )
         animation_data = ( 2, 288, 480, 320, 512 )
@@ -428,7 +428,7 @@ ShotData {  id = 654    fixed_angle = true  collision = 7       //Purple
         animation_data = ( 2, 352, 480, 384, 512 )
     }
 }
-ShotData {  id = 655    fixed_angle = true  collision = 7       //Pink
+ShotData {  id = 655    fixed_angle = true  collision = ( 7, 0, 0 )       //Pink
     AnimationData {
         animation_data = ( 2, 256, 512, 288, 544 )
         animation_data = ( 2, 288, 512, 320, 544 )
@@ -436,7 +436,7 @@ ShotData {  id = 655    fixed_angle = true  collision = 7       //Pink
         animation_data = ( 2, 352, 512, 384, 544 )
     }
 }
-ShotData {  id = 656    fixed_angle = true  collision = 7       //Gray
+ShotData {  id = 656    fixed_angle = true  collision = ( 7, 0, 0 )       //Gray
     AnimationData {
         animation_data = ( 2, 256, 544, 288, 576 )
         animation_data = ( 2, 288, 544, 320, 576 )
@@ -444,7 +444,7 @@ ShotData {  id = 656    fixed_angle = true  collision = 7       //Gray
         animation_data = ( 2, 352, 544, 384, 576 )
     }
 }
-ShotData {  id = 657    fixed_angle = true  collision = 7       //White
+ShotData {  id = 657    fixed_angle = true  collision = ( 7, 0, 0 )       //White
     AnimationData {
         animation_data = ( 2, 256, 576, 288, 608 )
         animation_data = ( 2, 288, 576, 320, 608 )
@@ -452,7 +452,7 @@ ShotData {  id = 657    fixed_angle = true  collision = 7       //White
         animation_data = ( 2, 352, 576, 384, 608 )
     }
 }
-ShotData {  id = 658    fixed_angle = true  collision = 7       //Red (Invert)
+ShotData {  id = 658    fixed_angle = true  collision = ( 7, 0, 0 )       //Red (Invert)
     AnimationData {
         animation_data = ( 2, 384, 320, 416, 352 )
         animation_data = ( 2, 416, 320, 448, 352 )
@@ -460,7 +460,7 @@ ShotData {  id = 658    fixed_angle = true  collision = 7       //Red (Invert)
         animation_data = ( 2, 480, 320, 512, 352 )
     }
 }
-ShotData {  id = 659    fixed_angle = true  collision = 7       //Orange (Invert)
+ShotData {  id = 659    fixed_angle = true  collision = ( 7, 0, 0 )       //Orange (Invert)
     AnimationData {
         animation_data = ( 2, 384, 352, 416, 384 )
         animation_data = ( 2, 416, 352, 448, 384 )
@@ -468,7 +468,7 @@ ShotData {  id = 659    fixed_angle = true  collision = 7       //Orange (Invert
         animation_data = ( 2, 480, 352, 512, 384 )
     }
 }
-ShotData {  id = 660    fixed_angle = true  collision = 7       //Yellow (Invert)
+ShotData {  id = 660    fixed_angle = true  collision = ( 7, 0, 0 )       //Yellow (Invert)
     AnimationData {
         animation_data = ( 2, 384, 384, 416, 416 )
         animation_data = ( 2, 416, 384, 448, 416 )
@@ -476,7 +476,7 @@ ShotData {  id = 660    fixed_angle = true  collision = 7       //Yellow (Invert
         animation_data = ( 2, 480, 384, 512, 416 )
     }
 }
-ShotData {  id = 661    fixed_angle = true  collision = 7       //Green (Invert)
+ShotData {  id = 661    fixed_angle = true  collision = ( 7, 0, 0 )       //Green (Invert)
     AnimationData {
         animation_data = ( 2, 384, 416, 416, 448 )
         animation_data = ( 2, 416, 416, 448, 448 )
@@ -484,7 +484,7 @@ ShotData {  id = 661    fixed_angle = true  collision = 7       //Green (Invert)
         animation_data = ( 2, 480, 416, 512, 448 )
     }
 }
-ShotData {  id = 662    fixed_angle = true  collision = 7       //Blue (Invert)
+ShotData {  id = 662    fixed_angle = true  collision = ( 7, 0, 0 )       //Blue (Invert)
     AnimationData {
         animation_data = ( 2, 384, 448, 416, 480 )
         animation_data = ( 2, 416, 448, 448, 480 )
@@ -492,7 +492,7 @@ ShotData {  id = 662    fixed_angle = true  collision = 7       //Blue (Invert)
         animation_data = ( 2, 480, 448, 512, 480 )
     }
 }
-ShotData {  id = 663    fixed_angle = true  collision = 7       //Purple (Invert)
+ShotData {  id = 663    fixed_angle = true  collision = ( 7, 0, 0 )       //Purple (Invert)
     AnimationData {
         animation_data = ( 2, 384, 480, 416, 512 )
         animation_data = ( 2, 416, 480, 448, 512 )
@@ -500,7 +500,7 @@ ShotData {  id = 663    fixed_angle = true  collision = 7       //Purple (Invert
         animation_data = ( 2, 480, 480, 512, 512 )
     }
 }
-ShotData {  id = 664    fixed_angle = true  collision = 7       //Pink (Invert)
+ShotData {  id = 664    fixed_angle = true  collision = ( 7, 0, 0 )       //Pink (Invert)
     AnimationData {
         animation_data = ( 2, 384, 512, 416, 544 )
         animation_data = ( 2, 416, 512, 448, 544 )
@@ -508,7 +508,7 @@ ShotData {  id = 664    fixed_angle = true  collision = 7       //Pink (Invert)
         animation_data = ( 2, 480, 512, 512, 544 )
     }
 }
-ShotData {  id = 665    fixed_angle = true  collision = 7       //Gray (Invert)
+ShotData {  id = 665    fixed_angle = true  collision = ( 7, 0, 0 )       //Gray (Invert)
     AnimationData {
         animation_data = ( 2, 384, 544, 416, 576 )
         animation_data = ( 2, 416, 544, 448, 576 )
@@ -516,7 +516,7 @@ ShotData {  id = 665    fixed_angle = true  collision = 7       //Gray (Invert)
         animation_data = ( 2, 480, 544, 512, 576 )
     }
 }
-ShotData {  id = 666    fixed_angle = true  collision = 7       //Black
+ShotData {  id = 666    fixed_angle = true  collision = ( 7, 0, 0 )       //Black
     AnimationData {
         animation_data = ( 2, 384, 576, 416, 608 )
         animation_data = ( 2, 416, 576, 448, 608 )
@@ -527,7 +527,7 @@ ShotData {  id = 666    fixed_angle = true  collision = 7       //Black
 
 //Animated Sword   
 //----------------------------------------------------
-ShotData {  id = 667    fixed_angle = false collision = (3, 0, 3)       //Red
+ShotData {  id = 667    fixed_angle = false collision = ( 3, 0, 3 )       //Red
     AnimationData {
         animation_data = ( 4, 512, 320, 544, 352 )
         animation_data = ( 4, 544, 320, 576, 352 )
@@ -535,7 +535,7 @@ ShotData {  id = 667    fixed_angle = false collision = (3, 0, 3)       //Red
         animation_data = ( 4, 608, 320, 640, 352 )
     }
 }
-ShotData {  id = 668    fixed_angle = false collision = (3, 0, 3)       //Orange
+ShotData {  id = 668    fixed_angle = false collision = ( 3, 0, 3 )       //Orange
     AnimationData {
         animation_data = ( 4, 512, 352, 544, 384 )
         animation_data = ( 4, 544, 352, 576, 384 )
@@ -543,7 +543,7 @@ ShotData {  id = 668    fixed_angle = false collision = (3, 0, 3)       //Orange
         animation_data = ( 4, 608, 352, 640, 384 )
     }
 }
-ShotData {  id = 669    fixed_angle = false collision = (3, 0, 3)       //Yellow
+ShotData {  id = 669    fixed_angle = false collision = ( 3, 0, 3 )       //Yellow
     AnimationData {
         animation_data = ( 4, 512, 384, 544, 416 )
         animation_data = ( 4, 544, 384, 576, 416 )
@@ -551,7 +551,7 @@ ShotData {  id = 669    fixed_angle = false collision = (3, 0, 3)       //Yellow
         animation_data = ( 4, 608, 384, 640, 416 )
     }
 }
-ShotData {  id = 670    fixed_angle = false collision = (3, 0, 3)       //Green
+ShotData {  id = 670    fixed_angle = false collision = ( 3, 0, 3 )       //Green
     AnimationData {
         animation_data = ( 4, 512, 416, 544, 448 )
         animation_data = ( 4, 544, 416, 576, 448 )
@@ -559,7 +559,7 @@ ShotData {  id = 670    fixed_angle = false collision = (3, 0, 3)       //Green
         animation_data = ( 4, 608, 416, 640, 448 )
     }
 }
-ShotData {  id = 671    fixed_angle = false collision = (3, 0, 3)       //Blue
+ShotData {  id = 671    fixed_angle = false collision = ( 3, 0, 3 )       //Blue
     AnimationData {
         animation_data = ( 4, 512, 448, 544, 480 )
         animation_data = ( 4, 544, 448, 576, 480 )
@@ -567,7 +567,7 @@ ShotData {  id = 671    fixed_angle = false collision = (3, 0, 3)       //Blue
         animation_data = ( 4, 608, 448, 640, 480 )
     }
 }
-ShotData {  id = 672    fixed_angle = false collision = (3, 0, 3)       //Purple
+ShotData {  id = 672    fixed_angle = false collision = ( 3, 0, 3 )       //Purple
     AnimationData {
         animation_data = ( 4, 512, 480, 544, 512 )
         animation_data = ( 4, 544, 480, 576, 512 )
@@ -575,7 +575,7 @@ ShotData {  id = 672    fixed_angle = false collision = (3, 0, 3)       //Purple
         animation_data = ( 4, 608, 480, 640, 512 )
     }
 }
-ShotData {  id = 673    fixed_angle = false collision = (3, 0, 3)       //Pink
+ShotData {  id = 673    fixed_angle = false collision = ( 3, 0, 3 )       //Pink
     AnimationData {
         animation_data = ( 4, 512, 512, 544, 544 )
         animation_data = ( 4, 544, 512, 576, 544 )
@@ -583,7 +583,7 @@ ShotData {  id = 673    fixed_angle = false collision = (3, 0, 3)       //Pink
         animation_data = ( 4, 608, 512, 640, 544 )
     }
 }
-ShotData {  id = 674    fixed_angle = false collision = (3, 0, 3)       //Gray
+ShotData {  id = 674    fixed_angle = false collision = ( 3, 0, 3 )       //Gray
     AnimationData {
         animation_data = ( 4, 512, 544, 544, 576 )
         animation_data = ( 4, 544, 544, 576, 576 )
@@ -591,7 +591,7 @@ ShotData {  id = 674    fixed_angle = false collision = (3, 0, 3)       //Gray
         animation_data = ( 4, 608, 544, 640, 576 )
     }
 }
-ShotData {  id = 675    fixed_angle = false collision = (3, 0, 3)       //White
+ShotData {  id = 675    fixed_angle = false collision = ( 3, 0, 3 )       //White
     AnimationData {
         animation_data = ( 4, 512, 576, 544, 608 )
         animation_data = ( 4, 544, 576, 576, 608 )
@@ -599,7 +599,7 @@ ShotData {  id = 675    fixed_angle = false collision = (3, 0, 3)       //White
         animation_data = ( 4, 608, 576, 640, 608 )
     }
 }
-ShotData {  id = 676    fixed_angle = false collision = (3, 0, 3)       //Red (Invert)
+ShotData {  id = 676    fixed_angle = false collision = ( 3, 0, 3 )       //Red (Invert)
     AnimationData {
         animation_data = ( 4, 640, 320, 672, 352 )
         animation_data = ( 4, 672, 320, 704, 352 )
@@ -607,7 +607,7 @@ ShotData {  id = 676    fixed_angle = false collision = (3, 0, 3)       //Red (I
         animation_data = ( 4, 736, 320, 768, 352 )
     }
 }
-ShotData {  id = 677    fixed_angle = false collision = (3, 0, 3)       //Orange (Invert)
+ShotData {  id = 677    fixed_angle = false collision = ( 3, 0, 3 )       //Orange (Invert)
     AnimationData {
         animation_data = ( 4, 640, 352, 672, 384 )
         animation_data = ( 4, 672, 352, 704, 384 )
@@ -615,7 +615,7 @@ ShotData {  id = 677    fixed_angle = false collision = (3, 0, 3)       //Orange
         animation_data = ( 4, 736, 352, 768, 384 )
     }
 }
-ShotData {  id = 678    fixed_angle = false collision = (3, 0, 3)       //Yellow (Invert)
+ShotData {  id = 678    fixed_angle = false collision = ( 3, 0, 3 )       //Yellow (Invert)
     AnimationData {
         animation_data = ( 4, 640, 384, 672, 416 )
         animation_data = ( 4, 672, 384, 704, 416 )
@@ -623,7 +623,7 @@ ShotData {  id = 678    fixed_angle = false collision = (3, 0, 3)       //Yellow
         animation_data = ( 4, 736, 384, 768, 416 )
     }
 }
-ShotData {  id = 679    fixed_angle = false collision = (3, 0, 3)       //Green (Invert)
+ShotData {  id = 679    fixed_angle = false collision = ( 3, 0, 3 )       //Green (Invert)
     AnimationData {
         animation_data = ( 4, 640, 416, 672, 448 )
         animation_data = ( 4, 672, 416, 704, 448 )
@@ -631,7 +631,7 @@ ShotData {  id = 679    fixed_angle = false collision = (3, 0, 3)       //Green 
         animation_data = ( 4, 736, 416, 768, 448 )
     }
 }
-ShotData {  id = 680    fixed_angle = false collision = (3, 0, 3)       //Blue (Invert)
+ShotData {  id = 680    fixed_angle = false collision = ( 3, 0, 3 )       //Blue (Invert)
     AnimationData {
         animation_data = ( 4, 640, 448, 672, 480 )
         animation_data = ( 4, 672, 448, 704, 480 )
@@ -639,7 +639,7 @@ ShotData {  id = 680    fixed_angle = false collision = (3, 0, 3)       //Blue (
         animation_data = ( 4, 736, 448, 768, 480 )
     }
 }
-ShotData {  id = 681    fixed_angle = false collision = (3, 0, 3)       //Purple (Invert)
+ShotData {  id = 681    fixed_angle = false collision = ( 3, 0, 3 )       //Purple (Invert)
     AnimationData {
         animation_data = ( 4, 640, 480, 672, 512 )
         animation_data = ( 4, 672, 480, 704, 512 )
@@ -647,7 +647,7 @@ ShotData {  id = 681    fixed_angle = false collision = (3, 0, 3)       //Purple
         animation_data = ( 4, 736, 480, 768, 512 )
     }
 }
-ShotData {  id = 682    fixed_angle = false collision = (3, 0, 3)       //Pink (Invert)
+ShotData {  id = 682    fixed_angle = false collision = ( 3, 0, 3 )       //Pink (Invert)
     AnimationData {
         animation_data = ( 4, 640, 512, 672, 544 )
         animation_data = ( 4, 672, 512, 704, 544 )
@@ -655,7 +655,7 @@ ShotData {  id = 682    fixed_angle = false collision = (3, 0, 3)       //Pink (
         animation_data = ( 4, 736, 512, 768, 544 )
     }
 }
-ShotData {  id = 683    fixed_angle = false collision = (3, 0, 3)       //Gray (Invert)
+ShotData {  id = 683    fixed_angle = false collision = ( 3, 0, 3 )       //Gray (Invert)
     AnimationData {
         animation_data = ( 4, 640, 544, 672, 576 )
         animation_data = ( 4, 672, 544, 704, 576 )
@@ -663,7 +663,7 @@ ShotData {  id = 683    fixed_angle = false collision = (3, 0, 3)       //Gray (
         animation_data = ( 4, 736, 544, 768, 576 )
     }
 }
-ShotData {  id = 684    fixed_angle = false collision = (3, 0, 3)       //Black
+ShotData {  id = 684    fixed_angle = false collision = ( 3, 0, 3 )       //Black
     AnimationData {
         animation_data = ( 4, 640, 576, 672, 608 )
         animation_data = ( 4, 672, 576, 704, 608 )
@@ -674,7 +674,7 @@ ShotData {  id = 684    fixed_angle = false collision = (3, 0, 3)       //Black
 
 //Animated Fire
 //----------------------------------------------------
-ShotData {  id = 685    fixed_angle = false collision = (7, 0, 3)       //Red
+ShotData {  id = 685    fixed_angle = false collision = ( 7, 0, 3 )       //Red
     AnimationData {
         animation_data = ( 4, 768, 320, 800, 352 )
         animation_data = ( 4, 800, 320, 832, 352 )
@@ -682,7 +682,7 @@ ShotData {  id = 685    fixed_angle = false collision = (7, 0, 3)       //Red
         animation_data = ( 4, 864, 320, 896, 352 )
     }
 }
-ShotData {  id = 686    fixed_angle = false collision = (7, 0, 3)       //Orange
+ShotData {  id = 686    fixed_angle = false collision = ( 7, 0, 3 )       //Orange
     AnimationData {
         animation_data = ( 4, 768, 352, 800, 384 )
         animation_data = ( 4, 800, 352, 832, 384 )
@@ -690,7 +690,7 @@ ShotData {  id = 686    fixed_angle = false collision = (7, 0, 3)       //Orange
         animation_data = ( 4, 864, 352, 896, 384 )
     }
 }
-ShotData {  id = 687    fixed_angle = false collision = (7, 0, 3)       //Yellow
+ShotData {  id = 687    fixed_angle = false collision = ( 7, 0, 3 )       //Yellow
     AnimationData {
         animation_data = ( 4, 768, 384, 800, 416 )
         animation_data = ( 4, 800, 384, 832, 416 )
@@ -698,7 +698,7 @@ ShotData {  id = 687    fixed_angle = false collision = (7, 0, 3)       //Yellow
         animation_data = ( 4, 864, 384, 896, 416 )
     }
 }
-ShotData {  id = 688    fixed_angle = false collision = (7, 0, 3)       //Green
+ShotData {  id = 688    fixed_angle = false collision = ( 7, 0, 3 )       //Green
     AnimationData {
         animation_data = ( 4, 768, 416, 800, 448 )
         animation_data = ( 4, 800, 416, 832, 448 )
@@ -706,7 +706,7 @@ ShotData {  id = 688    fixed_angle = false collision = (7, 0, 3)       //Green
         animation_data = ( 4, 864, 416, 896, 448 )
     }
 }
-ShotData {  id = 689    fixed_angle = false collision = (7, 0, 3)       //Blue
+ShotData {  id = 689    fixed_angle = false collision = ( 7, 0, 3 )       //Blue
     AnimationData {
         animation_data = ( 4, 768, 448, 800, 480 )
         animation_data = ( 4, 800, 448, 832, 480 )
@@ -714,7 +714,7 @@ ShotData {  id = 689    fixed_angle = false collision = (7, 0, 3)       //Blue
         animation_data = ( 4, 864, 448, 896, 480 )
     }
 }
-ShotData {  id = 690    fixed_angle = false collision = (7, 0, 3)       //Purple
+ShotData {  id = 690    fixed_angle = false collision = ( 7, 0, 3 )       //Purple
     AnimationData {
         animation_data = ( 4, 768, 480, 800, 512 )
         animation_data = ( 4, 800, 480, 832, 512 )
@@ -722,7 +722,7 @@ ShotData {  id = 690    fixed_angle = false collision = (7, 0, 3)       //Purple
         animation_data = ( 4, 864, 480, 896, 512 )
     }
 }
-ShotData {  id = 691    fixed_angle = false collision = (7, 0, 3)       //Pink
+ShotData {  id = 691    fixed_angle = false collision = ( 7, 0, 3 )       //Pink
     AnimationData {
         animation_data = ( 4, 768, 512, 800, 544 )
         animation_data = ( 4, 800, 512, 832, 544 )
@@ -730,7 +730,7 @@ ShotData {  id = 691    fixed_angle = false collision = (7, 0, 3)       //Pink
         animation_data = ( 4, 864, 512, 896, 544 )
     }
 }
-ShotData {  id = 692    fixed_angle = false collision = (7, 0, 3)       //Gray
+ShotData {  id = 692    fixed_angle = false collision = ( 7, 0, 3 )       //Gray
     AnimationData {
         animation_data = ( 4, 768, 544, 800, 576 )
         animation_data = ( 4, 800, 544, 832, 576 )
@@ -738,7 +738,7 @@ ShotData {  id = 692    fixed_angle = false collision = (7, 0, 3)       //Gray
         animation_data = ( 4, 864, 544, 896, 576 )
     }
 }
-ShotData {  id = 693    fixed_angle = false collision = (7, 0, 3)       //White
+ShotData {  id = 693    fixed_angle = false collision = ( 7, 0, 3 )       //White
     AnimationData {
         animation_data = ( 4, 768, 576, 800, 608 )
         animation_data = ( 4, 800, 576, 832, 608 )
@@ -746,7 +746,7 @@ ShotData {  id = 693    fixed_angle = false collision = (7, 0, 3)       //White
         animation_data = ( 4, 864, 576, 896, 608 )
     }
 }
-ShotData {  id = 694    fixed_angle = false collision = (7, 0, 3)       //Red (Invert)
+ShotData {  id = 694    fixed_angle = false collision = ( 7, 0, 3 )       //Red (Invert)
     AnimationData {
         animation_data = ( 4, 896, 320, 928, 352 )
         animation_data = ( 4, 928, 320, 960, 352 )
@@ -754,7 +754,7 @@ ShotData {  id = 694    fixed_angle = false collision = (7, 0, 3)       //Red (I
         animation_data = ( 4, 992, 320,1024, 352 )
     }
 }
-ShotData {  id = 695    fixed_angle = false collision = (7, 0, 3)       //Orange (Invert)
+ShotData {  id = 695    fixed_angle = false collision = ( 7, 0, 3 )       //Orange (Invert)
     AnimationData {
         animation_data = ( 4, 896, 352, 928, 384 )
         animation_data = ( 4, 928, 352, 960, 384 )
@@ -762,7 +762,7 @@ ShotData {  id = 695    fixed_angle = false collision = (7, 0, 3)       //Orange
         animation_data = ( 4, 992, 352,1024, 384 )
     }
 }
-ShotData {  id = 696    fixed_angle = false collision = (7, 0, 3)       //Yellow (Invert)
+ShotData {  id = 696    fixed_angle = false collision = ( 7, 0, 3 )       //Yellow (Invert)
     AnimationData {
         animation_data = ( 4, 896, 384, 928, 416 )
         animation_data = ( 4, 928, 384, 960, 416 )
@@ -770,7 +770,7 @@ ShotData {  id = 696    fixed_angle = false collision = (7, 0, 3)       //Yellow
         animation_data = ( 4, 992, 384,1024, 416 )
     }
 }
-ShotData {  id = 697    fixed_angle = false collision = (7, 0, 3)       //Green (Invert)
+ShotData {  id = 697    fixed_angle = false collision = ( 7, 0, 3 )       //Green (Invert)
     AnimationData {
         animation_data = ( 4, 896, 416, 928, 448 )
         animation_data = ( 4, 928, 416, 960, 448 )
@@ -778,7 +778,7 @@ ShotData {  id = 697    fixed_angle = false collision = (7, 0, 3)       //Green 
         animation_data = ( 4, 992, 416,1024, 448 )
     }
 }
-ShotData {  id = 698    fixed_angle = false collision = (7, 0, 3)       //Blue (Invert)
+ShotData {  id = 698    fixed_angle = false collision = ( 7, 0, 3 )       //Blue (Invert)
     AnimationData {
         animation_data = ( 4, 896, 448, 928, 480 )
         animation_data = ( 4, 928, 448, 960, 480 )
@@ -786,7 +786,7 @@ ShotData {  id = 698    fixed_angle = false collision = (7, 0, 3)       //Blue (
         animation_data = ( 4, 992, 448,1024, 480 )
     }
 }
-ShotData {  id = 699    fixed_angle = false collision = (7, 0, 3)       //Purple (Invert)
+ShotData {  id = 699    fixed_angle = false collision = ( 7, 0, 3 )       //Purple (Invert)
     AnimationData {
         animation_data = ( 4, 896, 480, 928, 512 )
         animation_data = ( 4, 928, 480, 960, 512 )
@@ -794,7 +794,7 @@ ShotData {  id = 699    fixed_angle = false collision = (7, 0, 3)       //Purple
         animation_data = ( 4, 992, 480,1024, 512 )
     }
 }
-ShotData {  id = 700    fixed_angle = false collision = (7, 0, 3)       //Pink (Invert)
+ShotData {  id = 700    fixed_angle = false collision = ( 7, 0, 3 )       //Pink (Invert)
     AnimationData {
         animation_data = ( 4, 896, 512, 928, 544 )
         animation_data = ( 4, 928, 512, 960, 544 )
@@ -802,7 +802,7 @@ ShotData {  id = 700    fixed_angle = false collision = (7, 0, 3)       //Pink (
         animation_data = ( 4, 992, 512,1024, 544 )
     }
 }
-ShotData {  id = 701    fixed_angle = false collision = (7, 0, 3)       //Gray (Invert)
+ShotData {  id = 701    fixed_angle = false collision = ( 7, 0, 3 )       //Gray (Invert)
     AnimationData {
         animation_data = ( 4, 896, 544, 928, 576 )
         animation_data = ( 4, 928, 544, 960, 576 )
@@ -810,7 +810,7 @@ ShotData {  id = 701    fixed_angle = false collision = (7, 0, 3)       //Gray (
         animation_data = ( 4, 992, 544,1024, 576 )
     }
 }
-ShotData {  id = 702    fixed_angle = false collision = (7, 0, 3)       //Black
+ShotData {  id = 702    fixed_angle = false collision = ( 7, 0, 3 )       //Black
     AnimationData {
         animation_data = ( 4, 896, 576, 928, 608 )
         animation_data = ( 4, 928, 576, 960, 608 )
@@ -821,7 +821,7 @@ ShotData {  id = 702    fixed_angle = false collision = (7, 0, 3)       //Black
 
 //Animated Crystal
 //----------------------------------------------------
-ShotData {  id = 703    fixed_angle = false collision = 7.5     //Red
+ShotData {  id = 703    fixed_angle = false collision = ( 7.5, 0, 0 )     //Red
     AnimationData {
         animation_data = (24, 000, 608, 032, 640 )
         animation_data = ( 6, 032, 608, 064, 640 )
@@ -829,7 +829,7 @@ ShotData {  id = 703    fixed_angle = false collision = 7.5     //Red
         animation_data = ( 6, 096, 608, 128, 640 )
     }
 }
-ShotData {  id = 704    fixed_angle = false collision = 7.5     //Orange
+ShotData {  id = 704    fixed_angle = false collision = ( 7.5, 0, 0 )     //Orange
     AnimationData {
         animation_data = (24, 000, 640, 032, 672 )
         animation_data = ( 6, 032, 640, 064, 672 )
@@ -837,7 +837,7 @@ ShotData {  id = 704    fixed_angle = false collision = 7.5     //Orange
         animation_data = ( 6, 096, 640, 128, 672 )
     }
 }
-ShotData {  id = 705    fixed_angle = false collision = 7.5     //Yellow
+ShotData {  id = 705    fixed_angle = false collision = ( 7.5, 0, 0 )     //Yellow
     AnimationData {
         animation_data = (24, 000, 672, 032, 704 )
         animation_data = ( 6, 032, 672, 064, 704 )
@@ -845,7 +845,7 @@ ShotData {  id = 705    fixed_angle = false collision = 7.5     //Yellow
         animation_data = ( 6, 096, 672, 128, 704 )
     }
 }
-ShotData {  id = 706    fixed_angle = false collision = 7.5     //Green
+ShotData {  id = 706    fixed_angle = false collision = ( 7.5, 0, 0 )     //Green
     AnimationData {
         animation_data = (24, 000, 704, 032, 736 )
         animation_data = ( 6, 032, 704, 064, 736 )
@@ -853,7 +853,7 @@ ShotData {  id = 706    fixed_angle = false collision = 7.5     //Green
         animation_data = ( 6, 096, 704, 128, 736 )
     }
 }
-ShotData {  id = 707    fixed_angle = false collision = 7.5     //Blue
+ShotData {  id = 707    fixed_angle = false collision = ( 7.5, 0, 0 )     //Blue
     AnimationData {
         animation_data = (24, 000, 736, 032, 768 )
         animation_data = ( 6, 032, 736, 064, 768 )
@@ -861,7 +861,7 @@ ShotData {  id = 707    fixed_angle = false collision = 7.5     //Blue
         animation_data = ( 6, 096, 736, 128, 768 )
     }
 }
-ShotData {  id = 708    fixed_angle = false collision = 7.5     //Purple
+ShotData {  id = 708    fixed_angle = false collision = ( 7.5, 0, 0 )     //Purple
     AnimationData {
         animation_data = (24, 000, 768, 032, 800 )
         animation_data = ( 6, 032, 768, 064, 800 )
@@ -869,7 +869,7 @@ ShotData {  id = 708    fixed_angle = false collision = 7.5     //Purple
         animation_data = ( 6, 096, 768, 128, 800 )
     }
 }
-ShotData {  id = 709    fixed_angle = false collision = 7.5     //Pink
+ShotData {  id = 709    fixed_angle = false collision = ( 7.5, 0, 0 )     //Pink
     AnimationData {
         animation_data = (24, 000, 800, 032, 832 )
         animation_data = ( 6, 032, 800, 064, 832 )
@@ -877,7 +877,7 @@ ShotData {  id = 709    fixed_angle = false collision = 7.5     //Pink
         animation_data = ( 6, 096, 800, 128, 832 )
     }
 }
-ShotData {  id = 710    fixed_angle = false collision = 7.5     //Gray
+ShotData {  id = 710    fixed_angle = false collision = ( 7.5, 0, 0 )     //Gray
     AnimationData {
         animation_data = (24, 000, 832, 032, 864 )
         animation_data = ( 6, 032, 832, 064, 864 )
@@ -885,7 +885,7 @@ ShotData {  id = 710    fixed_angle = false collision = 7.5     //Gray
         animation_data = ( 6, 096, 832, 128, 864 )
     }
 }
-ShotData {  id = 711    fixed_angle = false collision = 7.5     //White
+ShotData {  id = 711    fixed_angle = false collision = ( 7.5, 0, 0 )     //White
     AnimationData {
         animation_data = (24, 000, 864, 032, 896 )
         animation_data = ( 6, 032, 864, 064, 896 )
@@ -893,7 +893,7 @@ ShotData {  id = 711    fixed_angle = false collision = 7.5     //White
         animation_data = ( 6, 096, 864, 128, 896 )
     }
 }
-ShotData {  id = 712    fixed_angle = false collision = 7.5     //Red (Invert)
+ShotData {  id = 712    fixed_angle = false collision = ( 7.5, 0, 0 )     //Red (Invert)
     AnimationData {
         animation_data = (24, 128, 608, 160, 640 )
         animation_data = ( 6, 160, 608, 192, 640 )
@@ -901,7 +901,7 @@ ShotData {  id = 712    fixed_angle = false collision = 7.5     //Red (Invert)
         animation_data = ( 6, 224, 608, 256, 640 )
     }
 }
-ShotData {  id = 713    fixed_angle = false collision = 7.5     //Orange (Invert)
+ShotData {  id = 713    fixed_angle = false collision = ( 7.5, 0, 0 )     //Orange (Invert)
     AnimationData {
         animation_data = (24, 128, 640, 160, 672 )
         animation_data = ( 6, 160, 640, 192, 672 )
@@ -909,7 +909,7 @@ ShotData {  id = 713    fixed_angle = false collision = 7.5     //Orange (Invert
         animation_data = ( 6, 224, 640, 256, 672 )
     }
 }
-ShotData {  id = 714    fixed_angle = false collision = 7.5     //Yellow (Invert)
+ShotData {  id = 714    fixed_angle = false collision = ( 7.5, 0, 0 )     //Yellow (Invert)
     AnimationData {
         animation_data = (24, 128, 672, 160, 704 )
         animation_data = ( 6, 160, 672, 192, 704 )
@@ -917,7 +917,7 @@ ShotData {  id = 714    fixed_angle = false collision = 7.5     //Yellow (Invert
         animation_data = ( 6, 224, 672, 256, 704 )
     }
 }
-ShotData {  id = 715    fixed_angle = false collision = 7.5     //Green (Invert)
+ShotData {  id = 715    fixed_angle = false collision = ( 7.5, 0, 0 )     //Green (Invert)
     AnimationData {
         animation_data = (24, 128, 704, 160, 736 )
         animation_data = ( 6, 160, 704, 192, 736 )
@@ -925,7 +925,7 @@ ShotData {  id = 715    fixed_angle = false collision = 7.5     //Green (Invert)
         animation_data = ( 6, 224, 704, 256, 736 )
     }
 }
-ShotData {  id = 716    fixed_angle = false collision = 7.5     //Blue (Invert)
+ShotData {  id = 716    fixed_angle = false collision = ( 7.5, 0, 0 )     //Blue (Invert)
     AnimationData {
         animation_data = (24, 128, 736, 160, 768 )
         animation_data = ( 6, 160, 736, 192, 768 )
@@ -933,7 +933,7 @@ ShotData {  id = 716    fixed_angle = false collision = 7.5     //Blue (Invert)
         animation_data = ( 6, 224, 736, 256, 768 )
     }
 }
-ShotData {  id = 717    fixed_angle = false collision = 7.5     //Purple (Invert)
+ShotData {  id = 717    fixed_angle = false collision = ( 7.5, 0, 0 )     //Purple (Invert)
     AnimationData {
         animation_data = (24, 128, 768, 160, 800 )
         animation_data = ( 6, 160, 768, 192, 800 )
@@ -941,7 +941,7 @@ ShotData {  id = 717    fixed_angle = false collision = 7.5     //Purple (Invert
         animation_data = ( 6, 224, 768, 256, 800 )
     }
 }
-ShotData {  id = 718    fixed_angle = false collision = 7.5     //Pink (Invert)
+ShotData {  id = 718    fixed_angle = false collision = ( 7.5, 0, 0 )     //Pink (Invert)
     AnimationData {
         animation_data = (24, 128, 800, 160, 832 )
         animation_data = ( 6, 160, 800, 192, 832 )
@@ -949,7 +949,7 @@ ShotData {  id = 718    fixed_angle = false collision = 7.5     //Pink (Invert)
         animation_data = ( 6, 224, 800, 256, 832 )
     }
 }
-ShotData {  id = 719    fixed_angle = false collision = 7.5     //Gray (Invert)
+ShotData {  id = 719    fixed_angle = false collision = ( 7.5, 0, 0 )     //Gray (Invert)
     AnimationData {
         animation_data = (24, 128, 832, 160, 864 )
         animation_data = ( 6, 160, 832, 192, 864 )
@@ -957,7 +957,7 @@ ShotData {  id = 719    fixed_angle = false collision = 7.5     //Gray (Invert)
         animation_data = ( 6, 224, 832, 256, 864 )
     }
 }
-ShotData {  id = 720    fixed_angle = false collision = 7.5     //Black
+ShotData {  id = 720    fixed_angle = false collision = ( 7.5, 0, 0 )     //Black
     AnimationData {
         animation_data = (24, 128, 864, 160, 896 )
         animation_data = ( 6, 160, 864, 192, 896 )
@@ -968,126 +968,126 @@ ShotData {  id = 720    fixed_angle = false collision = 7.5     //Black
 
 //Animated Shuriken
 //----------------------------------------------------
-ShotData {  id = 721    fixed_angle = true  collision = 6       //Red
+ShotData {  id = 721    fixed_angle = true  collision = ( 6, 0, 0 )       //Red
     AnimationData {
         animation_data = ( 3, 256, 608, 288, 640 )
         animation_data = ( 3, 288, 608, 320, 640 )
         animation_data = ( 3, 320, 608, 352, 640 )
     }
 }
-ShotData {  id = 722    fixed_angle = true  collision = 6       //Orange
+ShotData {  id = 722    fixed_angle = true  collision = ( 6, 0, 0 )       //Orange
     AnimationData {
         animation_data = ( 3, 256, 640, 288, 672 )
         animation_data = ( 3, 288, 640, 320, 672 )
         animation_data = ( 3, 320, 640, 352, 672 )
     }
 }
-ShotData {  id = 723    fixed_angle = true  collision = 6       //Yellow
+ShotData {  id = 723    fixed_angle = true  collision = ( 6, 0, 0 )       //Yellow
     AnimationData {
         animation_data = ( 3, 256, 672, 288, 704 )
         animation_data = ( 3, 288, 672, 320, 704 )
         animation_data = ( 3, 320, 672, 352, 704 )
     }
 }
-ShotData {  id = 724    fixed_angle = true  collision = 6       //Green
+ShotData {  id = 724    fixed_angle = true  collision = ( 6, 0, 0 )       //Green
     AnimationData {
         animation_data = ( 3, 256, 704, 288, 736 )
         animation_data = ( 3, 288, 704, 320, 736 )
         animation_data = ( 3, 320, 704, 352, 736 )
     }
 }
-ShotData {  id = 725    fixed_angle = true  collision = 6       //Blue
+ShotData {  id = 725    fixed_angle = true  collision = ( 6, 0, 0 )       //Blue
     AnimationData {
         animation_data = ( 3, 256, 736, 288, 768 )
         animation_data = ( 3, 288, 736, 320, 768 )
         animation_data = ( 3, 320, 736, 352, 768 )
     }
 }
-ShotData {  id = 726    fixed_angle = true  collision = 6       //Purple
+ShotData {  id = 726    fixed_angle = true  collision = ( 6, 0, 0 )       //Purple
     AnimationData {
         animation_data = ( 3, 256, 768, 288, 800 )
         animation_data = ( 3, 288, 768, 320, 800 )
         animation_data = ( 3, 320, 768, 352, 800 )
     }
 }
-ShotData {  id = 727    fixed_angle = true  collision = 6       //Pink
+ShotData {  id = 727    fixed_angle = true  collision = ( 6, 0, 0 )       //Pink
     AnimationData {
         animation_data = ( 3, 256, 800, 288, 832 )
         animation_data = ( 3, 288, 800, 320, 832 )
         animation_data = ( 3, 320, 800, 352, 832 )
     }
 }
-ShotData {  id = 728    fixed_angle = true  collision = 6       //Gray
+ShotData {  id = 728    fixed_angle = true  collision = ( 6, 0, 0 )       //Gray
     AnimationData {
         animation_data = ( 3, 256, 832, 288, 864 )
         animation_data = ( 3, 288, 832, 320, 864 )
         animation_data = ( 3, 320, 832, 352, 864 )
     }
 }
-ShotData {  id = 729    fixed_angle = true  collision = 6       //White
+ShotData {  id = 729    fixed_angle = true  collision = ( 6, 0, 0 )       //White
     AnimationData {
         animation_data = ( 3, 256, 864, 288, 896 )
         animation_data = ( 3, 288, 864, 320, 896 )
         animation_data = ( 3, 320, 864, 352, 896 )
     }
 }
-ShotData {  id = 730    fixed_angle = true  collision = 6       //Red (Invert)
+ShotData {  id = 730    fixed_angle = true  collision = ( 6, 0, 0 )       //Red (Invert)
     AnimationData {
         animation_data = ( 3, 352, 608, 384, 640 )
         animation_data = ( 3, 384, 608, 416, 640 )
         animation_data = ( 3, 416, 608, 448, 640 )
     }
 }
-ShotData {  id = 731    fixed_angle = true  collision = 6       //Orange (Invert)
+ShotData {  id = 731    fixed_angle = true  collision = ( 6, 0, 0 )       //Orange (Invert)
     AnimationData {
         animation_data = ( 3, 352, 640, 384, 672 )
         animation_data = ( 3, 384, 640, 416, 672 )
         animation_data = ( 3, 416, 640, 448, 672 )
     }
 }
-ShotData {  id = 732    fixed_angle = true  collision = 6       //Yellow (Invert)
+ShotData {  id = 732    fixed_angle = true  collision = ( 6, 0, 0 )       //Yellow (Invert)
     AnimationData {
         animation_data = ( 3, 352, 672, 384, 704 )
         animation_data = ( 3, 384, 672, 416, 704 )
         animation_data = ( 3, 416, 672, 448, 704 )
     }
 }
-ShotData {  id = 733    fixed_angle = true  collision = 6       //Green (Invert)
+ShotData {  id = 733    fixed_angle = true  collision = ( 6, 0, 0 )       //Green (Invert)
     AnimationData {
         animation_data = ( 3, 352, 704, 384, 736 )
         animation_data = ( 3, 384, 704, 416, 736 )
         animation_data = ( 3, 416, 704, 448, 736 )
     }
 }
-ShotData {  id = 734    fixed_angle = true  collision = 6       //Blue (Invert)
+ShotData {  id = 734    fixed_angle = true  collision = ( 6, 0, 0 )       //Blue (Invert)
     AnimationData {
         animation_data = ( 3, 352, 736, 384, 768 )
         animation_data = ( 3, 384, 736, 416, 768 )
         animation_data = ( 3, 416, 736, 448, 768 )
     }
 }
-ShotData {  id = 735    fixed_angle = true  collision = 6       //Purple (Invert)
+ShotData {  id = 735    fixed_angle = true  collision = ( 6, 0, 0 )       //Purple (Invert)
     AnimationData {
         animation_data = ( 3, 352, 768, 384, 800 )
         animation_data = ( 3, 384, 768, 416, 800 )
         animation_data = ( 3, 416, 768, 448, 800 )
     }
 }
-ShotData {  id = 736    fixed_angle = true  collision = 6       //Pink (Invert)
+ShotData {  id = 736    fixed_angle = true  collision = ( 6, 0, 0 )       //Pink (Invert)
     AnimationData {
         animation_data = ( 3, 352, 800, 384, 832 )
         animation_data = ( 3, 384, 800, 416, 832 )
         animation_data = ( 3, 416, 800, 448, 832 )
     }
 }
-ShotData {  id = 737    fixed_angle = true  collision = 6       //Gray (Invert)
+ShotData {  id = 737    fixed_angle = true  collision = ( 6, 0, 0 )       //Gray (Invert)
     AnimationData {
         animation_data = ( 3, 352, 832, 384, 864 )
         animation_data = ( 3, 384, 832, 416, 864 )
         animation_data = ( 3, 416, 832, 448, 864 )
     }
 }
-ShotData {  id = 738    fixed_angle = true  collision = 6       //Black
+ShotData {  id = 738    fixed_angle = true  collision = ( 6, 0, 0 )       //Black
     AnimationData {
         animation_data = ( 3, 352, 864, 384, 896 )
         animation_data = ( 3, 384, 864, 416, 896 )
