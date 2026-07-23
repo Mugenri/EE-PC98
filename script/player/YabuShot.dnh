@@ -5,7 +5,7 @@ ShotData {
     render = ALPHA
     rect = ( 0, 48, 16, 64 )
     alpha = 255;
-    collision = 2;
+    collision = ( 2, 0, 0 );
 }
 
 ShotData {
@@ -13,5 +13,5 @@ ShotData {
     render = ALPHA
     rect = ( 32, 48, 48, 64 )
     alpha = 255;
-    collision = 2;
+    collision = ( 2, 0, 0 );
 }

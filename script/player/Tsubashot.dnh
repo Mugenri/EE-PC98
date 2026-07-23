@@ -5,7 +5,7 @@ ShotData {
     render = ALPHA
     rect = ( 0, 48, 16, 64 )
     alpha = 255
-    collision = 1
+    collision = ( 1, 0, 0 )
     fixed_angle = true;
 }
 
@@ -14,7 +14,7 @@ ShotData {
     render = ALPHA
     rect = ( 112, 0, 128, 16 )
     alpha = 255
-    collision = 1
+    collision = ( 1, 0, 0 )
 }
 
 ShotData {
@@ -22,5 +22,5 @@ ShotData {
     render = ALPHA
     rect = ( 32, 48, 48, 64 )
     alpha = 255
-    collision = 1
+    collision = ( 1, 0, 0 )
 }
