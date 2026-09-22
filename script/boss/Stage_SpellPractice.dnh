@@ -54,6 +54,7 @@ function<string> SpellPractice_GetBackground(int stageIndex_) {
     alternative (stageIndex_)
     case (0) { return dir ~ "tsurubami/tsuruBG.dnh"; } //tsurubami
     case (1) { return dir ~ "tsurubami2/tsuru2BG.dnh"; } //tsurubami 2
+    case (2) { return dir ~ "gengetsu/gengetsuBG.dnh"; } //gengetsu
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
@@ -73,6 +74,9 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
             return 21;
         }
     }
+    case (2) {
+        return 0;
+    }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
@@ -80,6 +84,7 @@ function<int> SpellPractice_GetBGMIndex(int stageIndex_) {
     alternative (stageIndex_)
     case (0) { return 1; } //Eternal Dance Engine
     case (1) { return 2; } //Broken Eternal Dance Engine
+    case (2) { return 5; } //Cute Devil ~ Innocence
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 

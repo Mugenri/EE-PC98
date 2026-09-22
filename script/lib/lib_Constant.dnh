@@ -1,9 +1,9 @@
 //Constants library
-const bool DEBUG_MODE = false;
+const bool DEBUG_MODE = true;
 //----------------------------------------------------
 //VERSION
 //----------------------------------------------------
-const string GAME_VERSION = "1.00c";
+const string GAME_VERSION = "2.00a";
 
 //----------------------------------------------------
 //FONT CONSTANTS
@@ -77,10 +77,12 @@ const int BANNER_HIGHSCORE      = 5;
 const string BOSS_ID_TSURUBAMI = "Tsurubami";
 const string BOSS_ID_YABUSAME  = "Yabusame";
 const string BOSS_ID_TSUBAKURA = "Tsubakura";
+const string BOSS_ID_GENGETSU  = "Gengetsu";
 
 //Player Shot Type Constants
 const int PLAYER_YABUSAME  = 0;
 const int PLAYER_TSUBAKURA = 1;
+const int PLAYER_TSURUBAMI = 2;
 
 //Difficulty Constants
 const int D_EASY    = 0;

@@ -8,6 +8,7 @@ function<int[]> BGM_GetSample(int bgmID_) {
     case (2) { return [343728, 10988208]; } //Broken Eternal Dance Engine
     case (3) { return [0, 4298448]; } //Clairvoyant ~ Dream VISION
     case (4) { return [0, 5511660]; } //Extra Mind
+    case (5) { return [1441320, 8797890]; } //Cute Devil ~ Innocence
     others { return [0, 0]; }
 }
 
@@ -20,6 +21,7 @@ function<string> BGM_GetPath(int bgmID_) {
     case (2) { return (musicDir ~ "tsurubami2.ogg"); } //Broken Eternal Dance Engine
     case (3) { return (musicDir ~ "ending.ogg"); } //Clairvoyant ~ Dream VISION
     case (4) { return (musicDir ~ "credits.ogg"); } //Extra Mind
+    case (5) { return (musicDir ~ "gengetsu.ogg"); } //Cute Devil ~ Innocence
     others { return (""); }
 }
 
@@ -87,6 +89,17 @@ much else would have worked here. This was arranged in one[r]
 sitting over a few hours, but I'm happy with how it came out[r]
 in the end. It's also worth noting this was the very last[r]
 thing needed before the game demo could be released.";
+    }
+    case (5) {
+        name = "Cute Devil ~ Innocence";
+        comment = "
+The most terrible, most fearful opponent.[r]
+It's been a while hasn't it? ^^; If I'm honest, this update[r]
+was entirely on a whim. I'd originally planned to just upload[r]
+the song as another video of mine, but some part of me wanted[r]
+to finally close out the story of Misremembered Memories as I[r]
+had always intended to. Would it really be a Len'en fangame[r]
+without a major content update 3 years after release?";
     }
     others { //default
         name = "Track number " ~ IntToString(bgmID_ + 1);

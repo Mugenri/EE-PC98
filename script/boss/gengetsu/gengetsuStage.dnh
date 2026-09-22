@@ -1,0 +1,50 @@
+#TouhouDanmakufu[Stage]
+#ScriptVersion[3]
+#Title["Gengetsu Stage"]
+#System["./../../system/System.dnh"]
+
+#include "./../../lib/lib_Common.dnh"
+#include "./../../lib/lib_Stage.dnh"
+
+@Initialize {
+    Stage_Init();
+    TStage();
+}
+
+@Event { Stage_Event(); }
+
+@MainLoop { yield; }
+
+@Finalize {}
+
+task TStage() {
+    string dir = GetModuleDirectory() ~ "script/boss/gengetsu/";
+    //load and execute background script
+    string bgPath = dir ~ "gengetsuBG.dnh";
+    int bgID = LoadScript(bgPath);
+    SetScriptArgument(bgID, 0, 0);
+    StartScript(bgID);
+    
+    //preload plural
+    string path = dir ~ "gengetsuPlural.dnh";
+    int ID = LoadScriptInThread(path);
+
+    while (!_start) yield;
+
+    Stage_SetIntroText("???", "Time's Up");
+    
+    string dialoguePath = dir ~ "dialogueIntro.dnh";
+    StartDialogueScript(dialoguePath);
+
+    StartScript(ID);
+    StartBGM(5, 60, 0);
+
+    while (!IsCloseScript(ID) && GetPlayerState() != STATE_END) yield;
+    wait(150); //last explosion & spell bonus numbers
+
+    dialoguePath = dir ~ "dialogueOutro.dnh";
+    StartDialogueScript(dialoguePath);
+
+    Stage_EndScreen(10000);
+    Stage_End();
+}

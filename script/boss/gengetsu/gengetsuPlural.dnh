@@ -1,0 +1,27 @@
+#TouhouDanmakufu[Plural]
+#ScriptVersion[3]
+#Title["Gengetsu Plural"]
+#System["../../system/System.dnh"]
+
+#include "./../../lib/lib_Common.dnh"
+
+@Initialize {
+    TPlural();
+}
+
+@Event {}
+
+@MainLoop { yield; }
+
+task TPlural() {
+    string dir = GetModuleDirectory() ~ "script/boss/gengetsu/";
+    _objScene = ObjEnemyBossScene_Create();
+
+    ObjEnemyBossScene_Add(_objScene, 0, dir ~ "spell1.dnh");
+
+    ObjEnemyBossScene_LoadInThread(_objScene);
+    ObjEnemyBossScene_Regist(_objScene);
+
+    while (!Obj_IsDeleted(_objScene)) yield;
+    CloseScript(GetOwnScriptID());
+}

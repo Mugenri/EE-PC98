@@ -33,6 +33,12 @@ function<string[]> Load_GetTextureStage(int stageIndex_) {
             IMG_SHOT_TSURUBAMI
         ];
     }
+    case (3) { //Gengetsu
+        texture ~= [
+            IMG_STG_GENGETSU,
+            IMG_BG_GENGETSU
+        ];
+    }
 
     return texture;
 }
@@ -57,10 +63,12 @@ function<string[]> Load_GetTextureDialogue(int stageIndex_, int playerType_) {
 
     alternative (stageIndex_)
     case (0, 1) { texture ~= [IMG_PORTRAIT_TSURUBAMI]; }
+    case (2) { texture ~= [IMG_PORTRAIT_GENGETSU]; }
 
     alternative (playerType_)
     case (PLAYER_YABUSAME)  { texture ~= [IMG_PORTRAIT_YABUSAME]; }
     case (PLAYER_TSUBAKURA) { texture ~= [IMG_PORTRAIT_TSUBAKURA]; }
+    case (PLAYER_TSURUBAMI) { texture ~= [IMG_PORTRAIT_TSURUBAMI]; }
 
     return texture;
 }
@@ -86,6 +94,7 @@ function<string[]> Load_GetTexturePlayer(int playerType_) {
     alternative (playerType_)
     case (PLAYER_YABUSAME) { texture ~= [IMG_PLR_YABUSAME]; }
     case (PLAYER_TSUBAKURA) { texture ~= [IMG_PLR_TSUBAKURA]; }
+    case (PLAYER_TSURUBAMI) { texture ~= [IMG_PLR_TSURUBAMI]; }
 
     return texture;
 }
@@ -130,11 +139,22 @@ function<string[]> Load_GetStageScriptPath(int stageIndex_, int playerType_, int
             dir ~ "dialogueOutro.dnh"
         ];
     }
+    case (2) { //Gengetsu
+        dir = DIR_STG ~ "gengetsu/";
+        scriptPath ~= [
+            dir ~ "gengetsuStage.dnh",
+            dir ~ "gengetsuBG.dnh",
+            dir ~ "gengetsuPlural.dnh",
+            dir ~ "dialogueIntro.dnh",
+            dir ~ "dialogueOutro.dnh"
+        ];
+    }
 
     //Player scripts
     alternative (playerType_)
     case (PLAYER_YABUSAME) { scriptPath ~= [DIR_PLR ~ "Yabusame.dnh"]; }
     case (PLAYER_TSUBAKURA) { scriptPath ~= [DIR_PLR ~ "Tsubakura.dnh"]; }
+    case (PLAYER_TSURUBAMI) { scriptPath ~= [DIR_PLR ~ "Tsurubami.dnh"]; }
 
     //Spell practice stage script
     alternative (gameMode_)
