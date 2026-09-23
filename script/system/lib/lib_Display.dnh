@@ -138,8 +138,8 @@ task TIntro() {
 //Selected Difficulty Display
 //----------------------------------------------------
 function<void> Difficulty() {
-    string[] texts = ["Easy", "Normal", "Hard", "Unreal", "Ez-Ex", "Extra", "Ab-Ex"];
-    int[] colors = [COLOR_GREEN_L, COLOR_BLUE, COLOR_RED, COLOR_MAGENTA_L, COLOR_GREEN_L, COLOR_RED, COLOR_WHITE];
+    string[] texts = ["???", "Normal", "Hard", "Unreal", "Ez-Ex", "Extra", "Ab-Ex"];
+    int[] colors = [COLOR_MAGENTA_L, COLOR_BLUE, COLOR_RED, COLOR_MAGENTA_L, COLOR_GREEN_L, COLOR_RED, COLOR_WHITE];
     int diff = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
     int objText = CreateText(448, 20, RP_UI_TEXT, texts[diff], colors[diff]);
     ObjText_SetFontType(objText, HEADER_FONT);
