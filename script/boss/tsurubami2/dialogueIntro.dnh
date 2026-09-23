@@ -245,6 +245,7 @@ function<void> Dialogue() {
             Dialogue_SetText(false, "You mean YOU don't have much/time left. I didn't ask to/have my dreams invaded.");
         }
         case (50) {
+            ClearBGM();
             Dialogue_SetPortrait(bossCutin, 5);
             Dialogue_SetText(true, "It will be you who is short/on time if you are not yet/strong enough.");
         }
@@ -272,7 +273,7 @@ function<void> Dialogue() {
             Dialogue_SetText(true, "We have no time to waste./Now then...");
         }
         case (57) {
-            StartBGM(2, 60, 0);
+            StartBGM(3, 60, 0);
             Dialogue_SetPortrait(bossCutin, 11);
             Dialogue_SetText(true, "Shall we dance?");
         }

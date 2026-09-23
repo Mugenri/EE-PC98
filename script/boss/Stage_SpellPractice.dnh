@@ -75,7 +75,7 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
         }
     }
     case (2) {
-        return 0;
+        return 1;
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
@@ -83,8 +83,8 @@ function<int> SpellPractice_GetBackgroundIndex(int stageIndex_, int spellID_) {
 function<int> SpellPractice_GetBGMIndex(int stageIndex_) {
     alternative (stageIndex_)
     case (0) { return 1; } //Eternal Dance Engine
-    case (1) { return 2; } //Broken Eternal Dance Engine
-    case (2) { return 5; } //Cute Devil ~ Innocence
+    case (1) { return 3; } //Broken Eternal Dance Engine
+    case (2) { return 6; } //Cute Devil ~ Innocence
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 

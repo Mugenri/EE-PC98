@@ -41,7 +41,7 @@ function<void> Ending() {
         case (0) {
             End_SetBG(IMG_END_TSUBAKURA_BG);
             wait(90);
-            StartBGM(3, 240, 0);
+            StartBGM(4, 240, 0);
             End_SetText("The next morning, at the Senri Shrine.../A moody genius has awoken from their fitful slumber,/having not gotten much rest at all.");
         }
         case (1) {
