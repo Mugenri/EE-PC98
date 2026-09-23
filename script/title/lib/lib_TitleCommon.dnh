@@ -5,7 +5,8 @@
 //Player Directories
 const string[] SCRIPT_PLAYERS = [
     DIR_PLR ~ "Yabusame.dnh",
-    DIR_PLR ~ "Tsubakura.dnh"
+    DIR_PLR ~ "Tsubakura.dnh",
+    DIR_PLR ~ "Tsurubami.dnh"
 ];
 
 // --- Title Specific Images List --- //

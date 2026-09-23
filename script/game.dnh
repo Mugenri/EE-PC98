@@ -1,7 +1,7 @@
 #TouhouDanmakufu[Package]
 #Title["連縁无現里 ~ Misremembered Memories"]
 #Text[""]
-#Player["./player/Yabusame.dnh", "./player/Tsubakura.dnh"]
+#Player["./player/Yabusame.dnh", "./player/Tsubakura.dnh", "./player/Tsurubami.dnh"]
 
 @Initialize {
     AddArchiveFile(GetModuleDirectory() ~ "script/data.dat");
