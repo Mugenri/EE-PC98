@@ -7,6 +7,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     //submenu indices
     const int MENU_STAGE = 0;
     const int MENU_SPELL = 1;
+    WriteLog(selectedDefault_);
 
     bool exitFlag = false;
 
@@ -17,7 +18,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     int selectedPlayer = returnData[0];
     int selectedDiff = returnData[1];
     //arrays of info for each submenu
-    int[] selectMax = [1, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
+    int[] selectMax = [2, GetSpellIndexListSize(returnData[2], length(GetDifficultyList(selectedDefault_[2])))]; //number of items in menu
     int[] indexListSize = [7, 4]; //max number of items on screen (0 indexed)
     int[] indexListTop = [0, 0]; //index at top of list
 
@@ -142,12 +143,12 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     }
 
     function<void> ChangePlayer() {
-        bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
+        bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA), (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX))];
         int[] forbidden = [];
         for (int i = 0; i < length(flags); i++) {
             if (!flags[i] && !DEBUG_MODE) forbidden ~= [i];
         }
-        selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSUBAKURA, forbidden);
+        selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSURUBAMI, forbidden);
     }
 
     task TCreateMenuGraphicsSpell() {
@@ -342,10 +343,13 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         task TPlayerDisplay() { //player selection display
             int playerText1 = CreateText(16, 332, RP_UI_TEXT, "Yabusame Houren", COLOR_WHITE);
             int playerText2 = CreateText(16, 348, RP_UI_TEXT, "Tsubakura Enraku", COLOR_WHITE);
+            int playerText3 = CreateText(16, 364, RP_UI_TEXT, "Tsurubami Senri", COLOR_WHITE);
             ObjText_SetMaxWidth(playerText1, 204);
             ObjText_SetMaxWidth(playerText2, 204);
+            ObjText_SetMaxWidth(playerText3, 204);
             ObjText_SetHorizontalAlignment(playerText1, ALIGNMENT_CENTER);
             ObjText_SetHorizontalAlignment(playerText2, ALIGNMENT_CENTER);
+            ObjText_SetHorizontalAlignment(playerText3, ALIGNMENT_CENTER);
             int currPlayer = -1;
 
             while (!exitFlag) {
@@ -353,11 +357,13 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
                     currPlayer = selectedPlayer;
                     ObjText_SetVertexColor(playerText1, 0xFF000000 | (currPlayer == PLAYER_YABUSAME ? COLOR_WHITE : COLOR_GRAY));
                     ObjText_SetVertexColor(playerText2, 0xFF000000 | (currPlayer == PLAYER_TSUBAKURA ? COLOR_WHITE : COLOR_GRAY));
+                    ObjText_SetVertexColor(playerText3, 0xFF000000 | (currPlayer == PLAYER_TSURUBAMI ? COLOR_WHITE : COLOR_GRAY));
                 }
                 yield;
             }
             Obj_Delete(playerText1);
             Obj_Delete(playerText2);
+            Obj_Delete(playerText3);
         }
     }
 
@@ -437,6 +443,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     function<int[]> GetDifficultyList(int stageIndex_) { //difficulty settings for the stage
         alternative (stageIndex_)
         case (0, 1) { return [D_EASYEX, D_EXTRA, D_ABEX]; }
+        case (2)    { return [D_EASY]; }
         others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
     }
 
@@ -444,6 +451,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         alternative (stageIndex_)
         case (0) { return "Tsurubami?"; }
         case (1) { return "Tsurubami"; }
+        case (2) { return "Gengetsu"; }
         others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
     }
 
@@ -459,7 +467,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         }
         case (MENU_SPELL) { //spell id has been seen by any player in main game mode
             int spellID = ID_ * numDiff_ + ScaleDiff(selectedDiff); //actual spell ID
-            for (int playerType = PLAYER_YABUSAME; playerType <= PLAYER_TSUBAKURA; playerType++) {
+            for (int playerType = PLAYER_YABUSAME; playerType <= PLAYER_TSURUBAMI; playerType++) {
                 if (Spell_GetHistory(GAME_MAIN, playerType, indexCurrent[MENU_STAGE], spellID)[0] > 0) isUnlock = true;
             }
         }
@@ -468,6 +476,7 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     }
 
     function<int> ScaleDiff(int diff_) { //adjust difficulty number to match spell index for diff_ > D_LUNATIC
+        if (diff_ == D_EASY) return 0;
         if (diff_ > D_LUNATIC) diff_ -= D_EASYEX;
         return diff_;
     }

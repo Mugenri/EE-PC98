@@ -129,6 +129,11 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
         case (86)           { return "\"Misremembered Memories\""; }                        //ABEX
         others { return "INVALID"; }
     }
+    case (2) { //Gengetsu
+        alternative (spellID_)
+        case (0)            { return "Spell 1"; }
+        others { return "INVALID"; }
+    }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
 }
 
@@ -136,7 +141,8 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
 function<string> Spell_GetPath(int stageIndex_, int spellID_) {
     int numDiff;
     alternative (stageIndex_)
-    case(0, 1) { numDiff = 3; }
+    case (0, 1) { numDiff = 3; }
+    case (2)    { numDiff = 1; }
     return Spell_GetPathList(stageIndex_)[spellID_ ~/ numDiff];
 }
 
@@ -206,6 +212,13 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
             dir ~ "spell15.dnh",        //26
             dir ~ "nonspell13.dnh",     //27
             dir ~ "spell16.dnh"         //28
+        ];
+    }
+    case (2) { //Gengetsu
+        dir = dir ~ "gengetsu/";
+        return [
+            dir ~ "spell1.dnh",         //0
+            dir ~ "spell2.dnh"
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }

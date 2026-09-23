@@ -16,6 +16,7 @@ function<void> ChangeIndex(int index_, int priority_) {
     _bIndex = index_;
     alternative (index_)
     case (0) { TBackgroundIntro(index_, priority_, COLOR_RED); }
+    case (1) { TBackground(index_, priority_); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
@@ -69,4 +70,19 @@ task TBackgroundIntro(int index_, int priority_, color_) {
         }
         Obj_Delete(circle);
     }
+}
+task TBackground(int index_, int priority_) {
+    bool exitFlag = false;
+    //bg
+    int bg = InitSprite2D(0, 368, 384, 368 * 2, IMG_BG_GENGETSU, priority_);
+
+    while (!exitFlag) {
+        if (index_ != _bIndex) {
+            async { exitFlag = BG_Exit(); }
+            index_ = _bIndex;
+        }
+        yield;
+    }
+
+    Obj_Delete(bg);
 }

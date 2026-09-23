@@ -85,7 +85,7 @@ const int PLAYER_TSUBAKURA = 1;
 const int PLAYER_TSURUBAMI = 2;
 
 //Difficulty Constants
-const int D_EASY    = 0;
+const int D_EASY    = 0; //Bonus stage
 const int D_NORMAL  = 1;
 const int D_HARD    = 2;
 const int D_LUNATIC = 3;

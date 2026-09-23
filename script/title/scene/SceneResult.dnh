@@ -48,7 +48,7 @@ function<void> SceneResult(int score_, string clearStatus_) {
             case (VK_LEFT, VK_RIGHT) {
                 int increment = userKey == VK_LEFT ? -1 : 1;
                 CallSFX(SND_TT_SELECT);
-                selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX);
+                selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX); //TODO account for bonus stage
             }
             case (VK_OK, VK_CANCEL, VK_PAUSE) {
                 CallSFX(SND_TT_CANCEL);
