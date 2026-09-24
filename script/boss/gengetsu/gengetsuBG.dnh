@@ -1,13 +1,21 @@
 //Tsurubami backgrounds
 #include "./../../lib/lib_Common.dnh"
 #include "./../../lib/lib_Background.dnh"
+#include "./../../lib/effectlib/lib_EffectPrimitive.dnh"
+
+bool _split;
 
 @Initialize {
     SetAutoDeleteObject(true);
+    _split = false;
     BG_Init(GetScriptArgument(0));
 }
 
-@Event { BG_Event(); }
+@Event {
+    BG_Event();
+    alternative (GetEventType())
+    case (EV_STAGE_START) { _split = true; }
+}
 
 @MainLoop { yield; }
 
@@ -15,66 +23,100 @@ function<void> ChangeIndex(int index_, int priority_) {
     //change to index (starts shutdown for current bg)
     _bIndex = index_;
     alternative (index_)
-    case (0) { TBackgroundIntro(index_, priority_, COLOR_RED); }
+    case (0) { TBackgroundIntro(index_, priority_); }
     case (1) { TBackground(index_, priority_); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
-task TBackgroundIntro(int index_, int priority_, color_) {
+task TBackgroundIntro(int index_, int priority_) {
     bool exitFlag = false;
     //black bg
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
     ObjRender_SetColor(black, COLOR_BLACK);
-    //glass
-    int glass = InitSprite2D(768, 0, 1152, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
-    ObjRender_SetColor(glass, COLOR_BLACK);
-    //bg
-    int bg = InitSprite2D(0, 0, 384, 368, IMG_BG_TSURUBAMI_2, priority_ + 1);
+    //torii
+    int bg = InitSprite2D(0, 0, MAX_X, MAX_Y, IMG_BG_GENGETSU, priority_ + 1);
 
-    int count = 0;
-    int frames = 90;
+    bool split = false;
+
+    TParticles();
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
-        if (count % frames == 0) TEffect();
-        count++;
+        if (_split) {
+            WriteLog("splittin");
+            TSplit();
+            _split = false;
+        }
         yield;
     }
 
-    Obj_Delete(bg);
-    Obj_Delete(glass);
-    Obj_Delete(black);
-
-    task TEffect() {
-        //expanding prim
-        int circle = InitPrim2D(PRIMITIVE_TRIANGLEFAN, 32, priority_);
-        ObjRender_SetColor(circle, color_);
-
-        for (int i = 0; i < frames * 0.25; i++) {
-            float rad = Interpolate_Accelerate(0, 350, i / as_float(frames * 0.25 - 1));
-
-            ObjPrim_SetVertexPosition(circle, 0, MID_X, MID_Y, 1);
-            for (int i = 0; i < 31; i++) {
-                float angleT = 360 / 30 * i;
-                ObjPrim_SetVertexPosition(circle, i + 1, MID_X + rad * cos(angleT), MID_Y + rad * sin(angleT), 1);
+    task TParticles() {
+        int bgParticle = InitParticleList(IMG_EFFECT_PARTICLE, priority_, [0, 0, 16, 16]);
+        ParticleListShader(bgParticle, 16 / 512, 16 / 512);
+        int frames = 4;
+        int frameRate = 40;
+        while (!split) {
+            async {
+                int frame = 0;
+                float x = rand(MIN_X, MAX_X);
+                float y = 235;
+                float xSpeed = rand(-0.2, 0.2);
+                float ySpeed = rand(-0.8, -1);
+                while (frame < frames * frameRate) {
+                    if (split) return;
+                    ObjParticleList_SetPosition(bgParticle, x, y, 1);
+                    ObjParticleList_SetExtraData(bgParticle, (frames - 1) - frame / frameRate, 0, 0);
+                    ObjParticleList_SetColor(bgParticle, Interpolate_X_PackedInt(COLOR_GRAY_D, COLOR_BLACK, frame / frameRate / as_float(frames), LERP_LINEAR));
+                    ObjParticleList_AddInstance(bgParticle);
+                    frame++;
+                    x += xSpeed;
+                    y += ySpeed;
+                    yield;
+                }
             }
             yield;
         }
+    }
 
-        for (int i = 0; i < frames * 0.75; i++) {
-            ObjRender_SetColor(circle, Interpolate_X_PackedInt(color_, COLOR_BLACK, i / as_float(frames * 0.75 - 1), LERP_SMOOTH));
+    task TSplit() {
+        wait(28);
+        split = true;
+        RenderToTextureA1(RT_ENDSCREEN, RP_STG_BG1, RP_STG_EFF_BG1, true);
+        int freeze1 = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_ENDSCREEN, _priority + 1);
+        ObjSprite2D_SetSourceRect(freeze1, 32, 16, MID_X + 32, 384);
+        ObjSprite2D_SetDestRect(freeze1, 0, 0, MID_X, MAX_Y);
+        int freeze2 = InitSprite2D(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, RT_ENDSCREEN, _priority + 1);
+        ObjSprite2D_SetSourceRect(freeze2, MID_X + 32, 16, MAX_X + 32, 384);
+        ObjSprite2D_SetDestRect(freeze2, MID_X, 0, MAX_X, MAX_Y);
+        Obj_SetVisible(bg, false);
+
+        CallSFX(SND_EXPLOSION2);
+        StartSlow(TARGET_ALL, 30);
+        Primitive_ScreenFlashFinal(); //boss explosion screen flash
+        wait(30);
+        StopSlow(TARGET_ALL);
+        int frames = 300;
+        for (int i = 0; i < frames; i++) {
+            float x = i / as_float(frames);
+            ObjRender_SetPosition(freeze1, Interpolate_Linear(0, -3, x), Interpolate_Accelerate(0, 484, x), 1);
+            ObjRender_SetPosition(freeze2, Interpolate_Linear(0, 2, x), Interpolate_Accelerate(0, 512, x), 1);
             yield;
         }
-        Obj_Delete(circle);
+        Obj_Delete(freeze1);
+        Obj_Delete(freeze2);
     }
 }
+
 task TBackground(int index_, int priority_) {
     bool exitFlag = false;
+    //black bg
+    int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
+    ObjRender_SetColor(black, COLOR_BLACK);
     //bg
-    int bg = InitSprite2D(0, 368, 384, 368 * 2, IMG_BG_GENGETSU, priority_);
+    int bg = InitSprite2D(MAX_X, 0, MAX_X * 2, MAX_Y, IMG_BG_GENGETSU, priority_ + 1);
 
     while (!exitFlag) {
         if (index_ != _bIndex) {
@@ -84,5 +126,6 @@ task TBackground(int index_, int priority_) {
         yield;
     }
 
+    Obj_Delete(black);
     Obj_Delete(bg);
 }

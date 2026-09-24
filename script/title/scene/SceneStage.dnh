@@ -382,8 +382,9 @@ function<void> ReturnToTitle(bool saveData_) { //Run title screen
 //return stage script using stage index
 function<string> GetStagePath(int index_) {
     alternative (index_)
-    case (0) { return DIR_STG ~ "tsurubami/tsuruStage.dnh"; }//yabusame stage
+    case (0) { return DIR_STG ~ "tsurubami/tsuruStage.dnh"; } //yabusame stage
     case (1) { return DIR_STG ~ "tsurubami2/tsuru2Stage.dnh"; } //tsubakura stage
+    case (2) { return DIR_STG ~ "gengetsu/gengetsuStage.dnh"; } //tsurubami stage
     others assert(false, IntToString(index_) ~ " is an invalid stage index.");
 }
 

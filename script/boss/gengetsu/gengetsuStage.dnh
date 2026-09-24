@@ -30,9 +30,11 @@ task TStage() {
     int ID = LoadScriptInThread(path);
 
     while (!_start) yield;
+    NotifyEvent(GetAreaCommonData(AREA_STAGE, "SCRIPT_BG", 0), EV_STAGE_START, 0);
 
     Stage_SetIntroText("???", "Time's Up");
-    
+    wait(100);
+
     string dialoguePath = dir ~ "dialogueIntro.dnh";
     StartDialogueScript(dialoguePath);
 

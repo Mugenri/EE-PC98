@@ -33,7 +33,7 @@ function<string[]> Load_GetTextureStage(int stageIndex_) {
             IMG_SHOT_TSURUBAMI
         ];
     }
-    case (3) { //Gengetsu
+    case (2) { //Gengetsu
         texture ~= [
             IMG_STG_GENGETSU,
             IMG_BG_GENGETSU
