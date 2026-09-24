@@ -74,7 +74,7 @@ function<void> Transition_Spell(int row_, int index_, int delay_) {
         14,     //24 Glass
         21,     //25 Yin-yang
         21,     //26 Card
-        20      //27 Solid Circle
+        20,     //27 Solid Circle
     ][row_];
 
     int transitionObj = GetTransitionObject(true);
@@ -90,7 +90,8 @@ function<void> Transition_Spell(int row_, int index_, int delay_, int color_) {
         [15, 8],    //1  Swirl
         [15, 8],    //2  Zoom
         [21, 11],   //3  Sweep
-        [15, 7]     //4  Horizontal Swipe
+        [15, 7],    //4  Horizontal Swipe
+        [16, 8]     //5  Gengetsu
     ][row_];
 
     int transitionObj = GetTransitionObject(false);

@@ -36,7 +36,10 @@ _spellID = 0;
 
 task TInitialize() {
     ObjMove_SetDestAtFrame(_objBoss, MID_X, 60, 30, LERP_DECELERATE);
-    wait(60);
+    wait(30);
+    Transition_Spell(5, 1, 0, COLOR_WHITE);
+    CallSFX(SND_TRANSITION);
+    wait(120);
     Boss_SetVulnerable(_objBoss, true);
 }
 
