@@ -39,6 +39,7 @@ const string IMG_PORTRAIT_GENGETSU  = DIR_IMG ~ "character/gengetsu/gengetsuPort
 //Boss Sprites
 const string IMG_STG_TSURUBAMI      = DIR_IMG ~ "character/tsurubami/tsuruSTG.png";
 const string IMG_STG_GENGETSU       = DIR_IMG ~ "character/gengetsu/gengetsuSTG.png";
+const string IMG_GENGETSU_SHADER    = DIR_IMG ~ "character/gengetsu/gengetsuShader.png";
 //Boss Shot Images
 const string IMG_SHOT_TSURUBAMI     = DIR_IMG ~ "character/tsurubami/tsuruShot.png";
 //Backgrounds
@@ -51,6 +52,7 @@ const string HLSL_FADE              = DIR_HLSL ~ "TexFade.hlsl";
 const string HLSL_PARTICLE          = DIR_HLSL ~ "TexParticle.hlsl";
 const string HLSL_TRANSITION        = DIR_HLSL ~ "TexMask.hlsl";
 const string HLSL_WHITE             = DIR_HLSL ~ "TexWhite.hlsl";
+const string HLSL_WAVE98            = DIR_HLSL ~ "TexWave98.hlsl";
 
 //Ending Images
 const string IMG_END_TEXTBOX        = DIR_IMG ~ "ending/endTextbox.png";

@@ -1,0 +1,68 @@
+//Gengetsu specific functions
+const float WAVE_LEN_MAX = 80;
+const float WAVE_AMP_SPEED = 1.25;
+const float WAVE_PHASE_SPEED = 4;
+
+int _shader;
+int _sObject;
+bool _isInvuln = false;
+
+function<void> Gengetsu_Init() {
+    _sObject = InitSprite2D(0, 0, 256, 256, IMG_GENGETSU_SHADER, RP_STG_BOSS);
+    ObjSprite2D_SetDestCenter(_sObject);
+    Obj_SetVisible(_sObject, false);
+
+    _shader = ObjShader_Create();
+    ObjShader_SetShaderF(_shader, HLSL_WAVE98);
+    ObjShader_SetTexture(_shader, "textureWave", IMG_GENGETSU_SHADER);
+    ObjRender_SetTextureFilter(_shader, FILTER_NONE, FILTER_NONE, FILTER_NONE);
+    ObjShader_SetTechnique(_shader, "Render");
+    ObjShader_SetShaderO(_sObject, _shader);
+
+}
+
+function<void> Gengetsu_Move(int obj_, float x_, float y_, int frames_) {
+    ObjMove_SetDestAtFrame(obj_, x_, y_, frames_, LERP_LINEAR);
+    TWiggle(obj_, frames_);
+}
+
+task TWiggle(int obj_, int frames_) {
+    _isInvuln = true;
+    Obj_SetVisible(obj_, false);
+    Obj_SetVisible(_sObject, true);
+    float len = 0;
+    float amp = 0;
+    float phase = 0;
+    frames_ ~/= 2;
+    float scale = 32 / frames_; 
+
+
+    loop (frames_) {
+        amp += WAVE_AMP_SPEED * scale;
+        phase += WAVE_PHASE_SPEED;
+        len = WAVE_LEN_MAX - amp;
+        
+        _UpdateShader(len, amp, phase);
+        yield;
+    }
+
+    loop (frames_) {
+        amp -= WAVE_AMP_SPEED * scale;
+        phase -= WAVE_PHASE_SPEED;
+        len = WAVE_LEN_MAX - amp;
+        
+        _UpdateShader(len, amp, phase);
+        yield;
+    }
+
+    _isInvuln = false;
+    Obj_SetVisible(obj_, true);
+    Obj_SetVisible(_sObject, false);
+
+    function<void> _UpdateShader(float len_, float amp_, float phase_) {
+        ObjShader_SetFloat(_shader, "len", len_);
+        ObjShader_SetFloat(_shader, "amp", amp_);
+        ObjShader_SetFloat(_shader, "phase", phase_);
+        ObjRender_SetPosition(_sObject, ObjMove_GetX(obj_), ObjMove_GetY(obj_), 1);
+    }
+}
