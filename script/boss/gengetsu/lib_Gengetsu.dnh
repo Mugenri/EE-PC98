@@ -1,4 +1,6 @@
 //Gengetsu specific functions
+#include "./../../lib/lib_Boss.dnh"
+
 const float WAVE_LEN_MAX = 80;
 const float WAVE_AMP_SPEED = 1.25;
 const float WAVE_PHASE_SPEED = 4;
@@ -7,7 +9,7 @@ int _shader;
 int _sObject;
 bool _isInvuln = false;
 
-function<void> Gengetsu_Init() {
+function<void> Gengetsu_Init(int objBoss_) {
     _sObject = InitSprite2D(0, 0, 256, 256, IMG_GENGETSU_SHADER, RP_STG_BOSS);
     ObjSprite2D_SetDestCenter(_sObject);
     Obj_SetVisible(_sObject, false);
@@ -19,6 +21,7 @@ function<void> Gengetsu_Init() {
     ObjShader_SetTechnique(_shader, "Render");
     ObjShader_SetShaderO(_sObject, _shader);
 
+    TBombShield(objBoss_); 
 }
 
 function<void> Gengetsu_Move(int obj_, float x_, float y_, int frames_) {
@@ -65,4 +68,15 @@ task TWiggle(int obj_, int frames_) {
         ObjShader_SetFloat(_shader, "phase", phase_);
         ObjRender_SetPosition(_sObject, ObjMove_GetX(obj_), ObjMove_GetY(obj_), 1);
     }
+}
+
+task TBombShield(int obj_) {
+    int shield = InitSprite2D(256, 0, 352, 96, IMG_STG_GENGETSU, RP_STG_BOSS);
+    ObjSprite2D_SetDestCenter(shield);
+    while (Boss_Alive(obj_)) {
+        ObjRender_SetPosition(shield, ObjMove_GetX(obj_), ObjMove_GetY(obj_), 1);
+        Obj_SetVisible(shield, Boss_IsBombBarrier(obj_));
+        yield;
+    }
+    Obj_Delete(shield);
 }

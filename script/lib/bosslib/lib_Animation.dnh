@@ -41,8 +41,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
             float speed = ObjMove_GetSpeed(objBoss_);
             float dir = cos(ObjMove_GetAngle(objBoss_)); //right+, left-
             //in order of precedence
-            if (Obj_GetValueDI(objBoss_, BOSS_SPECIAL, false)) animType = ANIM_SPECIAL;
-            else if (Boss_IsBombBarrier(objBoss_) || _isSurvival) {
+            if (bossID != BOSS_ID_GENGETSU && Boss_IsBombBarrier(objBoss_) || _isSurvival) {
                 if (speed == 0 || absolute(dir) < 0.1) animType = ANIM_IDLE_INV;
                 else {
                     if (dir < 0) animType = ANIM_LEFT_INV;
@@ -56,6 +55,7 @@ function<void> Animation_DrawBoss(int objBoss_) {
                     else animType = ANIM_RIGHT;
                 }
             }
+            if (Obj_GetValueDI(objBoss_, BOSS_SPECIAL, false)) animType = ANIM_SPECIAL; //override all
             CheckDamage();
             SetFrame();
             previousType = animType;

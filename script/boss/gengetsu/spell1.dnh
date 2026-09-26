@@ -3,7 +3,6 @@
 #Title["Spell 1"]
 #System["./../../system/System.dnh"]
 
-#include "./../../lib/lib_Boss.dnh"
 #include "./lib_Gengetsu.dnh"
 
 int _objBoss;
@@ -22,7 +21,7 @@ _spellID = 0;
 }
 
 @Initialize {
-    Boss_Init(true);
+    Boss_Init(false);
     _objBoss = Boss_Create(BOSS_ID_GENGETSU);
     TInitialize();
     TFinalize();
@@ -36,7 +35,7 @@ _spellID = 0;
 }
 
 task TInitialize() {
-    Gengetsu_Init();
+    Gengetsu_Init(_objBoss);
     if (GetGameMode() == GAME_MAIN) { //time for transition
         _count -= 90;
         wait(30);
@@ -63,8 +62,6 @@ task TMain() {
         if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                Animation_Charge(_objBoss, true);
-                wait(30);
                 Gengetsu_Move(_objBoss, MID_X, 60, 60);
             }
         }
