@@ -29,6 +29,10 @@ function<void> Gengetsu_Move(int obj_, float x_, float y_, int frames_) {
     TWiggle(obj_, frames_);
 }
 
+function<void> Gengetsu_MoveRandom(int obj_, float xRange_, float yRange_, int frames_) {
+    Gengetsu_Move(obj_, MID_X + rand(-xRange_, xRange_), 60 + rand(-yRange_, yRange_), frames_);
+}
+
 task TWiggle(int obj_, int frames_) {
     _isInvuln = true;
     Obj_SetVisible(obj_, false);
