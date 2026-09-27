@@ -7,7 +7,7 @@
 
 int _objBoss;
 int _count = -30;
-int _loopTime = 600;
+int _loopTime = 450;
 _spellID = 0;
 
 @Event {
@@ -63,9 +63,94 @@ task TMain() {
         if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
         if (_count % _loopTime == 0 && _count >= 0) {
             async {
-                Gengetsu_Move(_objBoss, MID_X, 60, 60);
+                TRings();
+                wait(180);
+                TSpray();
             }
         }
         yield;
     }
+}
+
+task TRings() {
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    TChargeAnim();
+    wait(45);
+    if (!Boss_Alive(_objBoss)) return;
+    //trembling shivering star
+    int way = 80;
+    int stack = 5;
+    int waitTime = 8;
+    float speed = 4;
+
+    float angleT = rand(0, 360);
+    for (int i = 0; i < stack; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        for (int j = 0; j < way; j++) {
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_PINK+RING_S, 0, SHOT_PINK+SPAWN_S+SIZE_16, SHOT_PINK+CANCEL_BURST2);
+            angleT += 360 / way;
+        }
+        CallSFX(SND_SHOT2);
+        angleT += 180 / way;
+        wait(waitTime);
+    }
+
+    Animation_Charge(_objBoss, false);
+    wait(20);
+    if (!Boss_Alive(_objBoss)) return;
+    Gengetsu_MoveRandom(_objBoss, 90, 16, 60);
+}
+
+task TSpray() {
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    TChargeAnim();
+    wait(45);
+    if (!Boss_Alive(_objBoss)) return;
+
+    int way = 7;
+    int stack = 40;
+    float minInc = 2;
+    float maxInc = 12;
+    float arc = 10;
+    float speedMin = 0.65;
+    float speedMax = 3.8; 
+    float angleT = rand(-40, -20);
+    int waitTime = 2;
+
+    for (int i = 0; i < stack; i++) {
+        if (!Boss_Alive(_objBoss)) return;
+        float speed = rand(speedMin, speedMax);
+        float angle = angleT;
+        for (int j = 0; j < way; j++) {
+            int shot = j == 3 ? RING_S : PELLET;
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angle, SHOT_PINK+shot, 0, SHOT_PINK+SPAWN_S+SIZE_8, SHOT_PINK+CANCEL_BURST1);
+            CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, -angle + 180, SHOT_PINK+shot, 0, SHOT_PINK+SPAWN_S+SIZE_8, SHOT_PINK+CANCEL_BURST1);
+            angle += arc;
+        }
+        CallSFX(SND_SHOT2);
+        angleT += rand(minInc, maxInc);
+        wait(waitTime);
+    }
+
+    Animation_Charge(_objBoss, false);
+    wait(20);
+    if (!Boss_Alive(_objBoss)) return;
+    Gengetsu_MoveRandom(_objBoss, 90, 16, 60);
+}
+
+task TChargeAnim() {
+    Primitive_ContractPolygon2D(_objBoss, 0, 368, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_WHITE);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_PINK);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_PINK);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_PURPLE_L);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_PURPLE_L);
 }
