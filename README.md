@@ -10,4 +10,4 @@ You're free to mod the game in any way you want as long as you aren't selling an
 
 Thank you all for sticking with me these two years and watching me make this game. I don't know if I'll ever make another (I would like to find a programming job soon and I hate art), but I'll never forget this one.
 
--Noah
+-Taylor
