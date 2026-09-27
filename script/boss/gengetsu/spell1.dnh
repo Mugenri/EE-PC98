@@ -85,7 +85,7 @@ task TRings() {
     int waitTime = 8;
     float speed = 4;
 
-    float angleT = rand(0, 360);
+    float angleT = 0;
     for (int i = 0; i < stack; i++) {
         if (!Boss_Alive(_objBoss)) return;
         for (int j = 0; j < way; j++) {
