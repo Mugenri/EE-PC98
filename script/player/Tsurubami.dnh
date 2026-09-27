@@ -15,9 +15,10 @@ int _countShot = 0;
     string shotData = DIR_PLR ~ "TsuruShot.dnh";
     InitPlayer(imageFile, shotData, 4.0, 1.9, 16, 64);
 
-    TShot();
-    TOption(1);
+    TShot(); //50 dps
+    TOption(1); //85 dps
     TOption(-1);
+    //total 220
 }
 
 @MainLoop {
@@ -33,7 +34,7 @@ int _countShot = 0;
 @Finalize {}
 
 task TShot() { //main shot
-    float damage = 2;
+    float damage = 1.4;
     loop {
         if (!IsPlayerSpellActive() && Alive() && _count % 10 == 0) {
             loop (3) {
@@ -58,12 +59,13 @@ task TOption(int dir_) {
     TOptionShot();
 
     int dist = 24;
-    int frame = 0;
+    int frame = 0 + 3 + 3 * dir_; //shift one cell for direction
     int frames = 4 * 6;
+    int x = dir_ > 0 ? 48 : 96;
     loop {
         int temp = frame ~/ 6 * 16;
         ObjRender_SetPosition(objOption, GetPlayerX() + dist * dir_, GetPlayerY(), 1);
-        ObjSprite2D_SetSourceRect(objOption, 48 + temp, 48, 48 + 16 + temp, 64);
+        ObjSprite2D_SetSourceRect(objOption, x + temp * dir_, 48, x + 16 + temp * dir_, 64);
         ObjSprite2D_SetDestCenter(objOption);
         frame++;
         frame %= frames;
@@ -71,39 +73,88 @@ task TOption(int dir_) {
     }
 
     task TOptionShot() {
-        float speed = 2;
-        float optionDamage = 4.8;
-        float xAccel = 0.12;
-        float yAccel = -0.6;
-        float xSpeedMax = 1.5;
-        float ySpeed = -8;
+        float speed = 8;
+        float optionDamage = 7.5;
+
+        float homing_power = 1;
+
         loop {
             if (Alive() && !IsPlayerSpellActive() && _count % 16 == 0) {
                 float optionX = ObjRender_GetX(objOption);
                 float optionY = ObjRender_GetY(objOption);
-
-                int shot1 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 0 * dir_, optionDamage, 1, 2);
-                int shot2 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 1 * dir_, optionDamage, 1, 2);
-                int shot3 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 2 * dir_, optionDamage, 1, 2);
-                int shot4 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 3 * dir_, optionDamage, 1, 2);
-                int shot5 = CreatePlayerShotA1(optionX, optionY, speed, 270, optionDamage, 1, 2);
-                int shot6 = CreatePlayerShotA1(optionX, optionY, speed + 4, 270, optionDamage, 1, 2);
-
-                ObjMove_AddPatternB2(shot1, 10, NO_CHANGE, NO_CHANGE, xAccel * dir_, yAccel, xSpeedMax * dir_, ySpeed);
-                ObjMove_AddPatternB2(shot2, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
-                ObjMove_AddPatternB2(shot3, 10, NO_CHANGE, NO_CHANGE, (-xAccel - 0.12) * dir_, yAccel, -xSpeedMax * dir_, ySpeed);
-                ObjMove_AddPatternB2(shot4, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
-                ObjMove_AddPatternB2(shot5, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
-                ObjMove_AddPatternB2(shot6, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
-
-                Obj_SetRenderPriorityI(shot1, RP_STG_EFF_PLR_LO);
-                Obj_SetRenderPriorityI(shot2, RP_STG_EFF_PLR_LO);
-                Obj_SetRenderPriorityI(shot3, RP_STG_EFF_PLR_LO);
-                Obj_SetRenderPriorityI(shot4, RP_STG_EFF_PLR_LO);
-                Obj_SetRenderPriorityI(shot5, RP_STG_EFF_PLR_LO);
-                Obj_SetRenderPriorityI(shot6, RP_STG_EFF_PLR_LO);
+                THoming(optionX, optionY, 270);
+                wait(4);
+                THoming(optionX, optionY, 270 + 20 * dir_);
+                wait(4);
+                THoming(optionX, optionY, 270 + 20 * dir_ * 2);
             }
             yield;
+        }
+
+        task THoming(float xOrg_, float yOrg_, float angleT_) {
+            //init
+            int shot = CreatePlayerShotA1(xOrg_, yOrg_, 0, angleT_, optionDamage, 1, 2);
+            Obj_SetRenderPriorityI(shot, RP_STG_EFF_PLR_LO);
+            ObjMove_SetAcceleration(shot, speed / 30);
+            ObjMove_SetMaxSpeed(shot, speed);
+            ObjShot_SetAutoDelete(shot, false);
+
+            int t = 0;
+            float home_power = 3;
+            float max_home = sin(home_power);
+            bool homingMode = false;
+
+            wait(10);
+
+            while (t < 300) { //thank you sapphire panlogism
+                float px = ObjMove_GetX(shot);
+                float py = ObjMove_GetY(shot);
+
+                float[][] intersectList = GetEnemyIntersectionPosition(px, py, 1);
+                if (length(intersectList) > 0) {
+                    float[] near_enemy = intersectList[0];	//nearest enemy to the shot
+			
+                    float tx = near_enemy[0];
+                    float ty = near_enemy[1];
+                    
+                    float dist = (px - tx) ^ 2 + (py - ty) ^ 2;
+                    
+                    if (dist < 78400) {	//270 ^ 2          
+                        if (dist <= 50 || t > 240) {
+                            homingMode = true;
+                        }
+                        
+                        if (homingMode) {
+                            let to_angle = atan2(near_enemy[1]-py, near_enemy[0]-px);
+                            ObjMove_SetAngle(shot, to_angle);
+                        } else {
+                            let to_angle = atan2(ty-py, tx-px);
+                            let tmp = sin(angleT_-to_angle);
+                            
+                            if(tmp < -max_home) {
+                                angleT_ += home_power;
+                            }
+                            else if(tmp > max_home){
+                                angleT_ -= home_power;
+                            }
+                            else{
+                                angleT_ = to_angle;
+                            }
+                            
+                            ObjMove_SetAngle(shot, angleT_);
+                            home_power = min(home_power+0.06666666667, 20); //20/300          
+                            max_home = sin(home_power);
+                        }
+                    }
+                }
+
+                if(t >= 60){
+                    ObjShot_SetAutoDelete(shot, true);
+                }
+                
+                t++;
+                yield;
+            }
         }
     }
 }
