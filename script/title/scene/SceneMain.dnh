@@ -301,9 +301,25 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
             tempSelect = SceneRankSelect(selectedRank, true);
             if (tempSelect < 0) break;
             selectedRank = tempSelect;
-            SetAreaCommonData(AREA_TITLE, "previousDiff", selectedRank);
+            if (selectedRank != 0) SetAreaCommonData(AREA_TITLE, "previousDiff", selectedRank);
             loop {
                 //Select Player
+                if (selectedRank == 0) { //gengetsu
+                    selectedPlayer = PLAYER_TSURUBAMI;
+                    StopBGM();
+
+                    //Set CommonData for player selections
+                    SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
+                    SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
+                    SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
+                    
+                    //start stage
+                    int stage = [0, 1, 2][selectedPlayer];
+                    SetAreaCommonData(AREA_TITLE, "StageIndex", stage);
+                    StartPackageStageScript();
+                    return;
+                }
+                //normal select
                 tempSelect = ScenePlayerSelect(selectedPlayer);
                 if (tempSelect < 0) break;
                 selectedPlayer = tempSelect;
@@ -313,9 +329,10 @@ task TMainMenu(bool playIntro_, int selectedDefault_, int preloadIndex_) {
                 SetAreaCommonData(AREA_TITLE, "GameMode", GAME_MAIN);
                 SetAreaCommonData(AREA_TITLE, "PlayerType", selectedPlayer);
                 SetAreaCommonData(AREA_TITLE, "Difficulty", selectedRank);
-
+                
                 //start stage
-                SetAreaCommonData(AREA_TITLE, "StageIndex", selectedPlayer == PLAYER_YABUSAME ? 0 : 1);
+                int stage = [0, 1, 2][selectedPlayer];
+                SetAreaCommonData(AREA_TITLE, "StageIndex", stage);
                 StartPackageStageScript();
                 return;
             }

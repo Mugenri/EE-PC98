@@ -9,6 +9,7 @@ function<int> SceneRankSelect(int selectedDefault_, bool extraMode_) {
     if (extraMode_) {
         selectedDefault_ = clamp(selectedDefault_ - D_EASYEX, 0, 2);
         imgValue = [4, 5, 6];
+        if (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX)) imgValue ~= [0];
     }
 
     int selectMax = length(imgValue) - 1;
@@ -43,7 +44,7 @@ function<int> SceneRankSelect(int selectedDefault_, bool extraMode_) {
         }
         case (VK_OK) {
             resultIndex = indexCurrent;
-            MenuSelect();
+            if (resultIndex != 3) MenuSelect();
             break;
         }
         case (VK_CANCEL, VK_PAUSE) {
@@ -54,7 +55,8 @@ function<int> SceneRankSelect(int selectedDefault_, bool extraMode_) {
         }
     }
     exitFlag = true;
-    if (resultIndex >= 0 && extraMode_) resultIndex += D_EASYEX;
+    if (resultIndex != 3 && resultIndex >= 0 && extraMode_) resultIndex += D_EASYEX;
+    else if (resultIndex == 3) resultIndex = 0; //gengetsu
     SetAreaCommonData(AREA_TITLE, "Difficulty", resultIndex);
     return resultIndex;
 

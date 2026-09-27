@@ -37,6 +37,7 @@ _spellID = 0;
 task TInitialize() {
     Gengetsu_Init(_objBoss);
     if (GetGameMode() == GAME_MAIN) { //time for transition
+        ObjMove_SetPosition(_objBoss, MID_X, 60);
         _count -= 90;
         wait(30);
         Transition_Spell(5, 1, 0, COLOR_WHITE);
@@ -51,7 +52,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (Boss_Alive(_objBoss)) yield;
-    Gengetsu_Move(_objBoss, MID_X, 60, 60);
+    Gengetsu_Move(_objBoss, MID_X, 60, 60); //TODO for final spell check if not game main
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
