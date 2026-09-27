@@ -23,7 +23,6 @@ const string IMG_SYSTEM_SHOT        = DIR_IMG ~ "system/MugenriShot.png";
 const string IMG_SYSTEM_TEXTBOX     = DIR_IMG ~ "system/textbox.png";
 const string IMG_SYSTEM_UI          = DIR_IMG ~ "system/systemUI.png";
 
-
 //Player Images
 const string IMG_PLR_HITBOX         = DIR_IMG ~ "character/hitbox.png";
 const string IMG_PLR_TSUBAKURA      = DIR_IMG ~ "character/tsubakura/tsubaSTG.png";
@@ -46,6 +45,7 @@ const string IMG_SHOT_TSURUBAMI     = DIR_IMG ~ "character/tsurubami/tsuruShot.p
 const string IMG_BG_TSURUBAMI       = DIR_IMG ~ "stg/tsurubamiBG.png";
 const string IMG_BG_TSURUBAMI_2     = DIR_IMG ~ "stg/tsurubami2BG.png";
 const string IMG_BG_GENGETSU        = DIR_IMG ~ "stg/gengetsuBG.png";
+const string IMG_BG_GENGETSU_EFF    = DIR_IMG ~ "stg/gengetsuBGEffect.png";
 
 //HLSL Shaders
 const string HLSL_FADE              = DIR_HLSL ~ "TexFade.hlsl";

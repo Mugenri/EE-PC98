@@ -4,6 +4,7 @@
 #include "./../../lib/effectlib/lib_EffectPrimitive.dnh"
 
 bool _split;
+int _color = 0x110011;
 
 @Initialize {
     SetAutoDeleteObject(true);
@@ -118,12 +119,59 @@ task TBackground(int index_, int priority_) {
     //bg
     int bg = InitSprite2D(MAX_X, 0, MAX_X * 2, MAX_Y, IMG_BG_GENGETSU, priority_ + 1);
 
+    TMoon();
+
     while (!exitFlag) {
         if (index_ != _bIndex) {
             async { exitFlag = BG_Exit(); }
             index_ = _bIndex;
         }
         yield;
+    }
+
+    task TMoon() {
+        //moon prim
+        int vertices = 130;
+        int prim = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, vertices, IMG_BG_GENGETSU_EFF, _priority);
+        ObjRender_SetColor(prim, _color);
+        
+        //192, 80
+        int xOrg = 192;
+        int yOrg = 80;
+
+        int radius = 350;
+        float angleT = 0;
+        for (int i = 0; i < vertices; i++) {
+            if (i % 2 == 0) {
+                ObjPrim_SetVertexPosition(prim, i, xOrg + 64 * cos(angleT), yOrg + 64 * sin(angleT), 1);
+            } else {
+                ObjPrim_SetVertexPosition(prim, i, MID_X + radius * cos(angleT), MID_Y + radius * sin(angleT), 1);
+                angleT += 360 / ((vertices / 2) - 1);
+            }
+        }
+
+        float anim = 0;
+        while (!exitFlag) {
+            UpdatePrim(anim);
+            anim -= 0.1 % 16;
+            yield;
+        }
+
+        Obj_Delete(prim);
+
+        function<void> UpdatePrim(float mod_) {
+            ObjRender_SetColor(prim, _color);
+            float angleT = 0;
+            for (int i = 0; i < vertices; i++) {
+                if (i % 2 == 0) {
+                    ObjPrim_SetVertexUVT(prim, i, 4 * i, 0 + mod_);
+                } else {
+                    ObjPrim_SetVertexUVT(prim, i, 4 * i - 4 , 196 + mod_);
+                    angleT += 360 / ((vertices / 2) - 1);
+                }
+            }
+        }
+
     }
 
     Obj_Delete(black);
