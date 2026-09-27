@@ -22,8 +22,13 @@ function<void> InitPlayer(string imageFile_, string shotFile_, float speed_, flo
     TThrillGauge();
     LoadPlayerShotData(_pathShot);
     
-    _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 16]);
-    ParticleListShader(_particleShot, 16 / 256, 16 / 64);
+    if (imageFile_ == IMG_PLR_TSURUBAMI) {
+        _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 32]);
+        ParticleListShader(_particleShot, 16 / 256, 32 / 64);
+    } else {
+        _particleShot = InitParticleList(_pathImg, RP_STG_PLAYER, [0, 0, 16, 16]);
+        ParticleListShader(_particleShot, 16 / 256, 16 / 64);
+    }
 
     ObjPlayer_AddIntersectionCircleA1(_objPlayer, 0, 0, 1, 15);
     SetPlayerDownStateFrame(0);

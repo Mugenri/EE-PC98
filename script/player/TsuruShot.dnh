@@ -1,0 +1,23 @@
+shot_image = "./../img/character/tsurubami/tsuruPlayer.png"
+
+ShotData {
+    id = 1
+    render = ALPHA
+    rect = ( 96, 0, 112, 25 )
+    alpha = 255
+    collision = ( 6, 0, 0 )
+    fixed_angle = true;
+}
+
+ShotData {
+    id = 2
+    render = ALPHA
+    rect = ( 0, 48, 16, 64 )
+    alpha = 255
+    collision = ( 4, 0, 0 )
+    fixed_angle = true
+    AnimationData {
+        animation_data = (4, 00, 48, 16, 64)
+        animation_data = (4, 16, 48, 32, 64)
+    }
+}

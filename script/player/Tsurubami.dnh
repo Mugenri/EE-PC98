@@ -7,21 +7,23 @@
 
 #include "./lib/lib_player.dnh"
 
-int _count = 0;
+int _count = -1;
 int _countShot = 0;
 
 @Initialize {
-    string imageFile = IMG_PLR_TSUBAKURA;
-    string shotData = DIR_PLR ~ "TsubaShot.dnh";
-    InitPlayer(imageFile, shotData, 4.5, 2.0, 16, 48);
+    string imageFile = IMG_PLR_TSURUBAMI;
+    string shotData = DIR_PLR ~ "TsuruShot.dnh";
+    InitPlayer(imageFile, shotData, 4.0, 1.9, 16, 64);
 
     TShot();
+    TOption(1);
+    TOption(-1);
 }
 
 @MainLoop {
-    _count++;
-    if (Shooting() && !IsPlayerSpellActive() && Alive()) _countShot++;
-    else _countShot = -1;
+    if (Shooting() && !IsPlayerSpellActive() && Alive()) _count++;
+    else if (_count >= 0 && _count % 16 != 15) _count++;
+    else _count = -1;
     if (Alive()) SetPlayerItemScope(GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD ? _focusScope : _itemScope);
     yield;
 }
@@ -30,96 +32,76 @@ int _countShot = 0;
 
 @Finalize {}
 
-task TShot() {
-    TCreateLaser();
-    ascent (i in 0..11) TCreateLaserEffect(-i * 36);
-    ascent (i in 0..6) TOption(i);
+task TShot() { //main shot
+    float damage = 2;
     loop {
-        if (Shooting() && !IsPlayerSpellActive() && Alive() && _countShot % 10 == 0) {
+        if (!IsPlayerSpellActive() && Alive() && _count % 10 == 0) {
             loop (3) {
+                int offsetX = 8;
+                int shot = CreatePlayerShotA1(GetPlayerX() - offsetX - 1, GetPlayerY() + 14, 28, 270, damage, 1, 1);
+                int shot2 = CreatePlayerShotA1(GetPlayerX() + offsetX, GetPlayerY() + 14, 28, 270, damage, 1, 1);
+                ObjRender_SetScaleX(shot2, -1);
+                Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
+                Obj_SetRenderPriorityI(shot2, RP_STG_PLAYER);
                 CallSFX(SND_PL_SHOT);
                 wait(3);
             }
         }
         yield;
     }
-
-    task TCreateLaser() { //Hitbox
-        int objLaser = ObjShot_Create(OBJ_STRAIGHT_LASER);
-        ObjShot_SetGraphic(objLaser, 1);
-        ObjShot_SetDamage(objLaser, 2.5);
-        Obj_SetVisible(objLaser, false);
-        ObjShot_SetAutoDelete(objLaser, false);
-        ObjShot_Regist(objLaser);
-        
-
-        while (!Obj_IsDeleted(_objPlayer)) {
-            ObjMove_SetPosition(objLaser, GetPlayerX(), GetPlayerY());
-            if (Shooting() && !IsPlayerSpellActive() && Alive()) ObjShot_SetIntersectionLine(objLaser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - 600, 2);
-            yield;
-        }
-        Obj_Delete(objLaser);
-    }
-
-    task TCreateLaserEffect(int yOff_) { //Graphic
-        int objEffect = ObjPrim_Create(OBJ_SPRITE_2D);
-        ObjPrim_SetTexture(objEffect, _pathImg);
-        ObjRender_SetTextureFilter(objEffect, FILTER_NONE, FILTER_NONE, FILTER_NONE);
-        Obj_SetRenderPriorityI(objEffect, RP_STG_PLAYER - 1i);
-
-        int frame = 0;
-
-        while (!Obj_IsDeleted(_objPlayer)) {
-            ObjRender_SetPosition(objEffect, GetPlayerX(), GetPlayerY() + yOff_ - 16, 1);
-            ObjSprite2D_SetSourceRect(objEffect, 112, frame, 128, frame + 36);
-            ObjSprite2D_SetDestCenter(objEffect);
-
-            Obj_SetVisible(objEffect, Shooting() && !IsPlayerSpellActive() && Alive());
-
-            frame += 3;
-            if (frame > 11) frame = 0;
-            yield;
-        }
-        Obj_Delete(objEffect);
-    }
 }
 
-
-task TOption(int offset_) {
-    int distUnfocus = 32;
-    int distFocus = 18;
-    int distCurrent = distUnfocus;
-
-    int objOption = InitSprite2D(64, 48, 80, 64, _pathImg, RP_STG_PLAYER - 1i);
+task TOption(int dir_) {
+    int objOption = InitSprite2D(64, 48, 80, 64, _pathImg, RP_STG_PLAYER);
     ObjSprite2D_SetDestCenter(objOption);
 
     TOptionShot();
 
-    float offset = 360 / 6 * offset_;
-    while (!Obj_IsDeleted(_objPlayer)) {
-        float rotationX = cos(_count * 4 + offset);
-        distCurrent = (GetVirtualKeyState(VK_SLOWMOVE) != KEY_HOLD && GetVirtualKeyState(VK_SLOWMOVE) != KEY_PUSH) ? distUnfocus : distFocus;
-
-        ObjRender_SetPosition(objOption, GetPlayerX() + distCurrent * rotationX, GetPlayerY() + distCurrent * sin(_count * 3 + 360 / 6 * offset_) * 0.8, 1);
-
-        //Render over player as if rotating around them
-        if (rotationX == 1) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_LO);
-        else if (rotationX == -1) Obj_SetRenderPriorityI(objOption, RP_STG_EFF_PLR_HI);
-
-        Obj_SetVisible(objOption, Alive());
+    int dist = 24;
+    int frame = 0;
+    int frames = 4 * 6;
+    loop {
+        int temp = frame ~/ 6 * 16;
+        ObjRender_SetPosition(objOption, GetPlayerX() + dist * dir_, GetPlayerY(), 1);
+        ObjSprite2D_SetSourceRect(objOption, 48 + temp, 48, 48 + 16 + temp, 64);
+        ObjSprite2D_SetDestCenter(objOption);
+        frame++;
+        frame %= frames;
         yield;
     }
 
     task TOptionShot() {
-        while (!Obj_IsDeleted(_objPlayer)) {
-            float angleMod = cos(_count * 4 + 360 / 6 * offset_);
-            if (GetVirtualKeyState(VK_SLOWMOVE) == KEY_HOLD || GetVirtualKeyState(VK_SLOWMOVE) == KEY_PUSH) angleMod = 0;
-            if (Shooting() && Alive() && !IsPlayerSpellActive() && _countShot % 10 == 0) {
-                loop (3) {
-                    int shot = CreatePlayerShotA1(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 28, 270 + 10 * angleMod, 1.6, 1, 1);
-                    Obj_SetRenderPriorityI(shot, RP_STG_PLAYER);
-                    wait(3);
-                }
+        float speed = 2;
+        float optionDamage = 4.8;
+        float xAccel = 0.12;
+        float yAccel = -0.6;
+        float xSpeedMax = 1.5;
+        float ySpeed = -8;
+        loop {
+            if (Alive() && !IsPlayerSpellActive() && _count % 16 == 0) {
+                float optionX = ObjRender_GetX(objOption);
+                float optionY = ObjRender_GetY(objOption);
+
+                int shot1 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 0 * dir_, optionDamage, 1, 2);
+                int shot2 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 1 * dir_, optionDamage, 1, 2);
+                int shot3 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 2 * dir_, optionDamage, 1, 2);
+                int shot4 = CreatePlayerShotA1(optionX, optionY, speed, 90 + 72 * dir_ - 72 * 3 * dir_, optionDamage, 1, 2);
+                int shot5 = CreatePlayerShotA1(optionX, optionY, speed, 270, optionDamage, 1, 2);
+                int shot6 = CreatePlayerShotA1(optionX, optionY, speed + 4, 270, optionDamage, 1, 2);
+
+                ObjMove_AddPatternB2(shot1, 10, NO_CHANGE, NO_CHANGE, xAccel * dir_, yAccel, xSpeedMax * dir_, ySpeed);
+                ObjMove_AddPatternB2(shot2, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
+                ObjMove_AddPatternB2(shot3, 10, NO_CHANGE, NO_CHANGE, (-xAccel - 0.12) * dir_, yAccel, -xSpeedMax * dir_, ySpeed);
+                ObjMove_AddPatternB2(shot4, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
+                ObjMove_AddPatternB2(shot5, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
+                ObjMove_AddPatternB2(shot6, 10, NO_CHANGE, NO_CHANGE, 0, yAccel, 0, ySpeed);
+
+                Obj_SetRenderPriorityI(shot1, RP_STG_EFF_PLR_LO);
+                Obj_SetRenderPriorityI(shot2, RP_STG_EFF_PLR_LO);
+                Obj_SetRenderPriorityI(shot3, RP_STG_EFF_PLR_LO);
+                Obj_SetRenderPriorityI(shot4, RP_STG_EFF_PLR_LO);
+                Obj_SetRenderPriorityI(shot5, RP_STG_EFF_PLR_LO);
+                Obj_SetRenderPriorityI(shot6, RP_STG_EFF_PLR_LO);
             }
             yield;
         }
@@ -127,17 +109,21 @@ task TOption(int offset_) {
 }
 
 task TShotCancel(int obj_, float x_, float y_, int graphic_) { //Player shot deletion effect
-    if (graphic_ != 1) return;
     float angle = ObjMove_GetAngle(obj_);
-    float xStep = 3 * cos(angle);
-    float yStep = 3 * sin(angle);
+    float speed = 5 - graphic_ * 2;
+    float xStep = speed * cos(angle);
+    float yStep = speed * sin(angle);
+    float angleZ = ObjRender_GetAngleZ(obj_);
+    float scaleX = ObjRender_GetScaleX(obj_);
     if (rand_int(1, 8) == 1) TShotParticle(x_, y_);
-
+    
     int frame = 0;
-    int frameRate = 2;
+    int frameRate = 2 * graphic_;
     while (frame < 4 * frameRate) {
         ObjParticleList_SetPosition(_particleShot, x_, y_, 1);
-        ObjParticleList_SetExtraData(_particleShot, 6, frame / frameRate, 0);
+        ObjParticleList_SetAngleZ(_particleShot, angleZ);
+        ObjParticleList_SetScaleX(_particleShot, scaleX);
+        ObjParticleList_SetExtraData(_particleShot, graphic_ + 6 + frame / frameRate, graphic_ - 1, 0);
         ObjParticleList_AddInstance(_particleShot);
 
         frame++;
