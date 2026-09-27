@@ -100,7 +100,7 @@ task TRings() {
     Animation_Charge(_objBoss, false);
     wait(20);
     if (!Boss_Alive(_objBoss)) return;
-    Gengetsu_MoveRandom(_objBoss, 90, 16, 60);
+    Gengetsu_MoveRandom(_objBoss, 90, 32, 60);
 }
 
 task TSpray() {
@@ -121,6 +121,8 @@ task TSpray() {
     float angleT = rand(-40, -20);
     int waitTime = 2;
 
+    Gengetsu_MoveRandom(_objBoss, 130, 32, 80);
+
     for (int i = 0; i < stack; i++) {
         if (!Boss_Alive(_objBoss)) return;
         float speed = rand(speedMin, speedMax);
@@ -137,9 +139,6 @@ task TSpray() {
     }
 
     Animation_Charge(_objBoss, false);
-    wait(20);
-    if (!Boss_Alive(_objBoss)) return;
-    Gengetsu_MoveRandom(_objBoss, 90, 16, 60);
 }
 
 task TChargeAnim() {
