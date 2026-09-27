@@ -106,6 +106,7 @@ function<void> Boss_Finalize(int obj_) {
 
     int gameMode = GetGameMode();
     bool isSpell = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_SPELL);
+    if (Boss_GetID(obj_) == BOSS_ID_GENGETSU) isSpell = true; //always drop points
     bool isFinal = ObjEnemyBossScene_GetInfo(_objScene, INFO_IS_LAST_STEP);
     bool isCapture = Boss_IsSpellCaptured();
     int timer = ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF);
@@ -134,7 +135,7 @@ function<void> Boss_Finalize(int obj_) {
     if (isCapture && isSpell) { //spell capture
         int scoreBonus = 100; //adiitonal score per bullet on top of starting score
         int numBullets = 0; //bullets to become items
-        int threshold = 30; //max bullets to items
+        int threshold = Boss_GetID(obj_) == BOSS_ID_GENGETSU ? 70 : 30; //max bullets to items
         float radius = 200;
         loop (5) {
             for each (shot in GetShotIdInCircleA2(GetPlayerX(), GetPlayerY(), radius, TARGET_ENEMY)) {

@@ -143,12 +143,13 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
     }
 
     function<void> ChangePlayer() {
-        bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA), (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX))];
+        bool[] flags = [CD_GetExtraStageFlag(PLAYER_YABUSAME), CD_GetExtraStageFlag(PLAYER_TSUBAKURA)];
+        if ((CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX)) || DEBUG_MODE) flags ~= [true];
         int[] forbidden = [];
         for (int i = 0; i < length(flags); i++) {
             if (!flags[i] && !DEBUG_MODE) forbidden ~= [i];
         }
-        selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, PLAYER_TSURUBAMI, forbidden);
+        selectedPlayer = IncrementIndex(selectedPlayer, 1, PLAYER_YABUSAME, length(flags) - 1, forbidden);
     }
 
     task TCreateMenuGraphicsSpell() {
@@ -343,7 +344,8 @@ function<int[]> SceneSpellPractice(int[] selectedDefault_, bool autoSelect_) {
         task TPlayerDisplay() { //player selection display
             int playerText1 = CreateText(16, 332, RP_UI_TEXT, "Yabusame Houren", COLOR_WHITE);
             int playerText2 = CreateText(16, 348, RP_UI_TEXT, "Tsubakura Enraku", COLOR_WHITE);
-            int playerText3 = CreateText(16, 364, RP_UI_TEXT, "Tsurubami Senri", COLOR_WHITE);
+            string text = (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX) || DEBUG_MODE) ? "Tsurubami Senri" : "";
+            int playerText3 = CreateText(16, 364, RP_UI_TEXT, text, COLOR_WHITE);
             ObjText_SetMaxWidth(playerText1, 204);
             ObjText_SetMaxWidth(playerText2, 204);
             ObjText_SetMaxWidth(playerText3, 204);

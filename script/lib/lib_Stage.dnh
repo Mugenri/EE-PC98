@@ -216,8 +216,8 @@ function<void> Stage_EndScreen(int stageBonus_) { //end of stage score screen
     int initLives = _startingLives;
     float[] multLives = [1.2, 1.1, 1.0, 0.9, 0.8, 0.7, 0.6, 0.5];
     int difficulty = GetAreaCommonData(AREA_TITLE, "Difficulty", 0);
-    float[] multDifficulty = [0.5, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
-    string[] difficultyTexts = ["Easy", "Normal", "Hard", "Unreal", "Easy Extra", "Extra", "Absurdly Extra"];
+    float[] multDifficulty = [1.0, 1.0, 1.2, 1.4, 0.5, 1.0, 1.4];
+    string[] difficultyTexts = ["???", "Normal", "Hard", "Unreal", "Easy Extra", "Extra", "Absurdly Extra"];
 
     //SCORE CALCULATION ----------------------------------
     //stage bonus + graze * 50 + (lives * 10000) * point items + nomiss + nobomb * continue mult * starting lives mult * diff mult = total

@@ -9,7 +9,7 @@ function<int> SceneRankSelect(int selectedDefault_, bool extraMode_) {
     if (extraMode_) {
         selectedDefault_ = clamp(selectedDefault_ - D_EASYEX, 0, 2);
         imgValue = [4, 5, 6];
-        if (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX)) imgValue ~= [0];
+        if (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX) || DEBUG_MODE) imgValue ~= [0];
     }
 
     int selectMax = length(imgValue) - 1;

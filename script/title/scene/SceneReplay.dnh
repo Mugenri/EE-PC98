@@ -170,7 +170,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
                 scoreNum = insert(scoreNum, scoreLen - 3, ',');
             }
 
-            string difficulty = ["Easy", "Normal", "Hard", "Unreal", "Ez-Ex", "Extra", "Ab-Ex"][GetReplayDifficulty(index_)];
+            string difficulty = ["???", "Normal", "Hard", "Unreal", "Ez-Ex", "Extra", "Ab-Ex"][GetReplayDifficulty(index_)];
             int stageIndex = GetReplayStageIndex(index_);
             int spellID = GetReplaySpellPracticeID(index_);
 
