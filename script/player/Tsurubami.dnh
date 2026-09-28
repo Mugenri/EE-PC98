@@ -80,13 +80,11 @@ task TOption(int dir_) {
 
         loop {
             if (Alive() && !IsPlayerSpellActive() && _count % 16 == 0) {
-                float optionX = ObjRender_GetX(objOption);
-                float optionY = ObjRender_GetY(objOption);
-                THoming(optionX, optionY, 270);
+                THoming(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 270);
                 wait(4);
-                THoming(optionX, optionY, 270 + 20 * dir_);
+                THoming(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 270 + 20 * dir_);
                 wait(4);
-                THoming(optionX, optionY, 270 + 20 * dir_ * 2);
+                THoming(ObjRender_GetX(objOption), ObjRender_GetY(objOption), 270 + 20 * dir_ * 2);
             }
             yield;
         }
