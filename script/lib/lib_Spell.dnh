@@ -132,6 +132,25 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
     case (2) { //Gengetsu
         alternative (spellID_)
         case (0)            { return "First Nightmare"; }                                   //0
+        case (1)            { return "Second Nightmare"; }                                  //1
+        case (2)            { return "Third Nightmare"; }                                   //2
+        case (3)            { return "Fourth Nightmare"; }                                  //3
+        case (4)            { return "Fifth Nightmare"; }                                   //4
+        case (5)            { return "Sixth Nightmare"; }                                   //5
+        case (6)            { return "Seventh Nightmare"; }                                 //6
+        case (7)            { return "Eighth Nightmare"; }                                  //7
+        case (8)            { return "Ninth Nightmare"; }                                   //8
+        case (9)            { return "Tenth Nightmare"; }                                   //9
+        case (10)            { return "Eleventh Nightmare"; }                               //10
+        case (11)            { return "Twelfth Nightmare"; }                                //11
+        case (12)            { return "Thirteenth Nightmare"; }                             //12
+        case (13)            { return "Fourteenth Nightmare"; }                             //13
+        case (14)            { return "Fifteenth Nightmare"; }                              //14
+        case (15)            { return "Sixteenth Nightmare"; }                              //15
+        case (16)            { return "Seventeenth Nightmare"; }                            //16
+        case (17)            { return "Eighteenth Nightmare"; }                             //17
+        case (18)            { return "Penultimate Nightmare"; }                            //18
+        case (19)            { return "Final Nightmare"; }                                  //19
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
@@ -218,7 +237,7 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
         dir = dir ~ "gengetsu/";
         return [
             dir ~ "spell1.dnh",         //0
-            dir ~ "spell2.dnh"
+            dir ~ "spell2.dnh"          //1
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
