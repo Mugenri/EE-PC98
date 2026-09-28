@@ -131,7 +131,7 @@ function<string> Spell_GetName(int stageIndex_, int spellID_) {
     }
     case (2) { //Gengetsu
         alternative (spellID_)
-        case (0)            { return "Spell 1"; }
+        case (0)            { return "First Nightmare"; }                                   //0
         others { return "INVALID"; }
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
