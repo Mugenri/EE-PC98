@@ -237,7 +237,25 @@ function<string[]> Spell_GetPathList(int stageIndex_) {
         dir = dir ~ "gengetsu/";
         return [
             dir ~ "spell1.dnh",         //0
-            dir ~ "spell2.dnh"          //1
+            dir ~ "spell2.dnh",         //1
+            dir ~ "spell3.dnh",         //2
+            dir ~ "spell4.dnh",         //3
+            dir ~ "spell5.dnh",         //4
+            dir ~ "spell6.dnh",         //5
+            dir ~ "spell7.dnh",         //6
+            dir ~ "spell8.dnh",         //7
+            dir ~ "spell9.dnh",         //8
+            dir ~ "spell10.dnh",        //9
+            dir ~ "spell11.dnh",        //10
+            dir ~ "spell12.dnh",        //11
+            dir ~ "spell13.dnh",        //12
+            dir ~ "spell14.dnh",        //13
+            dir ~ "spell15.dnh",        //14
+            dir ~ "spell16.dnh",        //15
+            dir ~ "spell17.dnh",        //16
+            dir ~ "spell18.dnh",        //17
+            dir ~ "spell19.dnh",        //18
+            dir ~ "spell20.dnh"         //19
         ];
     }
     others { assert(false, IntToString(stageIndex_) ~ " is an invalid stage index."); }
