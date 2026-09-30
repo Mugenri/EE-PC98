@@ -92,7 +92,6 @@ task TRage() {
     int way = 32;
     int shotPerSecond = 10;
     float speed = 5.5;
-    SetPlayerInvincibilityFrame(1000);
 
     while (Boss_Alive(_objBoss)) {
         if (ObjMove_GetSpeed(_objBoss) == 0) {
