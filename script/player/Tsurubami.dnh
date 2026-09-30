@@ -55,17 +55,17 @@ task TShot() { //main shot
 task TOption(int dir_) {
     int objOption = InitSprite2D(64, 48, 80, 64, _pathImg, RP_STG_PLAYER);
     ObjSprite2D_SetDestCenter(objOption);
+    ObjRender_SetScaleX(objOption, dir_);
 
     TOptionShot();
 
     int dist = 24;
-    int frame = 0 + 3 + 3 * dir_; //shift one cell for direction
+    int frame = 0; //shift one cell for direction
     int frames = 4 * 6;
-    int x = dir_ > 0 ? 48 : 96;
     loop {
         int temp = frame ~/ 6 * 16;
         ObjRender_SetPosition(objOption, GetPlayerX() + dist * dir_, GetPlayerY(), 1);
-        ObjSprite2D_SetSourceRect(objOption, x + temp * dir_, 48, x + 16 + temp * dir_, 64);
+        ObjSprite2D_SetSourceRect(objOption, 48 + temp, 48, 48 + 16 + temp, 64);
         ObjSprite2D_SetDestCenter(objOption);
         frame++;
         frame %= frames;
