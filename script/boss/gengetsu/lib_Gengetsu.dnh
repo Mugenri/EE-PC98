@@ -84,3 +84,25 @@ task TBombShield(int obj_) {
     }
     Obj_Delete(shield);
 }
+
+task TRage() {
+    while (ObjEnemyBossScene_GetInfo(_objScene, INFO_TIMERF) > 600) yield; //10 seconds
+    if (!Boss_Alive(_objBoss)) return;
+
+    int way = 32;
+    int shotPerSecond = 10;
+    float speed = 5.5;
+    SetPlayerInvincibilityFrame(1000);
+
+    while (Boss_Alive(_objBoss)) {
+        if (ObjMove_GetSpeed(_objBoss) == 0) {
+            float angleT = rand(0, 360);
+            for (int j = 0; j < way; j++) {
+                CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_BLUE+NEEDLES, 0, SHOT_BLUE+SPAWN_E+SIZE_8, SHOT_BLUE+CANCEL_BURST1);
+                angleT += 360 / way;
+            }
+            CallSFX(SND_SHOT1);
+        }
+        wait(60 / shotPerSecond);
+    }
+}

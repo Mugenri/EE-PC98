@@ -16,7 +16,7 @@ _spellID = 0;
         SetScriptResult(3000);
     }
     case (EV_REQUEST_TIMER) {
-        SetScriptResult(30 + absolute(_count / 60));
+        SetScriptResult(35 + absolute(_count / 60));
     }
 }
 
@@ -48,6 +48,7 @@ task TInitialize() {
     }
     wait(30);
     Boss_SetVulnerable(_objBoss, true);
+    TRage();
 }
 
 task TFinalize() {
