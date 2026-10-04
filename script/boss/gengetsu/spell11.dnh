@@ -1,0 +1,191 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 12"]
+#System["./../../system/System.dnh"]
+
+#include "./lib_Gengetsu.dnh"
+
+int _objBoss;
+int _count = -105;
+int _loopTime = 240;
+_spellID = 10;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(40 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_GENGETSU);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    Gengetsu_Init(_objBoss);
+    if (GetGameMode() == GAME_SPELL) Gengetsu_Move(_objBoss, MID_X, MID_Y, 30);
+    wait(106);
+    Boss_SetVulnerable(_objBoss, true);
+    TRage();
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    Gengetsu_Move(_objBoss, MID_X, 60, 60);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    TSuns();
+    while (_count < -90) yield;
+    while (Boss_Alive(_objBoss)) {
+        if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
+        if (_count % _loopTime == 0 && _count >= 0) { //TODO time correctly
+            async {
+                TLaser();
+            }
+        }
+        yield;
+    }
+}
+
+task TSuns() {
+    //hell's tokamak
+
+    //charge anim
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    TChargeAnim1(MID_X - 16, MID_Y - 3);
+    TChargeAnim1(MID_X + 16, MID_Y - 3);
+    wait(45);
+    if (!Boss_Alive(_objBoss)) return;
+
+    int count = 0;
+    float angle = 0;
+    float arc = 0.5;
+    int way = 38;
+    float speed = 1;
+    float accel = 0.02;
+    int radius = MID_X;
+    int sRadius = 32;
+    int waitTime = 60;
+    int[] color = [SHOT_RED, SHOT_PINK];
+    int[] type = [BALL_S, RING_S];
+
+    //two suns
+
+    int sun1 = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 2.133, 0, SHOT_RED+BALL_L, 0, SHOT_RED+SPAWN_E+SIZE_32, SHOT_RED+CANCEL_64);
+    int sun2 = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), 2.133, 180, SHOT_RED+BALL_L, 0, SHOT_RED+SPAWN_E+SIZE_32, SHOT_RED+CANCEL_64);
+    ObjMove_SetDestAtFrame(sun1, MID_X + radius * cos(0), MID_Y + radius * sin(0), 90, LERP_LINEAR);
+    ObjMove_SetDestAtFrame(sun2, MID_X + radius * cos(180), MID_Y + radius * sin(180), 90, LERP_LINEAR);
+    ObjShot_SetSpellResist(sun1, true);
+    ObjShot_SetSpellResist(sun2, true);
+
+    wait(45);
+    Animation_Charge(_objBoss, false);
+    wait(45);
+
+    CallSFX(SND_SHOT4);
+
+    float temp = rand(0, 360);
+    for (int i = 0; i < 32; i++) {
+        CreateShotUA2(ObjMove_GetX(sun1), ObjMove_GetY(sun1), 1, temp, 0.06, 5, 0, SHOT_RED+FIRE_A, 0, SHOT_RED+SPAWN_S+SIZE_32, SHOT_RED+CANCEL_32);
+        CreateShotUA2(ObjMove_GetX(sun2), ObjMove_GetY(sun2), 1, temp, 0.06, 5, 0, SHOT_RED+FIRE_A, 0, SHOT_RED+SPAWN_S+SIZE_32, SHOT_RED+CANCEL_32);
+        temp += 360 / 32;
+    }
+
+    TCircles(sun1, 1);
+    TCircles(sun2, 1 + waitTime / 2);
+    while (Boss_Alive(_objBoss)) {
+        ObjMove_SetDestAtFrame(sun1, MID_X + radius * cos(angle), MID_Y + radius * sin(angle), 1, LERP_LINEAR);
+        ObjMove_SetDestAtFrame(sun2, MID_X + radius * cos(angle + 180), MID_Y + radius * sin(angle + 180), 1, LERP_LINEAR);
+        angle += arc;
+        yield;
+    }
+
+    task TCircles(int parent_, int delay_) {
+        ObjShot_SetGraphic(parent_, SHOT_RED+BUBBLE);
+        wait(delay_);
+        int count = 0;
+        while (Boss_Alive(_objBoss)) {
+            float x = ObjMove_GetX(parent_);
+            float y = ObjMove_GetY(parent_);
+            float angleT = rand(0, 360);
+            for (int i = 0; i < way; i++) {
+                int shot = CreateShotUA2(x + sRadius * cos(angleT), y + sRadius * sin(angleT), speed * 2, angleT, 0, speed, 3, color[i % 2]+type[i % 2], 1, color[i % 2]+SPAWN_S+SIZE_16, color[i % 2]+CANCEL_FADE);
+                ObjShot_SetAutoDelete(shot, false);
+                ObjMove_AddPatternA2(shot, 120, NO_CHANGE, NO_CHANGE, -accel, speed, -0.3);
+                ObjMove_AddPatternA2(shot, 500, NO_CHANGE, NO_CHANGE, -accel, speed, 0);
+                async {
+                    wait(450);
+                    ObjShot_SetAutoDelete(shot, true);
+                }
+                angleT += 360 / way;
+            }
+            CallSFX(SND_SHOT1);
+            wait(waitTime);
+        }
+    }
+}
+
+task TLaser() { //210 frames
+    //move, laser
+    if (!Boss_Alive(_objBoss)) return;
+    Gengetsu_Move(_objBoss, GetPlayerX(), 70 + rand(20, -20), 60);
+    wait(45);
+    CallSFX(SND_CHARGE1);
+    wait(15);
+    if (!Boss_Alive(_objBoss)) return;
+    int width = min(Interpolate_Linear(24, 120, _count / 2400.0), 70);
+    CreateMasterSpark(Boss_X(_objBoss), Boss_Y(_objBoss) - 5, 90, MAX_Y, width, 60, COLOR_BLUE, COLOR_INDIGO_L, 45);
+    Animation_Charge(_objBoss, true);
+    TChargeAnim2();
+    wait(45);
+    if (!Boss_Alive(_objBoss)) return;
+    CallSFX(SND_MASTERSPARK);
+    wait(105);
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, false);
+
+}
+
+task TChargeAnim1(int x_, int y_) {
+    Primitive_ContractPolygon2D(x_, y_, 0, 368, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(2);
+    Particle_ContractRing(x_, y_, 0, 368, 135, 45, 16, COLOR_WHITE);
+    Particle_ContractRing(x_, y_, 0, 368, -135, 45, 16, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(x_, y_, 0, 368, 135, 45, 16, COLOR_RED_L);
+    Particle_ContractRing(x_, y_, 0, 368, -135, 45, 16, COLOR_RED_L);
+    wait(2);
+    Particle_ContractRing(x_, y_, 0, 368, 135, 45, 16, COLOR_RED_D);
+    Particle_ContractRing(x_, y_, 0, 368, -135, 45, 16, COLOR_RED_D);
+}
+
+task TChargeAnim2() {
+    Primitive_ContractPolygon2D(_objBoss, 0, 368, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_WHITE);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_INDIGO_L);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_INDIGO_L);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_BLUE);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_BLUE);
+}
