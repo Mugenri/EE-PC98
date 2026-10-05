@@ -58,7 +58,7 @@ task TIntroTimer(int time_) { //time the intro fade takes to play
 }
 
 function<void> Stage_SetBGMText(int index_, int delay_, int current_) { //newly playing bgm text (228 frames of animation)
-    if (index_ == current_) return; //already playing, cancel
+    if (index_ == current_ || GetGameMode() == GAME_SPELL) return; //already playing, cancel
     wait(delay_);
     string text = GetBGMName(index_);
     int objText = CreateText(0, MAX_Y - 17, RP_STG_MAX, text, COLOR_WHITE);
