@@ -59,14 +59,14 @@ task TMain() {
 }
 
 task TSpell() {
-    Phase1();
-    Phase2();
+    WashingMachine(1);
+    WashingMachine(-1);
     if (!Boss_Alive(_objBoss)) return;
     Gengetsu_Move(_objBoss, MID_X, 180, 60);
     wait(60);
     Phase3();
 
-    function<void> Phase1() {
+    function<void> WashingMachine(int dir_) {
         if (!Boss_Alive(_objBoss)) return;
         Animation_Charge(_objBoss, true);
         CallSFX(SND_CHARGE1);
@@ -74,73 +74,38 @@ task TSpell() {
         wait(30);
         if (!Boss_Alive(_objBoss)) return;
 
-        int way = 7;
-        int stack = 4;
-        float speed = 4;
-        float angleT = 0;
-        float arc1 = 15; //between shots
-        float arc2 = -80; //between arcs
-        int waitTime = 4;
-        float wVel = 0.7;
+        //1 is blue
+        //2 is red
+        int way1 = 10;
+        int way2 = 4;
+        float speed1 = 3.3;
+        float speed2 = 3.3;
+        float angle1 = rand(0,360);
+        float angle2 = rand(0,360);
+        float inc1 = 8;
+        float inc2 = 6.5;
+        float wVel = 3;
+        int waitTime = 7;
 
-        int loopFrames = stack * waitTime;
-
-        loop (12) { //5 seconds
+        loop (40) {
             if (!Boss_Alive(_objBoss)) return;
-            for (int i = 0; i < stack; i++) {
-                int color = [SHOT_PINK, SHOT_PINK_INV, SHOT_RED, SHOT_PINK_INV][i];
-                for (int j = 0; j < way; j++) {
-                    CreateShotUA2(MID_X, 90, speed, angleT, 0, speed, wVel, color+RING_L, 0, color+SPAWN_S+SIZE_16, color+CANCEL_32);
-                    angleT += 360 / way;
-                }
-                angleT += arc1;
-                CallSFX(SND_SHOT2);
-                wait(waitTime);
+            for (int i = 0; i < way1; i++) { //blue
+                int shot = CreateShotUA2(MID_X, 90, speed1, angle1, 0, speed1, wVel * dir_, SHOT_PINK+RING_S, 0, SHOT_PINK+SPAWN_S+SIZE_16, SHOT_PINK+CANCEL_BURST2);
+                ObjMove_AddPatternA2(shot, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+                angle1 += 360 / way1;
             }
-            wVel *= -1;
-            angleT += arc2;
+
+            for (int i = 0; i < way2; i++) { //red
+                CreateShotUA2(MID_X, 90, speed2, angle2 + 22.5, 0, speed1, 0, SHOT_RED_INV+BALL_S, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+                CreateShotUA2(MID_X, 90, speed2, -angle2 + 22.5, 0, speed1, 0, SHOT_RED_INV+BALL_S, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_FADE);
+                angle2 += 360 / way2;
+            }
+            angle1 -= inc1 * dir_;
+            angle2 += inc2;
+            CallSFX(SND_SHOT2);
+            wait(waitTime);
         }
         Animation_Charge(_objBoss, false);
-        wait(30);
-    }
-
-    function<void> Phase2() {
-        if (!Boss_Alive(_objBoss)) return;
-        Animation_Charge(_objBoss, true);
-        CallSFX(SND_CHARGE1);
-        TChargeAnim();
-        wait(30);
-        if (!Boss_Alive(_objBoss)) return;
-
-        int way = 8;
-        int stack = 5;
-        float speed = 4;
-        float angleT = 0;
-        float arc1 = -15; //between shots
-        float arc2 = -80; //between arcs
-        int waitTime = 3;
-        float wVel = -0.7;
-
-        int loopFrames = stack * waitTime;
-
-        loop (18) { //5 seconds
-            if (!Boss_Alive(_objBoss)) return;
-            for (int i = 0; i < stack; i++) {
-                int color = [SHOT_PINK, SHOT_PINK_INV, SHOT_RED, SHOT_PINK_INV, SHOT_PINK][i];
-                for (int j = 0; j < way; j++) {
-                    int shot = CreateShotUA2(MID_X, 90, speed, angleT, 0, speed, wVel, color+RING_S, 0, color+SPAWN_S+SIZE_16, color+CANCEL_BURST2);
-                    angleT += 360 / way;
-                }
-                angleT += arc1;
-                CallSFX(SND_SHOT2);
-                wait(waitTime);
-            }
-            wVel *= -1;
-            angleT += arc2;
-        }
-        Animation_Charge(_objBoss, false);
-        wait(30);
-        
     }
 
     function<void> Phase3() {
@@ -162,7 +127,7 @@ task TSpell() {
 
         loop {
             if (!Boss_Alive(_objBoss)) return;
-            if (waitTime > 1) angleT = rand(0, 360);
+            if (waitTime > 2) angleT = rand(0, 360);
             else angleT += 90 / way - 0.2;
             way = max(12 - waitTime, 6);
             for (int i = 0; i < way; i++) {
