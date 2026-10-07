@@ -1,6 +1,6 @@
 #TouhouDanmakufu[Single]
 #ScriptVersion[3]
-#Title["Spell 12"]
+#Title["Spell 11"]
 #System["./../../system/System.dnh"]
 
 #include "./lib_Gengetsu.dnh"
