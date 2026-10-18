@@ -76,12 +76,13 @@ task TSpell() {
 
         //1 is blue
         //2 is red
-        int way1 = 10;
+        int way1 = 11;
         int way2 = 4;
         float speed1 = 3.3;
         float speed2 = 3.3;
-        float angle1 = rand(0,360);
-        float angle2 = rand(0,360);
+        float angle1 = rand(0, 360);
+        float angle2 = rand(0, 360);
+        float aMod = rand(0, 360);
         float inc1 = 8;
         float inc2 = 6.5;
         float wVel = 3;
@@ -90,8 +91,8 @@ task TSpell() {
         loop (40) {
             if (!Boss_Alive(_objBoss)) return;
             for (int i = 0; i < way1; i++) { //blue
-                int shot = CreateShotUA2(MID_X, 90, speed1, angle1, 0, speed1, wVel * dir_, SHOT_PINK+RING_S, 0, SHOT_PINK+SPAWN_S+SIZE_16, SHOT_PINK+CANCEL_BURST2);
-                ObjMove_AddPatternA2(shot, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0);
+                int shot = CreateShotUA2(MID_X, 90, speed1, angle1, 0, speed1, wVel * sin(_count + aMod) * dir_, SHOT_PINK_INV+RING_S, 0, SHOT_PINK+SPAWN_S+SIZE_16, SHOT_PINK+CANCEL_BURST2);
+                ObjMove_AddPatternA3(shot, 60, NO_CHANGE, NO_CHANGE, NO_CHANGE, NO_CHANGE, 0, SHOT_PINK+RING_S);
                 angle1 += 360 / way1;
             }
 
@@ -129,7 +130,8 @@ task TSpell() {
             if (!Boss_Alive(_objBoss)) return;
             if (waitTime > 2) angleT = rand(0, 360);
             else angleT += 90 / way - 0.2;
-            way = max(12 - waitTime, 6);
+            way = max(10 - waitTime, 6);
+            if (waitTime == 1) way = 12;
             for (int i = 0; i < way; i++) {
                 CreateShotUA2(MID_X, 180, 0, angleT, accel, speed, 0, SHOT_RED+SWORD, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST2);
                 angleT += 360 / way;
