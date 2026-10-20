@@ -1,0 +1,172 @@
+#TouhouDanmakufu[Single]
+#ScriptVersion[3]
+#Title["Spell 4"]
+#System["./../../system/System.dnh"]
+
+#include "./lib_Gengetsu.dnh"
+
+int _objBoss;
+int _count = -30;
+int _loopTime = 330;
+_spellID = 3;
+
+@Event {
+    alternative (GetEventType())
+    case (EV_REQUEST_LIFE) {
+        SetScriptResult(3000);
+    }
+    case (EV_REQUEST_TIMER) {
+        SetScriptResult(35 + absolute(_count / 60));
+    }
+}
+
+@Initialize {
+    Boss_Init(false);
+    _objBoss = Boss_Create(BOSS_ID_GENGETSU);
+    TInitialize();
+    TFinalize();
+    TMain();
+}
+
+@MainLoop {
+    Boss_Update(_objBoss);
+    _count++;
+    yield;
+}
+
+task TInitialize() {
+    Gengetsu_Init(_objBoss);
+    if (GetGameMode() == GAME_SPELL) Gengetsu_Move(_objBoss, MID_X, 60, 30);
+    wait(30);
+    Boss_SetVulnerable(_objBoss, true);
+    TRage();
+}
+
+task TFinalize() {
+    while (Boss_Alive(_objBoss)) yield;
+    Gengetsu_Move(_objBoss, MID_X, 60, 60);
+    Animation_Charge(_objBoss, false);
+    Boss_Finalize(_objBoss);
+}
+
+task TMain() {
+    while (_count < -30) yield;
+    while (Boss_Alive(_objBoss)) {
+        if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
+        if (_count % _loopTime == 0 && _count >= 0) {
+            async {
+                float a = 90 + rand(-5, 10);
+                TShot(a, false);
+                TShot(a + 180, false);
+                wait(75);
+                a = 90 + rand(5, -10);
+                TShot(a, false);
+                TShot(a + 180, false);
+                wait(75);
+                a = 45 + rand(0, 15);
+                TShot(a, true);
+                TShot(a + 180, true);
+                TShot(-a, true);
+                TShot(-a + 180, true);
+                wait(60);
+                Animation_Charge(_objBoss, false);
+                if (Boss_Alive(_objBoss)) Gengetsu_MoveRandom(_objBoss, 90, 10, 60);
+            }
+        }
+        yield;
+    }
+}
+
+task TShot(float angle_, bool final_) {
+    if (!Boss_Alive(_objBoss)) return;
+    Animation_Charge(_objBoss, true);
+    CallSFX(SND_CHARGE1);
+    if (final_) TChargeAnim2();
+    else TChargeAnim();
+    wait(45);
+    if (!Boss_Alive(_objBoss)) return;
+
+    //spawn sideways shots
+
+    //reflect task
+
+    float speed = 6;
+    float accel = 0.04;
+    int color = final_ ? SHOT_PINK_INV : SHOT_BLUE;
+    int color2 = final_ ? SHOT_PINK : SHOT_BLUE_INV;
+    int type = final_ ? HEART_S : NEEDLES;
+
+    for (int i = 0; i < 5; i++) {
+        CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), speed / 4, angle_ + 10 + 0.4 * i, accel, 3 - 0.1 * i, 0, SHOT_RED_INV+PILL_S, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
+        CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), speed / 4, angle_ - 10 - 0.4 * i, accel, 3 - 0.1 * i, 0, SHOT_RED_INV+PILL_S, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST2);
+    }
+    int parent = CreateShotUA2(Boss_X(_objBoss), Boss_Y(_objBoss), speed / 3, angle_, accel, speed, 0, SHOT_PINK+HEART_L, 0, SHOT_PINK+SPAWN_S+SIZE_32, SHOT_PINK+CANCEL_32);
+    ObjShot_SetAutoDelete(parent, false);
+    ObjShot_SetDeleteFrame(parent, 150);
+    ObjShot_SetSpellResist(parent, true);
+    CallSFX(SND_SHOT1);
+
+    speed = 2;
+    accel = 0.08;
+    int waitTime = final_ ? 12 : 8;
+
+    while (!Obj_IsDeleted(parent)) {
+        if (!Boss_Alive(_objBoss)) return;
+        TBounce(parent);
+        CallSFX(SND_SHOT2);
+        wait(waitTime);
+    }
+
+    task TBounce(int parent_) {
+        float pX = ObjMove_GetX(parent_);
+        float pY = ObjMove_GetY(parent_);
+        float pT = ObjMove_GetAngle(parent_);
+        int shot1 = CreateShotUA2(pX, pY, speed / 3, pT + 90, accel, speed, 0, color+type, 0, color+CANCEL_SPARKLE);
+        int shot2 = CreateShotUA2(pX, pY, speed / 3, pT - 90, accel, speed, 0, color+type, 0, color+CANCEL_SPARKLE);
+        TControl(shot1);
+        TControl(shot2);
+
+        task TControl(int obj_) {
+            ObjShot_SetAutoDelete(obj_, false);
+            ObjShot_SetDeleteFrame(obj_, 400);
+            float angle = ObjMove_GetAngle(obj_);
+            while (!Obj_IsDeleted(obj_)) {
+                if (!Shot_IsInBoundsX(obj_)) {
+                    ObjMove_SetAngle(obj_, ReflectAngle(angle, 90));
+                    ObjMove_SetPosition(obj_, clamp(ObjMove_GetX(obj_), MIN_X, MAX_X), ObjMove_GetY(obj_));
+                    ObjShot_SetGraphic(obj_, color2+type);
+                    Obj_SetValueI(obj_, SHOT_EFFECT, color2+CANCEL_SPARKLE);
+                    ObjShot_SetGrazeFrame(obj_, 0);
+                    return;
+                }
+                yield;
+            }
+        }
+    }
+}
+
+task TChargeAnim() {
+    Primitive_ContractPolygon2D(_objBoss, 0, 200, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 200, 90, 45, 16, COLOR_WHITE);
+    Particle_ContractRing(_objBoss, 0, 200, -90, 45, 16, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 200, 90, 45, 16, COLOR_INDIGO_L);
+    Particle_ContractRing(_objBoss, 0, 200, -90, 45, 16, COLOR_INDIGO_L);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 200, 90, 45, 16, COLOR_BLUE);
+    Particle_ContractRing(_objBoss, 0, 200, -90, 45, 16, COLOR_BLUE);
+}
+
+task TChargeAnim2() {
+    Primitive_ContractPolygon2D(_objBoss, 0, 368, 0, 45, 32, COLOR_WHITE, false, RP_STG_EFF_MID);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_WHITE);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_WHITE);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_PINK);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_PINK);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_PURPLE_L);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_PURPLE_L);
+}
