@@ -54,7 +54,7 @@ task TMain() {
     while (_count < -90) yield;
     while (Boss_Alive(_objBoss)) {
         if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
-        if (_count % _loopTime == 0 && _count >= 0) { //TODO time correctly
+        if (_count % _loopTime == 0 && _count >= 0) {
             async {
                 TLaser();
             }
