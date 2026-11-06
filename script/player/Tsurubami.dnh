@@ -186,20 +186,20 @@ task TSpell() {
     int objManage = GetSpellManageObject();
 
     SetForbidPlayerShot(true);
-    SetPlayerInvincibilityFrame(240);
+    SetPlayerInvincibilityFrame(138);
     ObjRender_SetColor(_objPlayer, COLOR_WHITE);
-    SetPlayerSpeed(2.0, 2.0);
+    SetPlayerSpeed(1.9, 1.9);
 
     TEffect();
     
     //spell time
-    wait(180);
+    wait(116);
 
     SetForbidPlayerSpell(true);
     SetForbidPlayerShot(false);
-    SetPlayerSpeed(4.5, 2.0);
+    SetPlayerSpeed(4.0, 1.9);
     Obj_Delete(objManage);
-    wait(40);
+    wait(20);
 
     //vulnerability indicator
     CallSFX(SND_PL_VULNERABLE);
@@ -231,7 +231,7 @@ task TSpell() {
         //charge
         int dir = -1;
         CallSFX(SND_PL_SPELL_T1);
-        loop (12) {
+        loop (4) {
             dir *= -1;
             Primitive_ContractPolygon2D(_objPlayer, 0, 550, 0, 45, 32, COLOR_GRAY_L, false, RP_STG_EFF_MID);
             yield;
@@ -243,40 +243,65 @@ task TSpell() {
 
         wait(45);
 
-        int laser = ObjSpell_Create();
-        ObjSpell_SetEraseShot(laser, true);
-        ObjSpell_SetDamage(laser, 65);
-        ObjSpell_Regist(laser);
+        int circle = ObjSpell_Create();
+        ObjSpell_SetEraseShot(circle, true);
+        ObjSpell_SetDamage(circle, 55);
+        ObjSpell_Regist(circle);
 
-        float hitboxLength = 0;
-        float modifier = 0;
-        loop (60) {
-            TCreateLaserEffect(1);
-            TCreateLaserEffect(-1);
-            modifier += 360 / 14;
-            ObjSpell_SetIntersectionLine(laser, GetPlayerX(), GetPlayerY(), GetPlayerX(), GetPlayerY() - hitboxLength, 44);
-            hitboxLength += 28; //bullet speed
+        float rad = 0;
+        float angle = -(90 / 8);
+        loop (33) {
+            TCreateCircleEffect(angle);
+            ObjSpell_SetIntersectionCircle(circle, GetPlayerX(), GetPlayerY(), rad);
             CallSFX(SND_PL_SPELL_T2);
+            angle -= 180 / 16;
+            rad += 12;
             yield;
         }
-        Obj_Delete(laser);
+        loop(18) {
+            ObjSpell_SetIntersectionCircle(circle, GetPlayerX(), GetPlayerY(), rad);
+            rad += 12;
+            yield;
+        }
+        Obj_Delete(circle);
 
-        task TCreateLaserEffect(int direction_) {
-            int shot1 = InitSprite2D(0, 48, 16, 64, _pathImg, RP_STG_PLAYER - 2i);
-            ObjSprite2D_SetDestCenter(shot1);
-
-            int shot2 = InitSprite2D(32, 48, 48, 64, _pathImg, RP_STG_PLAYER - 2i);
-            ObjSprite2D_SetDestCenter(shot2);
-
-            ObjRender_SetPosition(shot1, GetPlayerX() + 20 * direction_ * cos(modifier), GetPlayerY() + direction_ * 4, 1);
-            ObjRender_SetPosition(shot2, GetPlayerX() + 15 * direction_ * cos(modifier + 90), GetPlayerY() + direction_ * 8, 1);
-            loop (20) {
-                ObjRender_SetY(shot1, ObjRender_GetY(shot1) - 28); //bullet speed
-                ObjRender_SetY(shot2, ObjRender_GetY(shot2) - 28);
+        task TCreateCircleEffect(float angle_) {
+            float x = GetPlayerX();
+            float y = GetPlayerY();
+            int way = 8;
+            float rad = 0;
+            for (int i = 0; i < 48; i++) {
+                //white
+                loop (way) {
+                    ObjParticleList_SetPosition(_particleShot, x + rad * cos(angle_), y + rad * sin(angle_), 1);
+                    ObjParticleList_SetAngleZ(_particleShot, angle_ + 90);
+                    ObjParticleList_SetExtraData(_particleShot, 11, 0, 0);
+                    ObjParticleList_AddInstance(_particleShot);
+                    angle_ -= 180 / way;
+                }
+                //black
+                loop (way) {
+                    ObjParticleList_SetPosition(_particleShot, x + rad * cos(angle_), y + rad * sin(angle_), 1);
+                    ObjParticleList_SetAngleZ(_particleShot, angle_ + 90);
+                    ObjParticleList_SetExtraData(_particleShot, 12, 0, 0);
+                    ObjParticleList_AddInstance(_particleShot);
+                    angle_ -= 180 / way;
+                }
+                angle_ += 90 / way;
+                way = 2;
+                //red
+                loop (way) {
+                    ObjParticleList_SetPosition(_particleShot, x + rad * cos(-angle_), y + rad * sin(-angle_), 1);
+                    ObjParticleList_SetAngleZ(_particleShot, -angle_ + 90);
+                    ObjParticleList_SetExtraData(_particleShot, 13, 0, 0);
+                    ObjParticleList_AddInstance(_particleShot);
+                    angle_ -= 360 / way;
+                }
+                way = 8;
+                angle_ -= 90 / way;
+                rad += 12;
                 yield;
             }
-            Obj_Delete(shot1);
-            Obj_Delete(shot2);
         }
     }
 }
