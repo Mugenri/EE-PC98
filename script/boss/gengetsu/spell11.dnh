@@ -65,7 +65,7 @@ task TMain() {
 
 task TSuns() {
     //hell's tokamak
-
+    wait(30);
     //charge anim
     if (!Boss_Alive(_objBoss)) return;
     Animation_Charge(_objBoss, true);
@@ -102,7 +102,7 @@ task TSuns() {
 
     CallSFX(SND_SHOT4);
 
-    float temp = rand(0, 360);
+    float temp = 0;
     for (int i = 0; i < 32; i++) {
         CreateShotUA2(ObjMove_GetX(sun1), ObjMove_GetY(sun1), 1, temp, 0.06, 5, 0, SHOT_RED+FIRE_A, 0, SHOT_RED+SPAWN_S+SIZE_32, SHOT_RED+CANCEL_32);
         CreateShotUA2(ObjMove_GetX(sun2), ObjMove_GetY(sun2), 1, temp, 0.06, 5, 0, SHOT_RED+FIRE_A, 0, SHOT_RED+SPAWN_S+SIZE_32, SHOT_RED+CANCEL_32);
