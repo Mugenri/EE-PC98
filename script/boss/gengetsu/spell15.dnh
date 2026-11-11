@@ -127,8 +127,8 @@ task TLasers(int dir_) {
     float maxInc = 8;
     float minInc = 0.3;
     float rad = 0;
-    int delay = 120;
-    int sustain = 240;
+    int delay = 140;
+    int sustain = 220;
     int frames = delay + sustain;
     int[] colors = [COLOR_RED_L, COLOR_ORANGE, COLOR_YELLOW_L, COLOR_GREEN, COLOR_BLUE, COLOR_PURPLE, COLOR_PINK, COLOR_SKY];
 
