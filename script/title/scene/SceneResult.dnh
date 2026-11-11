@@ -6,6 +6,8 @@ function<void> SceneResult(int score_, string clearStatus_) {
 
     int selectedPlayer = PLAYER_YABUSAME;
     int selectedDiff = D_EXTRA;
+    int pMax = PLAYER_TSUBAKURA;
+    if (CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EASYEX) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_EXTRA) || CD_GetGameClearFlag(PLAYER_TSUBAKURA, D_ABEX) || DEBUG_MODE) pMax = PLAYER_TSURUBAMI;
 
     int newIndex = -1;
 
@@ -43,12 +45,18 @@ function<void> SceneResult(int score_, string clearStatus_) {
             case (VK_UP, VK_DOWN) {
                 int increment = userKey == VK_UP ? -1 : 1;
                 CallSFX(SND_TT_SELECT);
-                selectedPlayer = IncrementIndex(selectedPlayer, increment, PLAYER_YABUSAME, PLAYER_TSUBAKURA);
+                if (selectedPlayer == PLAYER_TSURUBAMI) selectedDiff = D_EXTRA;
+                selectedPlayer = IncrementIndex(selectedPlayer, increment, PLAYER_YABUSAME, pMax);
+                if (selectedPlayer == PLAYER_TSURUBAMI) selectedDiff = D_EASY;
             }
             case (VK_LEFT, VK_RIGHT) {
                 int increment = userKey == VK_LEFT ? -1 : 1;
                 CallSFX(SND_TT_SELECT);
-                selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX); //TODO account for bonus stage
+                if (selectedPlayer == PLAYER_TSURUBAMI) {
+                    selectedDiff = D_EASY;
+                } else {
+                    selectedDiff = IncrementIndex(selectedDiff, increment, D_EASYEX, D_ABEX);
+                }
             }
             case (VK_OK, VK_CANCEL, VK_PAUSE) {
                 CallSFX(SND_TT_CANCEL);
