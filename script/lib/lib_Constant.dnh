@@ -232,22 +232,22 @@ const int SHOT_SCORE_TEXT   = 2; //If the bullet gets score ascii text
 const int SHOT_CANCEL       = 3; //If the bullet/laser should be given a cancel effect
 const int SHOT_EFFECT       = 4; //Key field for bullet deletion effect
 //Boss
-const int BOSS_ID           = 5; //Boss ID string constant
-const int BOSS_ALIVE        = 6; //Boss health > 0
-const int BOSS_BOMB_BARRIER = 7; //Bomb barrier currently active (bool)
-const int BOSS_X            = 8; //X position of boss
-const int BOSS_Y            = 9; //Y position of boss
-const int BOSS_LIFE         = 10;//Boss health
-const int BOSS_LIFE_PREV    = 11;//Boss health previous frame
-const int BOSS_DMG_PREV     = 12;//Amount of damage the boss took in the previous frame (used for score calculaton)
-const int BOSS_DMG_SHOT     = 13;//Boss damage ratio to shot
-const int BOSS_DMG_SPELL    = 14;//Boss damage ratio to spells
-const int BOSS_DAMAGED      = 15;//Boss took damage this frame (bool)
+const int BOSS_ID           = 6; //Boss ID string constant
+const int BOSS_ALIVE        = 7; //Boss health > 0
+const int BOSS_BOMB_BARRIER = 8; //Bomb barrier currently active (bool)
+const int BOSS_X            = 9; //X position of boss
+const int BOSS_Y            = 10; //Y position of boss
+const int BOSS_LIFE         = 11;//Boss health
+const int BOSS_LIFE_PREV    = 12;//Boss health previous frame
+const int BOSS_DMG_PREV     = 13;//Amount of damage the boss took in the previous frame (used for score calculaton)
+const int BOSS_DMG_SHOT     = 14;//Boss damage ratio to shot
+const int BOSS_DMG_SPELL    = 15;//Boss damage ratio to spells
+const int BOSS_DAMAGED      = 16;//Boss took damage this frame (bool)
 //Boss animations
-const int BOSS_CHARGE       = 16;//Boss Charge animation flag
-const int BOSS_SPECIAL      = 17;//Boss Special animation flag
+const int BOSS_CHARGE       = 17;//Boss Charge animation flag
+const int BOSS_SPECIAL      = 18;//Boss Special animation flag
 //Item
-const int ITEM_AUTOCOLLECT  = 18;//Item was autocollected
+const int ITEM_AUTOCOLLECT  = 19;//Item was autocollected
 
 //----------------------------------------------------
 //COLOR CONSTANTS

@@ -140,6 +140,7 @@ function<void> Boss_Finalize(int obj_) {
         loop (5) {
             for each (shot in GetShotIdInCircleA2(GetPlayerX(), GetPlayerY(), radius, TARGET_ENEMY)) {
                 if (ObjMove_GetX(shot) < MIN_X || ObjMove_GetX(shot) > MAX_X || ObjMove_GetY(shot) < MIN_Y || ObjMove_GetY(shot) > MAX_Y) continue; //no items spawn off screen
+                if (Obj_GetValueDI(shot, SHOT_NOSCORE, false)) continue; //exclude tagged bullets from score calculation
                 else if (radius == 600 && Obj_GetType(shot) == OBJ_SHOT) { //assign shot score bonus, only runs on final loop
                     Obj_SetValueI(shot, SHOT_SCORE, score);
                     Obj_SetValueI(shot, SHOT_SCORE_TEXT, true);

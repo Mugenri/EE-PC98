@@ -97,7 +97,8 @@ task TRage() {
         if (ObjMove_GetSpeed(_objBoss) == 0) {
             float angleT = rand(0, 360);
             for (int j = 0; j < way; j++) {
-                CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_BLUE+NEEDLES, 0, SHOT_BLUE+SPAWN_E+SIZE_8, SHOT_BLUE+CANCEL_BURST1);
+                int shot = CreateShotUA1(Boss_X(_objBoss), Boss_Y(_objBoss), speed, angleT, SHOT_BLUE+NEEDLES, 0, SHOT_BLUE+SPAWN_E+SIZE_8, SHOT_BLUE+CANCEL_BURST1);
+                Obj_SetValueI(shot, SHOT_NOSCORE, true);
                 angleT += 360 / way;
             }
             CallSFX(SND_SHOT1);
