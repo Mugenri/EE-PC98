@@ -226,7 +226,7 @@ function<int> SceneReplay(int selectedDefault_, bool saveMode_) {
         SetReplayUserData("Difficulty", GetDifficulty());
         SetReplayUserData("StageIndex", GetStageIndex());
         SetReplayUserData("SpellPracticeID", GetSpellPracticeID());
-        SetReplayUserData("StartingLives", GetGameMode() == GAME_MAIN ? GetStartingLives() : 0);
+        SetReplayUserData("StartingLives", GetGameMode() == GAME_MAIN ? (GetStageIndex() != 2 ? GetStartingLives() : 2) : 0);
     }
 
     function<string> ReplayNameEntry(int index_) {
