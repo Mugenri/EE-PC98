@@ -282,6 +282,8 @@ task TBossLife() {
 	int lastRemStep = -1;
 	float lifeRateRender = 0;
 
+    int stageIndex = GetStageIndex();
+
 	loop {
 		if (_objScene != ID_INVALID) RenderLife();
 		yield;
@@ -330,12 +332,14 @@ task TBossLife() {
         }
 
         //Step Division Display
-        float[] stepDivisions = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_LIFE_RATE_LIST);
-        if (length(stepDivisions) > 1) { //more than 1 attack this step
-            for (int i = 0; i < length(stepDivisions) - 1; i++) {
-                ObjParticleList_SetPosition(_displayList, 576 - 1 - (128 * stepDivisions[i]), 148, 1); // -1 so the spells end immediately when the health bar is no longer visible
-                ObjParticleList_SetExtraData(_displayList, 14, 18, 0);
-                ObjParticleList_AddInstance(_displayList);
+        if (stageIndex != 2) { //none for gengetsu
+            float[] stepDivisions = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_LIFE_RATE_LIST);
+            if (length(stepDivisions) > 1) { //more than 1 attack this step
+                for (int i = 0; i < length(stepDivisions) - 1; i++) {
+                    ObjParticleList_SetPosition(_displayList, 576 - 1 - (128 * stepDivisions[i]), 148, 1); // -1 so the spells end immediately when the health bar is no longer visible
+                    ObjParticleList_SetExtraData(_displayList, 14, 18, 0);
+                    ObjParticleList_AddInstance(_displayList);
+                }
             }
         }
 
