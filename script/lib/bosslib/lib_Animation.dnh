@@ -55,7 +55,10 @@ function<void> Animation_DrawBoss(int objBoss_) {
                     else animType = ANIM_RIGHT;
                 }
             }
-            if (Obj_GetValueDI(objBoss_, BOSS_SPECIAL, false)) animType = ANIM_SPECIAL; //override all
+            if (Obj_GetValueDI(objBoss_, BOSS_SPECIAL, false)) {
+                animType = ANIM_SPECIAL; //override all
+                width = 128; //gengetsu xd
+            }
             CheckDamage();
             SetFrame();
             previousType = animType;
@@ -123,7 +126,7 @@ function<int[][]> Animation_GetFrameData(string bossID_) {
     int[][] data = [[1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1]]; //assume 1 frame for each animation
     alternative (bossID_)
     case (BOSS_ID_TSURUBAMI) data = [[1, 0, 0, 1], [1, 64, 0, 1], [1, 128, 0, 1], [1, 192, 0, 1], [1, 256, 0, 1], [1, 320, 0, 1], [4, 0, 64, 1], [0, 0, 0, 1]];
-    case (BOSS_ID_GENGETSU) data = [[1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [4, 0, 64, 1], [0, 0, 0, 1]];
+    case (BOSS_ID_GENGETSU) data = [[1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [1, 0, 0, 1], [4, 0, 64, 1], [1, 352, 0, 1]];
     others assert(false, "No animation data for provided bossID.");
     return data;
 }
