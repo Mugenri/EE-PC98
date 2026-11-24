@@ -107,8 +107,13 @@ task TSpell() {
             CreateShotUA1(MID_X - x1, y - 3, speed, -angle + 180, SHOT_RED+SCALE, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST1);
             CreateShotUA1(MID_X + x2, y - 18, speed, angle, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
             CreateShotUA1(MID_X - x2, y - 18, speed, -angle + 180, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
-            //right
+            //white
+            CreateShotUA1(MID_X + x1, y - 3, speed, angle + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+            CreateShotUA1(MID_X - x1, y - 3, speed, -angle, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+            CreateShotUA1(MID_X + x2, y - 18, speed, angle + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
+            CreateShotUA1(MID_X - x2, y - 18, speed, -angle, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_8, SHOT_WHITE+CANCEL_BURST1);
             if (i > 30) {
+                //right
                 CreateShotUA1(MID_X + x1, y - 3, speed, angle - arc, SHOT_RED+SCALE, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST1);
                 CreateShotUA1(MID_X - x1, y - 3, speed, -angle + 180 - arc, SHOT_RED+SCALE, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST1);
                 CreateShotUA1(MID_X + x2, y - 18, speed, angle - arc, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
@@ -118,6 +123,15 @@ task TSpell() {
                 CreateShotUA1(MID_X - x1, y - 3, speed, -angle + 180 + arc, SHOT_RED+SCALE, 0, SHOT_RED+SPAWN_E+SIZE_16, SHOT_RED+CANCEL_BURST1);
                 CreateShotUA1(MID_X + x2, y - 18, speed, angle + arc, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
                 CreateShotUA1(MID_X - x2, y - 18, speed, -angle + 180 + arc, SHOT_RED_INV+SCALE, 0, SHOT_RED_INV+SPAWN_S+SIZE_16, SHOT_RED_INV+CANCEL_BURST1);
+                //white
+                CreateShotUA1(MID_X + x1, y - 3, speed, angle - arc + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X - x1, y - 3, speed, -angle - arc, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X + x2, y - 18, speed, angle - arc + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X - x2, y - 18, speed, -angle - arc, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X + x1, y - 3, speed, angle + arc + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X - x1, y - 3, speed, -angle + arc, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_E+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X + x2, y - 18, speed, angle + arc + 180, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
+                CreateShotUA1(MID_X - x2, y - 18, speed, -angle + arc, SHOT_WHITE+PELLET, 0, SHOT_WHITE+SPAWN_S+SIZE_16, SHOT_WHITE+CANCEL_BURST1);
             }
             CallSFX(SND_SHOT1);
             i++;
@@ -170,6 +184,7 @@ task TSpell() {
             angle += arc;
             CallSFX(SND_SHOT2);
             waitTime = Interpolate_Linear(waitMin, waitMax, _life / 7000.0);
+            if (_life < 400) waitTime = 4;
             wait(waitTime);
         }
     }
