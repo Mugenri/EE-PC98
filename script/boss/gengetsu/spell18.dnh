@@ -67,9 +67,11 @@ task TMain() {
 task TSpell() {
     wait(30);
 
-    TPattern1();
     TPattern2();
+    wait(120);
     TPattern3();
+    wait(60);
+    TPattern1();
 
     task TPattern1() { //aimed balls
         float xRange = MID_X - 30;
