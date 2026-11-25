@@ -44,7 +44,7 @@ task TInitialize() {
 
 task TFinalize() {
     while (Boss_Alive(_objBoss)) yield;
-    Gengetsu_Move(_objBoss, MID_X, 60, 60);
+    Gengetsu_Move(_objBoss, MID_X, 90, 60);
     Animation_Charge(_objBoss, false);
     Boss_Finalize(_objBoss);
 }
