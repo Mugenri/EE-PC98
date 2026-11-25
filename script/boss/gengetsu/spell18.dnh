@@ -211,6 +211,7 @@ task TIntro() {
         yield;
     }
     Obj_Delete(white);
+    Transition_ChangeBG(2, 0);
     
     CallSFX(SND_SHOT1);
     CallSFX(SND_LASER1);

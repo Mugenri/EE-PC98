@@ -4,7 +4,6 @@
 #include "./../../lib/effectlib/lib_EffectPrimitive.dnh"
 
 bool _split;
-int _color = 0x110011;
 
 @Initialize {
     SetAutoDeleteObject(true);
@@ -25,7 +24,8 @@ function<void> ChangeIndex(int index_, int priority_) {
     _bIndex = index_;
     alternative (index_)
     case (0) { TBackgroundIntro(index_, priority_); }
-    case (1) { TBackground(index_, priority_); }
+    case (1) { TBackground(index_, priority_, 0x110011); }
+    case (2) { TBackground(index_, priority_, 0x220000); }
     others { assert(false, IntToString(index_) ~ " is an invalid background index."); }
 }
 
@@ -47,7 +47,6 @@ task TBackgroundIntro(int index_, int priority_) {
             index_ = _bIndex;
         }
         if (_split) {
-            WriteLog("splittin");
             TSplit();
             _split = false;
         }
@@ -111,7 +110,7 @@ task TBackgroundIntro(int index_, int priority_) {
     }
 }
 
-task TBackground(int index_, int priority_) {
+task TBackground(int index_, int priority_, int color_) {
     bool exitFlag = false;
     //black bg
     int black = InitSprite2D(0, 0, MAX_X, MAX_Y, priority_);
@@ -133,7 +132,7 @@ task TBackground(int index_, int priority_) {
         //moon prim
         int vertices = 130;
         int prim = InitPrim2D(PRIMITIVE_TRIANGLESTRIP, vertices, IMG_BG_GENGETSU_EFF, _priority);
-        ObjRender_SetColor(prim, _color);
+        ObjRender_SetColor(prim, color_);
         
         //192, 80
         int xOrg = 192;
@@ -151,21 +150,22 @@ task TBackground(int index_, int priority_) {
         }
 
         float anim = 0;
+        float inc = color_ == 0x110011 ? -0.1 : 0.1;
         while (!exitFlag) {
             UpdatePrim(anim);
-            anim -= 0.1 % 16;
+            anim += inc % 16;
             yield;
         }
 
         Obj_Delete(prim);
 
         function<void> UpdatePrim(float mod_) {
-            ObjRender_SetColor(prim, _color);
+            ObjRender_SetColor(prim, color_);
             for (int i = 0; i < vertices; i++) {
                 if (i % 2 == 0) {
                     ObjPrim_SetVertexUVT(prim, i, 4 * i, 0 + mod_);
                 } else {
-                    ObjPrim_SetVertexUVT(prim, i, 4 * i - 4 , 196 + mod_);
+                    ObjPrim_SetVertexUVT(prim, i, 4 * i - 4, 196 + mod_);
                 }
             }
         }
