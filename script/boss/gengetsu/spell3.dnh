@@ -144,4 +144,10 @@ task TChargeAnim() {
     wait(2);
     Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_PURPLE_L);
     Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_PURPLE_L);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_RED);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_RED);
+    wait(2);
+    Particle_ContractRing(_objBoss, 0, 368, 135, 45, 16, COLOR_RED_D);
+    Particle_ContractRing(_objBoss, 0, 368, -135, 45, 16, COLOR_RED_D);
 }
