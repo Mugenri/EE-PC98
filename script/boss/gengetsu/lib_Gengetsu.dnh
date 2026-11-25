@@ -30,7 +30,7 @@ function<void> Gengetsu_Move(int obj_, float x_, float y_, int frames_) {
 }
 
 function<void> Gengetsu_MoveRandom(int obj_, float xRange_, float yRange_, int frames_) {
-     Gengetsu_MoveRandom(obj_, xRange_, yRange_, 0, frames_);
+     Gengetsu_MoveRandom(obj_, xRange_, yRange_, 60, frames_);
 }
 function<void> Gengetsu_MoveRandom(int obj_, float xRange_, float yRange_, float yCenter_, int frames_) {
     Gengetsu_Move(obj_, MID_X + rand(-xRange_, xRange_), yCenter_ + rand(-yRange_, yRange_), frames_);
