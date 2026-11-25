@@ -7,7 +7,7 @@
 
 int _objBoss;
 int _count = -30;
-int _loopTime = 500;
+int _loopTime = 460;
 _spellID = 12;
 
 @Event {
@@ -97,6 +97,7 @@ task TBurst() {
         }
         CallSFX(SND_SHOT1);
         angle += rand(minArc, maxArc);
+        if (i == 35) CallSFX(SND_CHARGE2);
         wait(waitTime);
     }
     Animation_Charge(_objBoss, false);
