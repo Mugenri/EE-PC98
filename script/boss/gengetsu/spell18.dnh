@@ -58,7 +58,11 @@ task TFinalize() {
 task TMain() {
     while (_count < -30) yield;
     while (Boss_Alive(_objBoss)) {
-        if (!_isInvuln) Boss_SetIntersection(_objBoss, _intersectionShot, 0);
+        if (!_isInvuln) {
+            Boss_SetIntersection(_objBoss, _intersectionShot, 0);
+            ObjEnemy_SetIntersectionCircleToShot(_objBoss, ObjMove_GetX(_objBoss) - 36, ObjMove_GetY(_objBoss) - 8, _intersectionShot / 2);
+            ObjEnemy_SetIntersectionCircleToShot(_objBoss, ObjMove_GetX(_objBoss) + 36, ObjMove_GetY(_objBoss) - 8, _intersectionShot / 2);
+        }
         _life = ObjEnemyBossScene_GetInfo(_objScene, INFO_ACTIVE_STEP_TOTAL_LIFE);
         yield;
     }
@@ -144,6 +148,22 @@ task TSpell() {
                 int delay = 120;
                 CallSFX(SND_CHARGE1);
                 int laser = CreateMasterSpark(MID_X, Boss_Y(_objBoss) - 3, 90, MAX_Y, 96, sustain, COLOR_BLUE, COLOR_INDIGO_L, delay);
+
+                async {
+                    int l1 = Laser_WarningLine(MID_X, Boss_Y(_objBoss), 90, 400, delay);
+                    int l2 = Laser_WarningLine(MID_X, Boss_Y(_objBoss), 90, 400, delay);
+
+                    for (int i = 0; i < delay; i++) {
+                        if (!Boss_Alive(_objBoss)) break;
+                        int xMod = Interpolate_Decelerate(0, 96 / 2, i / as_float(delay));
+                        ObjPrim_SetVertexPosition(l1, 1, MID_X + xMod, 400, 1);
+                        ObjPrim_SetVertexPosition(l2, 1, MID_X - xMod, 400, 1);
+                        yield;
+                    }
+                    if (!Obj_IsDeleted(l1)) Obj_Delete(l1);
+                    if (!Obj_IsDeleted(l2)) Obj_Delete(l2);
+                }
+
                 wait(delay);
                 if (!Boss_Alive(_objBoss)) return;
                 CallSFX(SND_MASTERSPARK);
@@ -167,7 +187,7 @@ task TSpell() {
         float arc = 12.3;
         float minAccel = 0.01;
         float maxAccel = 0.2;
-        int waitMin = 18;
+        int waitMin = 15;
         int waitMax = 30;
         int waitTime = waitMax;
 
